@@ -30,10 +30,20 @@ const RUTUJA = {
 
     this.config = this.defaultConfig();
 
+    GATE.init(this);
+
     const saved = localStorage.getItem('rutuja_lang');
     if (saved) {
       this.setLang(saved, true);
     }
+  },
+
+  /* ---- SETTINGS YOU CAN CHANGE ---- */
+  settings: {
+    // Paste your Apps Script Web App URL between the quotes.
+    backendUrl: '',
+    // 'soft' = visitor may browse first.  'hard' = must register to enter.
+    gateMode: 'soft'
   },
 
   /* Config is hard-coded until Phase 12 wires the Google Sheet. */
@@ -74,7 +84,12 @@ const RUTUJA = {
     document.getElementById('site').classList.remove('hidden');
 
     this.paint();
-    if (!silent) window.scrollTo(0, 0);
+    if (!silent) {
+      window.scrollTo(0, 0);
+      GATE.maybeOpen();
+    } else {
+      GATE.render();
+    }
   },
 
   t(key) {
@@ -86,7 +101,7 @@ const RUTUJA = {
   extra(key) {
     const x = {
       mr: {
-        pub_name: 'ऋतुजा पब्लिकेशन',
+        pub_name: 'ऋतुजा प्रकाशन',
         brand_tag: 'इयत्ता १ ते ५',
         hero_title: 'मुलांच्या शिक्षणासाठी विश्वासाची पुस्तके',
         hero_sub: 'इयत्ता १ ते ५ साठी मराठी, सेमी-इंग्रजी आणि इंग्रजी माध्यमाची पुस्तके',
@@ -204,3 +219,237 @@ const RUTUJA = {
 };
 
 document.addEventListener('DOMContentLoaded', () => RUTUJA.init());
+
+/* ===================================================================
+   PHASE 6 — VISITOR GATEWAY
+   Cascading State > District > Taluka, validation, and submission
+   to the private Google Sheet via Apps Script.
+   =================================================================== */
+
+const GATE = {
+  app: null,
+  el: {},
+
+  CATEGORIES: ['student','teacher','parent','retailer','wholesaler',
+               'bookseller','school','distributor','author','other'],
+
+  init(app) {
+    this.app = app;
+    const g = id => document.getElementById(id);
+    this.el = {
+      gate: g('gate'), form: g('gateForm'), done: g('gateDone'),
+      name: g('gName'), phone: g('gPhone'), cat: g('gCat'),
+      state: g('gState'), dist: g('gDist'), tal: g('gTal'),
+      village: g('gVillage'), pin: g('gPin'), hp: g('hp'),
+      submit: g('gateSubmit'), skip: g('gateSkip'), x: g('gateX'),
+      parentNote: g('parentNote'), regId: g('regId'), go: g('gateGo')
+    };
+
+    this.el.form.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
+    this.el.skip.addEventListener('click', () => this.close());
+    this.el.x.addEventListener('click', () => this.close());
+    this.el.go.addEventListener('click', () => { this.close(); this.app.go('books'); });
+
+    this.el.state.addEventListener('change', () => this.onState());
+    this.el.dist.addEventListener('change', () => this.onDist());
+    this.el.cat.addEventListener('change', () => {
+      this.el.parentNote.classList.toggle('hidden', this.el.cat.value !== 'student');
+    });
+
+    this.el.phone.addEventListener('input', () => this.digits(this.el.phone, 10));
+    this.el.pin.addEventListener('input', () => this.digits(this.el.pin, 6));
+
+    this.bindIntent();
+  },
+
+  digits(input, max) {
+    input.value = input.value.replace(/\D/g, '').slice(0, max);
+  },
+
+  registered() { return !!localStorage.getItem('rutuja_reg'); },
+
+  /* Soft gate: shown once, skippable. Hard gate: shown until completed. */
+  maybeOpen() {
+    this.render();
+    if (this.registered()) return;
+    if (this.app.settings.gateMode === 'hard') return this.open(true);
+    if (!sessionStorage.getItem('rutuja_gate_seen')) {
+      sessionStorage.setItem('rutuja_gate_seen', '1');
+      this.open(false);
+    }
+  },
+
+  /* Intent gate: a visitor who acts is asked to register, even in soft mode. */
+  bindIntent() {
+    document.addEventListener('click', e => {
+      const a = e.target.closest('.wa-float, [data-intent]');
+      if (!a || this.registered()) return;
+      if (this.app.settings.gateMode !== 'soft') return;
+      e.preventDefault();
+      this.pending = a.getAttribute('href') || '';
+      this.open(true);
+    });
+  },
+
+  open(force) {
+    this.el.gate.classList.remove('hidden');
+    this.el.x.classList.toggle('hidden', !!force && this.app.settings.gateMode === 'hard');
+    this.el.skip.classList.toggle('hidden', !!force);
+    document.body.style.overflow = 'hidden';
+  },
+
+  close() {
+    this.el.gate.classList.add('hidden');
+    document.body.style.overflow = '';
+  },
+
+  /* ---- DROPDOWNS ---- */
+  render() {
+    const t = k => this.app.t(k);
+    const pick = `<option value="">${t('gate_select')}</option>`;
+
+    this.el.cat.innerHTML = pick + this.CATEGORIES
+      .map(c => `<option value="${c}">${t('cat_' + c)}</option>`).join('');
+
+    const loc = this.app.locations;
+    if (!loc) return;
+    const mr = this.app.lang === 'mr';
+    const mh = mr ? loc.maharashtra.name_mr : loc.maharashtra.name_en;
+
+    this.el.state.innerHTML = pick
+      + `<option value="Maharashtra">${mh}</option>`
+      + loc.other_states.map(s =>
+          `<option value="${s.name_en}">${mr ? s.name_mr : s.name_en}</option>`).join('');
+
+    this.el.dist.innerHTML = pick;
+    this.el.tal.innerHTML = pick;
+    this.el.dist.disabled = true;
+    this.el.tal.disabled = true;
+  },
+
+  onState() {
+    const t = k => this.app.t(k);
+    const pick = `<option value="">${t('gate_select')}</option>`;
+    const mr = this.app.lang === 'mr';
+    const v = this.el.state.value;
+
+    this.el.tal.innerHTML = pick;
+    this.el.tal.disabled = true;
+
+    if (v === 'Maharashtra') {
+      this.el.dist.disabled = false;
+      this.el.dist.innerHTML = pick + this.app.locations.maharashtra.districts
+        .map(d => `<option value="${d.name_en}">${mr ? d.name_mr : d.name_en}</option>`).join('');
+    } else if (v) {
+      // Outside Maharashtra we still capture location, with Other as the fallback.
+      this.el.dist.disabled = false;
+      this.el.dist.innerHTML = `<option value="Other" selected>${t('cat_other')}</option>`;
+      this.el.tal.disabled = false;
+      this.el.tal.innerHTML = `<option value="Other" selected>${t('cat_other')}</option>`;
+    } else {
+      this.el.dist.disabled = true;
+      this.el.dist.innerHTML = pick;
+    }
+  },
+
+  onDist() {
+    const t = k => this.app.t(k);
+    const pick = `<option value="">${t('gate_select')}</option>`;
+    const mr = this.app.lang === 'mr';
+    if (this.el.state.value !== 'Maharashtra') return;
+
+    const d = this.app.locations.maharashtra.districts
+      .find(x => x.name_en === this.el.dist.value);
+    if (!d) { this.el.tal.disabled = true; this.el.tal.innerHTML = pick; return; }
+
+    this.el.tal.disabled = false;
+    this.el.tal.innerHTML = pick + d.talukas
+      .map(x => `<option value="${x.name_en}">${mr ? x.name_mr : x.name_en}</option>`).join('');
+  },
+
+  /* ---- VALIDATION ---- */
+  validate() {
+    const t = k => this.app.t(k);
+    const req = t('common_required');
+    let ok = true;
+
+    const check = (el, errId, pass, msg) => {
+      const e = document.getElementById(errId);
+      if (pass) { el.classList.remove('bad'); e.textContent = ''; }
+      else { el.classList.add('bad'); e.textContent = msg; ok = false; }
+    };
+
+    check(this.el.name, 'eName', this.el.name.value.trim().length >= 2, req);
+    check(this.el.phone, 'ePhone', /^[6-9]\d{9}$/.test(this.el.phone.value), t('common_invalid_phone'));
+    check(this.el.cat, 'eCat', !!this.el.cat.value, req);
+    check(this.el.state, 'eState', !!this.el.state.value, req);
+    check(this.el.dist, 'eDist', !!this.el.dist.value, req);
+    check(this.el.tal, 'eTal', !!this.el.tal.value, req);
+    check(this.el.village, 'eVillage', this.el.village.value.trim().length >= 2, req);
+    check(this.el.pin, 'ePin', /^\d{6}$/.test(this.el.pin.value), t('common_invalid_pin'));
+
+    return ok;
+  },
+
+  /* ---- SUBMIT ---- */
+  async submit() {
+    if (!this.validate()) return;
+
+    const payload = {
+      name: this.el.name.value.trim(),
+      whatsapp: '91' + this.el.phone.value,
+      category: this.el.cat.value,
+      state: this.el.state.value,
+      district: this.el.dist.value,
+      taluka: this.el.tal.value,
+      village_city: this.el.village.value.trim(),
+      pin: this.el.pin.value,
+      language: this.app.lang,
+      source: 'gate',
+      website: this.el.hp.value
+    };
+
+    this.el.submit.disabled = true;
+    this.el.submit.textContent = this.app.t('common_loading');
+
+    let regId = this.localId();
+    const url = this.app.settings.backendUrl;
+
+    if (url) {
+      try {
+        const r = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const j = await r.json();
+        if (j && j.reg_id) regId = j.reg_id;
+      } catch (err) {
+        // Network or CORS problem: send once more without reading the reply,
+        // so the visitor is never blocked by a backend hiccup.
+        try {
+          await fetch(url, { method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload) });
+        } catch (e2) { console.error('Gateway send failed', e2); }
+      }
+    }
+
+    localStorage.setItem('rutuja_reg', JSON.stringify({ id: regId, cat: payload.category }));
+    this.el.submit.disabled = false;
+    this.el.submit.textContent = this.app.t('gate_submit');
+
+    this.el.form.classList.add('hidden');
+    this.el.done.classList.remove('hidden');
+    this.el.x.classList.remove('hidden');
+    this.el.regId.textContent = regId;
+
+    if (this.pending) { window.open(this.pending, '_blank'); this.pending = ''; }
+  },
+
+  localId() {
+    const d = new Date();
+    return 'RP-' + String(d.getFullYear()).slice(2) + '-'
+         + String(Math.floor(1000 + Math.random() * 9000));
+  }
+};

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ऋतुजा पब्लिकेशन | Rutuja Publication</title>
+<title>ऋतुजा प्रकाशन | Rutuja Publication</title>
 <meta name="description" content="इयत्ता १ ते ५ साठी मराठी, सेमी-इंग्रजी आणि इंग्रजी माध्यमाची पुस्तके. Rutuja Publication, Padhegaon, Shrirampur, Ahilyanagar, Maharashtra.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,12 +17,92 @@
 <div id="langGate" class="lang-gate">
   <div class="lang-gate-box">
     <div class="lang-logo">ऋ</div>
-    <h1 class="lang-title">ऋतुजा पब्लिकेशन</h1>
+    <h1 class="lang-title">ऋतुजा प्रकाशन</h1>
     <p class="lang-sub">Rutuja Publication</p>
     <p class="lang-choose">भाषा निवडा &nbsp;·&nbsp; Choose your language</p>
     <div class="lang-buttons">
       <button class="lang-btn" data-lang="mr"><span class="lang-btn-big">मराठी</span><span class="lang-btn-small">Marathi</span></button>
       <button class="lang-btn" data-lang="en"><span class="lang-btn-big">English</span><span class="lang-btn-small">इंग्रजी</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VISITOR GATEWAY ============ -->
+<div id="gate" class="gate hidden">
+  <div class="gate-card">
+    <button class="gate-x" id="gateX" aria-label="Close">&times;</button>
+    <h2 class="gate-title" data-t="gate_title"></h2>
+    <p class="gate-sub" data-t="gate_subtitle"></p>
+
+    <div class="gate-note" data-t="gate_why"></div>
+    <div class="gate-note gate-note-warn hidden" id="parentNote" data-t="gate_parent_note"></div>
+
+    <form id="gateForm" autocomplete="on" novalidate>
+      <input type="text" name="website" id="hp" tabindex="-1" aria-hidden="true"
+             style="position:absolute;left:-9999px;opacity:0">
+
+      <div class="f">
+        <label data-t="gate_name"></label>
+        <input type="text" id="gName" maxlength="80" required>
+        <span class="err" id="eName"></span>
+      </div>
+
+      <div class="f">
+        <label data-t="gate_whatsapp"></label>
+        <div class="phone-row">
+          <span class="phone-cc">+91</span>
+          <input type="tel" id="gPhone" inputmode="numeric" maxlength="10" required>
+        </div>
+        <span class="err" id="ePhone"></span>
+      </div>
+
+      <div class="f">
+        <label data-t="gate_category"></label>
+        <select id="gCat" required></select>
+        <span class="err" id="eCat"></span>
+      </div>
+
+      <div class="f-row">
+        <div class="f">
+          <label data-t="gate_state"></label>
+          <select id="gState" required></select>
+          <span class="err" id="eState"></span>
+        </div>
+        <div class="f">
+          <label data-t="gate_district"></label>
+          <select id="gDist" required></select>
+          <span class="err" id="eDist"></span>
+        </div>
+      </div>
+
+      <div class="f-row">
+        <div class="f">
+          <label data-t="gate_taluka"></label>
+          <select id="gTal" required></select>
+          <span class="err" id="eTal"></span>
+        </div>
+        <div class="f">
+          <label data-t="gate_village"></label>
+          <input type="text" id="gVillage" maxlength="60" required>
+          <span class="err" id="eVillage"></span>
+        </div>
+      </div>
+
+      <div class="f">
+        <label data-t="gate_pin"></label>
+        <input type="text" id="gPin" inputmode="numeric" maxlength="6" required>
+        <span class="err" id="ePin"></span>
+      </div>
+
+      <button type="submit" class="btn btn-primary gate-submit" id="gateSubmit" data-t="gate_submit"></button>
+      <button type="button" class="gate-skip" id="gateSkip" data-t="gate_skip"></button>
+    </form>
+
+    <div class="gate-done hidden" id="gateDone">
+      <div class="gate-tick">&#10003;</div>
+      <p class="gate-done-t" data-t="gate_success"></p>
+      <p class="gate-done-id"><span data-t="gate_reg_id"></span>: <strong id="regId"></strong></p>
+      <button class="btn btn-primary" id="gateGo" data-t="nav_books"></button>
     </div>
   </div>
 </div>
