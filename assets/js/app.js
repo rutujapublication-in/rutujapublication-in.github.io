@@ -84,12 +84,8 @@ const RUTUJA = {
     document.getElementById('site').classList.remove('hidden');
 
     this.paint();
-    if (!silent) {
-      window.scrollTo(0, 0);
-      GATE.maybeOpen();
-    } else {
-      GATE.render();
-    }
+    if (!silent) window.scrollTo(0, 0);
+    GATE.maybeOpen();
   },
 
   t(key) {
@@ -101,7 +97,7 @@ const RUTUJA = {
   extra(key) {
     const x = {
       mr: {
-        pub_name: 'ऋतुजा प्रकाशन',
+        pub_name: 'ऋतुजा पब्लिकेशन',
         brand_tag: 'इयत्ता १ ते ५',
         hero_title: 'मुलांच्या शिक्षणासाठी विश्वासाची पुस्तके',
         hero_sub: 'इयत्ता १ ते ५ साठी मराठी, सेमी-इंग्रजी आणि इंग्रजी माध्यमाची पुस्तके',
@@ -273,10 +269,7 @@ const GATE = {
     this.render();
     if (this.registered()) return;
     if (this.app.settings.gateMode === 'hard') return this.open(true);
-    if (!sessionStorage.getItem('rutuja_gate_seen')) {
-      sessionStorage.setItem('rutuja_gate_seen', '1');
-      this.open(false);
-    }
+    this.open(false);
   },
 
   /* Intent gate: a visitor who acts is asked to register, even in soft mode. */
