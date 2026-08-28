@@ -41,7 +41,7 @@ const RUTUJA = {
   /* ---- SETTINGS YOU CAN CHANGE ---- */
   settings: {
     // Paste your Apps Script Web App URL between the quotes.
-    backendUrl: '',
+    backendUrl: 'https://script.google.com/macros/s/AKfycbxVqP0kTJSbn9bc2oesvfSKqt21CpTD0qMRb2y8Bk1UUNH8XBjTfH60cCQ3cWd4Fhqu/exec',
     // 'soft' = visitor may browse first.  'hard' = must register to enter.
     gateMode: 'soft'
   },
