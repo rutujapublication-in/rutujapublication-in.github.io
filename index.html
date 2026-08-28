@@ -3,39 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ऋतुजा प्रकाशन | Rutuja Publication</title>
+<title>ऋतुजा पब्लिकेशन | Rutuja Publication</title>
 <meta name="description" content="इयत्ता १ ते ५ साठी मराठी, सेमी-इंग्रजी आणि इंग्रजी माध्यमाची पुस्तके. Rutuja Publication, Padhegaon, Shrirampur, Ahilyanagar, Maharashtra.">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=6e">
 </head>
 <body>
 
-<!-- ============ LANGUAGE GATE ============ -->
-<div id="langGate" class="lang-gate">
-  <div class="lang-gate-box">
-    <div class="lang-logo">ऋ</div>
-    <h1 class="lang-title">ऋतुजा प्रकाशन</h1>
-    <p class="lang-sub">Rutuja Publication</p>
-    <p class="lang-choose">भाषा निवडा &nbsp;·&nbsp; Choose your language</p>
-    <div class="lang-buttons">
-      <button class="lang-btn" data-lang="mr"><span class="lang-btn-big">मराठी</span><span class="lang-btn-small">Marathi</span></button>
-      <button class="lang-btn" data-lang="en"><span class="lang-btn-big">English</span><span class="lang-btn-small">इंग्रजी</span></button>
+<!-- ================= SCREEN 1 — WELCOME ================= -->
+<div id="entry" class="entry">
+  <div class="welcome">
+
+    <div class="welcome-grid">
+
+      <aside class="w-side w-left">
+        <div class="ph ph-logo" id="phPubLogo">
+          <span class="ph-mark">ऋ</span>
+          <span class="ph-cap">logo</span>
+        </div>
+        <h3 class="w-side-h" data-t="entry_pub_head"></h3>
+        <p class="w-side-p" data-t="entry_pub_text"></p>
+        <ul class="w-list">
+          <li><strong>1 – 5</strong> <span data-t="books_standard"></span></li>
+          <li>मराठी · Semi-English · English</li>
+        </ul>
+      </aside>
+
+      <div class="w-centre">
+        <div class="w-logo">ऋ</div>
+        <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
+        <p class="w-name-en">Rutuja Publication</p>
+        <p class="w-tag" data-t="welcome_tag"></p>
+        <p class="w-ver">v6e</p>
+      </div>
+
+      <aside class="w-side w-right">
+        <div class="ph ph-face" id="phAuthor">
+          <span class="ph-mark">&#128100;</span>
+          <span class="ph-cap">photo</span>
+        </div>
+        <h3 class="w-side-h" data-t="entry_author_head"></h3>
+        <blockquote class="w-quote" data-t="entry_author_quote"></blockquote>
+        <p class="w-side-p" data-t="entry_author_text"></p>
+      </aside>
+
+    </div>
+
+    <div class="welcome-foot">
+      <div class="foot-lang">
+        <span class="lang-lbl">भाषा / Language</span>
+        <div class="lang-pills">
+          <button class="pill" data-lang="mr">मराठी</button>
+          <button class="pill" data-lang="en">English</button>
+        </div>
+      </div>
+
+      <span class="arrow-up">&#8593;</span>
+
+      <div class="w-actions">
+        <button class="w-btn w-btn-gold" id="openForm">
+          <span class="w-btn-t" data-t="welcome_cta"></span>
+          <span class="w-btn-s" data-t="welcome_cta_s"></span>
+        </button>
+        <button class="w-btn w-btn-line" id="welcomeSkip">
+          <span class="w-btn-t" data-t="welcome_browse"></span>
+          <span class="w-btn-s" data-t="welcome_browse_s"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form sheet, slides up over the welcome screen -->
+  <div class="sheet hidden" id="sheet">
+    <div class="sheet-card">
+      <button class="gate-x" id="sheetX" aria-label="Close">&times;</button>
+      <div id="sheetBody">
+        <h2 class="form-h" id="formHead"></h2>
+        <p class="form-sub" data-t="gate_subtitle"></p>
+        <div class="gate-note" data-t="gate_why"></div>
+        <div id="formSlot"></div>
+      </div>
+      <div class="sheet-done hidden" id="sheetDone">
+        <div class="gate-tick">&#10003;</div>
+        <p class="gate-done-t" data-t="gate_success"></p>
+        <p class="gate-done-id"><span data-t="gate_reg_id"></span>: <strong id="regId"></strong></p>
+        <button class="btn btn-gold" id="doneEnter" data-t="nav_books"></button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ============ MAIN SITE ============ -->
+<!-- ================= THE FORM ================= -->
+<template id="formTemplate">
+  <form id="gateForm" autocomplete="on" novalidate>
+    <input type="text" name="website" id="hp" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+    <div class="gate-note gate-note-warn hidden" id="parentNote" data-t="gate_parent_note"></div>
+
+    <div class="f"><label data-t="gate_name"></label>
+      <input type="text" id="gName" maxlength="80"><span class="err" id="eName"></span></div>
+
+    <div class="f"><label data-t="gate_whatsapp"></label>
+      <div class="phone-row"><span class="phone-cc">+91</span>
+        <input type="tel" id="gPhone" inputmode="numeric" maxlength="10"></div>
+      <span class="err" id="ePhone"></span></div>
+
+    <div class="f"><label data-t="gate_category"></label>
+      <select id="gCat"></select><span class="err" id="eCat"></span></div>
+
+    <div class="f-row">
+      <div class="f"><label data-t="gate_state"></label><select id="gState"></select><span class="err" id="eState"></span></div>
+      <div class="f"><label data-t="gate_district"></label><select id="gDist"></select><span class="err" id="eDist"></span></div>
+    </div>
+
+    <div class="f-row">
+      <div class="f"><label data-t="gate_taluka"></label><select id="gTal"></select><span class="err" id="eTal"></span></div>
+      <div class="f"><label data-t="gate_village"></label><input type="text" id="gVillage" maxlength="60"><span class="err" id="eVillage"></span></div>
+    </div>
+
+    <div class="f"><label data-t="gate_pin"></label>
+      <input type="text" id="gPin" inputmode="numeric" maxlength="6"><span class="err" id="ePin"></span></div>
+
+    <button type="submit" class="btn btn-gold gate-submit" id="gateSubmit" data-t="gate_submit"></button>
+    <button type="button" class="gate-skip" id="gateSkip" data-t="gate_skip"></button>
+  </form>
+</template>
+
+<!-- ================= OFFER MODAL ================= -->
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button class="gate-x" id="modalX" aria-label="Close">&times;</button>
+    <div id="modalBody">
+      <h2 class="form-h" id="modalHead"></h2>
+      <p class="form-sub" data-t="form_sub_offer"></p>
+      <div id="modalSlot"></div>
+    </div>
+    <div class="modal-done hidden" id="modalDone">
+      <div class="gate-tick">&#10003;</div>
+      <p class="gate-done-t" data-t="gate_success"></p>
+      <p class="gate-done-id"><span data-t="gate_reg_id"></span>: <strong id="regId2"></strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAIN SITE ================= -->
 <div id="site" class="site hidden">
 
-  <!-- Moving top strip -->
-  <div class="strip" id="strip">
-    <div class="strip-track" id="stripTrack"></div>
-  </div>
+  <div class="strip" id="strip"><div class="strip-track" id="stripTrack"></div></div>
 
-  <!-- Header -->
   <header class="header">
     <div class="wrap header-inner">
       <a href="#home" class="brand" data-nav="home">
@@ -45,46 +161,48 @@
           <span class="brand-tag" data-t="brand_tag"></span>
         </span>
       </a>
-
       <nav class="nav" id="nav">
-        <a href="#home"        data-nav="home"        data-t="nav_home"></a>
-        <a href="#books"       data-nav="books"       data-t="nav_books"></a>
-        <a href="#videos"      data-nav="videos"      data-t="nav_videos"></a>
+        <a href="#home" data-nav="home" data-t="nav_home"></a>
+        <a href="#books" data-nav="books" data-t="nav_books"></a>
+        <a href="#videos" data-nav="videos" data-t="nav_videos"></a>
         <a href="#experiences" data-nav="experiences" data-t="nav_experiences"></a>
-        <a href="#offers"      data-nav="offers"      data-t="nav_offers"></a>
-        <a href="#qa"          data-nav="qa"          data-t="nav_qa"></a>
-        <a href="#authors"     data-nav="authors"     data-t="nav_authors"></a>
-        <a href="#about"       data-nav="about"       data-t="nav_publication"></a>
-        <a href="#contact"     data-nav="contact"     data-t="nav_contact"></a>
+        <a href="#offers" data-nav="offers" data-t="nav_offers"></a>
+        <a href="#qa" data-nav="qa" data-t="nav_qa"></a>
+        <a href="#authors" data-nav="authors" data-t="nav_authors"></a>
+        <a href="#about" data-nav="about" data-t="nav_publication"></a>
+        <a href="#contact" data-nav="contact" data-t="nav_contact"></a>
+        <a href="#" class="nav-reg hidden" id="navReg" data-offer="default" data-t="nav_register"></a>
       </nav>
-
       <div class="header-actions">
-        <button class="icon-btn" id="langToggle" title="भाषा / Language"><span id="langLabel">EN</span></button>
-        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
+        <button class="icon-btn" id="langToggle" title="भाषा / Language"><span id="langLabel">English</span></button>
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </div>
   </header>
 
-  <!-- Page sections -->
   <main id="main">
-
     <section class="page active" id="page-home">
-      <div class="hero">
-        <div class="wrap hero-inner">
-          <h1 class="hero-title" data-t="hero_title"></h1>
-          <p class="hero-sub" data-t="hero_sub"></p>
-          <div class="hero-btns">
-            <button class="btn btn-primary" data-nav="books" data-t="nav_books"></button>
-            <button class="btn btn-ghost" data-nav="contact" data-t="contact_whatsapp"></button>
-          </div>
+      <div class="hero"><div class="wrap hero-inner">
+        <h1 class="hero-title" data-t="hero_title"></h1>
+        <p class="hero-sub" data-t="hero_sub"></p>
+        <div class="hero-btns">
+          <button class="btn btn-primary" data-nav="books" data-t="nav_books"></button>
+          <button class="btn btn-ghost" data-offer="parent" data-t="offer_cta"></button>
         </div>
-      </div>
+      </div></div>
 
       <div class="wrap">
+        <div class="reg-banner hidden" id="regBanner">
+          <span data-t="reg_banner"></span>
+          <button class="btn btn-gold" data-offer="default" data-t="nav_register"></button>
+        </div>
+
         <h2 class="sec-title" data-t="books_standard"></h2>
         <div class="std-grid" id="stdGrid"></div>
+
+        <h2 class="sec-title" data-t="offer_hook_head"></h2>
+        <p class="sec-sub" data-t="offer_hook_sub"></p>
+        <div class="offer-grid" id="offerGrid"></div>
 
         <h2 class="sec-title" data-t="books_featured"></h2>
         <div class="placeholder" data-phase="7">Phase 7</div>
@@ -100,36 +218,24 @@
     <section class="page" id="page-books"><div class="wrap"><h1 class="sec-title" data-t="books_title"></h1><div class="placeholder" data-phase="7">Phase 7</div></div></section>
     <section class="page" id="page-videos"><div class="wrap"><h1 class="sec-title" data-t="videos_title"></h1><div class="placeholder" data-phase="8">Phase 8</div></div></section>
     <section class="page" id="page-experiences"><div class="wrap"><h1 class="sec-title" data-t="exp_title"></h1><div class="placeholder" data-phase="9">Phase 9</div></div></section>
-    <section class="page" id="page-offers"><div class="wrap"><h1 class="sec-title" data-t="offers_title"></h1><div class="placeholder" data-phase="7">Phase 7</div></div></section>
+    <section class="page" id="page-offers"><div class="wrap"><h1 class="sec-title" data-t="offers_title"></h1>
+      <p class="sec-sub" data-t="offer_hook_sub"></p><div class="offer-grid" id="offerGrid2"></div></div></section>
     <section class="page" id="page-qa"><div class="wrap"><h1 class="sec-title" data-t="qa_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
     <section class="page" id="page-authors"><div class="wrap"><h1 class="sec-title" data-t="author_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
     <section class="page" id="page-about"><div class="wrap"><h1 class="sec-title" data-t="pub_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
-
-    <section class="page" id="page-contact">
-      <div class="wrap">
-        <h1 class="sec-title" data-t="contact_title"></h1>
-        <div class="contact-grid" id="contactGrid"></div>
-      </div>
-    </section>
-
+    <section class="page" id="page-contact"><div class="wrap"><h1 class="sec-title" data-t="contact_title"></h1><div class="contact-grid" id="contactGrid"></div></div></section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap footer-inner">
-      <div>
-        <p class="footer-name" data-t="pub_name"></p>
-        <p class="footer-addr" id="footerAddr"></p>
-      </div>
-      <p class="footer-copy">© <span id="year"></span> <span data-t="common_copyright"></span></p>
-    </div>
-  </footer>
+  <footer class="footer"><div class="wrap footer-inner">
+    <div><p class="footer-name" data-t="pub_name"></p><p class="footer-addr" id="footerAddr"></p></div>
+    <p class="footer-copy">© <span id="year"></span> <span data-t="common_copyright"></span> · <span id="verBadge" class="ver"></span></p>
+  </div></footer>
 
   <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
     <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37s-1.04 1.01-1.04 2.47 1.06 2.86 1.21 3.06c.15.2 2.09 3.2 5.07 4.49.71.3 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.13c-1.53 0-3.03-.41-4.34-1.19l-.31-.18-3.22.84.86-3.14-.2-.32a8.16 8.16 0 01-1.25-4.35c0-4.53 3.69-8.22 8.22-8.22s8.22 3.69 8.22 8.22-3.69 8.22-8.22 8.22z"/></svg>
   </a>
-
 </div>
 
-<script src="assets/js/app.js"></script>
+<script src="assets/js/app.js?v=6e"></script>
 </body>
 </html>

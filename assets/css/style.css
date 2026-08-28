@@ -212,3 +212,236 @@ a{color:inherit;text-decoration:none}
   .std-grid{grid-template-columns:repeat(2,1fr)}
   .footer-copy{align-self:flex-start}
 }
+
+
+
+/* ===================================================================
+   SCREEN 1 — WELCOME BANNER
+   =================================================================== */
+.entry{position:fixed;inset:0;z-index:200;overflow-y:auto}
+.welcome{
+  min-height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,#1A4D2E 0%,#20603A 45%,#123821 100%);
+}
+/* colour wash from the five standard colours */
+.welcome::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;
+  background:
+    radial-gradient(closest-side at 12% 18%, var(--std1), transparent),
+    radial-gradient(closest-side at 88% 12%, var(--std4), transparent),
+    radial-gradient(closest-side at 78% 82%, var(--std5), transparent),
+    radial-gradient(closest-side at 20% 88%, var(--std3), transparent);
+}
+.welcome::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:6px;
+  background:linear-gradient(90deg,var(--std1),var(--std2),var(--std3),var(--std4),var(--std5));
+}
+.welcome > *{position:relative;z-index:1}
+
+
+
+.pill{padding:8px 16px;border-radius:7px;font-size:14px;color:#CFE0D5;transition:.15s}
+.pill:hover{color:#fff}
+.pill.on{background:var(--gold);color:#3F2A05;font-weight:600}
+
+.welcome-grid{
+  flex:1;display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:26px;align-items:center;
+  max-width:1240px;width:100%;margin:0 auto;padding:20px 26px;
+}
+.w-centre{text-align:center}
+.w-logo{
+  width:92px;height:92px;margin:0 auto 20px;border-radius:50%;background:var(--gold);
+  color:var(--green-dark);font-family:'Baloo 2',sans-serif;font-size:46px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 26px rgba(0,0,0,.26);
+}
+.w-name-mr{font-size:44px;color:var(--white);line-height:1.2}
+.w-name-en{font-family:'Baloo 2',sans-serif;font-size:27px;font-weight:500;color:var(--gold);margin-top:2px}
+.w-tag{font-size:14.5px;color:#A9C4B2;margin-top:14px;letter-spacing:.3px}
+
+.w-side{color:#C8DACE}
+.w-side-h{font-size:16px;color:var(--gold);margin-bottom:10px}
+.w-side-p{font-size:14.5px;line-height:1.75}
+.w-quote{
+  font-family:'Baloo 2',sans-serif;font-size:18px;color:var(--white);line-height:1.5;
+  border-left:3px solid var(--gold);padding-left:13px;margin-bottom:12px;
+}
+.w-list{list-style:none;margin-top:14px;font-size:14px}
+.w-list li{padding:7px 0;border-top:1px solid rgba(255,255,255,.14)}
+.w-list strong{color:var(--gold);font-size:16px;margin-right:6px}
+
+
+
+
+
+.arrow-up{font-size:23px;line-height:1;animation:rise 1.7s ease-in-out infinite}
+@keyframes rise{0%,100%{transform:translateY(3px);opacity:.6}50%{transform:translateY(-3px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.arrow-up{animation:none}}
+
+
+
+
+
+/* ---- FORM SHEET ---- */
+.sheet{
+  position:fixed;inset:0;z-index:210;background:rgba(9,32,18,.66);
+  display:flex;align-items:flex-end;justify-content:center;overflow-y:auto;
+}
+.sheet-card{
+  background:var(--white);width:100%;max-width:600px;border-radius:20px 20px 0 0;
+  padding:30px 28px 36px;position:relative;margin-top:40px;
+  animation:slideup .3s ease;
+}
+@keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.sheet-card{animation:none}}
+.sheet-done{text-align:center;padding:20px 0}
+.sheet-done .gate-tick{background:var(--green-light);color:var(--green)}
+.sheet-done .gate-done-t{color:var(--green-dark)}
+.sheet-done .gate-done-id{color:var(--ink-soft)}
+.sheet-done .gate-done-id strong{color:var(--green)}
+
+/* ---- FORM FIELDS ---- */
+.form-h{font-size:23px;color:var(--green-dark);margin-bottom:4px}
+.form-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:14px}
+.gate-note{background:var(--green-light);border-radius:9px;padding:11px 14px;
+  font-size:13.5px;color:#2C5A3D;margin-bottom:18px}
+.gate-note-warn{background:#FDF1DC;color:#7A5410}
+.f{margin-bottom:15px;display:flex;flex-direction:column}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f label{font-size:14px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+.f input,.f select{height:48px;border:1.5px solid var(--line);border-radius:9px;padding:0 13px;
+  font-family:inherit;font-size:16px;color:var(--ink);background:var(--white);width:100%;
+  transition:border-color .15s}
+.f input:focus,.f select:focus{outline:none;border-color:var(--green)}
+.f input.bad,.f select.bad{border-color:#D14343;background:#FEF6F6}
+.f select:disabled{background:#F4F1EA;color:#9B958A}
+.err{font-size:12.5px;color:#C33;min-height:16px;margin-top:3px}
+.phone-row{display:flex;align-items:stretch}
+.phone-cc{display:flex;align-items:center;padding:0 12px;background:var(--green-light);
+  border:1.5px solid var(--line);border-right:none;border-radius:9px 0 0 9px;
+  font-size:15px;font-weight:600;color:var(--green)}
+.phone-row input{border-radius:0 9px 9px 0}
+
+.btn-gold{background:var(--gold);color:#3F2A05;font-weight:600}
+.btn-gold:hover{background:var(--gold-dark);color:#fff}
+.gate-submit{width:100%;margin-top:6px}
+.gate-skip{display:block;width:100%;margin-top:12px;padding:11px;
+  font-size:14.5px;color:var(--green);text-decoration:underline}
+.gate-x{position:absolute;top:12px;right:14px;width:42px;height:42px;border-radius:9px;
+  font-size:29px;line-height:1;color:var(--ink-soft)}
+.gate-x:hover{background:var(--green-light)}
+.gate-tick{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;
+  font-size:32px;display:flex;align-items:center;justify-content:center}
+.gate-done-t{font-size:20px;font-weight:600}
+.gate-done-id{font-size:14px;margin:6px 0 22px}
+.gate-done-id strong{font-size:17px;letter-spacing:.5px}
+
+/* ---- REGISTER PROMPTS ON THE SITE ---- */
+
+
+.reg-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  background:var(--green-light);border-left:5px solid var(--gold);border-radius:var(--radius);
+  padding:16px 20px;margin-top:24px;font-size:15px;color:#2C5A3D;
+}
+.reg-banner .btn{min-height:42px;padding:0 20px;font-size:15px}
+
+/* ---- OFFER CARDS ---- */
+.sec-sub{font-size:15px;color:var(--ink-soft);margin:-10px 0 16px}
+.offer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+.offer-card{background:var(--white);border:1px solid var(--line);border-left:5px solid var(--gold);
+  border-radius:var(--radius);padding:20px;text-align:left;display:flex;flex-direction:column;
+  gap:6px;transition:.15s;cursor:pointer}
+.offer-card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.1);
+  border-left-color:var(--green)}
+.offer-t{font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:600;color:var(--green-dark)}
+.offer-d{font-size:14px;color:var(--ink-soft);flex:1}
+.offer-go{font-size:14px;font-weight:600;color:var(--gold-dark);margin-top:6px}
+
+@media(max-width:940px){
+  .welcome-grid{grid-template-columns:1fr;gap:20px;padding:24px 20px}
+  .w-centre{order:-1}
+  .w-side{border-top:1px solid rgba(255,255,255,.14);padding-top:16px}
+  .w-name-mr{font-size:34px}
+  .w-name-en{font-size:21px}
+}
+@media(max-width:560px){
+  .w-logo{width:74px;height:74px;font-size:38px}
+  .w-name-mr{font-size:29px}
+  .sheet-card{border-radius:16px 16px 0 0;padding:26px 18px 34px;margin-top:20px}
+  .f-row{grid-template-columns:1fr;gap:0}
+  .form-h{font-size:20px}
+    .reg-banner{flex-direction:column;align-items:flex-start}
+}
+
+/* Version marker — confirms which build is live */
+.ver{opacity:.5;font-size:12px}
+.w-ver{margin-top:10px;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+
+/* ---- OFFER MODAL (opens from inside the site) ---- */
+.modal{
+  position:fixed;inset:0;z-index:190;background:rgba(9,32,18,.62);
+  display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;
+}
+.modal-card{
+  background:var(--white);border-radius:16px;width:100%;max-width:580px;
+  padding:30px 28px;position:relative;margin:auto;animation:slideup .3s ease;
+}
+.modal-done{text-align:center;padding:20px 0}
+.modal-done .gate-tick{background:var(--green-light);color:var(--green)}
+.modal-done .gate-done-t{color:var(--green-dark)}
+.modal-done .gate-done-id{color:var(--ink-soft)}
+.modal-done .gate-done-id strong{color:var(--green)}
+@media(max-width:560px){
+  .modal{padding:0}
+  .modal-card{border-radius:0;min-height:100vh;padding:26px 18px 40px}
+}
+
+/* ---- WELCOME FOOTER: two buttons ---- */
+.welcome-foot{padding:6px 20px 40px;text-align:center}
+.arrow-up{display:block;font-size:26px;color:var(--gold);margin-bottom:8px;
+  animation:rise 1.7s ease-in-out infinite}
+@keyframes rise{0%,100%{transform:translateY(4px);opacity:.55}50%{transform:translateY(-4px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.arrow-up{animation:none}}
+
+.w-actions{display:inline-flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.w-btn{border-radius:13px;padding:14px 30px 16px;min-width:210px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;transition:.15s}
+.w-btn-t{font-family:'Baloo 2',sans-serif;font-size:17.5px;font-weight:600}
+.w-btn-s{font-size:12.5px;opacity:.8}
+.w-btn:active{transform:scale(.98)}
+.w-btn-gold{background:var(--gold);color:#3F2A05;box-shadow:0 6px 22px rgba(0,0,0,.26)}
+.w-btn-gold:hover{background:#F2B255;transform:translateY(-3px)}
+.w-btn-line{background:rgba(255,255,255,.07);color:#E4EFE8;border:1.5px solid rgba(255,255,255,.4)}
+.w-btn-line:hover{background:rgba(255,255,255,.16);transform:translateY(-3px)}
+
+/* ---- LANGUAGE CONTROLS ---- */
+
+.lang-pills{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);
+  padding:5px 6px;border-radius:11px}
+
+/* ---- REGISTER AS A NAV ITEM ---- */
+.nav-reg{background:var(--gold);color:#3F2A05 !important;font-weight:600;margin-left:6px}
+.nav-reg:hover{background:#F2B255 !important;color:#3F2A05 !important}
+
+/* ---- IMAGE PLACEHOLDERS (replaced with real images later) ---- */
+.ph{
+  border:2px dashed rgba(255,255,255,.32);border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;margin-bottom:16px;background:rgba(255,255,255,.05);
+}
+.ph-logo{width:96px;height:96px;border-radius:50%}
+.ph-face{width:96px;height:96px;border-radius:50%}
+.ph-mark{font-family:'Baloo 2',sans-serif;font-size:30px;color:rgba(255,255,255,.55);line-height:1}
+.ph-cap{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.w-right .ph{margin-left:auto}
+.w-right{text-align:right}
+.w-right .w-quote{border-left:none;border-right:3px solid var(--gold);padding-left:0;padding-right:13px}
+.w-right .w-list{text-align:right}
+
+/* ---- WELCOME FOOTER: language, then the two options ---- */
+.welcome-foot{padding:4px 20px 40px;text-align:center}
+.foot-lang{display:flex;flex-direction:column;align-items:center;gap:7px;margin-bottom:20px}
+.lang-lbl{font-size:12px;color:#9FBCA9;letter-spacing:.4px}
+.lang-pills{display:inline-flex;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:11px}
+.w-left{text-align:left}

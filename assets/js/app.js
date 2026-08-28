@@ -5,6 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
+  VERSION: 'v6e',
   lang: 'mr',
   text: {},
   locations: null,
@@ -30,12 +31,7 @@ const RUTUJA = {
 
     this.config = this.defaultConfig();
 
-    GATE.init(this);
-
-    const saved = localStorage.getItem('rutuja_lang');
-    if (saved) {
-      this.setLang(saved, true);
-    }
+    ENTRY.init(this);
   },
 
   /* ---- SETTINGS YOU CAN CHANGE ---- */
@@ -78,14 +74,18 @@ const RUTUJA = {
     this.lang = lang;
     localStorage.setItem('rutuja_lang', lang);
     document.documentElement.lang = lang;
-    document.getElementById('langLabel').textContent = lang === 'mr' ? 'EN' : 'मरा';
-
-    document.getElementById('langGate').classList.add('hidden');
-    document.getElementById('site').classList.remove('hidden');
-
+    document.getElementById('langLabel').textContent = lang === 'mr' ? 'English' : 'मराठी';
     this.paint();
+    ENTRY.repaint();
     if (!silent) window.scrollTo(0, 0);
-    GATE.maybeOpen();
+  },
+
+  /* Leaves the entry screen and reveals the website. */
+  enterSite() {
+    document.getElementById('entry').classList.add('hidden');
+    document.getElementById('site').classList.remove('hidden');
+    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
   },
 
   t(key) {
@@ -122,6 +122,7 @@ const RUTUJA = {
     });
     this.paintStrip();
     this.paintStandards();
+    this.paintOffers();
     this.paintContact();
     this.paintFooter();
   },
@@ -149,6 +150,25 @@ const RUTUJA = {
     });
   },
 
+  paintOffers() {
+    const list = [
+      { k: 'school', t: 'offer_school_t', d: 'offer_school_d' },
+      { k: 'bulk',   t: 'offer_bulk_t',   d: 'offer_bulk_d' },
+      { k: 'retail', t: 'offer_retail_t', d: 'offer_retail_d' },
+      { k: 'parent', t: 'offer_parent_t', d: 'offer_parent_d' }
+    ];
+    const html = list.map(o => `
+      <button class="offer-card" data-offer="${o.k}">
+        <span class="offer-t">${this.t(o.t)}</span>
+        <span class="offer-d">${this.t(o.d)}</span>
+        <span class="offer-go">${this.t('offer_cta')} &rarr;</span>
+      </button>`).join('');
+    ['offerGrid', 'offerGrid2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    });
+  },
+
   paintContact() {
     const c = this.config;
     const rows = [
@@ -171,6 +191,8 @@ const RUTUJA = {
 
   paintFooter() {
     document.getElementById('year').textContent = new Date().getFullYear();
+    const vb = document.getElementById('verBadge');
+    if (vb) vb.textContent = this.VERSION;
     document.getElementById('footerAddr').textContent =
       this.lang === 'mr' ? this.config.address_mr : this.config.address_en;
     const w = document.getElementById('waFloat');
@@ -214,110 +236,220 @@ const RUTUJA = {
   }
 };
 
+console.log('%cRutuja site ' + RUTUJA.VERSION + ' loaded', 'color:#1A4D2E;font-weight:bold');
 document.addEventListener('DOMContentLoaded', () => RUTUJA.init());
 
+
+
 /* ===================================================================
-   PHASE 6 — VISITOR GATEWAY
-   Cascading State > District > Taluka, validation, and submission
-   to the private Google Sheet via Apps Script.
+   SCREEN 1 — WELCOME, and the registration form it opens.
+   Screen 2 is the website itself.
    =================================================================== */
 
-const GATE = {
+const ENTRY = {
   app: null,
-  el: {},
+  where: 'sheet',    // 'sheet' on the welcome screen, 'modal' once inside the site
+  offerKey: '',
+
+  init(app) {
+    this.app = app;
+
+    document.querySelectorAll('.pill').forEach(b => {
+      b.addEventListener('click', () => app.setLang(b.dataset.lang));
+    });
+
+    document.getElementById('openForm').addEventListener('click', () => this.openSheet());
+    document.getElementById('welcomeSkip').addEventListener('click', () => app.enterSite());
+    document.getElementById('sheetX').addEventListener('click', () => this.closeSheet());
+    document.getElementById('doneEnter').addEventListener('click', () => app.enterSite());
+    document.getElementById('modalX').addEventListener('click', () => this.closeModal());
+
+    // Anything with data-offer reopens the form, framed for that audience.
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-offer]');
+      if (b) { e.preventDefault(); this.openModal(b.dataset.offer); }
+    });
+
+    FORM.build(app, this);
+
+    app.setLang(localStorage.getItem('rutuja_lang') || 'mr', true);
+
+    if (this.done()) app.enterSite();
+    else document.body.style.overflow = 'hidden';
+
+    this.syncPrompts();
+  },
+
+  done() { return !!localStorage.getItem('rutuja_reg'); },
+
+  repaint() {
+    document.querySelectorAll('.pill').forEach(p =>
+      p.classList.toggle('on', p.dataset.lang === this.app.lang));
+    const h = document.getElementById('formHead');
+    if (h) h.textContent = this.app.t('entry_form_head');
+    FORM.repaint();
+  },
+
+  /* Register prompts only exist for visitors who have not registered. */
+  syncPrompts() {
+    const show = !this.done();
+    const nav = document.getElementById('navReg');
+    const ban = document.getElementById('regBanner');
+    if (nav) nav.classList.toggle('hidden', !show);
+    if (ban) ban.classList.toggle('hidden', !show);
+  },
+
+  /* ---- SHEET (welcome screen) ---- */
+  openSheet() {
+    this.where = 'sheet';
+    this.offerKey = '';
+    document.getElementById('sheetBody').classList.remove('hidden');
+    document.getElementById('sheetDone').classList.add('hidden');
+    document.getElementById('sheet').classList.remove('hidden');
+    FORM.moveTo('formSlot');
+    FORM.reset();
+    FORM.repaint();
+  },
+
+  closeSheet() { document.getElementById('sheet').classList.add('hidden'); },
+
+  /* ---- MODAL (inside the site) ---- */
+  openModal(key) {
+    const t = k => this.app.t(k);
+    const heads = { school: 'form_head_school', bulk: 'form_head_bulk',
+                    retail: 'form_head_retail', parent: 'form_head_parent' };
+
+    if (this.done()) {
+      const link = this.app.wa('wa_' + (key === 'school' ? 'school'
+                              : key === 'retail' ? 'retailer' : 'general'));
+      if (link) window.open(link, '_blank'); else this.app.go('contact');
+      return;
+    }
+
+    this.where = 'modal';
+    this.offerKey = key === 'default' ? '' : key;
+    document.getElementById('modalHead').textContent = t(heads[key] || 'form_head_default');
+    document.getElementById('modalBody').classList.remove('hidden');
+    document.getElementById('modalDone').classList.add('hidden');
+    document.getElementById('modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    FORM.moveTo('modalSlot');
+    FORM.reset();
+    FORM.preset(key);
+    FORM.repaint();
+  },
+
+  closeModal() {
+    document.getElementById('modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  },
+
+  onSubmitted(regId) {
+    this.syncPrompts();
+    if (this.where === 'modal') {
+      document.getElementById('regId2').textContent = regId;
+      document.getElementById('modalBody').classList.add('hidden');
+      document.getElementById('modalDone').classList.remove('hidden');
+      setTimeout(() => this.closeModal(), 2600);
+    } else {
+      document.getElementById('regId').textContent = regId;
+      document.getElementById('sheetBody').classList.add('hidden');
+      document.getElementById('sheetDone').classList.remove('hidden');
+    }
+  },
+
+  /* The skip link inside the form. */
+  onSkipped() {
+    if (this.where === 'modal') this.closeModal();
+    else this.app.enterSite();
+  }
+};
+
+
+/* ===================================================================
+   THE FORM — one instance, moved between the welcome sheet and the modal
+   =================================================================== */
+
+const FORM = {
+  app: null, entry: null, el: {}, node: null,
 
   CATEGORIES: ['student','teacher','parent','retailer','wholesaler',
                'bookseller','school','distributor','author','other'],
 
-  init(app) {
+  build(app, entry) {
     this.app = app;
-    const g = id => document.getElementById(id);
+    this.entry = entry;
+    this.node = document.getElementById('formTemplate').content.firstElementChild.cloneNode(true);
+
+    const q = id => this.node.querySelector('#' + id);
     this.el = {
-      gate: g('gate'), form: g('gateForm'), done: g('gateDone'),
-      name: g('gName'), phone: g('gPhone'), cat: g('gCat'),
-      state: g('gState'), dist: g('gDist'), tal: g('gTal'),
-      village: g('gVillage'), pin: g('gPin'), hp: g('hp'),
-      submit: g('gateSubmit'), skip: g('gateSkip'), x: g('gateX'),
-      parentNote: g('parentNote'), regId: g('regId'), go: g('gateGo')
+      form: this.node, name: q('gName'), phone: q('gPhone'), cat: q('gCat'),
+      state: q('gState'), dist: q('gDist'), tal: q('gTal'), village: q('gVillage'),
+      pin: q('gPin'), hp: q('hp'), submit: q('gateSubmit'), skip: q('gateSkip'),
+      parentNote: q('parentNote')
     };
 
     this.el.form.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
-    this.el.skip.addEventListener('click', () => this.close());
-    this.el.x.addEventListener('click', () => this.close());
-    this.el.go.addEventListener('click', () => { this.close(); this.app.go('books'); });
-
+    this.el.skip.addEventListener('click', () => this.entry.onSkipped());
     this.el.state.addEventListener('change', () => this.onState());
     this.el.dist.addEventListener('change', () => this.onDist());
     this.el.cat.addEventListener('change', () => {
       this.el.parentNote.classList.toggle('hidden', this.el.cat.value !== 'student');
     });
-
     this.el.phone.addEventListener('input', () => this.digits(this.el.phone, 10));
     this.el.pin.addEventListener('input', () => this.digits(this.el.pin, 6));
-
-    this.bindIntent();
   },
 
-  digits(input, max) {
-    input.value = input.value.replace(/\D/g, '').slice(0, max);
+  moveTo(slotId) {
+    const slot = document.getElementById(slotId);
+    if (slot && this.node.parentElement !== slot) slot.appendChild(this.node);
+    // The skip link says different things depending on where the form sits.
+    this.el.skip.dataset.t = (slotId === 'formSlot') ? 'welcome_skip' : 'gate_skip';
   },
 
-  registered() { return !!localStorage.getItem('rutuja_reg'); },
-
-  /* Soft gate: shown once, skippable. Hard gate: shown until completed. */
-  maybeOpen() {
-    this.render();
-    if (this.registered()) return;
-    if (this.app.settings.gateMode === 'hard') return this.open(true);
-    this.open(false);
+  reset() {
+    this.el.form.classList.remove('hidden');
+    this.el.submit.disabled = false;
+    this.node.querySelectorAll('.err').forEach(e => e.textContent = '');
+    this.node.querySelectorAll('.bad').forEach(e => e.classList.remove('bad'));
   },
 
-  /* Intent gate: a visitor who acts is asked to register, even in soft mode. */
-  bindIntent() {
-    document.addEventListener('click', e => {
-      const a = e.target.closest('.wa-float, [data-intent]');
-      if (!a || this.registered()) return;
-      if (this.app.settings.gateMode !== 'soft') return;
-      e.preventDefault();
-      this.pending = a.getAttribute('href') || '';
-      this.open(true);
-    });
+  preset(key) {
+    const map = { school: 'school', bulk: 'wholesaler', retail: 'retailer', parent: 'parent' };
+    if (map[key]) {
+      this.el.cat.value = map[key];
+      this.el.parentNote.classList.add('hidden');
+    }
   },
 
-  open(force) {
-    this.el.gate.classList.remove('hidden');
-    this.el.x.classList.toggle('hidden', !!force && this.app.settings.gateMode === 'hard');
-    this.el.skip.classList.toggle('hidden', !!force);
-    document.body.style.overflow = 'hidden';
-  },
+  digits(input, max) { input.value = input.value.replace(/\D/g, '').slice(0, max); },
 
-  close() {
-    this.el.gate.classList.add('hidden');
-    document.body.style.overflow = '';
-  },
-
-  /* ---- DROPDOWNS ---- */
-  render() {
+  repaint() {
     const t = k => this.app.t(k);
+    this.node.querySelectorAll('[data-t]').forEach(el => {
+      const v = t(el.dataset.t);
+      if (v) el.textContent = v;
+    });
+
+    const keep = { cat: this.el.cat.value, state: this.el.state.value,
+                   dist: this.el.dist.value, tal: this.el.tal.value };
     const pick = `<option value="">${t('gate_select')}</option>`;
 
     this.el.cat.innerHTML = pick + this.CATEGORIES
       .map(c => `<option value="${c}">${t('cat_' + c)}</option>`).join('');
+    this.el.cat.value = keep.cat;
 
     const loc = this.app.locations;
     if (!loc) return;
     const mr = this.app.lang === 'mr';
-    const mh = mr ? loc.maharashtra.name_mr : loc.maharashtra.name_en;
-
     this.el.state.innerHTML = pick
-      + `<option value="Maharashtra">${mh}</option>`
+      + `<option value="Maharashtra">${mr ? loc.maharashtra.name_mr : loc.maharashtra.name_en}</option>`
       + loc.other_states.map(s =>
           `<option value="${s.name_en}">${mr ? s.name_mr : s.name_en}</option>`).join('');
+    this.el.state.value = keep.state;
 
-    this.el.dist.innerHTML = pick;
-    this.el.tal.innerHTML = pick;
-    this.el.dist.disabled = true;
-    this.el.tal.disabled = true;
+    if (keep.state) { this.onState(); this.el.dist.value = keep.dist; }
+    if (keep.dist)  { this.onDist();  this.el.tal.value = keep.tal; }
   },
 
   onState() {
@@ -334,7 +466,6 @@ const GATE = {
       this.el.dist.innerHTML = pick + this.app.locations.maharashtra.districts
         .map(d => `<option value="${d.name_en}">${mr ? d.name_mr : d.name_en}</option>`).join('');
     } else if (v) {
-      // Outside Maharashtra we still capture location, with Other as the fallback.
       this.el.dist.disabled = false;
       this.el.dist.innerHTML = `<option value="Other" selected>${t('cat_other')}</option>`;
       this.el.tal.disabled = false;
@@ -360,18 +491,15 @@ const GATE = {
       .map(x => `<option value="${x.name_en}">${mr ? x.name_mr : x.name_en}</option>`).join('');
   },
 
-  /* ---- VALIDATION ---- */
   validate() {
     const t = k => this.app.t(k);
     const req = t('common_required');
     let ok = true;
-
     const check = (el, errId, pass, msg) => {
-      const e = document.getElementById(errId);
-      if (pass) { el.classList.remove('bad'); e.textContent = ''; }
-      else { el.classList.add('bad'); e.textContent = msg; ok = false; }
+      const e = this.node.querySelector('#' + errId);
+      if (pass) { el.classList.remove('bad'); if (e) e.textContent = ''; }
+      else { el.classList.add('bad'); if (e) e.textContent = msg; ok = false; }
     };
-
     check(this.el.name, 'eName', this.el.name.value.trim().length >= 2, req);
     check(this.el.phone, 'ePhone', /^[6-9]\d{9}$/.test(this.el.phone.value), t('common_invalid_phone'));
     check(this.el.cat, 'eCat', !!this.el.cat.value, req);
@@ -380,11 +508,9 @@ const GATE = {
     check(this.el.tal, 'eTal', !!this.el.tal.value, req);
     check(this.el.village, 'eVillage', this.el.village.value.trim().length >= 2, req);
     check(this.el.pin, 'ePin', /^\d{6}$/.test(this.el.pin.value), t('common_invalid_pin'));
-
     return ok;
   },
 
-  /* ---- SUBMIT ---- */
   async submit() {
     if (!this.validate()) return;
 
@@ -398,7 +524,8 @@ const GATE = {
       village_city: this.el.village.value.trim(),
       pin: this.el.pin.value,
       language: this.app.lang,
-      source: 'gate',
+      source: this.entry.offerKey ? 'offer:' + this.entry.offerKey
+            : (this.entry.where === 'sheet' ? 'welcome' : 'site'),
       website: this.el.hp.value
     };
 
@@ -418,26 +545,18 @@ const GATE = {
         const j = await r.json();
         if (j && j.reg_id) regId = j.reg_id;
       } catch (err) {
-        // Network or CORS problem: send once more without reading the reply,
-        // so the visitor is never blocked by a backend hiccup.
         try {
           await fetch(url, { method: 'POST', mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload) });
-        } catch (e2) { console.error('Gateway send failed', e2); }
+        } catch (e2) { console.error('Send failed', e2); }
       }
     }
 
     localStorage.setItem('rutuja_reg', JSON.stringify({ id: regId, cat: payload.category }));
     this.el.submit.disabled = false;
     this.el.submit.textContent = this.app.t('gate_submit');
-
-    this.el.form.classList.add('hidden');
-    this.el.done.classList.remove('hidden');
-    this.el.x.classList.remove('hidden');
-    this.el.regId.textContent = regId;
-
-    if (this.pending) { window.open(this.pending, '_blank'); this.pending = ''; }
+    this.entry.onSubmitted(regId);
   },
 
   localId() {

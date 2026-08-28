@@ -1,0 +1,33 @@
+RUTUJA WEBSITE — BUILD v6e
+
+HOW TO CHECK THE UPLOAD WORKED
+------------------------------
+After uploading and waiting 2 minutes, open the site.
+You should see "v6e" in two places:
+  1. small grey text under the tagline on the welcome banner
+  2. at the end of the footer, after the copyright line
+
+If you do NOT see v6e, the upload did not go through.
+Do not debug anything else until v6e appears.
+
+WHAT IS IN THIS BUILD
+---------------------
+- Two screens only: welcome banner, then the website
+- Name shown as ऋतुजा पब्लिकेशन and Rutuja Publication together
+- Publication info left, author info right, on the welcome screen
+- Rising arrow button at the bottom opens the registration form
+- Skip link: "अगोदर सर्व पुस्तके व माहिती पाहतो, नंतर भरतो"
+- Closing the form with X also enters the site
+- Register button in the header for anyone who skipped
+- Register banner on the home page
+- Four offer cards: school, bulk, retailer, parent
+- All 36 districts and 359 talukas
+- Connected to your Google Sheet backend
+
+FILES
+-----
+index.html
+assets/css/style.css
+assets/js/app.js
+data/sitetext.json
+data/locations.json
