@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8e',
+  VERSION: 'v8f',
   lang: 'mr',
   text: {},
   locations: null,
@@ -674,7 +674,7 @@ const BOOKS = {
 
     // Any [data-book] control anywhere opens that book.
     document.addEventListener('click', e => {
-      const b = e.target.closest('.car-link[data-book]');
+      const b = e.target.closest('.vcard-btn[data-book]');
       if (b) this.openBook(b.dataset.book);
     });
 
@@ -1048,17 +1048,19 @@ const MEDIA = {
     }
 
     const mr = this.app.lang === 'mr';
-    const slides = items.map(x => kind === 'video'
-      ? this.videoSlide(x, mr) : this.adSlide(x, mr)).join('');
+    const slides = items.map((x, i) => kind === 'video'
+      ? this.videoSlide(x, mr, i) : this.adSlide(x, mr)).join('');
 
     box.innerHTML = `
       <div class="car-track">${slides}</div>
       ${items.length > 1 ? `
-        <button class="car-arrow car-prev" aria-label="${t('car_prev')}">&#8249;</button>
-        <button class="car-arrow car-next" aria-label="${t('car_next')}">&#8250;</button>` : ''}
-      ${items.length > 1 ? `<div class="car-dots">${items
-        .map((_, i) => `<button class="car-dot${i ? '' : ' on'}" data-i="${i}"></button>`)
-        .join('')}</div>` : ''}`;
+        <div class="car-controls">
+          <button class="car-arrow car-prev" aria-label="${t('car_prev')}">&#8249;</button>
+          <div class="car-dots">${items
+            .map((_, i) => `<button class="car-dot${i ? '' : ' on'}" data-i="${i}"></button>`)
+            .join('')}</div>
+          <button class="car-arrow car-next" aria-label="${t('car_next')}">&#8250;</button>
+        </div>` : ''}`;
 
     const rail = { box, track: box.querySelector('.car-track'), n: items.length,
                    i: 0, delay, timer: null, paused: false };
@@ -1090,55 +1092,59 @@ const MEDIA = {
       x0 = null; if (!rail.paused) start();
     });
 
-    // Playing a video stops rotation for good until the visitor moves on
+    // Playing a video stops rotation until the visitor moves on
     box.querySelectorAll('[data-yt]').forEach(m => {
-      m.addEventListener('click', () => {
-        if (m.classList.contains('playing')) return;
-        rail.paused = true; stop();
-        m.classList.add('playing');
-        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
-          title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen></iframe>`;
-      });
+      m.addEventListener('click', () => { rail.paused = true; stop(); });
     });
+    this.bindPlay(box);
 
     this.rails.push(rail);
     start();
   },
 
-  videoSlide(v, mr) {
+  /* The same card is used in the carousel, on the Videos page and on a
+     book page, so a visitor always sees the video presented identically.
+     Order below the video: book name, then tagline, then the description. */
+  card(v, mr, eager) {
     const t = k => this.app.t(k);
     const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
     const book = (this.app.content.books || []).find(b => b.book_id === v.book_id);
-    return `<div class="car-slide">
-      <div class="car-media ${o}" data-yt="${v.youtube_id}">
-        <a class="car-full" href="https://www.youtube.com/watch?v=${v.youtube_id}"
-           target="_blank" rel="noopener" title="YouTube" onclick="event.stopPropagation()">&#10530;</a>
-        ${this.thumbImg(v.youtube_id, true)}
-        <span class="car-play">&#9654;</span>
+    return `<article class="vcard">
+      <div class="vcard-stage">
+        <div class="car-media ${o}" data-yt="${v.youtube_id}">
+          <a class="car-full" href="https://www.youtube.com/watch?v=${v.youtube_id}"
+             target="_blank" rel="noopener" title="YouTube" onclick="event.stopPropagation()">&#10530;</a>
+          ${this.thumbImg(v.youtube_id, eager)}
+          <span class="car-play">&#9654;</span>
+        </div>
       </div>
-      <div class="car-body">
-        <span class="car-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
-        <div class="car-title">${mr ? v.title_mr : v.title_en}</div>
-        <p class="car-cap">${mr ? v.caption_mr : v.caption_en}</p>
-        ${book ? `<button class="car-link" data-book="${book.book_id}">${t('video_see_book')} &rarr;</button>` : ''}
+      <div class="vcard-body">
+        <h3 class="vcard-title">${mr ? v.title_mr : v.title_en}</h3>
+        <span class="vcard-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
+        <p class="vcard-cap">${mr ? v.caption_mr : v.caption_en}</p>
+        ${book ? `<button class="vcard-btn" data-book="${book.book_id}">${t('video_see_book')} &rarr;</button>` : ''}
       </div>
-    </div>`;
+    </article>`;
+  },
+
+  videoSlide(v, mr, i) {
+    return `<div class="car-slide">${this.card(v, mr, i === 0)}</div>`;
   },
 
   adSlide(a, mr) {
     const link = a.link_type === 'book' && a.link_target
-      ? `<button class="car-link" data-book="${a.link_target}">${this.app.t('books_view')} &rarr;</button>` : '';
-    return `<div class="car-slide">
-      <div class="car-media horizontal">
-        ${this.app.img('ads', a.image)}
+      ? `<button class="vcard-btn" data-book="${a.link_target}">${this.app.t('books_view')} &rarr;</button>` : '';
+    const cap = mr ? (a.caption_mr || '') : (a.caption_en || '');
+    return `<div class="car-slide"><article class="vcard">
+      <div class="vcard-stage">
+        <div class="car-media horizontal">${this.app.img('ads', a.image)}</div>
       </div>
-      <div class="car-body">
-        <div class="car-title">${mr ? a.title_mr : a.title_en}</div>
-        <p class="car-cap">${mr ? (a.caption_mr || '') : (a.caption_en || '')}</p>
+      <div class="vcard-body">
+        <h3 class="vcard-title">${mr ? a.title_mr : a.title_en}</h3>
+        ${cap ? `<p class="vcard-cap">${cap}</p>` : ''}
         ${link}
       </div>
-    </div>`;
+    </article></div>`;
   },
 
   /* ---- GRID OF ALL VIDEOS ---- */
@@ -1146,25 +1152,19 @@ const MEDIA = {
     const box = document.getElementById(elId);
     if (!box) return;
     const mr = this.app.lang === 'mr';
-    box.innerHTML = items.map(v => {
-      const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
-      return `<button class="vid-card" data-yt-open="${v.youtube_id}">
-        <span class="vid-thumb ${o}">
-          ${this.thumbImg(v.youtube_id)}
-          <span class="car-play">&#9654;</span>
-        </span>
-        <span class="vid-body">
-          <span class="vid-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
-          <span class="vid-name">${mr ? v.title_mr : v.title_en}</span>
-        </span></button>`;
-    }).join('');
+    box.innerHTML = items.map(v => this.card(v, mr, false)).join('');
+    this.bindPlay(box);
+  },
 
-    box.querySelectorAll('[data-yt-open]').forEach(c => {
-      c.addEventListener('click', () => {
-        const th = c.querySelector('.vid-thumb');
-        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
+  /* Clicking the frame swaps the still for the real player, in place. */
+  bindPlay(root) {
+    root.querySelectorAll('[data-yt]').forEach(m => {
+      m.addEventListener('click', () => {
+        if (m.classList.contains('playing')) return;
+        m.classList.add('playing');
+        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
-          allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;
+          allowfullscreen></iframe>`;
       });
     });
   },
@@ -1176,26 +1176,9 @@ const MEDIA = {
     const mr = this.app.lang === 'mr';
     return `<div class="bd-videos">
       <div class="calc-h">${this.app.t('book_videos')}</div>
-      <div class="vid-grid">${vids.map(v => {
-        const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
-        return `<button class="vid-card" data-yt-open="${v.youtube_id}">
-          <span class="vid-thumb ${o}">
-            ${this.thumbImg(v.youtube_id)}
-            <span class="car-play">&#9654;</span></span>
-          <span class="vid-body">
-            <span class="vid-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
-            <span class="vid-name">${mr ? v.title_mr : v.title_en}</span>
-          </span></button>`; }).join('')}</div></div>`;
+      <div class="vid-list">${vids.map(v => this.card(v, mr, false)).join('')}</div>
+    </div>`;
   },
 
-  bindBookVideos(root) {
-    root.querySelectorAll('[data-yt-open]').forEach(c => {
-      c.addEventListener('click', () => {
-        const th = c.querySelector('.vid-thumb');
-        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
-          title="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen
-          style="width:100%;height:100%;border:0"></iframe>`;
-      });
-    });
-  }
+  bindBookVideos(root) { this.bindPlay(root); }
 };
