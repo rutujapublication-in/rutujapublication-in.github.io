@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8b',
+  VERSION: 'v8c',
   lang: 'mr',
   text: {},
   locations: null,
@@ -960,7 +960,14 @@ const MEDIA = {
     this.grid('vidGrid', vids);
   },
 
-  thumb(id) { return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; },
+  /* maxresdefault is 1280x720. Not every video has one, so fall back
+     through sd, then hq, which always exist. */
+  thumbImg(id) {
+    const fb = `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'`;
+    return `<img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
+      onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/sddefault.jpg';this.onerror=function(){${fb}}"
+      alt="" loading="lazy">`;
+  },
 
   /* ---- BUILD ONE CAROUSEL ---- */
   build(elId, items, kind, delay) {
@@ -1020,7 +1027,7 @@ const MEDIA = {
     box.querySelectorAll('[data-yt]').forEach(m => {
       m.addEventListener('click', () => {
         rail.paused = true; stop();
-        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1"
+        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen></iframe>`;
       });
@@ -1036,7 +1043,7 @@ const MEDIA = {
     const book = (this.app.content.books || []).find(b => b.book_id === v.book_id);
     return `<div class="car-slide">
       <div class="car-media ${o}" data-yt="${v.youtube_id}">
-        <img src="${this.thumb(v.youtube_id)}" alt="" loading="lazy">
+        ${this.thumbImg(v.youtube_id)}
         <span class="car-play">&#9654;</span>
       </div>
       <div class="car-body">
@@ -1072,7 +1079,7 @@ const MEDIA = {
       const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
       return `<button class="vid-card" data-yt-open="${v.youtube_id}">
         <span class="vid-thumb ${o}">
-          <img src="${this.thumb(v.youtube_id)}" alt="" loading="lazy">
+          ${this.thumbImg(v.youtube_id)}
           <span class="car-play">&#9654;</span>
         </span>
         <span class="vid-body">
@@ -1084,7 +1091,7 @@ const MEDIA = {
     box.querySelectorAll('[data-yt-open]').forEach(c => {
       c.addEventListener('click', () => {
         const th = c.querySelector('.vid-thumb');
-        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1"
+        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;
       });
@@ -1102,7 +1109,7 @@ const MEDIA = {
         const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
         return `<button class="vid-card" data-yt-open="${v.youtube_id}">
           <span class="vid-thumb ${o}">
-            <img src="${this.thumb(v.youtube_id)}" alt="" loading="lazy">
+            ${this.thumbImg(v.youtube_id)}
             <span class="car-play">&#9654;</span></span>
           <span class="vid-body">
             <span class="vid-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
@@ -1114,7 +1121,7 @@ const MEDIA = {
     root.querySelectorAll('[data-yt-open]').forEach(c => {
       c.addEventListener('click', () => {
         const th = c.querySelector('.vid-thumb');
-        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1"
+        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
           title="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen
           style="width:100%;height:100%;border:0"></iframe>`;
       });

@@ -83,10 +83,8 @@ a{color:inherit;text-decoration:none}
 @media(prefers-reduced-motion:reduce){.strip-track{animation:none;padding-left:20px}}
 
 /* ---------- HEADER ---------- */
-.header{
-  position:sticky;top:0;z-index:100;background:var(--green);
-  box-shadow:0 1px 0 rgba(0,0,0,.12);
-}
+.topbar{position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.13)}
+.header{background:var(--green)}
 .header-inner{display:flex;align-items:center;gap:18px;height:var(--head-h)}
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
 .brand-mark{
@@ -192,7 +190,7 @@ a{color:inherit;text-decoration:none}
 /* ---------- MOBILE ---------- */
 @media(max-width:940px){
   .nav{
-    position:fixed;top:calc(var(--head-h) + var(--strip-h));left:0;right:0;
+    position:fixed;top:100%;left:0;right:0;
     background:var(--green-dark);flex-direction:column;gap:0;padding:8px;
     max-height:0;overflow:hidden;transition:max-height .28s ease;margin-left:0;
   }
@@ -564,8 +562,8 @@ a{color:inherit;text-decoration:none}
 
 .car-media{flex-shrink:0;border-radius:12px;overflow:hidden;background:#111;position:relative;
   cursor:pointer;display:flex;align-items:center;justify-content:center}
-.car-media.vertical{width:220px;aspect-ratio:9/16}
-.car-media.horizontal{width:420px;aspect-ratio:16/9}
+.car-media.vertical{width:300px;aspect-ratio:9/16}
+.car-media.horizontal{width:540px;aspect-ratio:16/9}
 .car-media img{width:100%;height:100%;object-fit:cover}
 .car-media iframe{width:100%;height:100%;border:0;display:block}
 .car-play{position:absolute;width:58px;height:58px;border-radius:50%;
@@ -617,7 +615,7 @@ a{color:inherit;text-decoration:none}
 
 @media(max-width:760px){
   .car-slide{flex-direction:column;gap:15px;padding:16px}
-  .car-media.vertical{width:100%;max-width:250px;aspect-ratio:9/16}
+  .car-media.vertical{width:100%;max-width:340px;aspect-ratio:9/16}
   .car-media.horizontal{width:100%;aspect-ratio:16/9}
   .car-body{width:100%}
   .car-title{font-size:18px}
@@ -627,4 +625,10 @@ a{color:inherit;text-decoration:none}
 }
 @media(max-width:560px){
   .vid-grid{grid-template-columns:repeat(2,1fr);gap:11px}
+}
+
+/* Mobile dropdown hangs from the sticky bar itself */
+@media(max-width:940px){
+  .topbar{position:sticky;top:0}
+  .nav{top:100%;left:0;right:0}
 }
