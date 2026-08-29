@@ -445,3 +445,110 @@ a{color:inherit;text-decoration:none}
 .lang-lbl{font-size:12px;color:#9FBCA9;letter-spacing:.4px}
 .lang-pills{display:inline-flex;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:11px}
 .w-left{text-align:left}
+
+/* ===================================================================
+   PHASE 7 — BOOKS
+   =================================================================== */
+.sample-note{background:#FDF1DC;border-left:4px solid var(--gold);border-radius:9px;
+  padding:11px 15px;font-size:13.5px;color:#7A5410;margin-bottom:18px}
+
+.filters{margin-bottom:20px}
+.fbar{display:flex;gap:9px;flex-wrap:wrap}
+.fsearch,.fsel{height:46px;border:1.5px solid var(--line);border-radius:9px;padding:0 13px;
+  font-family:inherit;font-size:15px;background:var(--white);color:var(--ink)}
+.fsearch{flex:1;min-width:190px}
+.fsel{min-width:130px;cursor:pointer}
+.fsearch:focus,.fsel:focus{outline:none;border-color:var(--green)}
+.fclear{height:46px;padding:0 16px;border-radius:9px;border:1.5px solid var(--line);
+  font-size:14px;color:var(--ink-soft);background:var(--white)}
+.fclear:hover{border-color:var(--green);color:var(--green)}
+.fcount{margin-top:11px;font-size:14px;color:var(--ink-soft)}
+.fcount strong{color:var(--green);font-size:16px}
+
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.book-card{background:var(--white);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;display:flex;flex-direction:column;text-align:left;transition:.16s;cursor:pointer}
+.book-card:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(0,0,0,.12);border-color:var(--green)}
+.book-cover{aspect-ratio:3/4;position:relative;display:flex;align-items:center;
+  justify-content:center;overflow:hidden}
+.book-cover img{width:100%;height:100%;object-fit:cover}
+.book-cover-ph{font-family:'Baloo 2',sans-serif;font-size:52px;font-weight:700;
+  color:rgba(255,255,255,.9)}
+.book-std{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.35);color:#fff;
+  border-radius:7px;padding:3px 10px;font-size:12.5px;font-weight:600;backdrop-filter:blur(3px)}
+.book-body{padding:13px 14px 15px;display:flex;flex-direction:column;gap:4px;flex:1}
+.book-name{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;
+  color:var(--green-dark);line-height:1.35}
+.book-meta{font-size:12.5px;color:var(--ink-soft);flex:1}
+.book-price{font-size:18px;font-weight:700;color:var(--green);margin-top:5px}
+.book-none{text-align:center;padding:46px 20px;color:var(--ink-soft);font-size:15px}
+
+/* ---- Detail page ---- */
+.back-link{margin:6px 0 16px;font-size:15px;color:var(--green);text-decoration:underline;
+  text-underline-offset:3px}
+.bd{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start}
+.bd-cover{aspect-ratio:3/4;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;overflow:hidden}
+.bd-cover img{width:100%;height:100%;object-fit:cover}
+.bd-cover span{font-family:'Baloo 2',sans-serif;font-size:76px;font-weight:700;color:rgba(255,255,255,.9)}
+.bd-title{font-size:29px;color:var(--green-dark);line-height:1.3}
+.bd-sub{font-size:15px;color:var(--ink-soft);margin:4px 0 16px}
+.bd-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;
+  margin-bottom:20px}
+.bd-fact{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.bd-fact-k{font-size:12px;color:var(--ink-soft)}
+.bd-fact-v{font-size:16px;font-weight:600;color:var(--green-dark)}
+.bd-desc{font-size:15.5px;line-height:1.8;margin-bottom:22px}
+
+/* ---- Price calculator ---- */
+.calc{background:var(--green-light);border-radius:14px;padding:20px 22px}
+.calc-h{font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:600;
+  color:var(--green-dark);margin-bottom:14px}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.qty{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:10px;
+  overflow:hidden;background:var(--white)}
+.qty button{width:46px;font-size:22px;color:var(--green);background:var(--white)}
+.qty button:hover{background:var(--green-light)}
+.qty input{width:76px;text-align:center;border:none;font-family:inherit;font-size:17px;
+  font-weight:600;color:var(--ink)}
+.qty input:focus{outline:none}
+.calc-lbl{font-size:14px;color:var(--ink-soft)}
+.calc-out{background:var(--white);border-radius:11px;padding:15px 17px}
+.calc-line{display:flex;justify-content:space-between;align-items:baseline;
+  padding:6px 0;font-size:15px}
+.calc-line + .calc-line{border-top:1px solid var(--line)}
+.calc-line span:last-child{font-weight:600;color:var(--ink)}
+.calc-total{font-size:20px;font-weight:700;color:var(--green)}
+.calc-save{color:var(--gold-dark);font-weight:600}
+.calc-btn{width:100%;margin-top:14px}
+
+/* ---- Slab table ---- */
+.slab-wrap{overflow-x:auto}
+.slab{width:100%;border-collapse:collapse;background:var(--white);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.slab th{background:var(--green);color:#fff;font-weight:600;font-size:14.5px;
+  padding:13px 16px;text-align:left}
+.slab td{padding:13px 16px;font-size:15px;border-top:1px solid var(--line)}
+.slab tr:nth-child(even) td{background:#FBF8F2}
+.slab .pct{color:var(--gold-dark);font-weight:700}
+
+@media(max-width:760px){
+  .bd{grid-template-columns:1fr;gap:20px}
+  .bd-cover{max-width:230px}
+  .bd-title{font-size:23px}
+}
+@media(max-width:560px){
+  .book-grid{grid-template-columns:repeat(2,1fr);gap:11px}
+  .book-name{font-size:14.5px}
+  .fsel{flex:1;min-width:calc(50% - 5px)}
+}
+
+/* ---- Phase 7b: subtitles, rates, delivery note ---- */
+.book-sub{font-size:11.5px;color:#9B958A;line-height:1.4}
+.bd-subtitle{font-size:16px;color:var(--gold-dark);font-weight:600;margin-top:2px}
+.calc-note{font-size:12.5px;color:var(--ink-soft);margin-top:11px;
+  padding-left:16px;position:relative}
+.calc-note::before{content:"*";position:absolute;left:4px;color:var(--gold-dark)}
+.slab{margin-bottom:14px}
+.slab td.sh{background:var(--green-light);font-weight:600;font-size:13.5px;color:var(--green-dark)}
+.slab th{font-size:15px}

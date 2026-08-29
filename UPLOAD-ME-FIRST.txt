@@ -1,14 +1,14 @@
-RUTUJA WEBSITE — BUILD v6e
+RUTUJA WEBSITE — BUILD v7g
 
 HOW TO CHECK THE UPLOAD WORKED
 ------------------------------
 After uploading and waiting 2 minutes, open the site.
-You should see "v6e" in two places:
+You should see "v7g" in two places:
   1. small grey text under the tagline on the welcome banner
   2. at the end of the footer, after the copyright line
 
-If you do NOT see v6e, the upload did not go through.
-Do not debug anything else until v6e appears.
+If you do NOT see v7g, the upload did not go through.
+Do not debug anything else until v7g appears.
 
 WHAT IS IN THIS BUILD
 ---------------------

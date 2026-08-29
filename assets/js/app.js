@@ -5,10 +5,11 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v6e',
+  VERSION: 'v7g',
   lang: 'mr',
   text: {},
   locations: null,
+  content: { books: [], offers: [] },
   config: {},
 
   /* ---- 1. BOOT ---- */
@@ -19,12 +20,14 @@ const RUTUJA = {
     this.bindLangToggle();
 
     try {
-      const [t, l] = await Promise.all([
+      const [t, l, c] = await Promise.all([
         fetch('data/sitetext.json').then(r => r.json()),
-        fetch('data/locations.json').then(r => r.json())
+        fetch('data/locations.json').then(r => r.json()),
+        fetch('data/content.json').then(r => r.json())
       ]);
       this.text = t;
       this.locations = l;
+      this.content = c;
     } catch (e) {
       console.error('Data load failed', e);
     }
@@ -32,6 +35,7 @@ const RUTUJA = {
     this.config = this.defaultConfig();
 
     ENTRY.init(this);
+    BOOKS.init(this);
   },
 
   /* ---- SETTINGS YOU CAN CHANGE ---- */
@@ -45,8 +49,8 @@ const RUTUJA = {
   /* Config is hard-coded until Phase 12 wires the Google Sheet. */
   defaultConfig() {
     return {
-      whatsapp_number: '',
-      phone_number: '',
+      whatsapp_number: '919373141263',
+      phone_number: '9373141263',
       facebook_url: '',
       instagram_url: '',
       email: '',
@@ -123,6 +127,7 @@ const RUTUJA = {
     this.paintStrip();
     this.paintStandards();
     this.paintOffers();
+    BOOKS.paint();
     this.paintContact();
     this.paintFooter();
   },
@@ -563,5 +568,337 @@ const FORM = {
     const d = new Date();
     return 'RP-' + String(d.getFullYear()).slice(2) + '-'
          + String(Math.floor(1000 + Math.random() * 9000));
+  }
+};
+
+/* ===================================================================
+   PHASE 7 — BOOKS
+   Discovery grid, filters, search, detail page, price calculator.
+   Reads data/content.json until Phase 12 swaps in the Google Sheet.
+   =================================================================== */
+
+const BOOKS = {
+  app: null,
+  filters: { q: '', std: '', med: '', sub: '', sort: 'std' },
+  current: null,
+
+  init(app) {
+    this.app = app;
+    const g = id => document.getElementById(id);
+    this.el = { grid: g('bookGrid'), feat: g('featGrid'), none: g('bookNone'),
+                count: g('bCount'), search: g('bSearch'), std: g('fStd'),
+                med: g('fMed'), sub: g('fSub'), sort: g('fSort'),
+                clear: g('fClear'), detail: g('bookDetail'), slab: g('slabTable'),
+                note: g('sampleNote') };
+
+    this.el.search.addEventListener('input', () => {
+      this.filters.q = this.el.search.value.trim().toLowerCase(); this.renderGrid();
+    });
+    ['std','med','sub','sort'].forEach(k => {
+      this.el[k].addEventListener('change', () => {
+        this.filters[k] = this.el[k].value; this.renderGrid();
+      });
+    });
+    this.el.clear.addEventListener('click', () => {
+      this.filters = { q: '', std: '', med: '', sub: '', sort: 'std' };
+      this.el.search.value = '';
+      ['std','med','sub'].forEach(k => this.el[k].value = '');
+      this.el.sort.value = 'std';
+      this.renderGrid();
+    });
+
+    // A standard card on the home page pre-filters the books page.
+    document.addEventListener('click', e => {
+      const c = e.target.closest('.std-card');
+      if (!c) return;
+      this.filters.std = c.dataset.std;
+      if (this.el.std) this.el.std.value = c.dataset.std;
+      this.renderGrid();
+    });
+  },
+
+  live() {
+    return (this.app.content.books || []).filter(b => b.status === 'LIVE');
+  },
+
+  /* A book can serve more than one standard: "1,2" or "3,4,5". */
+  stds(b) {
+    return String(b.standard || '').split(',').map(x => x.trim()).filter(Boolean);
+  },
+
+  stdLabel(b) {
+    const mr = this.app.lang === 'mr';
+    const list = this.stds(b);
+    if (!list.length) return '';
+    const show = n => mr ? '१२३४५'[n - 1] : n;
+    return list.length === 1 ? show(list[0])
+         : show(list[0]) + '–' + show(list[list.length - 1]);
+  },
+
+  /* A book can also cover several subjects: "वाचन, लेखन, सामान्यज्ञान". */
+  subs(b) {
+    const raw = this.app.lang === 'mr' ? b.subject_mr : b.subject_en;
+    return String(raw || '').split(',').map(x => x.trim()).filter(Boolean);
+  },
+
+  subsEn(b) {
+    return String(b.subject_en || '').split(',').map(x => x.trim()).filter(Boolean);
+  },
+
+  /* A book may be published in more than one medium: "Marathi, English". */
+  meds(b) {
+    return String(b.medium || '').split(',').map(x => x.trim()).filter(Boolean);
+  },
+
+  medLabel(b) {
+    return this.meds(b).map(m => this.app.t('med_' + m) || m).join(' · ');
+  },
+
+  /* Colour comes from the lowest standard the book serves. */
+  stdColor(b) {
+    const list = this.stds(b);
+    return 'var(--std' + (list[0] || 1) + ')';
+  },
+
+  paint() {
+    if (!this.el || !this.el.grid) return;
+    this.buildFilters();
+    this.renderGrid();
+    this.renderFeatured();
+    this.renderSlabs();
+    if (this.el.note) this.el.note.classList.toggle('hidden', !this.app.content.sample);
+    if (this.current) this.openBook(this.current, true);
+  },
+
+  buildFilters() {
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    const all = `<option value="">${t('books_all')}</option>`;
+    const books = this.live();
+
+    this.el.search.placeholder = t('books_search_ph');
+
+    this.el.std.innerHTML = all + ['1','2','3','4','5']
+      .map(s => `<option value="${s}">${t('books_standard')} ${mr ? '१२३४५'[s-1] : s}</option>`).join('');
+
+    const meds = [];
+    books.forEach(b => this.meds(b).forEach(m => { if (!meds.includes(m)) meds.push(m); }));
+    ['Marathi','Semi-English','English'].forEach(m => { if (!meds.includes(m)) return; });
+    this.el.med.innerHTML = all + meds
+      .map(m => `<option value="${m}">${t('med_' + m) || m}</option>`).join('');
+
+    const pairs = new Map();
+    books.forEach(b => {
+      const en = this.subsEn(b);
+      const loc = String(b.subject_mr || '').split(',').map(x => x.trim());
+      en.forEach((x, i) => { if (!pairs.has(x)) pairs.set(x, loc[i] || x); });
+    });
+    this.el.sub.innerHTML = all + [...pairs.entries()].sort()
+      .map(([en, loc]) => `<option value="${en}">${mr ? loc : en}</option>`).join('');
+
+    this.el.sort.innerHTML =
+      `<option value="std">${t('books_sort_std')}</option>` +
+      `<option value="low">${t('books_sort_low')}</option>` +
+      `<option value="high">${t('books_sort_high')}</option>`;
+
+    this.el.std.value = this.filters.std;
+    this.el.med.value = this.filters.med;
+    this.el.sub.value = this.filters.sub;
+    this.el.sort.value = this.filters.sort;
+  },
+
+  match() {
+    const f = this.filters;
+    let out = this.live().filter(b => {
+      if (f.std && !this.stds(b).includes(f.std)) return false;
+      if (f.med && !this.meds(b).includes(f.med)) return false;
+      if (f.sub && !this.subsEn(b).includes(f.sub)) return false;
+      if (f.q) {
+        const hay = [b.name_mr, b.name_en, b.subject_mr, b.subject_en]
+          .join(' ').toLowerCase();
+        if (!hay.includes(f.q)) return false;
+      }
+      return true;
+    });
+    if (f.sort === 'low')  out.sort((a, b) => a.mrp - b.mrp);
+    else if (f.sort === 'high') out.sort((a, b) => b.mrp - a.mrp);
+    else out.sort((a, b) => (a.standard - b.standard) || (a.sort_order - b.sort_order));
+    return out;
+  },
+
+  card(b) {
+    const mr = this.app.lang === 'mr';
+    const name = mr ? b.name_mr : b.name_en;
+    const sl   = this.subs(b);
+    const sub  = sl.slice(0, 2).join(' · ') + (sl.length > 2 ? ' +' + (sl.length - 2) : '');
+    const num  = this.stdLabel(b);
+    const cover = b.cover_image
+      ? `<img src="assets/img/${b.cover_image}" alt="" loading="lazy">`
+      : `<span class="book-cover-ph">${num}</span>`;
+    return `<button class="book-card" data-book="${b.book_id}">
+      <span class="book-cover" style="background:${this.stdColor(b)}">
+        ${cover}<span class="book-std">${this.app.t('books_standard')} ${num}</span>
+      </span>
+      <span class="book-body">
+        <span class="book-name">${name}</span>
+        <span class="book-meta">${sub} · ${this.medLabel(b)}</span>
+        ${b.subtitle_mr || b.subtitle_en ? `<span class="book-sub">${mr ? b.subtitle_mr : b.subtitle_en}</span>` : ''}
+        <span class="book-price">₹${b.mrp}</span>
+      </span></button>`;
+  },
+
+  bind(root) {
+    root.querySelectorAll('[data-book]').forEach(c => {
+      c.addEventListener('click', () => this.openBook(c.dataset.book));
+    });
+  },
+
+  renderGrid() {
+    const list = this.match();
+    this.el.grid.innerHTML = list.map(b => this.card(b)).join('');
+    this.el.count.textContent = list.length;
+    this.el.none.classList.toggle('hidden', list.length > 0);
+    this.bind(this.el.grid);
+  },
+
+  renderFeatured() {
+    if (!this.el.feat) return;
+    const f = this.live().filter(b => b.featured === 'YES').slice(0, 4);
+    this.el.feat.innerHTML = f.map(b => this.card(b)).join('');
+    this.bind(this.el.feat);
+  },
+
+  /* ---- PRICING ---- */
+  slabs(offerId) {
+    return (this.app.content.offers || [])
+      .filter(o => o.status === 'LIVE' && (!offerId || o.offer_id === offerId))
+      .sort((a, b) => a.qty_min - b.qty_min);
+  },
+
+  /* qty_max may be a number or an open-ended value such as "200+". */
+  topOf(o) {
+    const v = String(o.qty_max);
+    return v.includes('+') ? Infinity : (parseInt(v, 10) || 0);
+  },
+
+  slabLabel(o) {
+    return o.qty_min + ' – ' + o.qty_max;
+  },
+
+  /* The selling rate is the source of truth; the percentage is only
+     shown to the customer, so no rounding can distort the price. */
+  priceFor(book, qty) {
+    const s = this.slabs(book.offer_id)
+      .find(o => qty >= o.qty_min && qty <= this.topOf(o));
+    const each = s && s.selling_rate ? Number(s.selling_rate) : Number(book.mrp);
+    const pct  = book.mrp ? Math.round((book.mrp - each) / book.mrp * 100) : 0;
+    return { pct, each, total: each * qty, saved: (book.mrp - each) * qty };
+  },
+
+  renderSlabs() {
+    if (!this.el.slab) return;
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    const blocks = this.live().map(b => {
+      const sl = this.slabs(b.offer_id);
+      if (!sl.length) return '';
+      return `<table class="slab">
+        <tr><th colspan="3">${mr ? b.name_mr : b.name_en} &nbsp;·&nbsp; MRP &#8377;${b.mrp}</th></tr>
+        <tr><td class="sh">${t('price_qty')}</td><td class="sh">${t('price_rate')}</td><td class="sh">${t('price_discount')}</td></tr>
+        ${sl.map(o => `<tr>
+          <td>${this.slabLabel(o)}</td>
+          <td><strong>&#8377;${o.selling_rate}</strong></td>
+          <td class="pct">${o.discount_percent ? Math.round(o.discount_percent) + '%' : '—'}</td>
+        </tr>`).join('')}
+      </table>`;
+    }).join('');
+    this.el.slab.innerHTML = blocks + `<p class="calc-note">${t('price_delivery')}</p>`;
+  },
+
+  /* ---- DETAIL PAGE ---- */
+  openBook(id, silent) {
+    const b = this.live().find(x => x.book_id === id);
+    if (!b) return;
+    this.current = id;
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    const num = this.stdLabel(b);
+    const cover = b.cover_image
+      ? `<img src="assets/img/${b.cover_image}" alt="">`
+      : `<span>${num}</span>`;
+    const mySlabs = this.slabs(b.offer_id);
+
+    this.el.detail.innerHTML = `
+      <div class="bd">
+        <div class="bd-cover" style="background:${this.stdColor(b)}">${cover}</div>
+        <div>
+          <h1 class="bd-title">${mr ? b.name_mr : b.name_en}</h1>
+          ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
+          <p class="bd-sub">${this.subs(b).join(' · ')} &nbsp;|&nbsp; ${this.medLabel(b)}</p>
+          <div class="bd-facts">
+            <div class="bd-fact"><div class="bd-fact-k">${t('books_standard')}</div>
+              <div class="bd-fact-v">${num}</div></div>
+            <div class="bd-fact"><div class="bd-fact-k">${t('book_mrp')}</div>
+              <div class="bd-fact-v">₹${b.mrp}</div></div>
+            ${b.pages ? `<div class="bd-fact"><div class="bd-fact-k">${t('book_pages')}</div>
+              <div class="bd-fact-v">${b.pages}</div></div>` : ''}
+          </div>
+          <p class="bd-desc">${mr ? b.description_mr : b.description_en}</p>
+
+          <div class="calc">
+            <div class="calc-h">${t('price_title')}</div>
+            <div class="calc-row">
+              <span class="calc-lbl">${t('price_qty')}</span>
+              <div class="qty">
+                <button type="button" id="qMinus">−</button>
+                <input type="text" id="qVal" inputmode="numeric" value="1">
+                <button type="button" id="qPlus">+</button>
+              </div>
+            </div>
+            <div class="calc-out" id="calcOut"></div>
+            <p class="calc-note">${t('price_delivery')}</p>
+            <button class="btn btn-gold calc-btn" id="calcAsk">${t('price_ask')}</button>
+          </div>
+
+          <div class="slab-wrap" style="margin-top:18px">
+            <table class="slab">
+              <tr><th>${t('price_qty')}</th><th>${t('price_rate')}</th><th>${t('price_discount')}</th></tr>
+              ${mySlabs.map(o => `<tr>
+                <td>${this.slabLabel(o)}</td>
+                <td>&#8377;${o.selling_rate}</td>
+                <td class="pct">${o.discount_percent ? Math.round(o.discount_percent) + '%' : '—'}</td>
+              </tr>`).join('')}
+            </table>
+          </div>
+        </div>
+      </div>`;
+
+    const qv = document.getElementById('qVal');
+    const draw = () => {
+      let q = Math.max(1, Math.min(9999, parseInt(qv.value, 10) || 1));
+      qv.value = q;
+      const p = this.priceFor(b, q);
+      document.getElementById('calcOut').innerHTML = `
+        <div class="calc-line"><span>${t('price_per')}</span>
+          <span>₹${p.each} ${p.pct ? `<s style="opacity:.5">₹${b.mrp}</s>` : ''}</span></div>
+        ${p.pct ? `<div class="calc-line"><span>${t('price_slab')}</span>
+          <span class="calc-save">${p.pct}%</span></div>` : ''}
+        <div class="calc-line"><span>${t('price_total')}</span>
+          <span class="calc-total">₹${p.total}</span></div>
+        ${p.saved ? `<div class="calc-line"><span>${t('price_saving')}</span>
+          <span class="calc-save">₹${p.saved}</span></div>` : ''}`;
+    };
+    qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
+    document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
+    document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
+    document.getElementById('calcAsk').onclick = () => {
+      const q = +qv.value || 1;
+      const detail = `${mr ? b.name_mr : b.name_en} (${this.medLabel(b)}) × ${q}`;
+      const link = this.app.wa(q > 1 ? 'wa_quantity' : 'wa_book', detail);
+      if (link) window.open(link, '_blank'); else this.app.go('contact');
+    };
+    draw();
+
+    if (!silent) this.app.go('book');
   }
 };

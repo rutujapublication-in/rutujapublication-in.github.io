@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=6e">
+<link rel="stylesheet" href="assets/css/style.css?v=7g">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v6e</p>
+        <p class="w-ver">v7g</p>
       </div>
 
       <aside class="w-side w-right">
@@ -205,7 +205,7 @@
         <div class="offer-grid" id="offerGrid"></div>
 
         <h2 class="sec-title" data-t="books_featured"></h2>
-        <div class="placeholder" data-phase="7">Phase 7</div>
+        <div class="book-grid" id="featGrid"></div>
 
         <h2 class="sec-title" data-t="videos_title"></h2>
         <div class="placeholder" data-phase="8">Phase 8</div>
@@ -215,11 +215,36 @@
       </div>
     </section>
 
-    <section class="page" id="page-books"><div class="wrap"><h1 class="sec-title" data-t="books_title"></h1><div class="placeholder" data-phase="7">Phase 7</div></div></section>
+    <section class="page" id="page-books"><div class="wrap">
+      <h1 class="sec-title" data-t="books_title"></h1>
+      <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
+
+      <div class="filters">
+        <div class="fbar">
+          <input type="search" id="bSearch" class="fsearch" placeholder="">
+          <select id="fStd" class="fsel"></select>
+          <select id="fMed" class="fsel"></select>
+          <select id="fSub" class="fsel"></select>
+          <select id="fSort" class="fsel"></select>
+          <button class="fclear" id="fClear" data-t="books_clear"></button>
+        </div>
+        <p class="fcount"><strong id="bCount">0</strong> <span data-t="books_count"></span></p>
+      </div>
+
+      <div class="book-grid" id="bookGrid"></div>
+      <p class="book-none hidden" id="bookNone" data-t="books_none"></p>
+    </div></section>
+
+    <section class="page" id="page-book"><div class="wrap">
+      <button class="back-link" data-nav="books" data-t="book_back"></button>
+      <div id="bookDetail"></div>
+    </div></section>
     <section class="page" id="page-videos"><div class="wrap"><h1 class="sec-title" data-t="videos_title"></h1><div class="placeholder" data-phase="8">Phase 8</div></div></section>
     <section class="page" id="page-experiences"><div class="wrap"><h1 class="sec-title" data-t="exp_title"></h1><div class="placeholder" data-phase="9">Phase 9</div></div></section>
     <section class="page" id="page-offers"><div class="wrap"><h1 class="sec-title" data-t="offers_title"></h1>
-      <p class="sec-sub" data-t="offer_hook_sub"></p><div class="offer-grid" id="offerGrid2"></div></div></section>
+      <p class="sec-sub" data-t="offer_hook_sub"></p><div class="offer-grid" id="offerGrid2"></div>
+      <h2 class="sec-title" data-t="price_title"></h2>
+      <div class="slab-wrap" id="slabTable"></div></div></section>
     <section class="page" id="page-qa"><div class="wrap"><h1 class="sec-title" data-t="qa_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
     <section class="page" id="page-authors"><div class="wrap"><h1 class="sec-title" data-t="author_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
     <section class="page" id="page-about"><div class="wrap"><h1 class="sec-title" data-t="pub_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
@@ -236,6 +261,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=6e"></script>
+<script src="assets/js/app.js?v=7g"></script>
 </body>
 </html>
