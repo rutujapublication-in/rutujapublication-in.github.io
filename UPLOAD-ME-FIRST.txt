@@ -1,14 +1,14 @@
-RUTUJA WEBSITE — BUILD v8a
+RUTUJA WEBSITE — BUILD v8b
 
 HOW TO CHECK THE UPLOAD WORKED
 ------------------------------
 After uploading and waiting 2 minutes, open the site.
-You should see "v8a" in two places:
+You should see "v8b" in two places:
   1. small grey text under the tagline on the welcome banner
   2. at the end of the footer, after the copyright line
 
-If you do NOT see v8a, the upload did not go through.
-Do not debug anything else until v8a appears.
+If you do NOT see v8b, the upload did not go through.
+Do not debug anything else until v8b appears.
 
 WHAT IS IN THIS BUILD
 ---------------------

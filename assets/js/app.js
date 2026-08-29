@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8a',
+  VERSION: 'v8b',
   lang: 'mr',
   text: {},
   locations: null,
@@ -34,9 +34,9 @@ const RUTUJA = {
 
     this.config = this.defaultConfig();
 
-    ENTRY.init(this);
     BOOKS.init(this);
     MEDIA.init(this);
+    ENTRY.init(this);
   },
 
   /* ---- SETTINGS YOU CAN CHANGE ---- */
@@ -125,13 +125,17 @@ const RUTUJA = {
       const v = this.t(el.dataset.t);
       if (v) el.textContent = v;
     });
-    this.paintStrip();
-    this.paintStandards();
-    this.paintOffers();
-    BOOKS.paint();
-    MEDIA.paint();
-    this.paintContact();
-    this.paintFooter();
+    // Each section is isolated: if one fails, the rest of the site still renders.
+    [['strip', () => this.paintStrip()],
+     ['standards', () => this.paintStandards()],
+     ['offers', () => this.paintOffers()],
+     ['books', () => BOOKS.paint()],
+     ['media', () => MEDIA.paint()],
+     ['contact', () => this.paintContact()],
+     ['footer', () => this.paintFooter()]
+    ].forEach(([name, fn]) => {
+      try { fn(); } catch (e) { console.error('Section failed:', name, e); }
+    });
   },
 
   paintStrip() {
@@ -244,7 +248,13 @@ const RUTUJA = {
 };
 
 console.log('%cRutuja site ' + RUTUJA.VERSION + ' loaded', 'color:#1A4D2E;font-weight:bold');
-document.addEventListener('DOMContentLoaded', () => RUTUJA.init());
+document.addEventListener('DOMContentLoaded', () => {
+  RUTUJA.init().catch(e => {
+    console.error('Boot failed', e);
+    document.getElementById('entry')?.classList.add('hidden');
+    document.getElementById('site')?.classList.remove('hidden');
+  });
+});
 
 
 
@@ -938,6 +948,7 @@ const MEDIA = {
   },
 
   paint() {
+    if (!this.app) return;
     this.rails.forEach(r => clearInterval(r.timer));
     this.rails = [];
     const vids = this.live('videos', true);
