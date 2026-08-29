@@ -197,7 +197,10 @@
   "ex_about": "ऋतुजा पब्लिकेशनची ओळख",
   "ex_contact": "थेट बोला, लगेच उत्तर",
   "std_books_count": "पुस्तके",
-  "std_open": "पाहा"
+  "std_open": "पाहा",
+  "book_from": "पासून",
+  "book_bulk_hint": "नगांवर",
+  "book_open": "पहा"
  },
  "en": {
   "nav_home": "Home",
@@ -397,6 +400,9 @@
   "ex_about": "About Rutuja Publication",
   "ex_contact": "Talk to us directly",
   "std_books_count": "books",
-  "std_open": "Open"
+  "std_open": "Open",
+  "book_from": "from",
+  "book_bulk_hint": "copies at",
+  "book_open": "Open"
  }
 }

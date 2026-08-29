@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8f',
+  VERSION: 'v8h',
   lang: 'mr',
   text: {},
   locations: null,
@@ -117,6 +117,18 @@ const RUTUJA = {
       }
     };
     return x[this.lang][key];
+  },
+
+  /* Book, ad, experience and news images all follow one rule:
+     name.webp is the 1x file, name@2x.webp is the retina file if present. */
+  img(folder, file, cls) {
+    if (!file) return '';
+    const dot = file.lastIndexOf('.');
+    const x2 = dot > 0 ? file.slice(0, dot) + '@2x' + file.slice(dot) : file;
+    return `<img src="assets/img/${folder}/${file}"
+      srcset="assets/img/${folder}/${file} 1x, assets/img/${folder}/${x2} 2x"
+      onerror="this.removeAttribute('srcset')"
+      alt="" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
   },
 
   /* ---- 3. RENDER ---- */
@@ -798,6 +810,7 @@ const BOOKS = {
   },
 
   card(b) {
+    const t = k => this.app.t(k);
     const mr = this.app.lang === 'mr';
     const name = mr ? b.name_mr : b.name_en;
     const sl   = this.subs(b);
@@ -806,15 +819,24 @@ const BOOKS = {
     const cover = b.cover_image
       ? this.app.img('books', b.cover_image)
       : `<span class="book-cover-ph">${num}</span>`;
-    return `<button class="book-card" data-book="${b.book_id}">
-      <span class="book-cover" style="background:${this.stdColor(b)}">
-        ${cover}<span class="book-std">${this.app.t('books_standard')} ${num}</span>
+    const best = this.slabs(b.offer_id).slice(-1)[0];
+    const hint = best && best.selling_rate < b.mrp
+      ? `<span class="book-bulk">${best.qty_min}+ ${t('book_bulk_hint')} &#8377;${best.selling_rate}</span>` : '';
+    return `<button class="book-card" data-book="${b.book_id}" style="--sc:${this.stdColor(b)}">
+      <span class="book-stage">
+        <span class="book3d">
+          <span class="book-cover">
+            ${cover}<span class="book-std">${t('books_standard')} ${num}</span>
+          </span>
+          <span class="book-pages"></span>
+          <span class="book-open">${t('book_open')} &rarr;</span>
+        </span>
       </span>
       <span class="book-body">
         <span class="book-name">${name}</span>
         <span class="book-meta">${sub} · ${this.medLabel(b)}</span>
         ${b.subtitle_mr || b.subtitle_en ? `<span class="book-sub">${mr ? b.subtitle_mr : b.subtitle_en}</span>` : ''}
-        <span class="book-price">₹${b.mrp}</span>
+        <span class="book-price">&#8377;${b.mrp}${hint}</span>
       </span></button>`;
   },
 
@@ -901,7 +923,12 @@ const BOOKS = {
 
     this.el.detail.innerHTML = `
       <div class="bd">
-        <div class="bd-cover" style="background:${this.stdColor(b)}">${cover}</div>
+        <div class="book-stage bd-stage" style="--sc:${this.stdColor(b)}">
+          <div class="book3d">
+            <div class="book-cover bd-cover">${cover}</div>
+            <span class="book-pages"></span>
+          </div>
+        </div>
         <div>
           <h1 class="bd-title">${mr ? b.name_mr : b.name_en}</h1>
           ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
@@ -1024,17 +1051,6 @@ const MEDIA = {
       alt="" decoding="async"${eager ? '' : ' loading="lazy"'}>`;
   },
 
-  /* Book, ad, experience and news images all follow one rule:
-     name.webp is the 1x file, name@2x.webp is the retina file if present. */
-  img(folder, file, cls) {
-    if (!file) return '';
-    const dot = file.lastIndexOf('.');
-    const x2 = dot > 0 ? file.slice(0, dot) + '@2x' + file.slice(dot) : file;
-    return `<img src="assets/img/${folder}/${file}"
-      srcset="assets/img/${folder}/${file} 1x, assets/img/${folder}/${x2} 2x"
-      onerror="this.removeAttribute('srcset')"
-      alt="" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
-  },
 
   /* ---- BUILD ONE CAROUSEL ---- */
   build(elId, items, kind, delay) {
