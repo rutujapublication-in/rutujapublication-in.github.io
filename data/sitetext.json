@@ -177,7 +177,14 @@
   "book_call": "फोन करून विचारा",
   "med_Marathi": "मराठी",
   "med_Semi-English": "सेमी-इंग्रजी",
-  "med_English": "इंग्रजी"
+  "med_English": "इंग्रजी",
+  "car_prev": "मागील",
+  "car_next": "पुढील",
+  "car_play": "व्हिडिओ पाहा",
+  "ads_title": "जाहिराती",
+  "ads_none": "सध्या कोणतीही जाहिरात नाही",
+  "video_of_book": "या पुस्तकाबद्दल",
+  "video_see_book": "पुस्तक पाहा"
  },
  "en": {
   "nav_home": "Home",
@@ -357,6 +364,13 @@
   "book_call": "Call to ask",
   "med_Marathi": "Marathi",
   "med_Semi-English": "Semi-English",
-  "med_English": "English"
+  "med_English": "English",
+  "car_prev": "Previous",
+  "car_next": "Next",
+  "car_play": "Play video",
+  "ads_title": "Announcements",
+  "ads_none": "No announcements right now",
+  "video_of_book": "About this book",
+  "video_see_book": "View this book"
  }
 }

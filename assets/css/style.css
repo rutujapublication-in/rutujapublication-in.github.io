@@ -552,3 +552,79 @@ a{color:inherit;text-decoration:none}
 .slab{margin-bottom:14px}
 .slab td.sh{background:var(--green-light);font-weight:600;font-size:13.5px;color:var(--green-dark)}
 .slab th{font-size:15px}
+
+/* ===================================================================
+   PHASE 8 — CAROUSELS
+   =================================================================== */
+.carousel{position:relative;overflow:hidden;border-radius:16px;background:var(--white);
+  border:1px solid var(--line);margin-bottom:8px}
+.car-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+@media(prefers-reduced-motion:reduce){.car-track{transition:none}}
+.car-slide{min-width:100%;display:flex;gap:22px;padding:20px;align-items:center}
+
+.car-media{flex-shrink:0;border-radius:12px;overflow:hidden;background:#111;position:relative;
+  cursor:pointer;display:flex;align-items:center;justify-content:center}
+.car-media.vertical{width:220px;aspect-ratio:9/16}
+.car-media.horizontal{width:420px;aspect-ratio:16/9}
+.car-media img{width:100%;height:100%;object-fit:cover}
+.car-media iframe{width:100%;height:100%;border:0;display:block}
+.car-play{position:absolute;width:58px;height:58px;border-radius:50%;
+  background:rgba(232,163,61,.94);color:#3F2A05;display:flex;align-items:center;
+  justify-content:center;font-size:22px;padding-left:4px;transition:transform .15s;
+  box-shadow:0 3px 14px rgba(0,0,0,.35)}
+.car-media:hover .car-play{transform:scale(1.12)}
+
+.car-body{flex:1;min-width:0}
+.car-tag{display:inline-block;background:var(--green-light);color:var(--green-dark);
+  border-radius:8px;padding:5px 12px;font-size:14px;font-weight:600;margin-bottom:9px}
+.car-title{font-family:'Baloo 2',sans-serif;font-size:21px;font-weight:600;
+  color:var(--green-dark);margin-bottom:7px;line-height:1.3}
+.car-cap{font-size:15px;line-height:1.75;color:var(--ink-soft)}
+.car-link{display:inline-block;margin-top:12px;font-size:14.5px;font-weight:600;
+  color:var(--green);text-decoration:underline;text-underline-offset:3px}
+
+.car-arrow{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;
+  border-radius:50%;background:rgba(255,255,255,.96);border:1px solid var(--line);
+  color:var(--green-dark);font-size:20px;display:flex;align-items:center;
+  justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.14);z-index:3;transition:.15s}
+.car-arrow:hover{background:var(--gold);border-color:var(--gold)}
+.car-prev{left:10px} .car-next{right:10px}
+
+.car-dots{display:flex;gap:7px;justify-content:center;padding:0 0 14px}
+.car-dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:.2s}
+.car-dot.on{background:var(--gold);width:22px;border-radius:5px}
+
+.car-empty{padding:44px 20px;text-align:center;color:#A79C88;font-size:15px}
+
+/* Video grid on the Videos page */
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:26px}
+.vid-card{background:var(--white);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;text-align:left;cursor:pointer;transition:.16s;display:flex;flex-direction:column}
+.vid-card:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(0,0,0,.12);border-color:var(--green)}
+.vid-thumb{position:relative;background:#111;display:flex;align-items:center;justify-content:center}
+.vid-thumb.vertical{aspect-ratio:3/4}
+.vid-thumb.horizontal{aspect-ratio:16/9}
+.vid-thumb img{width:100%;height:100%;object-fit:cover}
+.vid-thumb .car-play{width:44px;height:44px;font-size:17px}
+.vid-body{padding:12px 14px 15px}
+.vid-tag{font-size:12.5px;color:var(--gold-dark);font-weight:600}
+.vid-name{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;
+  color:var(--green-dark);margin-top:3px;line-height:1.35}
+
+/* Videos on a book page */
+.bd-videos{margin-top:24px}
+.bd-videos .vid-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));margin-top:12px}
+
+@media(max-width:760px){
+  .car-slide{flex-direction:column;gap:15px;padding:16px}
+  .car-media.vertical{width:100%;max-width:250px;aspect-ratio:9/16}
+  .car-media.horizontal{width:100%;aspect-ratio:16/9}
+  .car-body{width:100%}
+  .car-title{font-size:18px}
+  .car-cap{font-size:14.5px}
+  .car-arrow{width:36px;height:36px;font-size:17px}
+  .car-prev{left:6px} .car-next{right:6px}
+}
+@media(max-width:560px){
+  .vid-grid{grid-template-columns:repeat(2,1fr);gap:11px}
+}

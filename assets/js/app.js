@@ -5,11 +5,11 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v7g',
+  VERSION: 'v8a',
   lang: 'mr',
   text: {},
   locations: null,
-  content: { books: [], offers: [] },
+  content: { books: [], offers: [], videos: [], ads: [], config: {} },
   config: {},
 
   /* ---- 1. BOOT ---- */
@@ -36,6 +36,7 @@ const RUTUJA = {
 
     ENTRY.init(this);
     BOOKS.init(this);
+    MEDIA.init(this);
   },
 
   /* ---- SETTINGS YOU CAN CHANGE ---- */
@@ -128,6 +129,7 @@ const RUTUJA = {
     this.paintStandards();
     this.paintOffers();
     BOOKS.paint();
+    MEDIA.paint();
     this.paintContact();
     this.paintFooter();
   },
@@ -607,6 +609,12 @@ const BOOKS = {
       this.renderGrid();
     });
 
+    // Any [data-book] control anywhere opens that book.
+    document.addEventListener('click', e => {
+      const b = e.target.closest('.car-link[data-book]');
+      if (b) this.openBook(b.dataset.book);
+    });
+
     // A standard card on the home page pre-filters the books page.
     document.addEventListener('click', e => {
       const c = e.target.closest('.std-card');
@@ -733,7 +741,7 @@ const BOOKS = {
     const sub  = sl.slice(0, 2).join(' · ') + (sl.length > 2 ? ' +' + (sl.length - 2) : '');
     const num  = this.stdLabel(b);
     const cover = b.cover_image
-      ? `<img src="assets/img/${b.cover_image}" alt="" loading="lazy">`
+      ? `<img src="assets/img/books/${b.cover_image}" alt="" loading="lazy">`
       : `<span class="book-cover-ph">${num}</span>`;
     return `<button class="book-card" data-book="${b.book_id}">
       <span class="book-cover" style="background:${this.stdColor(b)}">
@@ -824,7 +832,7 @@ const BOOKS = {
     const mr = this.app.lang === 'mr';
     const num = this.stdLabel(b);
     const cover = b.cover_image
-      ? `<img src="assets/img/${b.cover_image}" alt="">`
+      ? `<img src="assets/img/books/${b.cover_image}" alt="">`
       : `<span>${num}</span>`;
     const mySlabs = this.slabs(b.offer_id);
 
@@ -860,6 +868,8 @@ const BOOKS = {
             <button class="btn btn-gold calc-btn" id="calcAsk">${t('price_ask')}</button>
           </div>
 
+          ${MEDIA.forBook(b.book_id)}
+
           <div class="slab-wrap" style="margin-top:18px">
             <table class="slab">
               <tr><th>${t('price_qty')}</th><th>${t('price_rate')}</th><th>${t('price_discount')}</th></tr>
@@ -888,6 +898,7 @@ const BOOKS = {
         ${p.saved ? `<div class="calc-line"><span>${t('price_saving')}</span>
           <span class="calc-save">₹${p.saved}</span></div>` : ''}`;
     };
+    MEDIA.bindBookVideos(this.el.detail);
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
     document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
@@ -900,5 +911,202 @@ const BOOKS = {
     draw();
 
     if (!silent) this.app.go('book');
+  }
+};
+
+/* ===================================================================
+   PHASE 8 — VIDEO AND ADVERTISEMENT CAROUSELS
+   Two independent systems. Auto-rotate, arrows, dots, swipe.
+   Rotation pauses on hover, touch, and while a video is playing.
+   =================================================================== */
+
+const MEDIA = {
+  app: null,
+  rails: [],
+
+  init(app) { this.app = app; },
+
+  cfg(key, fallback) {
+    const v = (this.app.content.config || {})[key];
+    return Number(v) > 0 ? Number(v) * 1000 : fallback;
+  },
+
+  live(list, carouselOnly) {
+    return (this.app.content[list] || [])
+      .filter(x => x.status === 'LIVE' && (!carouselOnly || x.in_carousel !== 'NO'))
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  },
+
+  paint() {
+    this.rails.forEach(r => clearInterval(r.timer));
+    this.rails = [];
+    const vids = this.live('videos', true);
+    const ads  = this.live('ads', true);
+
+    this.build('vidCar',  vids, 'video', this.cfg('video_rotate_seconds', 4000));
+    this.build('vidCar2', vids, 'video', this.cfg('video_rotate_seconds', 4000));
+    this.build('adCar',   ads,  'ad',    this.cfg('ad_rotate_seconds', 3000));
+    this.grid('vidGrid', vids);
+  },
+
+  thumb(id) { return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`; },
+
+  /* ---- BUILD ONE CAROUSEL ---- */
+  build(elId, items, kind, delay) {
+    const box = document.getElementById(elId);
+    if (!box) return;
+    const t = k => this.app.t(k);
+
+    if (!items.length) {
+      box.innerHTML = `<div class="car-empty">${t(kind === 'ad' ? 'ads_none' : 'videos_none')}</div>`;
+      return;
+    }
+
+    const mr = this.app.lang === 'mr';
+    const slides = items.map(x => kind === 'video'
+      ? this.videoSlide(x, mr) : this.adSlide(x, mr)).join('');
+
+    box.innerHTML = `
+      <div class="car-track">${slides}</div>
+      ${items.length > 1 ? `
+        <button class="car-arrow car-prev" aria-label="${t('car_prev')}">&#8249;</button>
+        <button class="car-arrow car-next" aria-label="${t('car_next')}">&#8250;</button>` : ''}
+      ${items.length > 1 ? `<div class="car-dots">${items
+        .map((_, i) => `<button class="car-dot${i ? '' : ' on'}" data-i="${i}"></button>`)
+        .join('')}</div>` : ''}`;
+
+    const rail = { box, track: box.querySelector('.car-track'), n: items.length,
+                   i: 0, delay, timer: null, paused: false };
+
+    const go = i => {
+      rail.i = (i + rail.n) % rail.n;
+      rail.track.style.transform = `translateX(-${rail.i * 100}%)`;
+      box.querySelectorAll('.car-dot').forEach((d, k) => d.classList.toggle('on', k === rail.i));
+    };
+    const start = () => { clearInterval(rail.timer);
+      if (rail.n > 1 && !rail.paused) rail.timer = setInterval(() => go(rail.i + 1), rail.delay); };
+    const stop = () => clearInterval(rail.timer);
+
+    box.querySelector('.car-next')?.addEventListener('click', () => { go(rail.i + 1); start(); });
+    box.querySelector('.car-prev')?.addEventListener('click', () => { go(rail.i - 1); start(); });
+    box.querySelectorAll('.car-dot').forEach(d =>
+      d.addEventListener('click', () => { go(+d.dataset.i); start(); }));
+
+    box.addEventListener('mouseenter', stop);
+    box.addEventListener('mouseleave', () => { if (!rail.paused) start(); });
+
+    // Swipe on touch devices
+    let x0 = null;
+    box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; stop(); }, { passive: true });
+    box.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 45) go(rail.i + (dx < 0 ? 1 : -1));
+      x0 = null; if (!rail.paused) start();
+    });
+
+    // Playing a video stops rotation for good until the visitor moves on
+    box.querySelectorAll('[data-yt]').forEach(m => {
+      m.addEventListener('click', () => {
+        rail.paused = true; stop();
+        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1"
+          title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen></iframe>`;
+      });
+    });
+
+    this.rails.push(rail);
+    start();
+  },
+
+  videoSlide(v, mr) {
+    const t = k => this.app.t(k);
+    const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
+    const book = (this.app.content.books || []).find(b => b.book_id === v.book_id);
+    return `<div class="car-slide">
+      <div class="car-media ${o}" data-yt="${v.youtube_id}">
+        <img src="${this.thumb(v.youtube_id)}" alt="" loading="lazy">
+        <span class="car-play">&#9654;</span>
+      </div>
+      <div class="car-body">
+        <span class="car-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
+        <div class="car-title">${mr ? v.title_mr : v.title_en}</div>
+        <p class="car-cap">${mr ? v.caption_mr : v.caption_en}</p>
+        ${book ? `<button class="car-link" data-book="${book.book_id}">${t('video_see_book')} &rarr;</button>` : ''}
+      </div>
+    </div>`;
+  },
+
+  adSlide(a, mr) {
+    const link = a.link_type === 'book' && a.link_target
+      ? `<button class="car-link" data-book="${a.link_target}">${this.app.t('books_view')} &rarr;</button>` : '';
+    return `<div class="car-slide">
+      <div class="car-media horizontal">
+        <img src="assets/img/ads/${a.image}" alt="" loading="lazy">
+      </div>
+      <div class="car-body">
+        <div class="car-title">${mr ? a.title_mr : a.title_en}</div>
+        <p class="car-cap">${mr ? (a.caption_mr || '') : (a.caption_en || '')}</p>
+        ${link}
+      </div>
+    </div>`;
+  },
+
+  /* ---- GRID OF ALL VIDEOS ---- */
+  grid(elId, items) {
+    const box = document.getElementById(elId);
+    if (!box) return;
+    const mr = this.app.lang === 'mr';
+    box.innerHTML = items.map(v => {
+      const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
+      return `<button class="vid-card" data-yt-open="${v.youtube_id}">
+        <span class="vid-thumb ${o}">
+          <img src="${this.thumb(v.youtube_id)}" alt="" loading="lazy">
+          <span class="car-play">&#9654;</span>
+        </span>
+        <span class="vid-body">
+          <span class="vid-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
+          <span class="vid-name">${mr ? v.title_mr : v.title_en}</span>
+        </span></button>`;
+    }).join('');
+
+    box.querySelectorAll('[data-yt-open]').forEach(c => {
+      c.addEventListener('click', () => {
+        const th = c.querySelector('.vid-thumb');
+        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1"
+          title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;
+      });
+    });
+  },
+
+  /* ---- VIDEOS BELONGING TO ONE BOOK ---- */
+  forBook(bookId) {
+    const vids = this.live('videos', false).filter(v => v.book_id === bookId);
+    if (!vids.length) return '';
+    const mr = this.app.lang === 'mr';
+    return `<div class="bd-videos">
+      <div class="calc-h">${this.app.t('book_videos')}</div>
+      <div class="vid-grid">${vids.map(v => {
+        const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
+        return `<button class="vid-card" data-yt-open="${v.youtube_id}">
+          <span class="vid-thumb ${o}">
+            <img src="${this.thumb(v.youtube_id)}" alt="" loading="lazy">
+            <span class="car-play">&#9654;</span></span>
+          <span class="vid-body">
+            <span class="vid-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
+            <span class="vid-name">${mr ? v.title_mr : v.title_en}</span>
+          </span></button>`; }).join('')}</div></div>`;
+  },
+
+  bindBookVideos(root) {
+    root.querySelectorAll('[data-yt-open]').forEach(c => {
+      c.addEventListener('click', () => {
+        const th = c.querySelector('.vid-thumb');
+        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1"
+          title="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen
+          style="width:100%;height:100%;border:0"></iframe>`;
+      });
+    });
   }
 };

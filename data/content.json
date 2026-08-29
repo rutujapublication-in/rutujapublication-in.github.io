@@ -18,7 +18,8 @@
    "cover_image": "",
    "featured": "YES",
    "sort_order": 10,
-   "status": "LIVE"
+   "status": "LIVE",
+   "video_ids": "RP-V-001"
   },
   {
    "book_id": "RP-B-002",
@@ -38,7 +39,8 @@
    "cover_image": "",
    "featured": "YES",
    "sort_order": 20,
-   "status": "LIVE"
+   "status": "LIVE",
+   "video_ids": "RP-V-002"
   },
   {
    "book_id": "RP-B-003",
@@ -58,7 +60,8 @@
    "cover_image": "",
    "featured": "YES",
    "sort_order": 30,
-   "status": "LIVE"
+   "status": "LIVE",
+   "video_ids": "RP-V-003"
   },
   {
    "book_id": "RP-B-004",
@@ -78,7 +81,8 @@
    "cover_image": "",
    "featured": "YES",
    "sort_order": 40,
-   "status": "LIVE"
+   "status": "LIVE",
+   "video_ids": "RP-V-004"
   },
   {
    "book_id": "RP-B-005",
@@ -98,7 +102,8 @@
    "cover_image": "",
    "featured": "NO",
    "sort_order": 50,
-   "status": "LIVE"
+   "status": "LIVE",
+   "video_ids": ""
   }
  ],
  "offers": [
@@ -295,5 +300,76 @@
    "status": "LIVE"
   }
  ],
- "sample": false
+ "sample": false,
+ "videos": [
+  {
+   "video_id": "RP-V-001",
+   "book_id": "RP-B-001",
+   "title_mr": "चला वाचूया झटपट",
+   "title_en": "Chala Vachuya Zatpat",
+   "youtube_id": "QDBwi9QONZQ",
+   "orientation": "vertical",
+   "video_type": "Book Explanation",
+   "tagline_mr": "🔤 मराठी भाषेचा पाया पक्का",
+   "tagline_en": "🔤 Build Language Skills of Marathi",
+   "caption_mr": "मुळाक्षरांपासून शब्दांपर्यंत आणि वाचन–लेखनाच्या सरावातून मराठी भाषेची भक्कम पायाभरणी करत मुलांना भाषा शिकण्याचा आत्मविश्वास देणारे सर्वसमावेशक पुस्तक.",
+   "caption_en": "A comprehensive book that builds a strong foundation in Marathi language learning, taking children from letters to words and developing confidence through reading and writing practice.",
+   "in_carousel": "YES",
+   "sort_order": 10,
+   "status": "LIVE"
+  },
+  {
+   "video_id": "RP-V-002",
+   "book_id": "RP-B-002",
+   "title_mr": "इंग्लिश प्रायमर विथ फोनिक्स",
+   "title_en": "English Primer with Phonics",
+   "youtube_id": "VRi9wVrwCac",
+   "orientation": "horizontal",
+   "video_type": "Book Explanation",
+   "tagline_mr": "🔤 इंग्रजीची सुरुवात आत्मविश्वासाने",
+   "tagline_en": "🔤 Build Language Skills of English",
+   "caption_mr": "चित्रे, शब्द, ध्वनी आणि फोनिक्सच्या माध्यमातून इंग्रजी वाचन, उच्चार आणि शब्दसमज अधिक सोपी व आत्मविश्वासपूर्ण करणारे प्राथमिक विद्यार्थ्यांसाठीचे उपयुक्त पुस्तक.",
+   "caption_en": "A child-friendly book that makes English reading, pronunciation and word understanding easier through pictures, sounds, words and phonics.",
+   "in_carousel": "YES",
+   "sort_order": 20,
+   "status": "LIVE"
+  },
+  {
+   "video_id": "RP-V-003",
+   "book_id": "RP-B-003",
+   "title_mr": "गणितमित्र भाग १",
+   "title_en": "Ganitmitra Bhag 1",
+   "youtube_id": "L_TjaBV2q_M",
+   "orientation": "vertical",
+   "video_type": "Book Explanation",
+   "tagline_mr": "🧩 गणिताची मूलभूत ओळख",
+   "tagline_en": "🧩 Understand the Basics of Math",
+   "caption_mr": "चित्रे, कोडी आणि मजेशीर सरावाच्या माध्यमातून गणिताच्या मूलभूत संकल्पना समजून घेत मुलांना गणिताशी आत्मविश्वासाने मैत्री करायला मदत करणारी कार्यपुस्तिका.",
+   "caption_en": "A child-friendly workbook that uses pictures, puzzles and enjoyable practice to help children understand basic mathematical concepts and build confidence in mathematics.",
+   "in_carousel": "YES",
+   "sort_order": 30,
+   "status": "LIVE"
+  },
+  {
+   "video_id": "RP-V-004",
+   "book_id": "RP-B-004",
+   "title_mr": "गणितमित्र भाग २",
+   "title_en": "Ganitmitra Bhag 2",
+   "youtube_id": "DsqQa0qLUmU",
+   "orientation": "vertical",
+   "video_type": "Book Explanation",
+   "tagline_mr": "✏️ गणित टप्प्याटप्प्याने",
+   "tagline_en": "✏️ Learn Mathematics Step by Step",
+   "caption_mr": "संख्या, गणितीय क्रिया, मापन, वेळ, भूमिती आणि अपूर्णांक यांसारख्या संकल्पना उदाहरणे व सरावातून समजून गणितातील पुढची पायरी आत्मविश्वासाने गाठायला मदत करणारे पुस्तक.",
+   "caption_en": "A book that helps children confidently progress in mathematics by understanding numbers, operations, measurement, time, geometry and fractions through examples and practice.",
+   "in_carousel": "YES",
+   "sort_order": 40,
+   "status": "LIVE"
+  }
+ ],
+ "ads": [],
+ "config": {
+  "video_rotate_seconds": 4,
+  "ad_rotate_seconds": 3
+ }
 }
