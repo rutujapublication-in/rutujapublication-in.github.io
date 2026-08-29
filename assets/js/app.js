@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8h',
+  VERSION: 'v8i',
   lang: 'mr',
   text: {},
   locations: null,
@@ -856,6 +856,7 @@ const BOOKS = {
 
   renderFeatured() {
     if (!this.el.feat) return;
+    this.el.feat.classList.add('shelf');
     const f = this.live().filter(b => b.featured === 'YES').slice(0, 4);
     this.el.feat.innerHTML = f.map(b => this.card(b)).join('');
     this.bind(this.el.feat);
@@ -1175,6 +1176,8 @@ const MEDIA = {
   /* Clicking the frame swaps the still for the real player, in place. */
   bindPlay(root) {
     root.querySelectorAll('[data-yt]').forEach(m => {
+      m.setAttribute('role', 'button');
+      m.setAttribute('tabindex', '0');
       m.addEventListener('click', () => {
         if (m.classList.contains('playing')) return;
         m.classList.add('playing');

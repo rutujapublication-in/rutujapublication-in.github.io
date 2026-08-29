@@ -918,14 +918,14 @@ a{color:inherit;text-decoration:none}
   background:radial-gradient(50% 50% at 50% 50%,rgba(18,56,33,.42),transparent 72%);
   filter:blur(5px);transition:all .45s cubic-bezier(.2,.7,.3,1);
 }
-.book-card:hover .book-stage::after{left:14%;right:2%;opacity:.9;height:20px}
+@media(hover:hover){.book-card:hover .book-stage::after{left:14%;right:2%;opacity:.9;height:20px}}
 
 .book3d{
   position:relative;display:block;transform-style:preserve-3d;
   transform:rotateY(-3deg);transform-origin:left center;
   transition:transform .5s cubic-bezier(.2,.7,.3,1);
 }
-.book-card:hover .book3d{transform:rotateY(-15deg) translateY(-6px)}
+@media(hover:hover){.book-card:hover .book3d{transform:rotateY(-15deg) translateY(-6px)}}
 .book-card:active .book3d{transform:rotateY(-9deg) translateY(-2px)}
 
 /* ---- the cover face ---- */
@@ -972,7 +972,7 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 5px 16px rgba(0,0,0,.3);opacity:0;transition:.28s;z-index:3;
   white-space:nowrap;
 }
-.book-card:hover .book-open{opacity:1;transform:translate(-50%,0)}
+@media(hover:hover){.book-card:hover .book-open{opacity:1;transform:translate(-50%,0)}}
 
 .book-std{
   position:absolute;top:9px;right:9px;z-index:3;
@@ -985,7 +985,7 @@ a{color:inherit;text-decoration:none}
 .book-body{padding:14px 2px 0;display:flex;flex-direction:column;gap:3px;flex:1}
 .book-name{font-family:'Baloo 2',sans-serif;font-size:16.5px;font-weight:600;
   color:var(--green-dark);line-height:1.35;transition:color .2s}
-.book-card:hover .book-name{color:var(--gold-dark)}
+@media(hover:hover){.book-card:hover .book-name{color:var(--gold-dark)}}
 .book-sub{font-size:12px;color:#9B958A;line-height:1.45}
 .book-meta{font-size:12.5px;color:var(--ink-soft);flex:1;padding-top:2px}
 .book-price{font-family:'Baloo 2',sans-serif;font-size:21px;font-weight:700;
@@ -1015,13 +1015,98 @@ a{color:inherit;text-decoration:none}
   .bd-stage{max-width:270px;margin:0 auto}
 }
 @media(max-width:560px){
-  .book-grid{grid-template-columns:repeat(2,1fr);gap:20px}
   .book-name{font-size:15px}
   .book-price{font-size:19px}
-  .book-open{display:none}
-  .book3d{transform:rotateY(-2deg)}
-  .book-pages{width:7px;right:-6px}
 }
 /* fallback shown only if a book has no cover image yet */
 .book-cover-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-family:'Baloo 2',sans-serif;font-size:58px;font-weight:700;color:rgba(255,255,255,.92);z-index:1}
+
+/* ===================================================================
+   v8i — MOBILE FIRST
+   A phone has no hover, so every effect that was hidden behind :hover
+   is shown by default on touch, and pressing gives real feedback.
+   =================================================================== */
+
+@media(hover:none){
+  /* the book already stands open at an angle - nothing to hover for */
+  .book3d{transform:rotateY(-12deg)}
+  .book-stage::after{left:13%;right:3%;height:18px;opacity:.85}
+  .book-open{opacity:1;transform:translate(-50%,0)}
+  .book-card:active .book3d{transform:rotateY(-5deg) translateY(2px) scale(.985)}
+  .book-card:active .book-open{background:var(--gold);color:#3F2A05}
+
+  .std-card:active{transform:scale(.96)}
+  .ex-card:active{transform:scale(.98);border-color:var(--green)}
+  .offer-card:active{transform:scale(.98);border-left-color:var(--green)}
+  .car-media:active{transform:scale(.99)}
+  .vcard-btn:active,.btn:active{transform:scale(.97)}
+
+  /* arrows on the standard and explore cards already point the way */
+  .std-go,.ex-arrow{transform:none}
+}
+
+@media(max-width:700px){
+  /* ---- Featured books become a shelf you swipe ---- */
+  #featGrid{
+    display:flex;gap:18px;overflow-x:auto;overflow-y:visible;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    padding:4px 20px 10px;margin:0 -20px;scrollbar-width:none;
+  }
+  #featGrid::-webkit-scrollbar{display:none}
+  #featGrid .book-card{min-width:190px;max-width:190px;scroll-snap-align:start}
+
+  /* ---- Books page: two per row, but bigger than before ---- */
+  .book-grid{grid-template-columns:repeat(2,1fr);gap:22px 18px}
+  .book-pages{width:8px;right:-7px}
+  .book-open{font-size:12.5px;padding:7px 15px;bottom:11px}
+  .book-name{font-size:15.5px;line-height:1.3}
+  .book-price{font-size:19px;gap:7px;margin-top:6px}
+  .book-bulk{font-size:11.5px;padding:3px 8px}
+  .book-std{font-size:11px;padding:3px 8px;top:8px;right:8px}
+
+  /* ---- Standard cards: full width pair, taller, easier to hit ---- */
+  .std-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .std-card{min-height:146px;border-radius:20px}
+  .std-num{font-size:50px}
+  .std-ord{font-size:21px}
+  .std-foot{font-size:13px}
+
+  /* ---- Explore: one per row so the label is readable ---- */
+  .ex-grid{grid-template-columns:1fr;gap:10px}
+  .ex-card{padding:15px 16px}
+  .ex-ico{width:44px;height:44px;font-size:20px}
+
+  .offer-grid{grid-template-columns:1fr;gap:11px}
+  .sec-title{font-size:22px;margin:32px 0 12px}
+  .sec-sub{font-size:14.5px;margin:-8px 0 14px}
+}
+
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  #featGrid{padding-left:16px;padding-right:16px;margin:0 -16px}
+  .book-grid{gap:20px 14px}
+  .book-name{font-size:14.5px}
+  .book-price{font-size:18px}
+  .book-bulk{font-size:11px}
+  .std-num{font-size:44px}
+  .std-card{min-height:132px;padding:13px 14px}
+  .hero-title{font-size:26px}
+  .hero-sub{font-size:14.5px}
+  .hero-btns{flex-direction:column;gap:10px}
+  .hero-btns .btn{width:100%}
+}
+
+/* very narrow phones: one book per row so nothing is cramped */
+@media(max-width:390px){
+  .book-grid{grid-template-columns:1fr;gap:22px}
+  #featGrid .book-card{min-width:172px;max-width:172px}
+  .std-grid{grid-template-columns:1fr}
+  .std-card{min-height:auto;flex-direction:row;align-items:center;gap:14px;padding:14px 16px}
+  .std-figure{margin:0}
+  .std-top{position:absolute;top:12px;left:16px}
+  .std-foot{border-top:0;padding-top:0;margin-left:auto;flex-direction:column;
+    align-items:flex-end;gap:2px}
+}
+/* the featured row is a shelf only on narrow screens */
+.book-grid.shelf{}
