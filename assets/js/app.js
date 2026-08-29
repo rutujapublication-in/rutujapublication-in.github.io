@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8d',
+  VERSION: 'v8e',
   lang: 'mr',
   text: {},
   locations: null,
@@ -804,7 +804,7 @@ const BOOKS = {
     const sub  = sl.slice(0, 2).join(' · ') + (sl.length > 2 ? ' +' + (sl.length - 2) : '');
     const num  = this.stdLabel(b);
     const cover = b.cover_image
-      ? `<img src="assets/img/books/${b.cover_image}" alt="" loading="lazy">`
+      ? this.app.img('books', b.cover_image)
       : `<span class="book-cover-ph">${num}</span>`;
     return `<button class="book-card" data-book="${b.book_id}">
       <span class="book-cover" style="background:${this.stdColor(b)}">
@@ -895,7 +895,7 @@ const BOOKS = {
     const mr = this.app.lang === 'mr';
     const num = this.stdLabel(b);
     const cover = b.cover_image
-      ? `<img src="assets/img/books/${b.cover_image}" alt="">`
+      ? this.app.img('books', b.cover_image)
       : `<span>${num}</span>`;
     const mySlabs = this.slabs(b.offer_id);
 
@@ -1015,11 +1015,25 @@ const MEDIA = {
 
   /* maxresdefault is 1280x720. Not every video has one, so fall back
      through sd, then hq, which always exist. */
-  thumbImg(id) {
-    const fb = `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'`;
+  /* maxresdefault is the largest still YouTube keeps (1280x720).
+     Not every video has one, so step down through sd, then hq. */
+  thumbImg(id, eager) {
+    const hq = `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'`;
     return `<img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
-      onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/sddefault.jpg';this.onerror=function(){${fb}}"
-      alt="" loading="lazy">`;
+      onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/sddefault.jpg';this.onerror=function(){${hq}}"
+      alt="" decoding="async"${eager ? '' : ' loading="lazy"'}>`;
+  },
+
+  /* Book, ad, experience and news images all follow one rule:
+     name.webp is the 1x file, name@2x.webp is the retina file if present. */
+  img(folder, file, cls) {
+    if (!file) return '';
+    const dot = file.lastIndexOf('.');
+    const x2 = dot > 0 ? file.slice(0, dot) + '@2x' + file.slice(dot) : file;
+    return `<img src="assets/img/${folder}/${file}"
+      srcset="assets/img/${folder}/${file} 1x, assets/img/${folder}/${x2} 2x"
+      onerror="this.removeAttribute('srcset')"
+      alt="" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
   },
 
   /* ---- BUILD ONE CAROUSEL ---- */
@@ -1082,7 +1096,7 @@ const MEDIA = {
         if (m.classList.contains('playing')) return;
         rail.paused = true; stop();
         m.classList.add('playing');
-        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
+        m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen></iframe>`;
       });
@@ -1098,7 +1112,9 @@ const MEDIA = {
     const book = (this.app.content.books || []).find(b => b.book_id === v.book_id);
     return `<div class="car-slide">
       <div class="car-media ${o}" data-yt="${v.youtube_id}">
-        ${this.thumbImg(v.youtube_id)}
+        <a class="car-full" href="https://www.youtube.com/watch?v=${v.youtube_id}"
+           target="_blank" rel="noopener" title="YouTube" onclick="event.stopPropagation()">&#10530;</a>
+        ${this.thumbImg(v.youtube_id, true)}
         <span class="car-play">&#9654;</span>
       </div>
       <div class="car-body">
@@ -1115,7 +1131,7 @@ const MEDIA = {
       ? `<button class="car-link" data-book="${a.link_target}">${this.app.t('books_view')} &rarr;</button>` : '';
     return `<div class="car-slide">
       <div class="car-media horizontal">
-        <img src="assets/img/ads/${a.image}" alt="" loading="lazy">
+        ${this.app.img('ads', a.image)}
       </div>
       <div class="car-body">
         <div class="car-title">${mr ? a.title_mr : a.title_en}</div>
@@ -1146,7 +1162,7 @@ const MEDIA = {
     box.querySelectorAll('[data-yt-open]').forEach(c => {
       c.addEventListener('click', () => {
         const th = c.querySelector('.vid-thumb');
-        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
+        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen style="width:100%;height:100%;border:0"></iframe>`;
       });
@@ -1176,7 +1192,7 @@ const MEDIA = {
     root.querySelectorAll('[data-yt-open]').forEach(c => {
       c.addEventListener('click', () => {
         const th = c.querySelector('.vid-thumb');
-        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
+        th.innerHTML = `<iframe src="https://www.youtube.com/embed/${c.dataset.ytOpen}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
           title="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen
           style="width:100%;height:100%;border:0"></iframe>`;
       });

@@ -1,0 +1,63 @@
+RUTUJA — IMAGE AND VIDEO STANDARDS
+Follow these for every image and video you ever add.
+
+VIDEO
+-----
+Upload to YouTube at the HIGHEST resolution your camera produces.
+  Shorts / vertical : 1080 x 1920 minimum.  1440 x 2560 or 2160 x 3840 is better.
+  Landscape         : 1920 x 1080 minimum.  2560 x 1440 or 3840 x 2160 is better.
+
+YouTube can only ever play back what you uploaded. A 1080p upload can
+never be shown at 2K, no matter what the website does. Upload high once
+and the site will serve the best the viewer's screen and network allow.
+
+The website always requests the highest quality YouTube will give for the
+size of the player, and the player is now as large as the layout permits.
+
+IMAGES
+------
+Save as WebP. Quality 80. Use squoosh.app - free, no signup.
+
+  Book cover        1200 x 1600   (3:4 portrait)      under 250 KB
+  Book inside page  1200 x 1600   (3:4 portrait)      under 250 KB
+  Advertisement     1920 x 1080   (16:9 landscape)    under 300 KB
+  Experience photo  1600 x 1200   (4:3)               under 300 KB
+  News photo        1920 x 1080   (16:9 landscape)    under 300 KB
+  Author photo      1000 x 1000   (1:1 square)        under 200 KB
+  Logo              1000 x 1000   PNG, transparent    under 150 KB
+
+RETINA - OPTIONAL BUT BETTER
+----------------------------
+Modern phones have double-density screens. If you also supply a 2x file,
+the website uses it automatically on those screens.
+
+  rp-b-001.webp        1200 x 1600   normal screens
+  rp-b-001@2x.webp     2400 x 3200   high density screens
+
+Only the normal file is required. If the @2x file is missing the site
+simply uses the normal one. Nothing breaks.
+
+NAMING
+------
+  Book cover      rp-b-001.webp
+  Book page       rp-b-001-p1.webp
+  Advertisement   rp-ad-001.webp
+  Experience      rp-e-001.webp
+  News            rp-n-001.webp
+  Author          rp-a-001.webp
+
+Lowercase only. Hyphens, not spaces. No Marathi in file names.
+
+WHERE THEY GO
+-------------
+  assets/img/books/          book covers and inside pages
+  assets/img/ads/            advertisements
+  assets/img/experiences/    school, teacher, student, retailer photos
+  assets/img/news/           news and event photos
+
+WHY SIZE LIMITS MATTER
+----------------------
+Most of your visitors are on village 4G. A 4 MB photo from a phone camera
+takes about 20 seconds to appear. Compressed to 250 KB it takes under one
+second and looks identical on a screen. Compressing is not a compromise in
+quality - it removes data the eye cannot see.

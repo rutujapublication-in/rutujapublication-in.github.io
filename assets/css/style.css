@@ -698,8 +698,8 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 8px 26px rgba(0,0,0,.26);
   border:1px solid rgba(0,0,0,.1);
 }
-.car-media.vertical{width:300px;aspect-ratio:9/16}
-.car-media.horizontal{width:540px;aspect-ratio:16/9}
+.car-media.vertical{width:min(430px,42vw);aspect-ratio:9/16}
+.car-media.horizontal{width:min(860px,58vw);aspect-ratio:16/9}
 .car-media img{width:100%;height:100%;object-fit:cover;transition:transform .4s,filter .3s}
 .car-media:hover img{transform:scale(1.04);filter:brightness(.86)}
 .car-media iframe{width:100%;height:100%;border:0;display:block}
@@ -739,7 +739,7 @@ a{color:inherit;text-decoration:none}
 
 @media(max-width:760px){
   .car-slide{flex-direction:column;gap:18px;padding:18px 16px 20px;align-items:center}
-  .car-media.vertical{width:100%;max-width:330px}
+  .car-media.vertical{width:100%;max-width:min(440px,92vw)}
   .car-media.horizontal{width:100%}
   .car-body{width:100%;padding:0}
   .car-title{font-size:20px}
@@ -756,4 +756,51 @@ a{color:inherit;text-decoration:none}
   .ex-grid{grid-template-columns:1fr}
   .menu-word{display:none}
   .menu-btn{padding:0 12px}
+}
+
+/* ===================================================================
+   v8e — LARGEST POSSIBLE MEDIA
+   YouTube chooses playback quality from the rendered pixel size,
+   so a bigger frame genuinely means a sharper video.
+   =================================================================== */
+
+/* The media sections break out of the text column to gain width */
+.media-wide{width:100%;max-width:1480px;margin:0 auto;padding:0 20px}
+
+.car-slide{align-items:center;gap:30px;padding:26px}
+.car-media{border-radius:18px}
+/* crisp scaling on high-density screens */
+.car-media img{image-rendering:auto;backface-visibility:hidden}
+
+.car-full{
+  position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;
+  border-radius:9px;background:rgba(0,0,0,.5);color:#fff;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);transition:.16s;text-decoration:none;
+}
+.car-full:hover{background:var(--gold);color:#3F2A05}
+.car-media.playing .car-full{display:none}
+
+/* Video grid thumbnails, larger */
+.vid-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.vid-thumb.vertical{aspect-ratio:9/16}
+.bd-videos .vid-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+
+/* Book covers render at full quality, never stretched */
+.book-cover img,.bd-cover img{image-rendering:auto}
+
+@media(min-width:1500px){
+  .car-media.vertical{width:470px}
+  .car-media.horizontal{width:940px}
+}
+@media(max-width:1100px){
+  .car-media.vertical{width:min(360px,40vw)}
+  .car-media.horizontal{width:min(640px,56vw)}
+}
+@media(max-width:760px){
+  .car-slide{padding:16px 14px 22px;gap:16px}
+  .media-wide{padding:0 12px}
+  .vid-grid{grid-template-columns:1fr;gap:16px}
+  .bd-videos .vid-grid{grid-template-columns:1fr}
+  .car-full{width:40px;height:40px}
 }
