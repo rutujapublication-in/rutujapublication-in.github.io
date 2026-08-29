@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8i',
+  VERSION: 'v8l',
   lang: 'mr',
   text: {},
   locations: null,
@@ -167,18 +167,23 @@ const RUTUJA = {
     const books = (this.content.books || []).filter(b => b.status === 'LIVE');
 
     document.getElementById('stdGrid').innerHTML = [1,2,3,4,5].map((n, i) => {
-      const count = books.filter(b =>
-        String(b.standard || '').split(',').map(x => x.trim()).includes(String(n))).length;
+      const mine = books.filter(b =>
+        String(b.standard || '').split(',').map(x => x.trim()).includes(String(n)));
+      const list = mine.map(b =>
+        `<li>${mr ? b.name_mr : b.name_en}</li>`).join('');
       return `
       <button class="std-card" style="--c:var(--std${n})" data-std="${n}">
-        <span class="std-top">${label}</span>
-        <span class="std-figure">
-          <span class="std-num">${mr ? digit[i] : n}</span>
-          <span class="std-ord">${ord[i]}</span>
+        <span class="std-left">
+          <span class="std-top">${label}</span>
+          <span class="std-figure">
+            <span class="std-num">${mr ? digit[i] : n}</span>
+            <span class="std-ord">${ord[i]}</span>
+          </span>
         </span>
-        <span class="std-foot">
-          <span class="std-count">${count} ${this.t('std_books_count')}</span>
-          <span class="std-go">${this.t('std_open')} &rarr;</span>
+        <ul class="std-mid">${list}</ul>
+        <span class="std-right">
+          <span class="std-count">${mine.length}<br>${this.t('std_books_count')}</span>
+          <span class="std-go">${this.t('std_open')}<i class="std-arrow">&rarr;</i></span>
         </span>
       </button>`;
     }).join('');

@@ -632,36 +632,22 @@ a{color:inherit;text-decoration:none}
 .menu-word{white-space:nowrap}
 
 /* ---- Standard cards ---- */
-.std-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:13px}
-.std-card{
-  position:relative;overflow:hidden;border-radius:18px;padding:16px 18px 15px;
-  background:var(--c);color:#fff;text-align:left;
-  display:flex;flex-direction:column;gap:2px;min-height:152px;
-  box-shadow:0 3px 12px rgba(0,0,0,.13);
-  transition:transform .18s cubic-bezier(.34,1.4,.64,1),box-shadow .18s;
-}
+
+
 /* soft light sweep so the block does not read as flat colour */
-.std-card::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(120% 90% at 88% 6%,rgba(255,255,255,.34),transparent 62%);
-}
-.std-card::after{
-  content:"";position:absolute;right:-26px;bottom:-34px;width:112px;height:112px;
-  border-radius:50%;border:14px solid rgba(255,255,255,.16);pointer-events:none;
-}
-.std-card:hover{transform:translateY(-6px);box-shadow:0 12px 26px rgba(0,0,0,.22)}
-.std-card:active{transform:scale(.97)}
-.std-card>*{position:relative;z-index:1}
-.std-top{font-size:13px;letter-spacing:.6px;text-transform:uppercase;opacity:.85;font-weight:600}
-.std-figure{display:flex;align-items:baseline;gap:4px;margin:2px 0 auto}
-.std-num{font-family:'Baloo 2',sans-serif;font-size:56px;font-weight:700;line-height:.95;
-  text-shadow:0 2px 8px rgba(0,0,0,.18)}
-.std-ord{font-family:'Baloo 2',sans-serif;font-size:23px;font-weight:600;opacity:.92}
-.std-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding-top:10px;border-top:1px solid rgba(255,255,255,.28);font-size:13.5px}
-.std-count{opacity:.9}
-.std-go{font-weight:700;transition:transform .18s}
-.std-card:hover .std-go{transform:translateX(4px)}
+
+
+
+
+
+
+
+
+
+
+
+
+.std-card:hover 
 
 /* ---- Explore cards ---- */
 .ex-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:12px}
@@ -720,13 +706,13 @@ a{color:inherit;text-decoration:none}
   
   
   .menu-btn{display:flex}
-  .std-grid{grid-template-columns:repeat(2,1fr)}
+  
 }
 @media(max-width:940px){ .menu-btn{display:flex} }
 @media(max-width:560px){
-  .std-card{min-height:138px;padding:14px 15px 13px}
-  .std-num{font-size:46px}
-  .std-ord{font-size:19px}
+  
+  
+  
   .ex-grid{grid-template-columns:1fr}
   .menu-word{display:none}
   .menu-btn{padding:0 12px}
@@ -1036,7 +1022,7 @@ a{color:inherit;text-decoration:none}
   .book-card:active .book3d{transform:rotateY(-5deg) translateY(2px) scale(.985)}
   .book-card:active .book-open{background:var(--gold);color:#3F2A05}
 
-  .std-card:active{transform:scale(.96)}
+  
   .ex-card:active{transform:scale(.98);border-color:var(--green)}
   .offer-card:active{transform:scale(.98);border-left-color:var(--green)}
   .car-media:active{transform:scale(.99)}
@@ -1066,11 +1052,11 @@ a{color:inherit;text-decoration:none}
   .book-std{font-size:11px;padding:3px 8px;top:8px;right:8px}
 
   /* ---- Standard cards: full width pair, taller, easier to hit ---- */
-  .std-grid{grid-template-columns:repeat(2,1fr);gap:12px}
-  .std-card{min-height:146px;border-radius:20px}
-  .std-num{font-size:50px}
-  .std-ord{font-size:21px}
-  .std-foot{font-size:13px}
+  
+  
+  
+  
+  
 
   /* ---- Explore: one per row so the label is readable ---- */
   .ex-grid{grid-template-columns:1fr;gap:10px}
@@ -1089,8 +1075,8 @@ a{color:inherit;text-decoration:none}
   .book-name{font-size:14.5px}
   .book-price{font-size:18px}
   .book-bulk{font-size:11px}
-  .std-num{font-size:44px}
-  .std-card{min-height:132px;padding:13px 14px}
+  
+  
   .hero-title{font-size:26px}
   .hero-sub{font-size:14.5px}
   .hero-btns{flex-direction:column;gap:10px}
@@ -1101,12 +1087,119 @@ a{color:inherit;text-decoration:none}
 @media(max-width:390px){
   .book-grid{grid-template-columns:1fr;gap:22px}
   #featGrid .book-card{min-width:172px;max-width:172px}
-  .std-grid{grid-template-columns:1fr}
-  .std-card{min-height:auto;flex-direction:row;align-items:center;gap:14px;padding:14px 16px}
-  .std-figure{margin:0}
-  .std-top{position:absolute;top:12px;left:16px}
-  .std-foot{border-top:0;padding-top:0;margin-left:auto;flex-direction:column;
-    align-items:flex-end;gap:2px}
+  
+  
+  
+  
+  
 }
 /* the featured row is a shelf only on narrow screens */
 .book-grid.shelf{}
+
+
+/* ===================================================================
+   v8k — STANDARD CARDS: THREE ZONES SIDE BY SIDE
+   left: the standard   middle: its books   right: count and invitation
+   =================================================================== */
+
+.std-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+
+.std-card{
+  position:relative;overflow:hidden;border-radius:20px;
+  background:var(--c);color:#fff;text-align:left;
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:stretch;gap:0;min-height:138px;
+  box-shadow:0 4px 14px rgba(0,0,0,.15);
+  transition:transform .2s cubic-bezier(.34,1.4,.64,1),box-shadow .2s;
+}
+.std-card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 110% at 96% 0%,rgba(255,255,255,.26),transparent 55%);
+}
+.std-card > *{position:relative;z-index:1}
+@media(hover:hover){
+  .std-card:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(0,0,0,.24)}
+}
+.std-card:active{transform:scale(.98)}
+
+/* ---- LEFT: label above numeral, stacked, never overlapping ---- */
+.std-left{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:16px 16px;min-width:94px;
+  background:rgba(0,0,0,.13);
+}
+.std-top{font-size:12px;letter-spacing:.7px;text-transform:uppercase;
+  font-weight:600;opacity:.9;margin-bottom:1px}
+.std-figure{display:flex;align-items:baseline;gap:3px;line-height:1}
+.std-num{font-family:'Baloo 2',sans-serif;font-size:46px;font-weight:700;
+  text-shadow:0 2px 8px rgba(0,0,0,.24)}
+.std-ord{font-family:'Baloo 2',sans-serif;font-size:21px;font-weight:600;opacity:.95}
+
+/* ---- MIDDLE: the books in this standard ---- */
+.std-mid{
+  list-style:none;margin:0;padding:15px 16px;
+  display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:0;
+}
+.std-mid li{
+  position:relative;padding-left:15px;font-size:13.5px;line-height:1.42;
+  color:rgba(255,255,255,.96);
+  /* full name always shown; a long one wraps and the second line
+     lines up under the first character, not under the dot */
+  overflow-wrap:break-word;
+}
+.std-mid li::before{
+  content:"";position:absolute;left:2px;top:.62em;width:5px;height:5px;
+  border-radius:50%;background:rgba(255,255,255,.8);
+}
+
+/* ---- RIGHT: count and the living invitation ---- */
+.std-right{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:15px 16px;min-width:104px;
+  border-left:1px solid rgba(255,255,255,.26);
+}
+.std-count{font-size:13px;line-height:1.25;text-align:center;opacity:.94;font-weight:600}
+.std-go{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13.5px;
+  background:rgba(255,255,255,.22);border-radius:999px;padding:8px 13px 8px 15px;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);transition:background .2s;
+}
+@media(hover:hover){.std-card:hover .std-go{background:rgba(255,255,255,.38)}}
+.std-card:active .std-go{background:rgba(255,255,255,.5)}
+
+.std-arrow{
+  font-style:normal;font-size:17px;line-height:1;display:inline-block;
+  animation:beckon 1.5s cubic-bezier(.4,0,.2,1) infinite;
+}
+@keyframes beckon{
+  0%,100%{transform:translateX(0);opacity:.78}
+  45%    {transform:translateX(5px);opacity:1}
+  70%    {transform:translateX(2px);opacity:.94}
+}
+.std-go::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(100deg,transparent 32%,rgba(255,255,255,.55) 50%,transparent 68%);
+  background-size:260% 100%;animation:sheen 3.4s ease-in-out infinite;
+}
+@keyframes sheen{
+  0%,55%{background-position:170% 0}
+  85%,100%{background-position:-70% 0}
+}
+@media(prefers-reduced-motion:reduce){.std-arrow,.std-go::after{animation:none}}
+
+@media(max-width:700px){
+  .std-grid{grid-template-columns:1fr;gap:12px}
+}
+@media(max-width:430px){
+  .std-card{min-height:122px}
+  .std-left{min-width:80px;padding:14px 11px}
+  .std-num{font-size:38px}
+  .std-ord{font-size:18px}
+  .std-top{font-size:11px}
+  .std-mid{padding:13px 12px;gap:5px}
+  .std-mid li{font-size:12.5px;padding-left:13px;line-height:1.38}
+  .std-right{min-width:88px;padding:13px 10px;gap:8px}
+  .std-count{font-size:12px}
+  .std-go{font-size:12.5px;padding:7px 11px 7px 13px}
+}
