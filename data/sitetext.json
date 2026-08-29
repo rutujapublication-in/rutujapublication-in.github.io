@@ -184,7 +184,20 @@
   "ads_title": "जाहिराती",
   "ads_none": "सध्या कोणतीही जाहिरात नाही",
   "video_of_book": "या पुस्तकाबद्दल",
-  "video_see_book": "पुस्तक पाहा"
+  "video_see_book": "पुस्तक पाहा",
+  "menu_open": "सर्व विभाग",
+  "explore_head": "संपूर्ण वेबसाइट",
+  "explore_sub": "प्रत्येक विभागात काय आहे ते पहा",
+  "ex_books": "सर्व पुस्तके, दर आणि सवलती",
+  "ex_videos": "पुस्तकांची ओळख व्हिडिओतून",
+  "ex_exp": "शाळा, शिक्षक व पालकांचे अनुभव",
+  "ex_offers": "नग आणि सवलतीचे दर",
+  "ex_qa": "तुमच्या प्रश्नांची उत्तरे",
+  "ex_authors": "पुस्तकांमागील लेखक",
+  "ex_about": "ऋतुजा पब्लिकेशनची ओळख",
+  "ex_contact": "थेट बोला, लगेच उत्तर",
+  "std_books_count": "पुस्तके",
+  "std_open": "पाहा"
  },
  "en": {
   "nav_home": "Home",
@@ -371,6 +384,19 @@
   "ads_title": "Announcements",
   "ads_none": "No announcements right now",
   "video_of_book": "About this book",
-  "video_see_book": "View this book"
+  "video_see_book": "View this book",
+  "menu_open": "All sections",
+  "explore_head": "Explore everything",
+  "explore_sub": "See what each section holds",
+  "ex_books": "All books, rates and discounts",
+  "ex_videos": "Meet the books through video",
+  "ex_exp": "Stories from schools, teachers and parents",
+  "ex_offers": "Quantity rates and discounts",
+  "ex_qa": "Answers to your questions",
+  "ex_authors": "The authors behind the books",
+  "ex_about": "About Rutuja Publication",
+  "ex_contact": "Talk to us directly",
+  "std_books_count": "books",
+  "std_open": "Open"
  }
 }

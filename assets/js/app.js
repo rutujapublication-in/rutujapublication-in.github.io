@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8c',
+  VERSION: 'v8d',
   lang: 'mr',
   text: {},
   locations: null,
@@ -129,6 +129,7 @@ const RUTUJA = {
     [['strip', () => this.paintStrip()],
      ['standards', () => this.paintStandards()],
      ['offers', () => this.paintOffers()],
+     ['explore', () => this.paintExplore()],
      ['books', () => BOOKS.paint()],
      ['media', () => MEDIA.paint()],
      ['contact', () => this.paintContact()],
@@ -144,14 +145,31 @@ const RUTUJA = {
     document.getElementById('stripTrack').innerHTML = html + html;
   },
 
+  /* Marathi uses proper ordinals: १ ली, २ री, ३ री, ४ थी, ५ वी.
+     Showing a bare digit next to the word इयत्ता reads as broken Marathi. */
   paintStandards() {
-    const nums = this.lang === 'mr' ? ['१','२','३','४','५'] : ['1','2','3','4','5'];
+    const mr = this.lang === 'mr';
+    const digit = ['१','२','३','४','५'];
+    const ord   = mr ? ['ली','री','री','थी','वी'] : ['st','nd','rd','th','th'];
     const label = this.extra('std_label');
-    document.getElementById('stdGrid').innerHTML = nums.map((n, i) => `
-      <div class="std-card" style="background:var(--std${i + 1})" data-std="${i + 1}">
-        <div class="std-num">${n}</div>
-        <div class="std-label">${label}</div>
-      </div>`).join('');
+    const books = (this.content.books || []).filter(b => b.status === 'LIVE');
+
+    document.getElementById('stdGrid').innerHTML = [1,2,3,4,5].map((n, i) => {
+      const count = books.filter(b =>
+        String(b.standard || '').split(',').map(x => x.trim()).includes(String(n))).length;
+      return `
+      <button class="std-card" style="--c:var(--std${n})" data-std="${n}">
+        <span class="std-top">${label}</span>
+        <span class="std-figure">
+          <span class="std-num">${mr ? digit[i] : n}</span>
+          <span class="std-ord">${ord[i]}</span>
+        </span>
+        <span class="std-foot">
+          <span class="std-count">${count} ${this.t('std_books_count')}</span>
+          <span class="std-go">${this.t('std_open')} &rarr;</span>
+        </span>
+      </button>`;
+    }).join('');
 
     document.querySelectorAll('.std-card').forEach(c => {
       c.addEventListener('click', () => {
@@ -159,6 +177,32 @@ const RUTUJA = {
         this.go('books');
       });
     });
+  },
+
+  paintExplore() {
+    const box = document.getElementById('exploreGrid');
+    if (!box) return;
+    const items = [
+      ['books','nav_books','ex_books','&#128218;'],
+      ['videos','nav_videos','ex_videos','&#9654;'],
+      ['experiences','nav_experiences','ex_exp','&#128172;'],
+      ['offers','nav_offers','ex_offers','&#127991;'],
+      ['qa','nav_qa','ex_qa','&#10068;'],
+      ['authors','nav_authors','ex_authors','&#9998;'],
+      ['about','nav_publication','ex_about','&#127968;'],
+      ['contact','nav_contact','ex_contact','&#128241;']
+    ];
+    box.innerHTML = items.map(([page, t, d, ico]) => `
+      <button class="ex-card" data-nav="${page}">
+        <span class="ex-ico">${ico}</span>
+        <span class="ex-body">
+          <span class="ex-t">${this.t(t)}</span>
+          <span class="ex-d">${this.t(d)}</span>
+        </span>
+        <span class="ex-arrow">&rarr;</span>
+      </button>`).join('');
+    box.querySelectorAll('[data-nav]').forEach(b =>
+      b.addEventListener('click', () => this.go(b.dataset.nav)));
   },
 
   paintOffers() {
@@ -241,8 +285,17 @@ const RUTUJA = {
   },
 
   bindMenu() {
-    document.getElementById('menuBtn').addEventListener('click', () => {
-      document.getElementById('nav').classList.toggle('open');
+    const btn = document.getElementById('menuBtn');
+    const nav = document.getElementById('nav');
+    btn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Tapping a destination closes the menu
+    nav.addEventListener('click', () => {
+      nav.classList.remove('open');
+      btn.classList.remove('is-open');
     });
   }
 };
@@ -1026,7 +1079,9 @@ const MEDIA = {
     // Playing a video stops rotation for good until the visitor moves on
     box.querySelectorAll('[data-yt]').forEach(m => {
       m.addEventListener('click', () => {
+        if (m.classList.contains('playing')) return;
         rail.paused = true; stop();
+        m.classList.add('playing');
         m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&vq=hd1080&modestbranding=1"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen></iframe>`;

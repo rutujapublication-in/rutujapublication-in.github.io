@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=8c">
+<link rel="stylesheet" href="assets/css/style.css?v=8d">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v8c</p>
+        <p class="w-ver">v8d</p>
       </div>
 
       <aside class="w-side w-right">
@@ -176,7 +176,10 @@
       </nav>
       <div class="header-actions">
         <button class="icon-btn" id="langToggle" title="भाषा / Language"><span id="langLabel">English</span></button>
-        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+          <span class="menu-lines"><span></span><span></span><span></span></span>
+          <span class="menu-word" data-t="menu_open"></span>
+        </button>
       </div>
     </div>
   </header>
@@ -208,6 +211,10 @@
 
         <h2 class="sec-title" data-t="books_featured"></h2>
         <div class="book-grid" id="featGrid"></div>
+
+        <h2 class="sec-title" data-t="explore_head"></h2>
+        <p class="sec-sub" data-t="explore_sub"></p>
+        <div class="ex-grid" id="exploreGrid"></div>
 
         <h2 class="sec-title" data-t="videos_title"></h2>
         <div class="carousel" id="vidCar"></div>
@@ -270,6 +277,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=8c"></script>
+<script src="assets/js/app.js?v=8d"></script>
 </body>
 </html>
