@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v8l',
+  VERSION: 'v9d',
   lang: 'mr',
   text: {},
   locations: null,
@@ -36,13 +36,16 @@ const RUTUJA = {
 
     BOOKS.init(this);
     MEDIA.init(this);
+    CART.init(this);
+    ORDERFORM.init(this);
+    PEEK.init(this);
     ENTRY.init(this);
   },
 
   /* ---- SETTINGS YOU CAN CHANGE ---- */
   settings: {
     // Paste your Apps Script Web App URL between the quotes.
-    backendUrl: 'https://script.google.com/macros/s/AKfycbxVqP0kTJSbn9bc2oesvfSKqt21CpTD0qMRb2y8Bk1UUNH8XBjTfH60cCQ3cWd4Fhqu/exec',
+    backendUrl: 'https://script.google.com/macros/s/AKfycby_7sZkLo0hjHhfSiZMS2yLN1WHM9KJ6rdUrNx4MJA3gL988u7bl9IC0xuNJXVGaiyI/exec',
     // 'soft' = visitor may browse first.  'hard' = must register to enter.
     gateMode: 'soft'
   },
@@ -144,6 +147,7 @@ const RUTUJA = {
      ['explore', () => this.paintExplore()],
      ['books', () => BOOKS.paint()],
      ['media', () => MEDIA.paint()],
+     ['cart', () => CART.render()],
      ['contact', () => this.paintContact()],
      ['footer', () => this.paintFooter()]
     ].forEach(([name, fn]) => {
@@ -827,12 +831,18 @@ const BOOKS = {
     const best = this.slabs(b.offer_id).slice(-1)[0];
     const hint = best && best.selling_rate < b.mrp
       ? `<span class="book-bulk">${best.qty_min}+ ${t('book_bulk_hint')} &#8377;${best.selling_rate}</span>` : '';
+    const pct = this.bestPct(b);
+    const peek = (b.gallery_images || '').trim()
+      ? `<span class="peek-tab" data-peek="${b.book_id}">
+           <i class="peek-arrow">&rsaquo;</i><em>${t('look_inside')}</em></span>` : '';
     return `<button class="book-card" data-book="${b.book_id}" style="--sc:${this.stdColor(b)}">
       <span class="book-stage">
         <span class="book3d">
           <span class="book-cover">
             ${cover}<span class="book-std">${t('books_standard')} ${num}</span>
+            ${pct ? `<span class="book-ribbon">${pct}% ${t('disc_upto')}</span>` : ''}
           </span>
+          ${peek}
           <span class="book-pages"></span>
           <span class="book-open">${t('book_open')} &rarr;</span>
         </span>
@@ -894,6 +904,40 @@ const BOOKS = {
     return { pct, each, total: each * qty, saved: (book.mrp - each) * qty };
   },
 
+  /* The best discount this book ever offers, for the card ribbon
+     and the headline sentence. Returns 0 when there is no offer. */
+  bestPct(b) {
+    const sl = this.slabs(b.offer_id);
+    if (!sl.length || !b.mrp) return 0;
+    const low = Math.min(...sl.map(o => Number(o.selling_rate) || b.mrp));
+    return Math.round((b.mrp - low) / b.mrp * 100);
+  },
+
+  /* The slab after the current one, so we can tell the buyer what
+     a few more copies would be worth to them. */
+  nextSlab(b, qty) {
+    const sl = this.slabs(b.offer_id);
+    const cur = this.priceFor(b, qty);
+    return sl.find(o => o.qty_min > qty && Number(o.selling_rate) < cur.each) || null;
+  },
+
+  /* The full ladder, with the slab the buyer is currently on marked. */
+  ladder(b, qty) {
+    const t = k => this.app.t(k);
+    const sl = this.slabs(b.offer_id);
+    if (!sl.length) return '';
+    return `<div class="ladder">${sl.map(o => {
+      const on = qty >= o.qty_min && qty <= this.topOf(o);
+      const pct = b.mrp ? Math.round((b.mrp - o.selling_rate) / b.mrp * 100) : 0;
+      return `<div class="rung${on ? ' on' : ''}">
+        <span class="rung-q">${this.slabLabel(o)} ${t('price_qty')}</span>
+        <span class="rung-r">&#8377;${o.selling_rate}</span>
+        <span class="rung-p">${pct ? pct + '% ' + t('cart_saving') : '&mdash;'}</span>
+        ${on ? `<span class="rung-here">${t('disc_here')}</span>` : ''}
+      </div>`;
+    }).join('')}</div>`;
+  },
+
   renderSlabs() {
     if (!this.el.slab) return;
     const t = k => this.app.t(k);
@@ -911,7 +955,7 @@ const BOOKS = {
         </tr>`).join('')}
       </table>`;
     }).join('');
-    this.el.slab.innerHTML = blocks + `<p class="calc-note">${t('price_delivery')}</p>`;
+    this.el.slab.innerHTML = blocks + `<div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>`;
   },
 
   /* ---- DETAIL PAGE ---- */
@@ -926,6 +970,7 @@ const BOOKS = {
       ? this.app.img('books', b.cover_image)
       : `<span>${num}</span>`;
     const mySlabs = this.slabs(b.offer_id);
+    const pct = this.bestPct(b);
 
     this.el.detail.innerHTML = `
       <div class="bd">
@@ -949,19 +994,26 @@ const BOOKS = {
           </div>
           <p class="bd-desc">${mr ? b.description_mr : b.description_en}</p>
 
+          ${pct ? `<div class="disc-head"><b>${pct}% ${t('disc_upto')}</b> &nbsp;&middot;&nbsp; ${t('disc_head')}</div>` : ''}
+
           <div class="calc">
             <div class="calc-h">${t('price_title')}</div>
             <div class="calc-row">
               <span class="calc-lbl">${t('price_qty')}</span>
               <div class="qty">
-                <button type="button" id="qMinus">−</button>
+                <button type="button" id="qMinus">&minus;</button>
                 <input type="text" id="qVal" inputmode="numeric" value="1">
                 <button type="button" id="qPlus">+</button>
               </div>
             </div>
+            <div class="nudge" id="nudge"></div>
             <div class="calc-out" id="calcOut"></div>
-            <p class="calc-note">${t('price_delivery')}</p>
-            <button class="btn btn-gold calc-btn" id="calcAsk">${t('price_ask')}</button>
+            <div id="ladderBox"></div>
+            <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>
+            <div class="calc-actions">
+              <button class="btn btn-gold" id="calcCart">${t('cart_add')}</button>
+              <button class="btn btn-ghost" id="calcAsk">${t('price_ask')}</button>
+            </div>
           </div>
 
           ${MEDIA.forBook(b.book_id)}
@@ -984,20 +1036,53 @@ const BOOKS = {
       let q = Math.max(1, Math.min(9999, parseInt(qv.value, 10) || 1));
       qv.value = q;
       const p = this.priceFor(b, q);
+
       document.getElementById('calcOut').innerHTML = `
         <div class="calc-line"><span>${t('price_per')}</span>
-          <span>₹${p.each} ${p.pct ? `<s style="opacity:.5">₹${b.mrp}</s>` : ''}</span></div>
+          <span>&#8377;${p.each} ${p.pct ? `<s>&#8377;${b.mrp}</s>` : ''}</span></div>
         ${p.pct ? `<div class="calc-line"><span>${t('price_slab')}</span>
           <span class="calc-save">${p.pct}%</span></div>` : ''}
         <div class="calc-line"><span>${t('price_total')}</span>
-          <span class="calc-total">₹${p.total}</span></div>
+          <span class="calc-total">&#8377;${p.total}</span></div>
         ${p.saved ? `<div class="calc-line"><span>${t('price_saving')}</span>
-          <span class="calc-save">₹${p.saved}</span></div>` : ''}`;
+          <span class="calc-save">&#8377;${p.saved} (${p.pct}%)</span></div>` : ''}`;
+
+      document.getElementById('ladderBox').innerHTML = this.ladder(b, q);
+
+      // Tell the buyer exactly what a few more copies would be worth.
+      const nx = this.nextSlab(b, q);
+      const nb = document.getElementById('nudge');
+      if (nx) {
+        const need = nx.qty_min - q;
+        const extra = (p.each - Number(nx.selling_rate)) * nx.qty_min;
+        const from = mySlabs.find(o => q >= o.qty_min && q <= this.topOf(o));
+        const start = from ? from.qty_min : 1;
+        const fill = Math.max(6, Math.min(100,
+          ((q - start) / Math.max(1, nx.qty_min - start)) * 100));
+        nb.className = 'nudge on';
+        nb.innerHTML = `
+          <div class="nudge-bar"><i style="width:${fill}%"></i></div>
+          <div class="nudge-text">${t('disc_next')} <b>${need}</b> ${t('disc_next2')}
+            <b>&#8377;${nx.selling_rate}</b> &mdash; <span class="calc-save">&#8377;${extra > 0 ? extra : 0} ${t('disc_save_more')}</span></div>`;
+      } else if (p.pct) {
+        nb.className = 'nudge best';
+        nb.innerHTML = `<div class="nudge-text">&#10003; ${p.pct}% ${t('disc_applied')} &mdash; ${t('disc_best')}</div>`;
+      } else {
+        nb.className = 'nudge';
+        nb.innerHTML = '';
+      }
     };
     MEDIA.bindBookVideos(this.el.detail);
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
     document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
+    document.getElementById('calcCart').onclick = () => {
+      CART.add(b.book_id, +qv.value || 1);
+      const btn = document.getElementById('calcCart');
+      btn.textContent = t('cart_added');
+      btn.classList.add('done');
+      setTimeout(() => { btn.textContent = t('cart_add'); btn.classList.remove('done'); }, 1600);
+    };
     document.getElementById('calcAsk').onclick = () => {
       const q = +qv.value || 1;
       const detail = `${mr ? b.name_mr : b.name_en} (${this.medLabel(b)}) × ${q}`;
@@ -1205,4 +1290,425 @@ const MEDIA = {
   },
 
   bindBookVideos(root) { this.bindPlay(root); }
+};
+
+/* ===================================================================
+   PHASE 9 — CART, ORDER WINDOW, LOOK INSIDE
+   Cart holds books and quantities. The order window is separate: it
+   collects the buyer, then sends the whole order to WhatsApp in one tap.
+   =================================================================== */
+
+const CART = {
+  app: null,
+  items: [],
+
+  init(app) {
+    this.app = app;
+    try { this.items = JSON.parse(localStorage.getItem('rutuja_cart') || '[]'); }
+    catch (e) { this.items = []; }
+
+    document.getElementById('orderX').addEventListener('click', () => this.closeOrder());
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-cart-remove]');
+      if (b) { this.remove(b.dataset.cartRemove); }
+      const n = e.target.closest('[data-nav="cart"]');
+      if (n) { e.preventDefault(); this.app.go('cart'); }
+    });
+    this.sync();
+  },
+
+  save() { localStorage.setItem('rutuja_cart', JSON.stringify(this.items)); },
+
+  add(bookId, qty) {
+    const f = this.items.find(x => x.id === bookId);
+    if (f) f.qty = qty; else this.items.push({ id: bookId, qty });
+    this.save(); this.sync(); this.render();
+  },
+
+  setQty(bookId, qty) {
+    const f = this.items.find(x => x.id === bookId);
+    if (!f) return;
+    f.qty = Math.max(1, Math.min(9999, qty));
+    this.save(); this.sync(); this.render();
+  },
+
+  remove(bookId) {
+    this.items = this.items.filter(x => x.id !== bookId);
+    this.save(); this.sync(); this.render();
+  },
+
+  clear() { this.items = []; this.save(); this.sync(); this.render(); },
+
+  /* Every line priced through the same slab logic the book page uses. */
+  lines() {
+    return this.items.map(it => {
+      const b = (this.app.content.books || []).find(x => x.book_id === it.id);
+      if (!b) return null;
+      const p = BOOKS.priceFor(b, it.qty);
+      return { book: b, qty: it.qty, each: p.each, total: p.total,
+               saved: p.saved, pct: p.pct };
+    }).filter(Boolean);
+  },
+
+  totals() {
+    const l = this.lines();
+    return { n: l.length,
+             qty: l.reduce((a, x) => a + x.qty, 0),
+             total: l.reduce((a, x) => a + x.total, 0),
+             saved: l.reduce((a, x) => a + x.saved, 0) };
+  },
+
+  sync() {
+    const t = this.totals();
+    const c = document.getElementById('cartCount');
+    const nav = document.getElementById('navCart');
+    if (c) c.textContent = t.n;
+    if (nav) nav.classList.toggle('has', t.n > 0);
+    const bar = document.getElementById('cartBar');
+    if (bar) {
+      bar.classList.toggle('hidden', t.n === 0);
+      document.getElementById('cartBarN').textContent = t.n;
+      document.getElementById('cartBarT').textContent = '\u20B9' + t.total;
+    }
+  },
+
+  render() {
+    const box = document.getElementById('cartBody');
+    if (!box) return;
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    const lines = this.lines();
+
+    if (!lines.length) {
+      box.innerHTML = `<div class="cart-empty">
+        <p>${t('cart_empty')}</p>
+        <button class="btn btn-primary" data-nav="books">${t('cart_empty_go')}</button></div>`;
+      box.querySelector('[data-nav]').onclick = () => this.app.go('books');
+      return;
+    }
+
+    const T = this.totals();
+    box.innerHTML = `
+      <div class="cart-list">${lines.map(l => `
+        <div class="cart-row">
+          <div class="cart-thumb">${this.app.img('books', l.book.cover_image)}</div>
+          <div class="cart-info">
+            <div class="cart-name">${mr ? l.book.name_mr : l.book.name_en}</div>
+            <div class="cart-meta">&#8377;${l.each} ${t('price_each')}
+              ${l.pct ? `<span class="cart-pct">${l.pct}% ${t('cart_saving')}</span>` : ''}</div>
+          </div>
+          <div class="cart-qty">
+            <button data-cq="${l.book.book_id}" data-d="-1">&minus;</button>
+            <input type="text" inputmode="numeric" value="${l.qty}" data-ci="${l.book.book_id}">
+            <button data-cq="${l.book.book_id}" data-d="1">+</button>
+          </div>
+          <div class="cart-amt">
+            <b>&#8377;${l.total}</b>
+            ${l.saved ? `<span class="calc-save">&#8377;${l.saved}</span>` : ''}
+          </div>
+          <button class="cart-x" data-cart-remove="${l.book.book_id}" aria-label="${t('cart_remove')}">&times;</button>
+        </div>`).join('')}
+      </div>
+
+      <div class="cart-foot">
+        <div class="cart-sums">
+          <div><span>${T.qty} ${t('price_qty')} &middot; ${T.n} ${t('cart_books')}</span></div>
+          ${T.saved ? `<div class="cart-saved">${t('cart_total_save')}
+            <b>&#8377;${T.saved}</b></div>` : ''}
+          <div class="cart-grand">${t('cart_total')} <b>&#8377;${T.total}</b></div>
+          <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>
+        </div>
+        <div class="cart-cta">
+          <button class="btn btn-gold" id="cartOrder">${t('cart_order')}</button>
+          <button class="btn btn-ghost" id="cartMore">${t('cart_continue')}</button>
+        </div>
+      </div>`;
+
+    box.querySelectorAll('[data-cq]').forEach(b => b.onclick = () => {
+      const it = this.items.find(x => x.id === b.dataset.cq);
+      this.setQty(b.dataset.cq, it.qty + (+b.dataset.d));
+    });
+    box.querySelectorAll('[data-ci]').forEach(i => i.onchange = () =>
+      this.setQty(i.dataset.ci, parseInt(i.value, 10) || 1));
+    document.getElementById('cartOrder').onclick = () => this.openOrder();
+    document.getElementById('cartMore').onclick = () => this.app.go('books');
+  },
+
+  /* ---- ORDER WINDOW ---- */
+  openOrder() {
+    if (!this.lines().length) return;
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    const T = this.totals();
+
+    document.getElementById('orderSum').innerHTML = `
+      <div class="osum-h">${t('order_summary')}</div>
+      ${this.lines().map(l => `<div class="osum-row">
+        <span>${mr ? l.book.name_mr : l.book.name_en}</span>
+        <span>${l.qty} &times; &#8377;${l.each}</span>
+        <b>&#8377;${l.total}</b></div>`).join('')}
+      <div class="osum-total"><span>${t('cart_total')}</span>
+        <b>&#8377;${T.total}</b></div>
+      ${T.saved ? `<div class="osum-save">${t('cart_total_save')} &#8377;${T.saved}</div>` : ''}
+      <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>`;
+
+    document.getElementById('orderBody').classList.remove('hidden');
+    document.getElementById('orderDone').classList.add('hidden');
+    document.getElementById('orderWin').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    ORDERFORM.mount();
+  },
+
+  closeOrder() {
+    document.getElementById('orderWin').classList.add('hidden');
+    document.body.style.overflow = '';
+  },
+
+  /* The message the publication receives, complete and ready to act on. */
+  message(buyer, orderNo) {
+    const mr = this.app.lang === 'mr';
+    const t = k => this.app.t(k);
+    const T = this.totals();
+    const num = mr ? ['१','२','३','४','५','६','७','८','९','१०'] : null;
+    const L = this.lines().map((l, i) => {
+      const n = num && num[i] ? num[i] : (i + 1);
+      return `${n}. ${mr ? l.book.name_mr : l.book.name_en} — ${l.qty} ${t('price_qty')} × ₹${l.each} = ₹${l.total}`;
+    }).join('\n');
+
+    return [
+      `${t('pub_name')} — ${t('order_new')}`,
+      `${t('order_no')}: ${orderNo}`,
+      '',
+      `${t('gate_name')}: ${buyer.name}`,
+      `${t('gate_whatsapp')}: ${buyer.whatsapp}`,
+      `${t('gate_category')}: ${t('cat_' + buyer.category)}`,
+      `${buyer.village_city}, ${buyer.taluka}, ${buyer.district} — ${buyer.pin}`,
+      '',
+      L,
+      '',
+      `${t('cart_total')}: ₹${T.total}`,
+      T.saved ? `${t('cart_total_save')}: ₹${T.saved}` : '',
+      t('price_delivery')
+    ].filter(Boolean).join('\n');
+  },
+
+  orderNo() {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    return 'RP-O-' + String(d.getFullYear()).slice(2) + mm + '-' +
+           String(Math.floor(1000 + Math.random() * 9000));
+  }
+};
+
+/* ===================================================================
+   ORDER FORM — reuses the registration form, pre-filled if the visitor
+   already registered at entry. Separate window, same fields, one submit
+   that both records the order and opens WhatsApp.
+   =================================================================== */
+
+const ORDERFORM = {
+  app: null,
+  node: null,
+  el: {},
+
+  init(app) { this.app = app; },
+
+  mount() {
+    if (!this.node) this.build();
+    const slot = document.getElementById('orderSlot');
+    if (this.node.parentElement !== slot) slot.appendChild(this.node);
+    this.repaint();
+    this.prefill();
+  },
+
+  build() {
+    this.node = document.getElementById('formTemplate').content.firstElementChild.cloneNode(true);
+    this.node.id = 'orderForm';
+    const q = id => this.node.querySelector('#' + id);
+    // ids must be unique on the page
+    ['gName','gPhone','gCat','gState','gDist','gTal','gVillage','gPin','hp',
+     'gateSubmit','gateSkip','parentNote','eName','ePhone','eCat','eState',
+     'eDist','eTal','eVillage','ePin'].forEach(id => {
+       const n = q(id); if (n) n.id = 'o_' + id;
+     });
+    const o = id => this.node.querySelector('#o_' + id);
+    this.el = { name:o('gName'), phone:o('gPhone'), cat:o('gCat'), state:o('gState'),
+                dist:o('gDist'), tal:o('gTal'), village:o('gVillage'), pin:o('gPin'),
+                hp:o('hp'), submit:o('gateSubmit'), skip:o('gateSkip'),
+                parentNote:o('parentNote') };
+
+    this.el.skip.classList.add('hidden');
+    this.el.submit.classList.add('btn-gold');
+
+    this.node.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
+    this.el.state.addEventListener('change', () => FORM.onState.call(this));
+    this.el.dist.addEventListener('change', () => FORM.onDist.call(this));
+    this.el.cat.addEventListener('change', () => {
+      this.el.parentNote.classList.toggle('hidden', this.el.cat.value !== 'student');
+    });
+    this.el.phone.addEventListener('input', () =>
+      this.el.phone.value = this.el.phone.value.replace(/\D/g, '').slice(0, 10));
+    this.el.pin.addEventListener('input', () =>
+      this.el.pin.value = this.el.pin.value.replace(/\D/g, '').slice(0, 6));
+  },
+
+  repaint() {
+    FORM.repaint.call(this);
+    this.el.submit.textContent = this.app.t('order_send');
+  },
+
+  /* If they registered at entry we already know all of this. */
+  prefill() {
+    let r = null;
+    try { r = JSON.parse(localStorage.getItem('rutuja_reg') || 'null'); } catch (e) {}
+    const note = document.getElementById('orderPrefill');
+    if (!r || !r.buyer) { if (note) note.classList.add('hidden'); return; }
+    const b = r.buyer;
+    this.el.name.value = b.name || '';
+    this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
+    this.el.cat.value = b.category || '';
+    this.el.state.value = b.state || '';
+    if (b.state) { FORM.onState.call(this); this.el.dist.value = b.district || ''; }
+    if (b.district) { FORM.onDist.call(this); this.el.tal.value = b.taluka || ''; }
+    this.el.village.value = b.village_city || '';
+    this.el.pin.value = b.pin || '';
+    if (note) note.classList.remove('hidden');
+  },
+
+  validate() { return FORM.validate.call(this); },
+
+  async submit() {
+    if (!this.validate()) return;
+    const t = k => this.app.t(k);
+
+    const buyer = {
+      name: this.el.name.value.trim(),
+      whatsapp: '91' + this.el.phone.value,
+      category: this.el.cat.value,
+      state: this.el.state.value,
+      district: this.el.dist.value,
+      taluka: this.el.tal.value,
+      village_city: this.el.village.value.trim(),
+      pin: this.el.pin.value,
+      language: this.app.lang
+    };
+    const orderNo = CART.orderNo();
+    const lines = CART.lines();
+    const T = CART.totals();
+
+    this.el.submit.disabled = true;
+    this.el.submit.textContent = t('common_loading');
+
+    const payload = {
+      kind: 'order', order_no: orderNo, ...buyer,
+      items: lines.map(l => ({
+        book_id: l.book.book_id,
+        name_mr: l.book.name_mr,
+        name_en: l.book.name_en,
+        standard: l.book.standard,
+        medium: l.book.medium,
+        subject: l.book.subject_en,
+        mrp: l.book.mrp,
+        qty: l.qty,
+        rate: l.each,
+        discount_percent: l.pct,
+        amount: l.total,
+        saved: l.saved
+      })),
+      total: T.total, saved: T.saved, website: this.el.hp.value
+    };
+
+    const url = this.app.settings.backendUrl;
+    if (url) {
+      try {
+        await fetch(url, { method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload) });
+      } catch (err) {
+        try { await fetch(url, { method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload) }); } catch (e) {}
+      }
+    }
+
+    // remember the buyer so a second order needs no retyping
+    localStorage.setItem('rutuja_reg', JSON.stringify({ id: orderNo, cat: buyer.category, buyer }));
+
+    const n = this.app.config.whatsapp_number;
+    if (n) window.open('https://wa.me/' + n + '?text=' +
+      encodeURIComponent(CART.message(buyer, orderNo)), '_blank');
+
+    this.el.submit.disabled = false;
+    this.el.submit.textContent = t('order_send');
+    document.getElementById('orderNo').textContent = orderNo;
+    document.getElementById('orderBody').classList.add('hidden');
+    document.getElementById('orderDone').classList.remove('hidden');
+    CART.clear();
+  }
+};
+
+
+/* ===================================================================
+   LOOK INSIDE — sample pages, opened from the fore-edge of the book
+   =================================================================== */
+
+const PEEK = {
+  app: null, pages: [], i: 0, name: '',
+
+  init(app) {
+    this.app = app;
+    document.getElementById('peekX').addEventListener('click', () => this.close());
+    document.getElementById('peekPrev').addEventListener('click', () => this.go(-1));
+    document.getElementById('peekNext').addEventListener('click', () => this.go(1));
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('peek').classList.contains('hidden')) return;
+      if (e.key === 'Escape') this.close();
+      if (e.key === 'ArrowLeft') this.go(-1);
+      if (e.key === 'ArrowRight') this.go(1);
+    });
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-peek]');
+      if (t) { e.preventDefault(); e.stopPropagation(); this.open(t.dataset.peek); }
+    });
+  },
+
+  open(bookId) {
+    const b = (this.app.content.books || []).find(x => x.book_id === bookId);
+    if (!b) return;
+    this.pages = String(b.gallery_images || '').split(',').map(x => x.trim()).filter(Boolean);
+    if (!this.pages.length) return;
+    this.name = this.app.lang === 'mr' ? b.name_mr : b.name_en;
+    this.i = 0;
+    document.getElementById('peek').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    this.draw();
+  },
+
+  close() {
+    document.getElementById('peek').classList.add('hidden');
+    document.body.style.overflow = '';
+  },
+
+  go(d) {
+    const n = this.pages.length;
+    const next = (this.i + d + n) % n;
+    const fr = document.getElementById('peekFrame');
+    fr.classList.remove('turn-l', 'turn-r');
+    void fr.offsetWidth;                       // restart the animation
+    fr.classList.add(d > 0 ? 'turn-r' : 'turn-l');
+    this.i = next;
+    this.draw();
+  },
+
+  draw() {
+    document.getElementById('peekFrame').innerHTML =
+      this.app.img('books', this.pages[this.i]);
+    document.getElementById('peekName').textContent = this.name;
+    document.getElementById('peekCount').textContent =
+      `${this.i + 1} ${this.app.t('inside_of')} ${this.pages.length}`;
+    const one = this.pages.length < 2;
+    document.getElementById('peekPrev').classList.toggle('hidden', one);
+    document.getElementById('peekNext').classList.toggle('hidden', one);
+  }
 };
