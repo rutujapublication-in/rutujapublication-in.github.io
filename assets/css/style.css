@@ -120,7 +120,7 @@ a{color:inherit;text-decoration:none}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 .hero{background:var(--green-light);border-bottom:1px solid var(--line);margin-bottom:14px}
-.hero-inner{padding:18px 20px 22px;text-align:center}
+.hero-inner{padding:22px 20px 24px;text-align:center}
 .hero-title{font-size:36px;color:var(--green-dark);max-width:740px;margin:0 auto 12px}
 .hero-sub{font-size:17px;color:var(--ink-soft);max-width:620px;margin:0 auto 26px}
 .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -1765,38 +1765,43 @@ html[lang="en"] body{line-height:1.65}
    STORY BAND — one system, nine chapters
    LEFT keyword + symbol | MIDDLE narrative | RIGHT impact zone
    =================================================================== */
-.story{position:relative;overflow:hidden;background:#0F6E56}
+.story{
+  position:relative;overflow:hidden;background:#0F6E56;
+  width:100%;max-width:100%;
+  border-bottom:3px solid var(--gold);
+  box-shadow:0 6px 18px rgba(18,56,33,.18);
+}
 .story-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
 @media(prefers-reduced-motion:reduce){.story-track{transition:none}}
 
 .st{
-  position:relative;min-width:100%;height:290px;overflow:hidden;
+  position:relative;flex:0 0 100%;width:100%;max-width:100%;height:318px;overflow:hidden;
   background:var(--bg);
-  display:grid;grid-template-columns:22% minmax(0,1fr) 26%;
-  grid-template-areas:"l m r";
+  display:grid;grid-template-columns:92px minmax(0,1fr);
+  grid-template-areas:"l m" "r r";
+  touch-action:pan-y;
 }
 
 /* ---------- LEFT: keyword and symbol, always divided ---------- */
 .st-l{
   grid-area:l;background:var(--deep);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
-  padding:14px 6px;
-  position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:12px 4px;position:relative;
 }
 .st-kw{
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;font-size:16px;
-  color:var(--kw);writing-mode:vertical-rl;text-orientation:mixed;
-  letter-spacing:1px;line-height:1;position:relative;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;font-size:14px;
+  color:var(--kw);letter-spacing:.3px;line-height:1.2;position:relative;
+  text-align:center;overflow-wrap:break-word;width:100%;
 }
 /* the keyword is revealed rather than simply printed */
 
 .st-orb{
-  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;
   border:1.5px solid color-mix(in srgb,var(--kw) 45%,transparent);
   display:flex;align-items:center;justify-content:center;
   background:color-mix(in srgb,var(--kw) 8%,transparent);
 }
-.st-orb svg{width:34px;height:34px}
+.st-orb svg{width:28px;height:28px}
 .st-orb .o{fill:none;stroke:var(--kw);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .st-orb .o2{fill:none;stroke:var(--kw);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .st-orb .f{fill:var(--kw);stroke:none}
@@ -1806,33 +1811,37 @@ html[lang="en"] body{line-height:1.65}
 
 /* ---------- MIDDLE: the narrative, primary carrier ---------- */
 .st-m{
-  grid-area:m;display:flex;flex-direction:column;justify-content:center;gap:2px;
-  padding:14px 16px 12px;min-width:0;
+  grid-area:m;display:flex;flex-direction:column;justify-content:flex-start;gap:1px;
+  padding:12px 14px 10px 12px;min-width:0;
 }
 .st-nar{
   font-family:Mukta,system-ui,sans-serif;font-weight:600;color:var(--nar);
   margin:0;margin-left:var(--in);line-height:1.42;
 }
-.st-nar.lg{font-size:16.5px}
-.st-nar.md{font-size:15px}
-.st-nar.sm{font-size:13.5px;line-height:1.38}
+.st-nar.lg{font-size:15px;line-height:1.45}
+.st-nar.md{font-size:14px;line-height:1.42}
+.st-nar.sm{font-size:12.5px;line-height:1.36}
 .st-nar.last{color:var(--kw);font-weight:700}
 
 /* ---------- RIGHT: the impact zone ---------- */
 .st-r{
-  grid-area:r;display:flex;flex-direction:column;align-items:flex-start;
-  justify-content:center;gap:3px;padding:12px 10px 12px 12px;
+  grid-area:r;display:flex;align-items:stretch;gap:0;
+  background:color-mix(in srgb,var(--deep) 88%,#000);
+  border-top:2px solid color-mix(in srgb,var(--rule) 60%,transparent);
+  padding:0;
 }
 .st-imp{
-  width:100%;text-align:left;padding:3px 0;
+  flex:1;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:9px 5px;
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;color:var(--imp);
   line-height:1.1;letter-spacing:.2px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  overflow-wrap:break-word;hyphens:none;
 }
-.st-imp.lg{font-size:17px}
-.st-imp.md{font-size:15px}
-.st-imp.sm{font-size:13px}
-.st-r.ruled{border-left:2px solid color-mix(in srgb,var(--rule) 55%,transparent)}
+.st-imp.lg{font-size:19px}
+.st-imp.md{font-size:17px}
+.st-imp.sm{font-size:14.5px}
+.st-imp + .st-imp{border-left:1px solid color-mix(in srgb,var(--imp) 26%,transparent)}
+.st-r.ruled{box-shadow:inset 0 3px 0 color-mix(in srgb,var(--rule) 80%,transparent)}
 
 .st-pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.32);z-index:2}
 .st-pg i{display:block;height:100%;background:var(--imp);transition:width .6s ease}
@@ -1843,17 +1852,27 @@ html[lang="en"] body{line-height:1.65}
 
 /* ---------- 560px and up: true three columns, as specified ---------- */
 @media(min-width:560px){
-  .st{height:320px}
+  .st{
+    height:330px;
+    grid-template-columns:22% minmax(0,1fr) 26%;
+    grid-template-areas:"l m r";
+  }
+  .st-r{
+    flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;
+    background:transparent;border-top:0;padding:18px 14px;
+  }
+  .st-imp{flex:0 0 auto;width:100%;display:block;text-align:left;padding:5px 0}
+  .st-imp + .st-imp{border-left:0}
+  .st-r.ruled{box-shadow:none;border-left:2px solid color-mix(in srgb,var(--rule) 55%,transparent)}
   .st-l{gap:16px;padding:18px 8px}
   .st-kw{font-size:19px}
   .st-orb{width:62px;height:62px}
   .st-orb svg{width:40px;height:40px}
+  .st-nar.lg{font-size:19px;line-height:1.5}
   .st-m{padding:20px 26px;gap:3px}
   .st-nar.lg{font-size:19px}
   .st-nar.md{font-size:17.5px}
   .st-nar.sm{font-size:16px}
-  .st-r{gap:5px;padding:18px 14px}
-  .st-imp{padding:5px 0}
   .st-imp.lg{font-size:34px}
   .st-imp.md{font-size:29px}
   .st-imp.sm{font-size:24px}
@@ -1871,7 +1890,7 @@ html[lang="en"] body{line-height:1.65}
   .st-imp.sm{font-size:30px}
 }
 @media(max-width:359px){
-  .st{height:276px}
+  .st{height:300px}
   .st-kw{font-size:14px}
   .st-orb{width:44px;height:44px}
   .st-orb svg{width:28px;height:28px}
@@ -1901,8 +1920,8 @@ html[lang="en"] body{line-height:1.65}
 
 /* ---------- nine keyword activations, one language ---------- */
 .st-kw{position:relative}
-.st-kw::after{content:"";position:absolute;left:-8px;top:0;bottom:0;width:2px;border-radius:1px;
-  background:var(--kw);transform-origin:center}
+.st-kw::after{content:"";position:absolute;left:50%;bottom:-7px;width:26px;height:2px;
+  margin-left:-13px;border-radius:1px;background:var(--kw);transform-origin:center}
 
 .fx-beam::after {animation:fxBeam  3.4s ease-in-out infinite}
 .fx-rings::after{animation:fxRings 3.4s ease-in-out infinite}
@@ -1914,14 +1933,14 @@ html[lang="en"] body{line-height:1.65}
 .fx-join::after {animation:fxJoin  3.4s ease-in-out infinite}
 .fx-glow::after {animation:fxGlow  3.4s ease-in-out infinite}
 
-@keyframes fxBeam {0%,100%{opacity:.2;transform:scaleY(.3)}50%{opacity:1;transform:scaleY(1)}}
-@keyframes fxRings{0%,100%{opacity:.25;box-shadow:none}50%{opacity:1;box-shadow:-4px 0 0 -1px var(--kw),-9px 0 0 -2px var(--kw)}}
-@keyframes fxDoor {0%,100%{opacity:.25;transform:scaleY(.15)}55%{opacity:1;transform:scaleY(1)}}
-@keyframes fxArrow{0%{opacity:0;transform:translateY(60%) scaleY(.4)}45%{opacity:1;transform:translateY(-8%) scaleY(1)}100%{opacity:0;transform:translateY(-40%) scaleY(.5)}}
-@keyframes fxTriad{0%,32%{opacity:1;box-shadow:none}33%,65%{opacity:1;box-shadow:-5px 0 0 -1px var(--kw)}66%,100%{opacity:1;box-shadow:-5px 0 0 -1px var(--kw),-10px 0 0 -1px var(--kw)}}
-@keyframes fxRise {0%{opacity:.2;transform:scaleY(.1)}70%,100%{opacity:1;transform:scaleY(1)}}
-@keyframes fxSpark{0%,100%{opacity:.3;height:14%;top:43%;bottom:auto}50%{opacity:1;height:100%;top:0}}
-@keyframes fxJoin {0%,100%{opacity:.3;transform:scaleY(.2) translateY(-40%)}50%{opacity:1;transform:scaleY(1) translateY(0)}}
+@keyframes fxBeam {0%,100%{opacity:.2;transform:scaleX(.3)}50%{opacity:1;transform:scaleX(1)}}
+@keyframes fxRings{0%,100%{opacity:.25;box-shadow:none}50%{opacity:1;box-shadow:0 5px 0 -1px var(--kw),0 10px 0 -2px var(--kw)}}
+@keyframes fxDoor {0%,100%{opacity:.25;transform:scaleX(.15)}55%{opacity:1;transform:scaleX(1)}}
+@keyframes fxArrow{0%{opacity:0;transform:translateX(-60%) scaleX(.4)}45%{opacity:1;transform:translateX(0) scaleX(1)}100%{opacity:0;transform:translateX(60%) scaleX(.5)}}
+@keyframes fxTriad{0%,32%{opacity:1;box-shadow:none}33%,65%{opacity:1;box-shadow:0 5px 0 -1px var(--kw)}66%,100%{opacity:1;box-shadow:0 5px 0 -1px var(--kw),-10px 0 0 -1px var(--kw)}}
+@keyframes fxRise {0%{opacity:.2;transform:scaleX(.1)}70%,100%{opacity:1;transform:scaleX(1)}}
+@keyframes fxSpark{0%,100%{opacity:.3;width:8px;margin-left:-4px}50%{opacity:1;width:34px;margin-left:-17px}}
+@keyframes fxJoin {0%,100%{opacity:.3;transform:scaleX(.2)}50%{opacity:1;transform:scaleX(1)}}
 @keyframes fxGlow {0%,100%{opacity:.4;box-shadow:0 0 0 0 transparent}50%{opacity:1;box-shadow:0 0 14px 2px color-mix(in srgb,var(--kw) 60%,transparent)}}
 @media(prefers-reduced-motion:reduce){.st-kw::after{animation:none !important;opacity:.85}}
 
@@ -2022,23 +2041,7 @@ img.w-logo{
 }
 @media(prefers-reduced-motion:reduce){.st-hero::before{animation:none}}
 
-.st-hero .st-l{
-  background:linear-gradient(168deg, rgba(7,63,49,.92), rgba(4,44,34,.96));
-}
-.st-hero .st-kw{font-size:18px;letter-spacing:2px}
-.st-hero .st-orb-logo{
-  background:#fff;border-radius:18px;padding:6px;min-width:70px;
-  box-shadow:0 6px 20px rgba(0,0,0,.34), 0 0 0 1px rgba(250,199,117,.5),
-             0 0 26px rgba(250,199,117,.32);
-}
 /* the middle: name, English, then the trademark line lifted */
-.st-hero .st-nar{letter-spacing:.3px}
-.st-hero .st-nar.em{
-  color:#fff;font-size:1.3em;line-height:1.3;
-  border-left:3px solid var(--imp);
-  background:linear-gradient(90deg, rgba(250,199,117,.24), rgba(250,199,117,.04) 70%, transparent);
-  border-radius:0 8px 8px 0;
-}
 /* the impact stack gains a warm plate so it reads as a destination */
 .st-hero .st-r{
   background:linear-gradient(180deg, rgba(250,199,117,.13), rgba(250,199,117,.04));
@@ -2051,7 +2054,118 @@ img.w-logo{
   text-shadow:0 0 18px rgba(250,199,117,.5);
 }
 @media(min-width:560px){
-  .st-hero .st-kw{font-size:21px}
-  .st-hero .st-orb-logo{min-width:88px;padding:8px}
-  .st-hero .st-r{margin:16px 10px 16px 0;padding:16px 12px}
+      .st-hero .st-r{margin:16px 10px 16px 0;padding:16px 12px}
+}
+
+/* ---------- the narrative as intentional blocks, not a list ---------- */
+.st-blk{display:flex;flex-direction:column;gap:0}
+.st-blk.next{margin-top:9px;padding-top:8px;position:relative}
+/* a short gold tick marks each new thought */
+.st-blk.next::before{
+  content:"";position:absolute;left:0;top:0;width:18px;height:2px;border-radius:1px;
+  background:color-mix(in srgb,var(--imp) 70%,transparent);
+}
+/* the opening line carries the slide in */
+.st-nar.lead{font-size:1.1em;letter-spacing:.2px}
+/* a key concept is lifted by colour, not by bolding alone */
+.st-key{
+  color:var(--imp);font-weight:700;
+  text-shadow:0 0 12px color-mix(in srgb,var(--imp) 30%,transparent);
+}
+.st-nar.em .st-key{color:#fff;text-shadow:none}
+
+@media(min-width:560px){
+  .st-blk.next{margin-top:14px;padding-top:12px}
+  .st-blk.next::before{width:26px}
+}
+
+/* nothing on the page may extend past the screen */
+html,body{max-width:100%;overflow-x:hidden}
+
+/* ---------- the impact band breathes and never truncates ---------- */
+.st-imp{line-height:1.24;min-width:0}
+.st-r{min-height:46px;align-items:stretch}
+@media(max-width:479px){
+  .st-imp.lg{font-size:17px}
+  .st-imp.md{font-size:15.5px}
+  .st-imp.sm{font-size:13.5px}
+  .st-imp{padding:9px 5px}
+}
+
+/* ===================================================================
+   SLIDE 1 — composed on its own terms: the logo is the identity
+   =================================================================== */
+.st-hero{
+  display:flex;flex-direction:column;
+  background:
+    radial-gradient(115% 85% at 50% 18%, rgba(239,159,39,.26) 0%, transparent 58%),
+    radial-gradient(95% 110% at 92% 96%, rgba(93,202,165,.22) 0%, transparent 62%),
+    linear-gradient(152deg,#12805F 0%,#0F6E56 40%,#0A5240 76%,#073F31 100%);
+}
+.sh-top{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:9px;padding:14px 18px 10px;text-align:center;position:relative;
+}
+.sh-chap{
+  position:relative;font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:11.5px;letter-spacing:3.5px;color:#FAC775;
+}
+.sh-chap::after{
+  content:"";position:absolute;left:50%;bottom:-6px;width:26px;height:2px;
+  margin-left:-13px;border-radius:1px;background:#FAC775;
+}
+.sh-logo{
+  width:104px;height:104px;object-fit:contain;background:#fff;
+  border-radius:24px;padding:8px;margin-top:4px;
+  box-shadow:0 8px 26px rgba(0,0,0,.34), 0 0 0 1px rgba(250,199,117,.5),
+             0 0 30px rgba(250,199,117,.28);
+}
+.sh-rule{
+  display:block;width:54px;height:2px;border-radius:1px;margin-top:2px;
+  background:linear-gradient(90deg,transparent,#FAC775,transparent);
+}
+.sh-tag{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;font-size:19px;
+  line-height:1.28;color:#fff;margin:0;white-space:pre-line;
+  text-shadow:0 2px 12px rgba(0,0,0,.28);
+}
+.sh-tag-en{
+  font-family:Mukta,system-ui,sans-serif;font-size:11.5px;line-height:1.4;
+  color:#9FE1CB;margin:0;letter-spacing:.2px;
+}
+.sh-r{
+  border-top:2px solid rgba(250,199,117,.55);
+  background:linear-gradient(180deg,rgba(250,199,117,.14),rgba(250,199,117,.05));
+}
+.st-hero .st-imp{color:#FFE6B4}
+.st-hero .st-imp.key{color:#fff;text-shadow:0 0 16px rgba(250,199,117,.5)}
+
+@media(min-width:560px){
+  .sh-top{gap:12px;padding:22px 26px 14px}
+  .sh-logo{width:142px;height:142px;padding:11px;border-radius:28px}
+  .sh-tag{font-size:26px}
+  .sh-tag-en{font-size:13.5px}
+  .sh-chap{font-size:12.5px}
+  .sh-rule{width:72px}
+}
+@media(min-width:1100px){
+  .sh-logo{width:168px;height:168px}
+  .sh-tag{font-size:32px}
+  .sh-tag-en{font-size:15px}
+}
+@media(max-width:359px){
+  .sh-logo{width:88px;height:88px;padding:7px}
+  .sh-tag{font-size:17px}
+}
+
+/* the keyword sits above the circle, so give it room */
+.st-l{justify-content:center}
+.st-kw{padding:0 2px}
+@media(min-width:560px){
+  .st{grid-template-columns:22% minmax(0,1fr) 26%}
+  .st-kw{font-size:18px}
+}
+@media(max-width:359px){
+  .st{grid-template-columns:82px minmax(0,1fr)}
+  .st-kw{font-size:13px}
 }

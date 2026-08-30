@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v10h',
+  VERSION: 'v10l',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2026,7 +2026,7 @@ const STORY = {
   /* One symbol per chapter, drawn rather than illustrated, so it stays
      sharp at any size and carries the idea rather than decorating it. */
   SYM: [
-'LOGO',
+''  /* slide 1 has its own composition */,
     '<circle cx="24" cy="24" r="6" class="f"/><circle cx="24" cy="24" r="12" class="o"/><circle cx="24" cy="24" r="18" class="o" opacity=".45"/>',
     '<rect x="12" y="10" width="24" height="28" rx="2" class="o"/><path d="M24 10v28" class="o"/><path d="M30 38 42 30V14L30 10" class="f2"/>',
     '<circle cx="24" cy="24" r="17" class="o" opacity=".4"/><path d="M24 8v32M24 8l-6 8M24 8l6 8" class="o"/>',
@@ -2047,10 +2047,48 @@ const STORY = {
   init(app) {
     this.app = app;
     const box = document.getElementById('story');
-    if (!box) return;
-    box.addEventListener('pointerdown', () => { this.held = true; this.stop(); });
-    ['pointerup','pointerleave','pointercancel'].forEach(e =>
-      box.addEventListener(e, () => { this.held = false; this.start(); }));
+    const track = document.getElementById('storyTrack');
+    if (!box || !track) return;
+
+    let x0 = 0, y0 = 0, dx = 0, dragging = false, w = 1;
+
+    const begin = e => {
+      const t = e.touches ? e.touches[0] : e;
+      x0 = t.clientX; y0 = t.clientY; dx = 0; dragging = true;
+      w = box.offsetWidth || 1;
+      this.held = true; this.stop();
+      track.style.transition = 'none';
+    };
+
+    /* The slide follows the finger, so the gesture is felt, not guessed. */
+    const move = e => {
+      if (!dragging) return;
+      const t = e.touches ? e.touches[0] : e;
+      const mx = t.clientX - x0, my = t.clientY - y0;
+      if (Math.abs(mx) < Math.abs(my)) return;   // a vertical scroll, leave it alone
+      if (e.cancelable) e.preventDefault();
+      dx = mx;
+      track.style.transform = `translateX(calc(-${this.i * 100}% + ${dx}px))`;
+    };
+
+    const end = () => {
+      if (!dragging) return;
+      dragging = false;
+      track.style.transition = '';
+      const far = Math.abs(dx) > Math.min(70, w * 0.16);
+      if (far) this.go(this.i + (dx < 0 ? 1 : -1)); else this.go(this.i);
+      this.held = false;
+      this.start();
+    };
+
+    box.addEventListener('touchstart', begin, { passive: true });
+    box.addEventListener('touchmove',  move,  { passive: false });
+    box.addEventListener('touchend',   end);
+    box.addEventListener('touchcancel',end);
+    box.addEventListener('mousedown',  begin);
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup',   end);
+
     box.addEventListener('mouseenter', () => this.stop());
     box.addEventListener('mouseleave', () => { if (!this.held) this.start(); });
   },
@@ -2060,14 +2098,19 @@ const STORY = {
     return (v > 0 ? v : 3) * 1000;
   },
 
-  /* Longer narratives get slightly smaller type so every slide fills
-     its frame without any line being dropped. */
-  narSize(lines) {
+  /* Size responds to how much the slide actually carries. */
+  narSize(blocks) {
+    const lines = blocks.flat();
     const n = lines.length;
-    const longest = Math.max(...lines.map(l => l.length));
-    if (n >= 6 || longest > 44) return 'sm';
-    if (n >= 5 || longest > 36) return 'md';
+    const longest = Math.max(...lines.map(l => l.replace(/\[\[|\]\]|^\*\*|^>>/g, '').length));
+    if (n >= 6 || longest > 42) return 'sm';
+    if (n >= 5 || longest > 34) return 'md';
     return 'lg';
+  },
+
+  /* Key concepts are lifted in contrast colour, not merely bolded. */
+  mark(text) {
+    return text.replace(/\[\[(.+?)\]\]/g, '<b class="st-key">$1</b>');
   },
 
   impSize(words) {
@@ -2085,30 +2128,52 @@ const STORY = {
     track.innerHTML = this.SKIN.map((sk, k) => {
       const n = k + 1;
       const [bg, deep, kw, nar, imp, rule] = sk;
-      const lines = t(`st${n}_nar`).split('|');
+      const blocks = t(`st${n}_nar`).split('//').map(b => b.split('|'));
+      const size = this.narSize(blocks);
       const words = t(`st${n}_imp`).split('|');
       const mid = this.MIDRULE[k];
-      return `<article class="st${n === 1 ? ' st-hero' : ''}" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
+      if (n === 1) {
+        return `<article class="st st-hero" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
+          <div class="sh-top">
+            <span class="sh-chap fx-${this.KWFX[k]}">${t('st1_chap')}</span>
+            <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo">
+            <span class="sh-rule"></span>
+            <p class="sh-tag">${t('st1_tag')}</p>
+            <p class="sh-tag-en">${t('st1_tag_en')}</p>
+          </div>
+          <div class="st-r sh-r">
+            ${t('st1_imp').split('|').map((w, wi, arr) =>
+              `<span class="st-imp ${this.impSize(arr)}${wi === arr.length - 1 ? ' key' : ''}">${w}</span>`).join('')}
+          </div>
+          <span class="st-pg"><i style="width:11%"></i></span>
+        </article>`;
+      }
+
+      return `<article class="st" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
 
         <div class="st-l">
           <span class="st-kw fx-${this.KWFX[k]}">${t(`st${n}_chap`)}</span>
-          <span class="st-orb${this.SYM[k] === 'LOGO' ? ' st-orb-logo' : ''}">
-            ${this.SYM[k] === 'LOGO'
-              ? `<img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="st-mark">`
-              : `<svg viewBox="0 0 48 48" aria-hidden="true">${this.SYM[k]}</svg>`}
+          <span class="st-orb">
+            <svg viewBox="0 0 48 48" aria-hidden="true">${this.SYM[k]}</svg>
           </span>
         </div>
 
         <div class="st-m">
-          ${lines.map((l, li) => {
-            const em = l.startsWith('**');
-            const chain = l.startsWith('>>');
-            const txt = l.replace(/^(\*\*|>>)/, '');
-            const last = li === lines.length - 1;
-            if (chain) return `<p class="st-chain">${txt.split('→').map(x =>
-              `<span>${x.trim()}</span>`).join('<i class="st-arw">&rarr;</i>')}</p>`;
-            return `<p class="st-nar ${this.narSize(lines)}${em ? ' em' : ''}${last && !em ? ' last' : ''}"
-              style="--in:${em ? 0 : (li % 2 ? 10 : 0)}px">${txt}</p>`;
+          ${blocks.map((blk, bi) => {
+            const lastBlock = bi === blocks.length - 1;
+            const rows = blk.map((l, li) => {
+              const em = l.startsWith('**');
+              const chain = l.startsWith('>>');
+              const txt = this.mark(l.replace(/^(\*\*|>>)/, ''));
+              if (chain) return `<p class="st-chain">${txt.split('→').map(x =>
+                `<span>${x.trim()}</span>`).join('<i class="st-arw">&rarr;</i>')}</p>`;
+              if (em) return `<p class="st-nar ${size} em">${txt}</p>`;
+              const lead = bi === 0 && li === 0;          /* the opening line leads */
+              const tail = lastBlock && li === blk.length - 1;
+              return `<p class="st-nar ${size}${lead ? ' lead' : ''}${tail ? ' last' : ''}"
+                style="--in:${li ? 9 : 0}px">${txt}</p>`;
+            }).join('');
+            return `<div class="st-blk${bi ? ' next' : ''}">${rows}</div>`;
           }).join('')}
         </div>
 
@@ -2132,7 +2197,7 @@ const STORY = {
   go(n) {
     this.i = (n + 9) % 9;
     const tr = document.getElementById('storyTrack');
-    if (tr) tr.style.transform = `translateX(-${this.i * 100}%)`;
+    if (tr) { tr.style.transition = ''; tr.style.transform = `translateX(-${this.i * 100}%)`; }
     document.querySelectorAll('.st-dot').forEach((d, k) =>
       d.classList.toggle('on', k === this.i));
   },
