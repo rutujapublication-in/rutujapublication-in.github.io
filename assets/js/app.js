@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v10a',
+  VERSION: 'v10h',
   lang: 'mr',
   text: {},
   locations: null,
@@ -36,6 +36,7 @@ const RUTUJA = {
 
     BOOKS.init(this);
     MEDIA.init(this);
+    STORY.init(this);
     CART.init(this);
     ORDERFORM.init(this);
     ORDER.init(this);
@@ -147,6 +148,7 @@ const RUTUJA = {
      ['offers', () => this.paintOffers()],
      ['explore', () => this.paintExplore()],
      ['books', () => BOOKS.paint()],
+     ['story', () => STORY.paint()],
      ['media', () => MEDIA.paint()],
      ['cart', () => CART.render()],
      ['contact', () => this.paintContact()],
@@ -1994,4 +1996,147 @@ const ORDER = {
     document.getElementById('orderWin').classList.add('hidden');
     document.body.style.overflow = '';
   }
+};
+
+
+/* ===================================================================
+   STORY BAND — nine chapters, one visual system.
+   LEFT   keyword + symbol, always with a divider
+   MIDDLE the narrative, the primary intellectual carrier
+   RIGHT  two to four stacked words, the impact zone
+   Three seconds each, right to left, automatic.
+   =================================================================== */
+
+const STORY = {
+  app: null, i: 0, timer: null, held: false,
+
+  /* bg, deep, keyword, narrative, impact, rule */
+  SKIN: [
+    ['#0F6E56','#0A5240','#FAC775','#CFEBE0','#FAC775','#EF9F27'],
+    ['#26215C','#1C1846','#FAC775','#CECBF6','#FAC775','#FAC775'],
+    ['#1E1A4A','#161339','#FAC775','#C4C0EE','#FAC775','#FAC775'],
+    ['#0B3D28','#07301F','#FAC775','#A9D8C4','#FAC775','#EF9F27'],
+    ['#0F6E56','#0A5240','#FAC775','#CFEBE0','#FAC775','#EF9F27'],
+    ['#1E332B','#152520','#FAC775','#AFC7BC','#FAC775','#EF9F27'],
+    ['#993C1D','#7A2E14','#FAECE7','#F5C4B3','#FAC775','#FAC775'],
+    ['#0F6E56','#0A5240','#FAC775','#CFEBE0','#FAC775','#EF9F27'],
+    ['#0E5C57','#0A4642','#FAC775','#B6E0DA','#FAC775','#EF9F27']
+  ],
+
+  /* One symbol per chapter, drawn rather than illustrated, so it stays
+     sharp at any size and carries the idea rather than decorating it. */
+  SYM: [
+'LOGO',
+    '<circle cx="24" cy="24" r="6" class="f"/><circle cx="24" cy="24" r="12" class="o"/><circle cx="24" cy="24" r="18" class="o" opacity=".45"/>',
+    '<rect x="12" y="10" width="24" height="28" rx="2" class="o"/><path d="M24 10v28" class="o"/><path d="M30 38 42 30V14L30 10" class="f2"/>',
+    '<circle cx="24" cy="24" r="17" class="o" opacity=".4"/><path d="M24 8v32M24 8l-6 8M24 8l6 8" class="o"/>',
+    '<circle cx="17" cy="20" r="9" class="o"/><circle cx="31" cy="20" r="9" class="o"/><circle cx="24" cy="31" r="9" class="o"/>',
+    '<rect x="8" y="30" width="32" height="7" rx="1.5" class="f"/><rect x="13" y="21" width="22" height="7" rx="1.5" class="o"/><rect x="18" y="12" width="12" height="7" rx="1.5" class="o" opacity=".5"/>',
+    '<circle cx="24" cy="24" r="17" class="o" opacity=".35"/><text x="24" y="32" class="g">अ</text>',
+    '<path d="M10 32c8 0 8-16 14-16s6 16 14 16" class="o"/><circle cx="10" cy="32" r="4" class="f"/><circle cx="38" cy="32" r="4" class="f"/>',
+    '<path d="M12 26l8 8 16-18" class="o2"/><circle cx="24" cy="24" r="18" class="o" opacity=".35"/>'
+  ],
+
+  /* Each keyword is revealed differently: beam, radiate, strokes,
+     sweep, pulse — one visual language, nine expressions. */
+  KWFX: ['beam','rings','door','arrow','triad','rise','spark','join','glow'],
+
+  /* MIDDLE→RIGHT divider, exactly as specified */
+  MIDRULE: [true, false, true, false, true, false, false, true, false],
+
+  init(app) {
+    this.app = app;
+    const box = document.getElementById('story');
+    if (!box) return;
+    box.addEventListener('pointerdown', () => { this.held = true; this.stop(); });
+    ['pointerup','pointerleave','pointercancel'].forEach(e =>
+      box.addEventListener(e, () => { this.held = false; this.start(); }));
+    box.addEventListener('mouseenter', () => this.stop());
+    box.addEventListener('mouseleave', () => { if (!this.held) this.start(); });
+  },
+
+  secs() {
+    const v = Number((this.app.content.config || {}).story_seconds);
+    return (v > 0 ? v : 3) * 1000;
+  },
+
+  /* Longer narratives get slightly smaller type so every slide fills
+     its frame without any line being dropped. */
+  narSize(lines) {
+    const n = lines.length;
+    const longest = Math.max(...lines.map(l => l.length));
+    if (n >= 6 || longest > 44) return 'sm';
+    if (n >= 5 || longest > 36) return 'md';
+    return 'lg';
+  },
+
+  impSize(words) {
+    const longest = Math.max(...words.map(w => w.length));
+    if (longest >= 11) return 'sm';
+    if (longest >= 8) return 'md';
+    return 'lg';
+  },
+
+  paint() {
+    const track = document.getElementById('storyTrack');
+    if (!track) return;
+    const t = k => this.app.t(k);
+
+    track.innerHTML = this.SKIN.map((sk, k) => {
+      const n = k + 1;
+      const [bg, deep, kw, nar, imp, rule] = sk;
+      const lines = t(`st${n}_nar`).split('|');
+      const words = t(`st${n}_imp`).split('|');
+      const mid = this.MIDRULE[k];
+      return `<article class="st${n === 1 ? ' st-hero' : ''}" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
+
+        <div class="st-l">
+          <span class="st-kw fx-${this.KWFX[k]}">${t(`st${n}_chap`)}</span>
+          <span class="st-orb${this.SYM[k] === 'LOGO' ? ' st-orb-logo' : ''}">
+            ${this.SYM[k] === 'LOGO'
+              ? `<img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="st-mark">`
+              : `<svg viewBox="0 0 48 48" aria-hidden="true">${this.SYM[k]}</svg>`}
+          </span>
+        </div>
+
+        <div class="st-m">
+          ${lines.map((l, li) => {
+            const em = l.startsWith('**');
+            const chain = l.startsWith('>>');
+            const txt = l.replace(/^(\*\*|>>)/, '');
+            const last = li === lines.length - 1;
+            if (chain) return `<p class="st-chain">${txt.split('→').map(x =>
+              `<span>${x.trim()}</span>`).join('<i class="st-arw">&rarr;</i>')}</p>`;
+            return `<p class="st-nar ${this.narSize(lines)}${em ? ' em' : ''}${last && !em ? ' last' : ''}"
+              style="--in:${em ? 0 : (li % 2 ? 10 : 0)}px">${txt}</p>`;
+          }).join('')}
+        </div>
+
+        <div class="st-r ${mid ? 'ruled' : ''}${n === 7 ? ' airy' : ''}">
+          ${words.map((w, wi) => `<span class="st-imp ${this.impSize(words)}${wi === words.length - 1 ? ' key' : ''}">${w}</span>`).join('')}
+        </div>
+
+        <span class="st-pg"><i style="width:${Math.round((n / 9) * 100)}%"></i></span>
+      </article>`;
+    }).join('');
+
+    document.getElementById('storyDots').innerHTML =
+      this.SKIN.map((_, k) => `<button class="st-dot${k === this.i ? ' on' : ''}" data-s="${k}"></button>`).join('');
+    document.querySelectorAll('.st-dot').forEach(d =>
+      d.addEventListener('click', () => { this.go(+d.dataset.s); this.start(); }));
+
+    this.go(this.i);
+    this.start();
+  },
+
+  go(n) {
+    this.i = (n + 9) % 9;
+    const tr = document.getElementById('storyTrack');
+    if (tr) tr.style.transform = `translateX(-${this.i * 100}%)`;
+    document.querySelectorAll('.st-dot').forEach((d, k) =>
+      d.classList.toggle('on', k === this.i));
+  },
+
+  start() { this.stop(); this.timer = setInterval(() => this.go(this.i + 1), this.secs()); },
+  stop() { clearInterval(this.timer); }
 };

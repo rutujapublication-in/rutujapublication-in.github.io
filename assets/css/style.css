@@ -120,7 +120,7 @@ a{color:inherit;text-decoration:none}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 .hero{background:var(--green-light);border-bottom:1px solid var(--line);margin-bottom:14px}
-.hero-inner{padding:52px 20px 46px;text-align:center}
+.hero-inner{padding:18px 20px 22px;text-align:center}
 .hero-title{font-size:36px;color:var(--green-dark);max-width:740px;margin:0 auto 12px}
 .hero-sub{font-size:17px;color:var(--ink-soft);max-width:620px;margin:0 auto 26px}
 .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -1341,7 +1341,7 @@ html[lang="en"] body{line-height:1.65}
    =================================================================== */
 
 .header-inner{display:flex;align-items:center;gap:14px;height:var(--head-h)}
-.brand{flex-shrink:0}
+.brand{flex-shrink:0;display:flex;align-items:center}
 .nav{display:flex;gap:2px;margin:0 auto;flex-wrap:nowrap;overflow:hidden}
 .header-actions{display:flex;align-items:center;gap:9px;margin-left:auto;flex-shrink:0}
 
@@ -1758,4 +1758,300 @@ html[lang="en"] body{line-height:1.65}
   .book-price{font-size:17px}
   .vcard-title{font-size:19px}
   .opick-name{font-size:14px}
+}
+
+
+/* ===================================================================
+   STORY BAND — one system, nine chapters
+   LEFT keyword + symbol | MIDDLE narrative | RIGHT impact zone
+   =================================================================== */
+.story{position:relative;overflow:hidden;background:#0F6E56}
+.story-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
+@media(prefers-reduced-motion:reduce){.story-track{transition:none}}
+
+.st{
+  position:relative;min-width:100%;height:290px;overflow:hidden;
+  background:var(--bg);
+  display:grid;grid-template-columns:22% minmax(0,1fr) 26%;
+  grid-template-areas:"l m r";
+}
+
+/* ---------- LEFT: keyword and symbol, always divided ---------- */
+.st-l{
+  grid-area:l;background:var(--deep);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  padding:14px 6px;
+  position:relative;
+}
+.st-kw{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;font-size:16px;
+  color:var(--kw);writing-mode:vertical-rl;text-orientation:mixed;
+  letter-spacing:1px;line-height:1;position:relative;
+}
+/* the keyword is revealed rather than simply printed */
+
+.st-orb{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid color-mix(in srgb,var(--kw) 45%,transparent);
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--kw) 8%,transparent);
+}
+.st-orb svg{width:34px;height:34px}
+.st-orb .o{fill:none;stroke:var(--kw);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.st-orb .o2{fill:none;stroke:var(--kw);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.st-orb .f{fill:var(--kw);stroke:none}
+.st-orb .f2{fill:color-mix(in srgb,var(--kw) 30%,transparent);stroke:var(--kw);stroke-width:1.5}
+.st-orb .g{fill:var(--kw);font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:600;text-anchor:middle}
+.st-logo{width:46px;height:46px;border-radius:50%;background:#fff center/contain no-repeat;display:block}
+
+/* ---------- MIDDLE: the narrative, primary carrier ---------- */
+.st-m{
+  grid-area:m;display:flex;flex-direction:column;justify-content:center;gap:2px;
+  padding:14px 16px 12px;min-width:0;
+}
+.st-nar{
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;color:var(--nar);
+  margin:0;margin-left:var(--in);line-height:1.42;
+}
+.st-nar.lg{font-size:16.5px}
+.st-nar.md{font-size:15px}
+.st-nar.sm{font-size:13.5px;line-height:1.38}
+.st-nar.last{color:var(--kw);font-weight:700}
+
+/* ---------- RIGHT: the impact zone ---------- */
+.st-r{
+  grid-area:r;display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:center;gap:3px;padding:12px 10px 12px 12px;
+}
+.st-imp{
+  width:100%;text-align:left;padding:3px 0;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;color:var(--imp);
+  line-height:1.1;letter-spacing:.2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.st-imp.lg{font-size:17px}
+.st-imp.md{font-size:15px}
+.st-imp.sm{font-size:13px}
+.st-r.ruled{border-left:2px solid color-mix(in srgb,var(--rule) 55%,transparent)}
+
+.st-pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.32);z-index:2}
+.st-pg i{display:block;height:100%;background:var(--imp);transition:width .6s ease}
+
+.story-dots{position:absolute;left:0;right:0;bottom:9px;z-index:3;display:flex;gap:6px;justify-content:center}
+.st-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.32);transition:.22s;padding:0}
+.st-dot.on{background:#FAC775;width:18px;border-radius:3px}
+
+/* ---------- 560px and up: true three columns, as specified ---------- */
+@media(min-width:560px){
+  .st{height:320px}
+  .st-l{gap:16px;padding:18px 8px}
+  .st-kw{font-size:19px}
+  .st-orb{width:62px;height:62px}
+  .st-orb svg{width:40px;height:40px}
+  .st-m{padding:20px 26px;gap:3px}
+  .st-nar.lg{font-size:19px}
+  .st-nar.md{font-size:17.5px}
+  .st-nar.sm{font-size:16px}
+  .st-r{gap:5px;padding:18px 14px}
+  .st-imp{padding:5px 0}
+  .st-imp.lg{font-size:34px}
+  .st-imp.md{font-size:29px}
+  .st-imp.sm{font-size:24px}
+}
+@media(min-width:1100px){
+  .st{height:360px}
+  .st-kw{font-size:22px}
+  .st-orb{width:74px;height:74px}
+  .st-orb svg{width:48px;height:48px}
+  .st-nar.lg{font-size:22px}
+  .st-nar.md{font-size:20px}
+  .st-nar.sm{font-size:18px}
+  .st-imp.lg{font-size:42px}
+  .st-imp.md{font-size:36px}
+  .st-imp.sm{font-size:30px}
+}
+@media(max-width:359px){
+  .st{height:276px}
+  .st-kw{font-size:14px}
+  .st-orb{width:44px;height:44px}
+  .st-orb svg{width:28px;height:28px}
+  .st-nar.lg{font-size:15px}
+  .st-nar.md{font-size:14px}
+  .st-nar.sm{font-size:12.5px}
+  .st-imp.lg{font-size:20px}
+  .st-imp.md{font-size:17px}
+  .st-imp.sm{font-size:15px}
+}
+
+/* ---------- the left divider: a graphic separation, not a table line ---------- */
+.st-l::after{
+  content:"";position:absolute;right:-1px;top:8%;bottom:8%;width:2px;border-radius:1px;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    color-mix(in srgb,var(--rule) 70%,transparent) 18%,
+    var(--rule) 50%,
+    color-mix(in srgb,var(--rule) 70%,transparent) 82%,
+    transparent 100%);
+}
+.st-l::before{
+  content:"";position:absolute;right:-4px;top:50%;width:8px;height:8px;border-radius:50%;
+  transform:translateY(-50%);background:var(--rule);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--bg) 85%,transparent);
+}
+
+/* ---------- nine keyword activations, one language ---------- */
+.st-kw{position:relative}
+.st-kw::after{content:"";position:absolute;left:-8px;top:0;bottom:0;width:2px;border-radius:1px;
+  background:var(--kw);transform-origin:center}
+
+.fx-beam::after {animation:fxBeam  3.4s ease-in-out infinite}
+.fx-rings::after{animation:fxRings 3.4s ease-in-out infinite}
+.fx-door::after {animation:fxDoor  3.4s ease-in-out infinite;transform-origin:top}
+.fx-arrow::after{animation:fxArrow 3.2s cubic-bezier(.4,0,.2,1) infinite}
+.fx-triad::after{animation:fxTriad 3.6s steps(1,end) infinite}
+.fx-rise::after {animation:fxRise  3.4s ease-out infinite;transform-origin:bottom}
+.fx-spark::after{animation:fxSpark 2.4s ease-in-out infinite}
+.fx-join::after {animation:fxJoin  3.4s ease-in-out infinite}
+.fx-glow::after {animation:fxGlow  3.4s ease-in-out infinite}
+
+@keyframes fxBeam {0%,100%{opacity:.2;transform:scaleY(.3)}50%{opacity:1;transform:scaleY(1)}}
+@keyframes fxRings{0%,100%{opacity:.25;box-shadow:none}50%{opacity:1;box-shadow:-4px 0 0 -1px var(--kw),-9px 0 0 -2px var(--kw)}}
+@keyframes fxDoor {0%,100%{opacity:.25;transform:scaleY(.15)}55%{opacity:1;transform:scaleY(1)}}
+@keyframes fxArrow{0%{opacity:0;transform:translateY(60%) scaleY(.4)}45%{opacity:1;transform:translateY(-8%) scaleY(1)}100%{opacity:0;transform:translateY(-40%) scaleY(.5)}}
+@keyframes fxTriad{0%,32%{opacity:1;box-shadow:none}33%,65%{opacity:1;box-shadow:-5px 0 0 -1px var(--kw)}66%,100%{opacity:1;box-shadow:-5px 0 0 -1px var(--kw),-10px 0 0 -1px var(--kw)}}
+@keyframes fxRise {0%{opacity:.2;transform:scaleY(.1)}70%,100%{opacity:1;transform:scaleY(1)}}
+@keyframes fxSpark{0%,100%{opacity:.3;height:14%;top:43%;bottom:auto}50%{opacity:1;height:100%;top:0}}
+@keyframes fxJoin {0%,100%{opacity:.3;transform:scaleY(.2) translateY(-40%)}50%{opacity:1;transform:scaleY(1) translateY(0)}}
+@keyframes fxGlow {0%,100%{opacity:.4;box-shadow:0 0 0 0 transparent}50%{opacity:1;box-shadow:0 0 14px 2px color-mix(in srgb,var(--kw) 60%,transparent)}}
+@media(prefers-reduced-motion:reduce){.st-kw::after{animation:none !important;opacity:.85}}
+
+/* ---------- emphasised narrative line ---------- */
+.st-nar.em{
+  color:#fff;font-weight:700;font-size:1.14em;line-height:1.32;
+  padding:7px 0 7px 11px;margin:5px 0;
+  border-left:3px solid var(--imp);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--imp) 16%,transparent),transparent 78%);
+}
+
+/* ---------- slide 9: the arrows as a journey ---------- */
+.st-chain{
+  display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin:6px 0 0;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:13.5px;color:var(--kw);
+}
+.st-chain span{
+  background:color-mix(in srgb,var(--kw) 15%,transparent);
+  border:1px solid color-mix(in srgb,var(--kw) 32%,transparent);
+  border-radius:6px;padding:3px 8px;line-height:1.3;
+}
+.st-arw{font-style:normal;color:var(--imp);font-size:14px;animation:chainflow 2.2s ease-in-out infinite}
+.st-chain .st-arw:nth-of-type(2){animation-delay:.25s}
+.st-chain .st-arw:nth-of-type(3){animation-delay:.5s}
+@keyframes chainflow{0%,100%{opacity:.4;transform:translateX(0)}50%{opacity:1;transform:translateX(3px)}}
+@media(prefers-reduced-motion:reduce){.st-arw{animation:none;opacity:.9}}
+
+/* ---------- the closing word of each stack is enlarged ---------- */
+.st-imp.key{font-size:1.28em;color:#fff}
+
+/* ---------- slide 7: intentional negative space ---------- */
+.st-r.airy{gap:8px}
+.st-r.airy .st-imp{padding:6px 0}
+.st-r.airy .st-imp:nth-child(2){font-size:.58em;opacity:.7;padding:0;margin-left:4px}
+
+@media(min-width:560px){
+  .st-chain{font-size:15px;gap:7px}
+  .st-chain span{padding:4px 11px}
+  .st-arw{font-size:17px}
+  .st-nar.em{padding:9px 0 9px 14px;border-left-width:4px}
+  .st-r.airy{gap:14px}
+  .st-r.airy .st-imp:nth-child(2){margin-left:6px}
+  .st-l::before{width:10px;height:10px;right:-5px}
+}
+
+/* ---------- the real logo ---------- */
+.st-orb-logo{
+  background:#fff;border:0;border-radius:16px;padding:5px;
+  width:auto;aspect-ratio:1/1;min-width:64px;
+  box-shadow:0 3px 12px rgba(0,0,0,.22);
+}
+.st-mark{width:100%;height:100%;object-fit:contain;display:block}
+
+img.brand-logo{
+  height:46px;width:46px;object-fit:contain;flex-shrink:0;
+  background:#fff;border-radius:10px;padding:3px;
+}
+@media(max-width:479px){img.brand-logo{height:40px;width:40px;padding:2px}}
+
+.w-logo-img{
+  width:116px;height:116px;object-fit:contain;display:block;margin:0 auto 6px;
+  background:#fff;border-radius:20px;padding:8px;
+  box-shadow:0 4px 18px rgba(18,56,33,.14);
+}
+@media(max-width:479px){.w-logo-img{width:84px;height:84px;padding:6px}}
+img.w-logo{
+  width:132px;height:132px;object-fit:contain;background:#fff;border-radius:22px;
+  padding:10px;margin:0 auto 13px;display:block;
+  box-shadow:0 8px 26px rgba(18,56,33,.15);
+}
+@media(max-width:479px){img.w-logo{width:108px;height:108px;padding:8px;margin-bottom:10px}}
+@media(max-height:520px) and (orientation:landscape){img.w-logo{width:96px;height:96px;padding:7px}}
+
+/* ===================================================================
+   SLIDE 1 — the identity slide, richer than the eight that follow
+   =================================================================== */
+.st-hero{
+  background:
+    radial-gradient(120% 90% at 14% 26%, rgba(239,159,39,.30) 0%, transparent 56%),
+    radial-gradient(95% 120% at 96% 92%, rgba(93,202,165,.24) 0%, transparent 60%),
+    linear-gradient(152deg, #12805F 0%, #0F6E56 38%, #0A5240 74%, #073F31 100%);
+}
+/* a slow warm light drifting behind the composition */
+.st-hero::before{
+  content:"";position:absolute;left:-18%;top:-30%;width:78%;height:150%;
+  background:radial-gradient(50% 50% at 50% 50%, rgba(250,199,117,.22), transparent 70%);
+  animation:heroDrift 9s ease-in-out infinite;pointer-events:none;
+}
+@keyframes heroDrift{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.75}
+  50%    {transform:translate(14%,6%) scale(1.14);opacity:1}
+}
+/* a fine gold hairline framing the whole slide */
+.st-hero::after{
+  content:"";position:absolute;inset:6px;border-radius:6px;pointer-events:none;
+  border:1px solid rgba(250,199,117,.22);
+}
+@media(prefers-reduced-motion:reduce){.st-hero::before{animation:none}}
+
+.st-hero .st-l{
+  background:linear-gradient(168deg, rgba(7,63,49,.92), rgba(4,44,34,.96));
+}
+.st-hero .st-kw{font-size:18px;letter-spacing:2px}
+.st-hero .st-orb-logo{
+  background:#fff;border-radius:18px;padding:6px;min-width:70px;
+  box-shadow:0 6px 20px rgba(0,0,0,.34), 0 0 0 1px rgba(250,199,117,.5),
+             0 0 26px rgba(250,199,117,.32);
+}
+/* the middle: name, English, then the trademark line lifted */
+.st-hero .st-nar{letter-spacing:.3px}
+.st-hero .st-nar.em{
+  color:#fff;font-size:1.3em;line-height:1.3;
+  border-left:3px solid var(--imp);
+  background:linear-gradient(90deg, rgba(250,199,117,.24), rgba(250,199,117,.04) 70%, transparent);
+  border-radius:0 8px 8px 0;
+}
+/* the impact stack gains a warm plate so it reads as a destination */
+.st-hero .st-r{
+  background:linear-gradient(180deg, rgba(250,199,117,.13), rgba(250,199,117,.04));
+  border-radius:10px;margin:12px 8px 12px 0;padding:12px 10px;
+}
+.st-hero .st-r.ruled{border-left:2px solid rgba(250,199,117,.55)}
+.st-hero .st-imp{color:#FFE6B4}
+.st-hero .st-imp.key{
+  color:#fff;
+  text-shadow:0 0 18px rgba(250,199,117,.5);
+}
+@media(min-width:560px){
+  .st-hero .st-kw{font-size:21px}
+  .st-hero .st-orb-logo{min-width:88px;padding:8px}
+  .st-hero .st-r{margin:16px 10px 16px 0;padding:16px 12px}
 }

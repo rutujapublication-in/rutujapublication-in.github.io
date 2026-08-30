@@ -370,6 +370,7 @@
  "ads": [],
  "config": {
   "video_rotate_seconds": 4,
-  "ad_rotate_seconds": 3
+  "ad_rotate_seconds": 3,
+  "story_seconds": 3
  }
 }
