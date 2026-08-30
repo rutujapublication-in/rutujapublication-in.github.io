@@ -186,7 +186,7 @@ a{color:inherit;text-decoration:none}
 .wa-float:active{transform:scale(.95)}
 
 /* ---------- MOBILE ---------- */
-@media(max-width:940px){
+@media(max-width:1180px){
   .nav{
     position:absolute;top:100%;left:0;right:0;
     background:var(--green-dark);flex-direction:column;gap:0;padding:8px;
@@ -608,7 +608,7 @@ a{color:inherit;text-decoration:none}
 }
 
 /* Mobile dropdown hangs from the sticky bar itself */
-@media(max-width:940px){
+@media(max-width:1180px){
   .topbar{position:sticky;top:0}
   .nav{top:100%;left:0;right:0}
 }
@@ -708,7 +708,7 @@ a{color:inherit;text-decoration:none}
   .menu-btn{display:flex}
   
 }
-@media(max-width:940px){ .menu-btn{display:flex} }
+@media(max-width:1180px){ .menu-btn{display:flex} }
 @media(max-width:560px){
   
   
@@ -960,12 +960,7 @@ a{color:inherit;text-decoration:none}
 }
 @media(hover:hover){.book-card:hover .book-open{opacity:1;transform:translate(-50%,0)}}
 
-.book-std{
-  position:absolute;top:9px;right:9px;z-index:3;
-  background:rgba(255,255,255,.95);color:var(--sc,var(--green-dark));
-  border-radius:7px;padding:4px 10px;font-size:12px;font-weight:700;
-  box-shadow:0 2px 7px rgba(0,0,0,.28);
-}
+
 
 /* ---- text under the book ---- */
 .book-body{padding:14px 2px 0;display:flex;flex-direction:column;gap:3px;flex:1}
@@ -1049,7 +1044,7 @@ a{color:inherit;text-decoration:none}
   .book-name{font-size:15.5px;line-height:1.3}
   .book-price{font-size:19px;gap:7px;margin-top:6px}
   .book-bulk{font-size:11.5px;padding:3px 8px}
-  .book-std{font-size:11px;padding:3px 8px;top:8px;right:8px}
+  
 
   /* ---- Standard cards: full width pair, taller, easier to hit ---- */
   
@@ -1209,17 +1204,11 @@ a{color:inherit;text-decoration:none}
    =================================================================== */
 
 /* ---- ribbon on the cover ---- */
-.book-ribbon{
-  position:absolute;left:0;bottom:14px;z-index:3;
-  background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#2E1E02;
-  font-size:12px;font-weight:800;padding:6px 12px 6px 18px;
-  border-radius:0 8px 8px 0;box-shadow:0 3px 10px rgba(0,0,0,.35);
-  letter-spacing:.2px;
-}
+
 
 /* ---- look inside tab on the fore-edge ---- */
 .peek-tab{
-  position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:5;
+  position:absolute;right:-22px;top:50%;transform:translateY(-50%);z-index:6;
   display:flex;flex-direction:column;align-items:center;gap:2px;
   background:rgba(255,255,255,.97);border-radius:9px;padding:8px 7px;
   box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer;
@@ -1412,3 +1401,267 @@ a{color:inherit;text-decoration:none}
 }
 .cond-i{font-size:15px;line-height:1.3;flex-shrink:0}
 .osum-row + .cond,.osum-save + .cond{margin-top:12px}
+
+/* ===================================================================
+   v9e — TYPOGRAPHY AND OVERLAP FIXES
+   =================================================================== */
+
+/* Nothing on a cover may share a corner with anything else */
+
+
+
+/* Long labels must never spill out of a control */
+.nav a,.nav-cart,.nav-reg{white-space:nowrap}
+.btn,.w-btn,.vcard-btn,.cart-bar-btn,.std-go,.offer-go{white-space:normal;overflow-wrap:break-word}
+.book-name,.vcard-title,.cart-name,.offer-t,.ex-t,.sec-title{overflow-wrap:break-word;hyphens:none}
+.std-mid li,.rung-q,.cart-meta,.book-meta{overflow-wrap:break-word}
+
+/* One type scale for the whole site, so nothing looks borrowed */
+:root{
+  --fs-xs:12.5px; --fs-sm:14px; --fs-md:15.5px; --fs-lg:18px;
+  --fs-h3:21px;   --fs-h2:25px; --fs-h1:31px;
+}
+h1,h2,h3,.sec-title,.book-name,.vcard-title,.std-num,.offer-t,.ex-t,
+.cart-name,.form-h,.calc-h,.panel-h,.w-name-mr{
+  font-family:'Baloo 2','Mukta',system-ui,sans-serif;
+  letter-spacing:.1px;
+}
+body,.f label,.f input,.f select,p,li,td,th,.btn,button,input,select{
+  font-family:'Mukta',system-ui,sans-serif;
+}
+/* Devanagari needs a little more line height than Latin to stay legible */
+html[lang="mr"] body{line-height:1.72}
+html[lang="mr"] .book-name,html[lang="mr"] .vcard-title,
+html[lang="mr"] .sec-title{line-height:1.4}
+html[lang="en"] body{line-height:1.65}
+
+/* Labels and buttons sit on one line where they can */
+.f label{letter-spacing:.1px}
+.calc-line span:first-child,.rung-q{letter-spacing:.1px}
+
+/* ===================================================================
+   v9f — CHIPS BELOW THE COVER, ORDER PANEL, PICKER
+   The cover artwork is left alone. Standard and discount sit under it.
+   =================================================================== */
+
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.chip{
+  display:inline-block;border-radius:7px;padding:3px 10px;
+  font-size:11.5px;font-weight:700;letter-spacing:.2px;line-height:1.5;
+}
+.chip-std{color:#fff}
+.chip-off{background:linear-gradient(180deg,#FBEBCB,#F3DCAE);color:#7A5410;
+  border:1px solid #E7CFA0}
+
+/* ---- direct enquiry under the two main actions ---- */
+.calc-enq{
+  display:block;width:100%;margin-top:10px;padding:12px;
+  border:1.5px dashed var(--green);border-radius:10px;
+  font-size:14.5px;font-weight:600;color:var(--green);background:var(--white);
+  transition:.16s;
+}
+.calc-enq:hover{background:var(--green-light)}
+
+/* ---- the order strip on the home page ---- */
+.order-strip{
+  display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;
+  background:linear-gradient(105deg,var(--green) 0%,#215F39 60%,#1A4D2E 100%);
+  border-radius:18px;padding:24px 28px;margin-top:34px;color:#fff;
+  box-shadow:0 8px 26px rgba(18,56,33,.26);position:relative;overflow:hidden;
+}
+.order-strip::after{
+  content:"";position:absolute;right:-40px;top:-50px;width:190px;height:190px;
+  border-radius:50%;border:22px solid rgba(255,255,255,.09);pointer-events:none;
+}
+.order-strip-t{position:relative;z-index:1;min-width:0}
+.order-strip-t h2{font-size:24px;margin-bottom:5px}
+.order-strip-t p{font-size:15px;color:#C8DACE;line-height:1.6}
+.order-strip-b{position:relative;z-index:1;min-height:52px;padding:0 30px;
+  font-size:16px;white-space:nowrap;flex-shrink:0}
+
+/* ---- order button in the nav ---- */
+.nav-order{
+  display:inline-flex;align-items:center;padding:9px 15px;border-radius:8px;
+  background:var(--gold);color:#3F2A05 !important;font-size:15px;font-weight:700;
+  margin-left:5px;
+}
+.nav-order:hover{background:#F2B255}
+
+/* ---- the book picker inside the order window ---- */
+.order-pick{margin-bottom:16px}
+.opick-h{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;
+  color:var(--green-dark);margin-bottom:9px}
+.opick-list{display:flex;flex-direction:column;gap:8px;
+  max-height:290px;overflow-y:auto;padding-right:4px}
+.opick-row{
+  display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;
+  border:1px solid var(--line);border-radius:11px;padding:9px 11px;background:var(--white);
+  transition:.16s;
+}
+.opick-row.on{border-color:var(--green);background:var(--green-light)}
+.opick-cover{width:42px;aspect-ratio:1/1.4142;border-radius:4px;overflow:hidden;
+  box-shadow:0 1px 5px rgba(0,0,0,.22)}
+.opick-cover img{width:100%;height:100%;object-fit:cover}
+.opick-name{font-size:14px;font-weight:600;color:var(--green-dark);line-height:1.35}
+.opick-rate{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+.opick-row .cart-qty button{width:32px;height:36px;font-size:17px}
+.opick-row .cart-qty input{width:44px;font-size:14px}
+.osum-empty{text-align:center;padding:16px;color:var(--ink-soft);font-size:14px}
+
+@media(max-width:700px){
+  .order-strip{flex-direction:column;align-items:stretch;gap:16px;padding:20px 18px}
+  .order-strip-t h2{font-size:21px}
+  .order-strip-b{width:100%}
+  .nav-order{margin-left:0;padding:13px 16px;font-size:16px;justify-content:center}
+  .calc-actions{flex-direction:column}
+  .opick-list{max-height:none}
+  .opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q";row-gap:9px}
+  .opick-cover{grid-area:c}.opick-info{grid-area:i}.opick-row .cart-qty{grid-area:q;width:fit-content}
+}
+
+/* ===================================================================
+   v9g — FULL MOBILE PASS
+   Every page, every window, every card. Touch targets at least 44px,
+   nothing squeezed into columns too narrow to read.
+   =================================================================== */
+
+@media(max-width:760px){
+
+  /* ---------- BOOK PAGE ---------- */
+  .bd-facts{grid-template-columns:repeat(3,1fr);gap:8px}
+  .bd-fact{padding:10px 9px;text-align:center}
+  .bd-fact-k{font-size:11px}
+  .bd-fact-v{font-size:15px}
+  .bd-title{font-size:22px;line-height:1.32}
+  .bd-subtitle{font-size:14.5px}
+  .bd-sub{font-size:14px}
+  .bd-desc{font-size:15px;line-height:1.75;margin-bottom:18px}
+
+  .calc{padding:16px 15px;border-radius:14px}
+  .calc-h{font-size:17px}
+  .calc-row{gap:10px}
+  .calc-lbl{font-size:14px}
+  /* a quantity control you can actually hit with a thumb */
+  .qty{width:100%;justify-content:space-between}
+  .qty button{width:56px;height:52px;font-size:24px}
+  .qty input{flex:1;height:52px;font-size:19px}
+  .calc-out{padding:13px 14px}
+  .calc-line{font-size:14.5px;padding:7px 0}
+  .calc-total{font-size:19px}
+
+  /* the rate ladder stacks its label above the numbers */
+  .rung{grid-template-columns:1fr auto;gap:4px 10px;padding:11px 13px}
+  .rung-q{grid-column:1;font-size:13.5px}
+  .rung-r{grid-column:2;grid-row:1;font-size:16px}
+  .rung-p{grid-column:1/-1;grid-row:2;text-align:left;min-width:0;font-size:12.5px}
+  .rung.on .rung-r{font-size:17px}
+
+  .nudge-text{font-size:13.5px;line-height:1.6}
+  .nudge-bar{height:9px}
+  .disc-head{font-size:14px;padding:11px 14px}
+  .disc-head b{font-size:17px}
+  .cond{font-size:12.5px;padding:9px 12px}
+
+  /* ---------- BOOK CARDS ---------- */
+  .book-stage{padding-bottom:12px}
+  .chips{gap:5px;margin-bottom:5px}
+  .chip{font-size:10.5px;padding:2px 8px}
+  .book-body{padding:11px 1px 0}
+
+  /* ---------- LIST ---------- */
+  .cart-sums{font-size:14px}
+  .cart-grand b{font-size:23px}
+  .cart-name{font-size:15px}
+  .cart-qty button{width:44px;height:44px;font-size:20px}
+  .cart-qty input{width:56px;height:44px;font-size:16px}
+  .cart-amt b{font-size:17px}
+  .cart-x{width:40px;height:40px}
+
+  /* ---------- ORDER WINDOW ---------- */
+  .order-card{padding:22px 16px 30px}
+  .order-pick{margin-bottom:14px}
+  .opick-list{gap:9px}
+  .opick-row{padding:10px}
+  .opick-name{font-size:14.5px}
+  .opick-row .cart-qty button{width:42px;height:42px;font-size:19px}
+  .opick-row .cart-qty input{width:50px;height:42px;font-size:15px}
+  .osum-row{grid-template-columns:1fr auto;gap:3px 10px;padding:7px 0;
+    border-bottom:1px solid rgba(26,77,46,.12)}
+  .osum-row span:first-child{grid-column:1/-1;font-weight:600}
+  .osum-row span:nth-child(2){grid-column:1;font-size:13px;color:var(--ink-soft)}
+  .osum-row b{grid-column:2;grid-row:2}
+  .osum-total{font-size:15px}
+  .osum-total b{font-size:20px}
+
+  /* ---------- WELCOME ---------- */
+  .welcome-grid{padding:22px 18px;gap:18px}
+  .w-centre{padding:4px 0}
+  .w-side{padding-top:15px}
+  .w-side-p{font-size:14px;line-height:1.7}
+  .w-quote{font-size:16.5px}
+  .ph-logo,.ph-face{width:76px;height:76px}
+  .w-actions{width:100%;flex-direction:column;gap:11px}
+  .w-btn{width:100%;min-width:0;padding:14px 20px 15px}
+  .sheet-card{padding:24px 16px 32px}
+  .gate-x,.peek-x{width:46px;height:46px}
+  .f input,.f select{height:52px;font-size:16px}
+  .phone-cc{font-size:16px;padding:0 14px}
+  .gate-submit,.btn{min-height:52px}
+
+  /* ---------- VIDEO ---------- */
+  .car-controls{gap:14px;padding:2px 0 16px}
+  .vid-list{gap:14px}
+  .vcard-btn{min-height:50px}
+
+  /* ---------- OFFERS AND EXPLORE ---------- */
+  .offer-card{padding:17px 16px}
+  .offer-t{font-size:17px}
+  .offer-d{font-size:13.5px}
+  .offer-go{font-size:13.5px}
+  .reg-banner{padding:15px 16px;font-size:14.5px}
+  .reg-banner .btn{width:100%}
+
+  /* ---------- LOOK INSIDE ---------- */
+  .peek{padding:14px}
+  .peek-foot{gap:3px}
+  .peek-name{font-size:16px;text-align:center;padding:0 12px}
+  .peek-count{font-size:12.5px}
+
+  /* ---------- GENERAL ---------- */
+  .sec-title{font-size:21px;margin:30px 0 12px}
+  .back-link{font-size:14.5px;padding:6px 0}
+  .fbar{gap:8px}
+  .fsearch,.fsel{height:48px;font-size:15px}
+  .fclear{height:48px}
+}
+
+/* one book per row and roomier controls on the smallest phones */
+@media(max-width:400px){
+  .bd-facts{grid-template-columns:repeat(2,1fr)}
+  .cart-row{grid-template-columns:48px 1fr;grid-template-areas:"t i" "q a" "x x";gap:9px}
+  .cart-thumb{width:48px}
+  .cart-x{grid-area:x;justify-self:end;margin-top:-6px}
+  .cart-amt{text-align:right}
+  .opick-row{grid-template-columns:34px 1fr}
+  .opick-cover{width:34px}
+  .chip{font-size:10px;padding:2px 7px}
+  .w-name-mr{font-size:26px}
+  .w-name-en{font-size:18px}
+}
+
+/* landscape phones: the welcome screen must still fit */
+@media(max-height:520px) and (orientation:landscape){
+  .welcome{min-height:auto}
+  .w-logo{width:56px;height:56px;font-size:28px;margin-bottom:10px}
+  .w-name-mr{font-size:24px}
+  .w-name-en{font-size:16px}
+  .welcome-foot{padding-bottom:24px}
+  .peek-frame img{max-height:62vh}
+}
+
+@media(max-width:760px){
+  .ladder{margin-top:12px;border-radius:10px}
+  .nudge{margin:0 0 11px}
+  .ph{margin-bottom:13px}
+  .sheet{align-items:flex-end}
+}

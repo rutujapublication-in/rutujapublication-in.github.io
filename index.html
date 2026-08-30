@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=9d">
+<link rel="stylesheet" href="assets/css/style.css?v=9g">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v9d</p>
+        <p class="w-ver">v9g</p>
       </div>
 
       <aside class="w-side w-right">
@@ -154,6 +154,7 @@
     <div id="orderBody">
       <h2 class="form-h" data-t="order_title"></h2>
       <p class="form-sub" data-t="order_sub"></p>
+      <div class="order-pick" id="orderPick"></div>
       <div class="order-sum" id="orderSum"></div>
       <div class="gate-note hidden" id="orderPrefill" data-t="order_prefill"></div>
       <div id="orderSlot"></div>
@@ -207,6 +208,7 @@
         <a href="#about" data-nav="about" data-t="nav_publication"></a>
         <a href="#contact" data-nav="contact" data-t="nav_contact"></a>
         <a href="#cart" class="nav-cart" id="navCart" data-nav="cart"><span data-t="cart"></span><b id="cartCount">0</b></a>
+        <a href="#" class="nav-order" id="navOrder" data-t="order_btn"></a>
         <a href="#" class="nav-reg hidden" id="navReg" data-offer="default" data-t="nav_register"></a>
       </nav>
       <div class="header-actions">
@@ -239,6 +241,14 @@
 
         <h2 class="sec-title" data-t="books_standard"></h2>
         <div class="std-grid" id="stdGrid"></div>
+
+        <div class="order-strip">
+          <div class="order-strip-t">
+            <h2 data-t="order_head"></h2>
+            <p data-t="order_head_sub"></p>
+          </div>
+          <button class="btn btn-gold order-strip-b" id="orderStripBtn" data-t="order_btn"></button>
+        </div>
 
         <h2 class="sec-title" data-t="offer_hook_head"></h2>
         <p class="sec-sub" data-t="offer_hook_sub"></p>
@@ -328,6 +338,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=9d"></script>
+<script src="assets/js/app.js?v=9g"></script>
 </body>
 </html>

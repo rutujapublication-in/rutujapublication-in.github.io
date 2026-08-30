@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v9d',
+  VERSION: 'v9g',
   lang: 'mr',
   text: {},
   locations: null,
@@ -38,6 +38,7 @@ const RUTUJA = {
     MEDIA.init(this);
     CART.init(this);
     ORDERFORM.init(this);
+    ORDER.init(this);
     PEEK.init(this);
     ENTRY.init(this);
   },
@@ -487,8 +488,10 @@ const FORM = {
     this.el.cat.addEventListener('change', () => {
       this.el.parentNote.classList.toggle('hidden', this.el.cat.value !== 'student');
     });
-    this.el.phone.addEventListener('input', () => this.digits(this.el.phone, 10));
-    this.el.pin.addEventListener('input', () => this.digits(this.el.pin, 6));
+    RULE.bind(this.el.name, 'name');
+    RULE.bind(this.el.village, 'place');
+    RULE.bind(this.el.phone, 'digits', 10);
+    RULE.bind(this.el.pin, 'digits', 6);
   },
 
   moveTo(slotId) {
@@ -591,14 +594,22 @@ const FORM = {
       if (pass) { el.classList.remove('bad'); if (e) e.textContent = ''; }
       else { el.classList.add('bad'); if (e) e.textContent = msg; ok = false; }
     };
-    check(this.el.name, 'eName', this.el.name.value.trim().length >= 2, req);
-    check(this.el.phone, 'ePhone', /^[6-9]\d{9}$/.test(this.el.phone.value), t('common_invalid_phone'));
-    check(this.el.cat, 'eCat', !!this.el.cat.value, req);
-    check(this.el.state, 'eState', !!this.el.state.value, req);
-    check(this.el.dist, 'eDist', !!this.el.dist.value, req);
-    check(this.el.tal, 'eTal', !!this.el.tal.value, req);
-    check(this.el.village, 'eVillage', this.el.village.value.trim().length >= 2, req);
-    check(this.el.pin, 'ePin', /^\d{6}$/.test(this.el.pin.value), t('common_invalid_pin'));
+    const soft = this.softMode === true;   // order window: only name and phone required
+    check(this.el.name, 'eName', RULE.okName(this.el.name.value), t('err_name'));
+    check(this.el.phone, 'ePhone', RULE.okPhone(this.el.phone.value), t('err_phone'));
+    if (!soft) {
+      check(this.el.cat, 'eCat', !!this.el.cat.value, req);
+      check(this.el.state, 'eState', !!this.el.state.value, req);
+      check(this.el.dist, 'eDist', !!this.el.dist.value, req);
+      check(this.el.tal, 'eTal', !!this.el.tal.value, req);
+      check(this.el.village, 'eVillage', RULE.okPlace(this.el.village.value), t('err_village'));
+      check(this.el.pin, 'ePin', RULE.okPin(this.el.pin.value), t('err_pin'));
+    } else {
+      if (this.el.pin.value && !RULE.okPin(this.el.pin.value))
+        check(this.el.pin, 'ePin', false, t('err_pin'));
+      if (this.el.village.value && !RULE.okPlace(this.el.village.value))
+        check(this.el.village, 'eVillage', false, t('err_village'));
+    }
     return ok;
   },
 
@@ -644,6 +655,9 @@ const FORM = {
       }
     }
 
+    BUYER.set({ name: payload.name, whatsapp: payload.whatsapp, category: payload.category,
+                state: payload.state, district: payload.district, taluka: payload.taluka,
+                village_city: payload.village_city, pin: payload.pin });
     localStorage.setItem('rutuja_reg', JSON.stringify({ id: regId, cat: payload.category }));
     this.el.submit.disabled = false;
     this.el.submit.textContent = this.app.t('gate_submit');
@@ -838,16 +852,17 @@ const BOOKS = {
     return `<button class="book-card" data-book="${b.book_id}" style="--sc:${this.stdColor(b)}">
       <span class="book-stage">
         <span class="book3d">
-          <span class="book-cover">
-            ${cover}<span class="book-std">${t('books_standard')} ${num}</span>
-            ${pct ? `<span class="book-ribbon">${pct}% ${t('disc_upto')}</span>` : ''}
-          </span>
+          <span class="book-cover">${cover}</span>
           ${peek}
           <span class="book-pages"></span>
           <span class="book-open">${t('book_open')} &rarr;</span>
         </span>
       </span>
       <span class="book-body">
+        <span class="chips">
+          <span class="chip chip-std" style="background:${this.stdColor(b)}">${t('chip_std')} ${num}</span>
+          ${pct ? `<span class="chip chip-off">${pct}% ${t('disc_upto')}</span>` : ''}
+        </span>
         <span class="book-name">${name}</span>
         <span class="book-meta">${sub} · ${this.medLabel(b)}</span>
         ${b.subtitle_mr || b.subtitle_en ? `<span class="book-sub">${mr ? b.subtitle_mr : b.subtitle_en}</span>` : ''}
@@ -1011,9 +1026,10 @@ const BOOKS = {
             <div id="ladderBox"></div>
             <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>
             <div class="calc-actions">
-              <button class="btn btn-gold" id="calcCart">${t('cart_add')}</button>
-              <button class="btn btn-ghost" id="calcAsk">${t('price_ask')}</button>
+              <button class="btn btn-gold" id="calcOrder">${t('book_order_now')}</button>
+              <button class="btn btn-primary" id="calcCart">${t('cart_add')}</button>
             </div>
+            <button class="calc-enq" id="calcAsk">${t('book_enq')}</button>
           </div>
 
           ${MEDIA.forBook(b.book_id)}
@@ -1076,6 +1092,9 @@ const BOOKS = {
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
     document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
+    document.getElementById('calcOrder').onclick = () => {
+      ORDER.open([{ id: b.book_id, qty: +qv.value || 1 }]);
+    };
     document.getElementById('calcCart').onclick = () => {
       CART.add(b.book_id, +qv.value || 1);
       const btn = document.getElementById('calcCart');
@@ -1293,6 +1312,60 @@ const MEDIA = {
 };
 
 /* ===================================================================
+   INPUT RULES — the same everywhere, so bad data cannot be typed at all
+   =================================================================== */
+
+const RULE = {
+  /* Devanagari and Latin letters, spaces, dot and hyphen. No digits. */
+  name(v) { return v.replace(/[^\u0900-\u097F A-Za-z.\-']/g, '').replace(/\s{2,}/g, ' ').slice(0, 60); },
+  place(v) { return v.replace(/[^\u0900-\u097F A-Za-z.\-]/g, '').replace(/\s{2,}/g, ' ').slice(0, 50); },
+  digits(v, n) { return v.replace(/\D/g, '').slice(0, n); },
+
+  okName(v) { return /^[\u0900-\u097FA-Za-z][\u0900-\u097F A-Za-z.\-']{1,}$/.test(v.trim()); },
+  okPhone(v) { return /^[6-9]\d{9}$/.test(v); },
+  okPin(v) { return /^[1-9]\d{5}$/.test(v); },
+  okPlace(v) { return v.trim().length >= 2; },
+
+  /* Attaches live filtering to a field so wrong characters never appear. */
+  bind(el, kind, max) {
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const p = el.selectionStart;
+      const before = el.value;
+      el.value = kind === 'name' ? this.name(before)
+               : kind === 'place' ? this.place(before)
+               : this.digits(before, max);
+      if (el.value !== before) el.setSelectionRange(Math.max(0, p - 1), Math.max(0, p - 1));
+    });
+    if (kind === 'digits') { el.setAttribute('inputmode', 'numeric'); }
+  }
+};
+
+
+/* ===================================================================
+   BUYER — one profile, shared by every form on the site.
+   Filled at entry, in the list, or in the order window. Whichever
+   comes first, the others are already complete.
+   =================================================================== */
+
+const BUYER = {
+  get() {
+    try { return JSON.parse(localStorage.getItem('rutuja_buyer') || 'null'); }
+    catch (e) { return null; }
+  },
+  set(b) {
+    const old = this.get() || {};
+    localStorage.setItem('rutuja_buyer', JSON.stringify({ ...old, ...b }));
+  },
+  has() { const b = this.get(); return !!(b && b.name && b.whatsapp); },
+  line(t) {
+    const b = this.get(); if (!b) return '';
+    return [b.village_city, b.taluka, b.district].filter(Boolean).join(', ');
+  }
+};
+
+
+/* ===================================================================
    PHASE 9 — CART, ORDER WINDOW, LOOK INSIDE
    Cart holds books and quantities. The order window is separate: it
    collects the buyer, then sends the whole order to WhatsApp in one tap.
@@ -1307,7 +1380,7 @@ const CART = {
     try { this.items = JSON.parse(localStorage.getItem('rutuja_cart') || '[]'); }
     catch (e) { this.items = []; }
 
-    document.getElementById('orderX').addEventListener('click', () => this.closeOrder());
+    document.getElementById('orderX').addEventListener('click', () => ORDER.close());
     document.addEventListener('click', e => {
       const b = e.target.closest('[data-cart-remove]');
       if (b) { this.remove(b.dataset.cartRemove); }
@@ -1430,7 +1503,7 @@ const CART = {
     });
     box.querySelectorAll('[data-ci]').forEach(i => i.onchange = () =>
       this.setQty(i.dataset.ci, parseInt(i.value, 10) || 1));
-    document.getElementById('cartOrder').onclick = () => this.openOrder();
+    document.getElementById('cartOrder').onclick = () => ORDER.open(null);
     document.getElementById('cartMore').onclick = () => this.app.go('books');
   },
 
@@ -1466,12 +1539,13 @@ const CART = {
   },
 
   /* The message the publication receives, complete and ready to act on. */
-  message(buyer, orderNo) {
+  message(buyer, orderNo, lines, T) {
     const mr = this.app.lang === 'mr';
     const t = k => this.app.t(k);
-    const T = this.totals();
+    lines = lines || this.lines();
+    T = T || this.totals();
     const num = mr ? ['१','२','३','४','५','६','७','८','९','१०'] : null;
-    const L = this.lines().map((l, i) => {
+    const L = lines.map((l, i) => {
       const n = num && num[i] ? num[i] : (i + 1);
       return `${n}. ${mr ? l.book.name_mr : l.book.name_en} — ${l.qty} ${t('price_qty')} × ₹${l.each} = ₹${l.total}`;
     }).join('\n');
@@ -1482,8 +1556,9 @@ const CART = {
       '',
       `${t('gate_name')}: ${buyer.name}`,
       `${t('gate_whatsapp')}: ${buyer.whatsapp}`,
-      `${t('gate_category')}: ${t('cat_' + buyer.category)}`,
-      `${buyer.village_city}, ${buyer.taluka}, ${buyer.district} — ${buyer.pin}`,
+      buyer.category ? `${t('gate_category')}: ${t('cat_' + buyer.category)}` : '',
+      [buyer.village_city, buyer.taluka, buyer.district].filter(Boolean).join(', ')
+        + (buyer.pin ? ' — ' + buyer.pin : ''),
       '',
       L,
       '',
@@ -1547,10 +1622,11 @@ const ORDERFORM = {
     this.el.cat.addEventListener('change', () => {
       this.el.parentNote.classList.toggle('hidden', this.el.cat.value !== 'student');
     });
-    this.el.phone.addEventListener('input', () =>
-      this.el.phone.value = this.el.phone.value.replace(/\D/g, '').slice(0, 10));
-    this.el.pin.addEventListener('input', () =>
-      this.el.pin.value = this.el.pin.value.replace(/\D/g, '').slice(0, 6));
+    RULE.bind(this.el.name, 'name');
+    RULE.bind(this.el.village, 'place');
+    RULE.bind(this.el.phone, 'digits', 10);
+    RULE.bind(this.el.pin, 'digits', 6);
+    this.softMode = true;      // only name and number are required to order
   },
 
   repaint() {
@@ -1558,13 +1634,11 @@ const ORDERFORM = {
     this.el.submit.textContent = this.app.t('order_send');
   },
 
-  /* If they registered at entry we already know all of this. */
+  /* Anything captured anywhere on the site is already here. */
   prefill() {
-    let r = null;
-    try { r = JSON.parse(localStorage.getItem('rutuja_reg') || 'null'); } catch (e) {}
+    const b = BUYER.get();
     const note = document.getElementById('orderPrefill');
-    if (!r || !r.buyer) { if (note) note.classList.add('hidden'); return; }
-    const b = r.buyer;
+    if (!b || !b.name) { if (note) note.classList.add('hidden'); return; }
     this.el.name.value = b.name || '';
     this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
     this.el.cat.value = b.category || '';
@@ -1594,8 +1668,9 @@ const ORDERFORM = {
       language: this.app.lang
     };
     const orderNo = CART.orderNo();
-    const lines = CART.lines();
-    const T = CART.totals();
+    const lines = ORDER.lines();
+    const T = ORDER.totals();
+    if (!lines.length) { alert(t('order_none_picked')); return; }
 
     this.el.submit.disabled = true;
     this.el.submit.textContent = t('common_loading');
@@ -1633,11 +1708,12 @@ const ORDERFORM = {
     }
 
     // remember the buyer so a second order needs no retyping
-    localStorage.setItem('rutuja_reg', JSON.stringify({ id: orderNo, cat: buyer.category, buyer }));
+    BUYER.set(buyer);
+    localStorage.setItem('rutuja_reg', JSON.stringify({ id: orderNo, cat: buyer.category }));
 
     const n = this.app.config.whatsapp_number;
     if (n) window.open('https://wa.me/' + n + '?text=' +
-      encodeURIComponent(CART.message(buyer, orderNo)), '_blank');
+      encodeURIComponent(CART.message(buyer, orderNo, lines, T)), '_blank');
 
     this.el.submit.disabled = false;
     this.el.submit.textContent = t('order_send');
@@ -1705,10 +1781,122 @@ const PEEK = {
     document.getElementById('peekFrame').innerHTML =
       this.app.img('books', this.pages[this.i]);
     document.getElementById('peekName').textContent = this.name;
-    document.getElementById('peekCount').textContent =
-      `${this.i + 1} ${this.app.t('inside_of')} ${this.pages.length}`;
+    // Marathi reads "8 पैकी 3", English reads "3 of 8"
+    document.getElementById('peekCount').textContent = this.app.lang === 'mr'
+      ? `${this.pages.length} ${this.app.t('inside_of')} ${this.i + 1}`
+      : `${this.i + 1} ${this.app.t('inside_of')} ${this.pages.length}`;
     const one = this.pages.length < 2;
     document.getElementById('peekPrev').classList.toggle('hidden', one);
     document.getElementById('peekNext').classList.toggle('hidden', one);
+  }
+};
+
+/* ===================================================================
+   ORDER — the third way in. Reached from a book, from the list, or
+   straight from the home page without visiting either.
+   =================================================================== */
+
+const ORDER = {
+  app: null,
+  picked: [],          // [{id, qty}] chosen inside this window
+
+  init(app) {
+    this.app = app;
+    const strip = document.getElementById('orderStripBtn');
+    if (strip) strip.addEventListener('click', () => this.open(null));
+    const nav = document.getElementById('navOrder');
+    if (nav) nav.addEventListener('click', e => { e.preventDefault(); this.open(null); });
+  },
+
+  /* preset = books to start with. null means start from the list,
+     or from nothing if the list is empty. */
+  open(preset) {
+    const fromCart = CART.items.map(x => ({ id: x.id, qty: x.qty }));
+    this.picked = preset && preset.length ? preset
+                : (fromCart.length ? fromCart : []);
+    document.getElementById('orderBody').classList.remove('hidden');
+    document.getElementById('orderDone').classList.add('hidden');
+    document.getElementById('orderWin').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    this.draw();
+    ORDERFORM.mount();
+  },
+
+  qtyOf(id) { const f = this.picked.find(x => x.id === id); return f ? f.qty : 0; },
+
+  setQty(id, q) {
+    q = Math.max(0, Math.min(9999, q));
+    const i = this.picked.findIndex(x => x.id === id);
+    if (q === 0) { if (i >= 0) this.picked.splice(i, 1); }
+    else if (i >= 0) this.picked[i].qty = q;
+    else this.picked.push({ id, qty: q });
+    this.draw();
+  },
+
+  lines() {
+    return this.picked.map(p => {
+      const b = (this.app.content.books || []).find(x => x.book_id === p.id);
+      if (!b) return null;
+      const pr = BOOKS.priceFor(b, p.qty);
+      return { book: b, qty: p.qty, each: pr.each, total: pr.total, saved: pr.saved, pct: pr.pct };
+    }).filter(Boolean);
+  },
+
+  totals() {
+    const l = this.lines();
+    return { n: l.length, qty: l.reduce((a,x) => a + x.qty, 0),
+             total: l.reduce((a,x) => a + x.total, 0),
+             saved: l.reduce((a,x) => a + x.saved, 0) };
+  },
+
+  /* Every book listed with a quantity box, so a visitor who never
+     opened a single book page can still place a complete order. */
+  draw() {
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    const books = (this.app.content.books || []).filter(b => b.status === 'LIVE');
+
+    document.getElementById('orderPick').innerHTML = `
+      <div class="opick-h">${t('order_pick')}</div>
+      <div class="opick-list">${books.map(b => {
+        const q = this.qtyOf(b.book_id);
+        const pr = BOOKS.priceFor(b, q || 1);
+        return `<div class="opick-row${q ? ' on' : ''}">
+          <div class="opick-cover">${this.app.img('books', b.cover_image)}</div>
+          <div class="opick-info">
+            <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
+            <div class="opick-rate">&#8377;${pr.each} ${t('price_each')}
+              ${pr.pct ? `<span class="cart-pct">${pr.pct}%</span>` : ''}</div>
+          </div>
+          <div class="cart-qty">
+            <button data-oq="${b.book_id}" data-d="-1">&minus;</button>
+            <input type="text" inputmode="numeric" value="${q}" data-oi="${b.book_id}">
+            <button data-oq="${b.book_id}" data-d="1">+</button>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+
+    const T = this.totals();
+    document.getElementById('orderSum').innerHTML = T.n ? `
+      <div class="osum-h">${t('order_summary')}</div>
+      ${this.lines().map(l => `<div class="osum-row">
+        <span>${mr ? l.book.name_mr : l.book.name_en}</span>
+        <span>${l.qty} &times; &#8377;${l.each}</span>
+        <b>&#8377;${l.total}</b></div>`).join('')}
+      <div class="osum-total"><span>${t('cart_total')}</span><b>&#8377;${T.total}</b></div>
+      ${T.saved ? `<div class="osum-save">${t('cart_total_save')} &#8377;${T.saved}</div>` : ''}
+      <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>`
+      : `<div class="osum-empty">${t('order_none_picked')}</div>`;
+
+    const box = document.getElementById('orderPick');
+    box.querySelectorAll('[data-oq]').forEach(b =>
+      b.onclick = () => this.setQty(b.dataset.oq, this.qtyOf(b.dataset.oq) + (+b.dataset.d)));
+    box.querySelectorAll('[data-oi]').forEach(i =>
+      i.onchange = () => this.setQty(i.dataset.oi, parseInt(i.value, 10) || 0));
+  },
+
+  close() {
+    document.getElementById('orderWin').classList.add('hidden');
+    document.body.style.overflow = '';
   }
 };
