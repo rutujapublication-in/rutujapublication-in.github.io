@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v9g',
+  VERSION: 'v9i',
   lang: 'mr',
   text: {},
   locations: null,
@@ -369,7 +369,6 @@ const ENTRY = {
     if (this.done()) app.enterSite();
     else document.body.style.overflow = 'hidden';
 
-    this.syncPrompts();
   },
 
   done() { return !!localStorage.getItem('rutuja_reg'); },
@@ -380,15 +379,6 @@ const ENTRY = {
     const h = document.getElementById('formHead');
     if (h) h.textContent = this.app.t('entry_form_head');
     FORM.repaint();
-  },
-
-  /* Register prompts only exist for visitors who have not registered. */
-  syncPrompts() {
-    const show = !this.done();
-    const nav = document.getElementById('navReg');
-    const ban = document.getElementById('regBanner');
-    if (nav) nav.classList.toggle('hidden', !show);
-    if (ban) ban.classList.toggle('hidden', !show);
   },
 
   /* ---- SHEET (welcome screen) ---- */
@@ -437,7 +427,6 @@ const ENTRY = {
   },
 
   onSubmitted(regId) {
-    this.syncPrompts();
     if (this.where === 'modal') {
       document.getElementById('regId2').textContent = regId;
       document.getElementById('modalBody').classList.add('hidden');
@@ -478,7 +467,8 @@ const FORM = {
       form: this.node, name: q('gName'), phone: q('gPhone'), cat: q('gCat'),
       state: q('gState'), dist: q('gDist'), tal: q('gTal'), village: q('gVillage'),
       pin: q('gPin'), hp: q('hp'), submit: q('gateSubmit'), skip: q('gateSkip'),
-      parentNote: q('parentNote')
+      parentNote: q('parentNote'),
+      distT: q('gDistT'), talT: q('gTalT'), wDist: q('wDist'), wTal: q('wTal')
     };
 
     this.el.form.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
@@ -490,8 +480,35 @@ const FORM = {
     });
     RULE.bind(this.el.name, 'name');
     RULE.bind(this.el.village, 'place');
+    RULE.bind(this.el.distT, 'place');
+    RULE.bind(this.el.talT, 'place');
     RULE.bind(this.el.phone, 'digits', 10);
     RULE.bind(this.el.pin, 'digits', 6);
+  },
+
+  /* Outside Maharashtra there is no district list, so the visitor types
+     the name instead. Letters only, same as every other place field. */
+  outside(on) {
+    const t = k => this.app.t(k);
+    if (this.el.wDist) this.el.wDist.classList.toggle('hidden', on);
+    if (this.el.wTal) this.el.wTal.classList.toggle('hidden', on);
+    if (this.el.distT) {
+      this.el.distT.classList.toggle('hidden', !on);
+      this.el.distT.placeholder = t('ph_district');
+    }
+    if (this.el.talT) {
+      this.el.talT.classList.toggle('hidden', !on);
+      this.el.talT.placeholder = t('ph_taluka');
+    }
+  },
+
+  distVal() {
+    const out = this.el.state.value && this.el.state.value !== 'Maharashtra';
+    return out ? (this.el.distT ? this.el.distT.value.trim() : '') : this.el.dist.value;
+  },
+  talVal() {
+    const out = this.el.state.value && this.el.state.value !== 'Maharashtra';
+    return out ? (this.el.talT ? this.el.talT.value.trim() : '') : this.el.tal.value;
   },
 
   moveTo(slotId) {
@@ -555,15 +572,14 @@ const FORM = {
     this.el.tal.innerHTML = pick;
     this.el.tal.disabled = true;
 
+    this.outside(false);
     if (v === 'Maharashtra') {
       this.el.dist.disabled = false;
       this.el.dist.innerHTML = pick + this.app.locations.maharashtra.districts
         .map(d => `<option value="${d.name_en}">${mr ? d.name_mr : d.name_en}</option>`).join('');
     } else if (v) {
-      this.el.dist.disabled = false;
-      this.el.dist.innerHTML = `<option value="Other" selected>${t('cat_other')}</option>`;
-      this.el.tal.disabled = false;
-      this.el.tal.innerHTML = `<option value="Other" selected>${t('cat_other')}</option>`;
+      this.outside(true);
+      return;
     } else {
       this.el.dist.disabled = true;
       this.el.dist.innerHTML = pick;
@@ -594,22 +610,17 @@ const FORM = {
       if (pass) { el.classList.remove('bad'); if (e) e.textContent = ''; }
       else { el.classList.add('bad'); if (e) e.textContent = msg; ok = false; }
     };
-    const soft = this.softMode === true;   // order window: only name and phone required
+    const out = this.el.state.value && this.el.state.value !== 'Maharashtra';
     check(this.el.name, 'eName', RULE.okName(this.el.name.value), t('err_name'));
     check(this.el.phone, 'ePhone', RULE.okPhone(this.el.phone.value), t('err_phone'));
-    if (!soft) {
-      check(this.el.cat, 'eCat', !!this.el.cat.value, req);
-      check(this.el.state, 'eState', !!this.el.state.value, req);
-      check(this.el.dist, 'eDist', !!this.el.dist.value, req);
-      check(this.el.tal, 'eTal', !!this.el.tal.value, req);
-      check(this.el.village, 'eVillage', RULE.okPlace(this.el.village.value), t('err_village'));
-      check(this.el.pin, 'ePin', RULE.okPin(this.el.pin.value), t('err_pin'));
-    } else {
-      if (this.el.pin.value && !RULE.okPin(this.el.pin.value))
-        check(this.el.pin, 'ePin', false, t('err_pin'));
-      if (this.el.village.value && !RULE.okPlace(this.el.village.value))
-        check(this.el.village, 'eVillage', false, t('err_village'));
-    }
+    check(this.el.cat, 'eCat', !!this.el.cat.value, t('err_select'));
+    check(this.el.state, 'eState', !!this.el.state.value, t('err_select'));
+    check(out ? this.el.distT : this.el.dist, 'eDist',
+          RULE.okPlace(this.distVal()), out ? t('err_district') : t('err_select'));
+    check(out ? this.el.talT : this.el.tal, 'eTal',
+          RULE.okPlace(this.talVal()), out ? t('err_taluka') : t('err_select'));
+    check(this.el.village, 'eVillage', RULE.okPlace(this.el.village.value), t('err_village'));
+    check(this.el.pin, 'ePin', RULE.okPin(this.el.pin.value), t('err_pin'));
     return ok;
   },
 
@@ -621,8 +632,8 @@ const FORM = {
       whatsapp: '91' + this.el.phone.value,
       category: this.el.cat.value,
       state: this.el.state.value,
-      district: this.el.dist.value,
-      taluka: this.el.tal.value,
+      district: this.distVal(),
+      taluka: this.talVal(),
       village_city: this.el.village.value.trim(),
       pin: this.el.pin.value,
       language: this.app.lang,
@@ -1604,14 +1615,15 @@ const ORDERFORM = {
     // ids must be unique on the page
     ['gName','gPhone','gCat','gState','gDist','gTal','gVillage','gPin','hp',
      'gateSubmit','gateSkip','parentNote','eName','ePhone','eCat','eState',
-     'eDist','eTal','eVillage','ePin'].forEach(id => {
+     'eDist','eTal','eVillage','ePin','gDistT','gTalT','wDist','wTal'].forEach(id => {
        const n = q(id); if (n) n.id = 'o_' + id;
      });
     const o = id => this.node.querySelector('#o_' + id);
     this.el = { name:o('gName'), phone:o('gPhone'), cat:o('gCat'), state:o('gState'),
                 dist:o('gDist'), tal:o('gTal'), village:o('gVillage'), pin:o('gPin'),
                 hp:o('hp'), submit:o('gateSubmit'), skip:o('gateSkip'),
-                parentNote:o('parentNote') };
+                parentNote:o('parentNote'),
+                distT:o('gDistT'), talT:o('gTalT'), wDist:o('wDist'), wTal:o('wTal') };
 
     this.el.skip.classList.add('hidden');
     this.el.submit.classList.add('btn-gold');
@@ -1624,14 +1636,22 @@ const ORDERFORM = {
     });
     RULE.bind(this.el.name, 'name');
     RULE.bind(this.el.village, 'place');
+    RULE.bind(this.el.distT, 'place');
+    RULE.bind(this.el.talT, 'place');
     RULE.bind(this.el.phone, 'digits', 10);
     RULE.bind(this.el.pin, 'digits', 6);
-    this.softMode = true;      // only name and number are required to order
+    this.outside = FORM.outside;
+    this.distVal = FORM.distVal;
+    this.talVal = FORM.talVal;
   },
 
   repaint() {
     FORM.repaint.call(this);
-    this.el.submit.textContent = this.app.t('order_send');
+    this.el.submit.textContent = this.app.t('submit_continue');
+    this.el.village.placeholder = this.app.t('ph_village');
+    this.el.pin.placeholder = this.app.t('ph_pin');
+    this.el.name.placeholder = this.app.t('gate_name_ph');
+    this.el.phone.placeholder = this.app.t('gate_whatsapp_ph');
   },
 
   /* Anything captured anywhere on the site is already here. */
@@ -1643,8 +1663,15 @@ const ORDERFORM = {
     this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
     this.el.cat.value = b.category || '';
     this.el.state.value = b.state || '';
-    if (b.state) { FORM.onState.call(this); this.el.dist.value = b.district || ''; }
-    if (b.district) { FORM.onDist.call(this); this.el.tal.value = b.taluka || ''; }
+    if (b.state) {
+      FORM.onState.call(this);
+      if (b.state === 'Maharashtra') { this.el.dist.value = b.district || ''; }
+      else if (this.el.distT) { this.el.distT.value = b.district || ''; }
+    }
+    if (b.district) {
+      if (b.state === 'Maharashtra') { FORM.onDist.call(this); this.el.tal.value = b.taluka || ''; }
+      else if (this.el.talT) { this.el.talT.value = b.taluka || ''; }
+    }
     this.el.village.value = b.village_city || '';
     this.el.pin.value = b.pin || '';
     if (note) note.classList.remove('hidden');
@@ -1661,8 +1688,8 @@ const ORDERFORM = {
       whatsapp: '91' + this.el.phone.value,
       category: this.el.cat.value,
       state: this.el.state.value,
-      district: this.el.dist.value,
-      taluka: this.el.tal.value,
+      district: FORM.distVal.call(this),
+      taluka: FORM.talVal.call(this),
       village_city: this.el.village.value.trim(),
       pin: this.el.pin.value,
       language: this.app.lang
@@ -1716,7 +1743,7 @@ const ORDERFORM = {
       encodeURIComponent(CART.message(buyer, orderNo, lines, T)), '_blank');
 
     this.el.submit.disabled = false;
-    this.el.submit.textContent = t('order_send');
+    this.el.submit.textContent = t('submit_continue');
     document.getElementById('orderNo').textContent = orderNo;
     document.getElementById('orderBody').classList.add('hidden');
     document.getElementById('orderDone').classList.remove('hidden');
@@ -1806,6 +1833,10 @@ const ORDER = {
     if (strip) strip.addEventListener('click', () => this.open(null));
     const nav = document.getElementById('navOrder');
     if (nav) nav.addEventListener('click', e => { e.preventDefault(); this.open(null); });
+    const hero = document.getElementById('heroOrder');
+    if (hero) hero.addEventListener('click', () => this.open(null));
+    const again = document.getElementById('orderBooksAgain');
+    if (again) again.addEventListener('click', () => { this.close(); app.go('books'); });
   },
 
   /* preset = books to start with. null means start from the list,
@@ -1861,30 +1892,62 @@ const ORDER = {
       <div class="opick-list">${books.map(b => {
         const q = this.qtyOf(b.book_id);
         const pr = BOOKS.priceFor(b, q || 1);
+        const sl = BOOKS.slabs(b.offer_id);
+        const cur = q || 1;
+        const strip = sl.length ? `<div class="oslab">
+          <span class="oslab-h">${t('slab_pick')}</span>
+          ${sl.map(o => {
+            const on = cur >= o.qty_min && cur <= BOOKS.topOf(o);
+            return `<button class="oslab-c${on ? ' on' : ''}"
+              data-jump="${b.book_id}" data-q="${o.qty_min}">
+              <b>${BOOKS.slabLabel(o)}</b><i>&#8377;${o.selling_rate}</i></button>`;
+          }).join('')}
+        </div>` : '';
         return `<div class="opick-row${q ? ' on' : ''}">
           <div class="opick-cover">${this.app.img('books', b.cover_image)}</div>
           <div class="opick-info">
             <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
-            <div class="opick-rate">&#8377;${pr.each} ${t('price_each')}
-              ${pr.pct ? `<span class="cart-pct">${pr.pct}%</span>` : ''}</div>
+            <div class="opick-money">
+              <span class="om-mrp"><em>${t('mrp_short')}</em> <s>&#8377;${b.mrp}</s></span>
+              <span class="om-now${pr.pct ? ' live' : ''}">
+                <em>${t('now_rate')}</em> <b>&#8377;${pr.each}</b></span>
+              ${pr.pct ? `<span class="om-off">${pr.pct}% ${t('price_discount')}</span>` : ''}
+            </div>
           </div>
           <div class="cart-qty">
             <button data-oq="${b.book_id}" data-d="-1">&minus;</button>
             <input type="text" inputmode="numeric" value="${q}" data-oi="${b.book_id}">
             <button data-oq="${b.book_id}" data-d="1">+</button>
           </div>
+          ${strip}
         </div>`;
       }).join('')}</div>`;
 
     const T = this.totals();
+    const L = this.lines();
+    const mrpTotal = L.reduce((a, l) => a + l.book.mrp * l.qty, 0);
+    const avgPct = mrpTotal ? Math.round(T.saved / mrpTotal * 100) : 0;
+
     document.getElementById('orderSum').innerHTML = T.n ? `
-      <div class="osum-h">${t('order_summary')}</div>
-      ${this.lines().map(l => `<div class="osum-row">
-        <span>${mr ? l.book.name_mr : l.book.name_en}</span>
-        <span>${l.qty} &times; &#8377;${l.each}</span>
-        <b>&#8377;${l.total}</b></div>`).join('')}
-      <div class="osum-total"><span>${t('cart_total')}</span><b>&#8377;${T.total}</b></div>
-      ${T.saved ? `<div class="osum-save">${t('cart_total_save')} &#8377;${T.saved}</div>` : ''}
+      <div class="osum-h">${t('order_lines')}</div>
+      ${L.map(l => `<div class="oline">
+        <div class="oline-name">${mr ? l.book.name_mr : l.book.name_en}</div>
+        <div class="oline-facts">
+          ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
+          <span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>
+          ${l.saved ? `<span class="of of-save">${t('saved_amt')} &#8377;${l.saved}</span>` : ''}
+        </div>
+        <div class="oline-amt"><span>${l.qty} &times; &#8377;${l.each}</span>
+          <b>&#8377;${l.total}</b></div>
+      </div>`).join('')}
+
+      <div class="osum-foot">
+        ${T.saved ? `<div class="osf"><span>${t('at_mrp')}</span><s>&#8377;${mrpTotal}</s></div>` : ''}
+        ${avgPct ? `<div class="osf osf-avg"><span>${t('avg_saving')}</span><b>${avgPct}%</b></div>` : ''}
+        ${T.saved ? `<div class="osf osf-save"><span>${t('you_save_now')}</span>
+          <b>&#8377;${T.saved}</b></div>` : ''}
+        <div class="osf osf-grand"><span>${t('grand_total')}</span><b>&#8377;${T.total}</b></div>
+      </div>
       <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>`
       : `<div class="osum-empty">${t('order_none_picked')}</div>`;
 
@@ -1893,6 +1956,8 @@ const ORDER = {
       b.onclick = () => this.setQty(b.dataset.oq, this.qtyOf(b.dataset.oq) + (+b.dataset.d)));
     box.querySelectorAll('[data-oi]').forEach(i =>
       i.onchange = () => this.setQty(i.dataset.oi, parseInt(i.value, 10) || 0));
+    box.querySelectorAll('[data-jump]').forEach(b =>
+      b.onclick = () => this.setQty(b.dataset.jump, +b.dataset.q));
   },
 
   close() {

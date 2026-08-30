@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=9g">
+<link rel="stylesheet" href="assets/css/style.css?v=9i">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v9g</p>
+        <p class="w-ver">v9i</p>
       </div>
 
       <aside class="w-side w-right">
@@ -110,16 +110,24 @@
       <span class="err" id="ePhone"></span></div>
 
     <div class="f"><label data-t="gate_category"></label>
-      <select id="gCat"></select><span class="err" id="eCat"></span></div>
+      <span class="sel"><span class="sel"><select id="gCat"></select></span></span><span class="err" id="eCat"></span></div>
 
     <div class="f-row">
-      <div class="f"><label data-t="gate_state"></label><select id="gState"></select><span class="err" id="eState"></span></div>
-      <div class="f"><label data-t="gate_district"></label><select id="gDist"></select><span class="err" id="eDist"></span></div>
+      <div class="f"><label data-t="gate_state"></label>
+        <span class="sel"><select id="gState"></select></span><span class="err" id="eState"></span></div>
+      <div class="f"><label data-t="gate_district"></label>
+        <span class="sel" id="wDist"><select id="gDist"></select></span>
+        <input type="text" id="gDistT" class="hidden" maxlength="40">
+        <span class="err" id="eDist"></span></div>
     </div>
 
     <div class="f-row">
-      <div class="f"><label data-t="gate_taluka"></label><select id="gTal"></select><span class="err" id="eTal"></span></div>
-      <div class="f"><label data-t="gate_village"></label><input type="text" id="gVillage" maxlength="60"><span class="err" id="eVillage"></span></div>
+      <div class="f"><label data-t="gate_taluka"></label>
+        <span class="sel" id="wTal"><select id="gTal"></select></span>
+        <input type="text" id="gTalT" class="hidden" maxlength="40">
+        <span class="err" id="eTal"></span></div>
+      <div class="f"><label data-t="gate_village"></label>
+        <input type="text" id="gVillage" maxlength="60"><span class="err" id="eVillage"></span></div>
     </div>
 
     <div class="f"><label data-t="gate_pin"></label>
@@ -156,7 +164,8 @@
       <p class="form-sub" data-t="order_sub"></p>
       <div class="order-pick" id="orderPick"></div>
       <div class="order-sum" id="orderSum"></div>
-      <div class="gate-note hidden" id="orderPrefill" data-t="order_prefill"></div>
+      <div class="gate-note" data-t="form_all_req"></div>
+      <div class="gate-note gate-note-ok hidden" id="orderPrefill" data-t="order_prefill"></div>
       <div id="orderSlot"></div>
     </div>
     <div class="order-done hidden" id="orderDone">
@@ -164,6 +173,7 @@
       <p class="gate-done-t" data-t="order_done"></p>
       <p class="gate-done-id"><span data-t="order_no"></span>: <strong id="orderNo"></strong></p>
       <p class="form-sub" data-t="order_note"></p>
+      <button class="btn btn-ghost" id="orderBooksAgain" data-t="see_books_again"></button>
     </div>
   </div>
 </div>
@@ -209,7 +219,6 @@
         <a href="#contact" data-nav="contact" data-t="nav_contact"></a>
         <a href="#cart" class="nav-cart" id="navCart" data-nav="cart"><span data-t="cart"></span><b id="cartCount">0</b></a>
         <a href="#" class="nav-order" id="navOrder" data-t="order_btn"></a>
-        <a href="#" class="nav-reg hidden" id="navReg" data-offer="default" data-t="nav_register"></a>
       </nav>
       <div class="header-actions">
         <button class="icon-btn" id="langToggle" title="भाषा / Language"><span id="langLabel">English</span></button>
@@ -229,16 +238,11 @@
         <p class="hero-sub" data-t="hero_sub"></p>
         <div class="hero-btns">
           <button class="btn btn-primary" data-nav="books" data-t="nav_books"></button>
-          <button class="btn btn-ghost" data-offer="parent" data-t="offer_cta"></button>
+          <button class="btn btn-gold" id="heroOrder" data-t="order_btn"></button>
         </div>
       </div></div>
 
       <div class="wrap">
-        <div class="reg-banner hidden" id="regBanner">
-          <span data-t="reg_banner"></span>
-          <button class="btn btn-gold" data-offer="default" data-t="nav_register"></button>
-        </div>
-
         <h2 class="sec-title" data-t="books_standard"></h2>
         <div class="std-grid" id="stdGrid"></div>
 
@@ -338,6 +342,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=9g"></script>
+<script src="assets/js/app.js?v=9i"></script>
 </body>
 </html>
