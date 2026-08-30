@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v9i',
+  VERSION: 'v9l',
   lang: 'mr',
   text: {},
   locations: null,
@@ -523,6 +523,35 @@ const FORM = {
     this.el.submit.disabled = false;
     this.node.querySelectorAll('.err').forEach(e => e.textContent = '');
     this.node.querySelectorAll('.bad').forEach(e => e.classList.remove('bad'));
+    this.prefill('gatePrefill');
+  },
+
+  /* Whatever the visitor has told us anywhere is already here.
+     One routine serves the welcome form, the offer forms and the
+     order form, so no field is ever typed twice. */
+  prefill(note) {
+    const b = BUYER.get();
+    const el = document.getElementById(note || 'gatePrefill');
+    if (!b || !b.name) { if (el) el.classList.add('hidden'); return false; }
+
+    if (!this.el.name.value) this.el.name.value = b.name || '';
+    if (!this.el.phone.value) this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
+    if (!this.el.cat.value) this.el.cat.value = b.category || '';
+    if (!this.el.state.value && b.state) {
+      this.el.state.value = b.state;
+      this.onState();
+      if (b.state === 'Maharashtra') {
+        this.el.dist.value = b.district || '';
+        if (b.district) { this.onDist(); this.el.tal.value = b.taluka || ''; }
+      } else {
+        if (this.el.distT) this.el.distT.value = b.district || '';
+        if (this.el.talT) this.el.talT.value = b.taluka || '';
+      }
+    }
+    if (!this.el.village.value) this.el.village.value = b.village_city || '';
+    if (!this.el.pin.value) this.el.pin.value = b.pin || '';
+    if (el) el.classList.remove('hidden');
+    return true;
   },
 
   preset(key) {
@@ -546,7 +575,7 @@ const FORM = {
                    dist: this.el.dist.value, tal: this.el.tal.value };
     const pick = `<option value="">${t('gate_select')}</option>`;
 
-    this.el.cat.innerHTML = pick + this.CATEGORIES
+    this.el.cat.innerHTML = pick + FORM.CATEGORIES
       .map(c => `<option value="${c}">${t('cat_' + c)}</option>`).join('');
     this.el.cat.value = keep.cat;
 
@@ -647,8 +676,10 @@ const FORM = {
 
     let regId = this.localId();
     const url = this.app.settings.backendUrl;
+    const changed = BUYER.isNew(payload);
+    const prev = localStorage.getItem('rutuja_reg');
 
-    if (url) {
+    if (url && changed) {
       try {
         const r = await fetch(url, {
           method: 'POST',
@@ -666,9 +697,11 @@ const FORM = {
       }
     }
 
+    if (!changed && prev) { try { regId = JSON.parse(prev).id || regId; } catch (e) {} }
     BUYER.set({ name: payload.name, whatsapp: payload.whatsapp, category: payload.category,
                 state: payload.state, district: payload.district, taluka: payload.taluka,
                 village_city: payload.village_city, pin: payload.pin });
+    BUYER.markSent(payload);
     localStorage.setItem('rutuja_reg', JSON.stringify({ id: regId, cat: payload.category }));
     this.el.submit.disabled = false;
     this.el.submit.textContent = this.app.t('gate_submit');
@@ -1369,6 +1402,17 @@ const BUYER = {
     localStorage.setItem('rutuja_buyer', JSON.stringify({ ...old, ...b }));
   },
   has() { const b = this.get(); return !!(b && b.name && b.whatsapp); },
+
+  /* A fingerprint of the details, so an unchanged profile is never
+     written to the sheet a second time. */
+  sig(b) {
+    b = b || this.get() || {};
+    return [b.name, b.whatsapp, b.category, b.state, b.district,
+            b.taluka, b.village_city, b.pin].join('|');
+  },
+  sent() { return localStorage.getItem('rutuja_sig') || ''; },
+  markSent(b) { localStorage.setItem('rutuja_sig', this.sig(b)); },
+  isNew(b) { return this.sig(b) !== this.sent(); },
   line(t) {
     const b = this.get(); if (!b) return '';
     return [b.village_city, b.taluka, b.district].filter(Boolean).join(', ');
@@ -1643,6 +1687,8 @@ const ORDERFORM = {
     this.outside = FORM.outside;
     this.distVal = FORM.distVal;
     this.talVal = FORM.talVal;
+    this.onState = FORM.onState;
+    this.onDist = FORM.onDist;
   },
 
   repaint() {
@@ -1654,28 +1700,7 @@ const ORDERFORM = {
     this.el.phone.placeholder = this.app.t('gate_whatsapp_ph');
   },
 
-  /* Anything captured anywhere on the site is already here. */
-  prefill() {
-    const b = BUYER.get();
-    const note = document.getElementById('orderPrefill');
-    if (!b || !b.name) { if (note) note.classList.add('hidden'); return; }
-    this.el.name.value = b.name || '';
-    this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
-    this.el.cat.value = b.category || '';
-    this.el.state.value = b.state || '';
-    if (b.state) {
-      FORM.onState.call(this);
-      if (b.state === 'Maharashtra') { this.el.dist.value = b.district || ''; }
-      else if (this.el.distT) { this.el.distT.value = b.district || ''; }
-    }
-    if (b.district) {
-      if (b.state === 'Maharashtra') { FORM.onDist.call(this); this.el.tal.value = b.taluka || ''; }
-      else if (this.el.talT) { this.el.talT.value = b.taluka || ''; }
-    }
-    this.el.village.value = b.village_city || '';
-    this.el.pin.value = b.pin || '';
-    if (note) note.classList.remove('hidden');
-  },
+  prefill() { FORM.prefill.call(this, 'orderPrefill'); },
 
   validate() { return FORM.validate.call(this); },
 
@@ -1736,6 +1761,7 @@ const ORDERFORM = {
 
     // remember the buyer so a second order needs no retyping
     BUYER.set(buyer);
+    BUYER.markSent(buyer);
     localStorage.setItem('rutuja_reg', JSON.stringify({ id: orderNo, cat: buyer.category }));
 
     const n = this.app.config.whatsapp_number;
@@ -1829,8 +1855,6 @@ const ORDER = {
 
   init(app) {
     this.app = app;
-    const strip = document.getElementById('orderStripBtn');
-    if (strip) strip.addEventListener('click', () => this.open(null));
     const nav = document.getElementById('navOrder');
     if (nav) nav.addEventListener('click', e => { e.preventDefault(); this.open(null); });
     const hero = document.getElementById('heroOrder');
@@ -1905,21 +1929,27 @@ const ORDER = {
         </div>` : '';
         return `<div class="opick-row${q ? ' on' : ''}">
           <div class="opick-cover">${this.app.img('books', b.cover_image)}</div>
-          <div class="opick-info">
+          <div class="opick-main">
             <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
             <div class="opick-money">
-              <span class="om-mrp"><em>${t('mrp_short')}</em> <s>&#8377;${b.mrp}</s></span>
+              <span class="om-mrp"><em>${t('mrp_short')}</em><s>&#8377;${b.mrp}</s></span>
+              <span class="om-arrow">&rarr;</span>
               <span class="om-now${pr.pct ? ' live' : ''}">
-                <em>${t('now_rate')}</em> <b>&#8377;${pr.each}</b></span>
+                <em>${t('now_rate')}</em><b>&#8377;${pr.each}</b></span>
               ${pr.pct ? `<span class="om-off">${pr.pct}% ${t('price_discount')}</span>` : ''}
             </div>
+            <div class="opick-qty">
+              <span class="opick-qlbl">${t('price_qty')}</span>
+              <div class="cart-qty">
+                <button data-oq="${b.book_id}" data-d="-1">&minus;</button>
+                <input type="text" inputmode="numeric" value="${q}" data-oi="${b.book_id}">
+                <button data-oq="${b.book_id}" data-d="1">+</button>
+              </div>
+              ${q ? `<span class="opick-line">${q} &times; &#8377;${pr.each} =
+                <b>&#8377;${pr.total}</b></span>` : ''}
+            </div>
+            ${strip}
           </div>
-          <div class="cart-qty">
-            <button data-oq="${b.book_id}" data-d="-1">&minus;</button>
-            <input type="text" inputmode="numeric" value="${q}" data-oi="${b.book_id}">
-            <button data-oq="${b.book_id}" data-d="1">+</button>
-          </div>
-          ${strip}
         </div>`;
       }).join('')}</div>`;
 

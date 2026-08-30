@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=9i">
+<link rel="stylesheet" href="assets/css/style.css?v=9l">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v9i</p>
+        <p class="w-ver">v9l</p>
       </div>
 
       <aside class="w-side w-right">
@@ -83,6 +83,7 @@
         <h2 class="form-h" id="formHead"></h2>
         <p class="form-sub" data-t="gate_subtitle"></p>
         <div class="gate-note" data-t="gate_why"></div>
+        <div class="gate-note gate-note-ok hidden" id="gatePrefill" data-t="order_prefill"></div>
         <div id="formSlot"></div>
       </div>
       <div class="sheet-done hidden" id="sheetDone">
@@ -145,6 +146,7 @@
     <div id="modalBody">
       <h2 class="form-h" id="modalHead"></h2>
       <p class="form-sub" data-t="form_sub_offer"></p>
+      <div class="gate-note gate-note-ok hidden" id="modalPrefill" data-t="order_prefill"></div>
       <div id="modalSlot"></div>
     </div>
     <div class="modal-done hidden" id="modalDone">
@@ -217,11 +219,13 @@
         <a href="#authors" data-nav="authors" data-t="nav_authors"></a>
         <a href="#about" data-nav="about" data-t="nav_publication"></a>
         <a href="#contact" data-nav="contact" data-t="nav_contact"></a>
-        <a href="#cart" class="nav-cart" id="navCart" data-nav="cart"><span data-t="cart"></span><b id="cartCount">0</b></a>
-        <a href="#" class="nav-order" id="navOrder" data-t="order_btn"></a>
       </nav>
       <div class="header-actions">
         <button class="icon-btn" id="langToggle" title="भाषा / Language"><span id="langLabel">English</span></button>
+        <a href="#cart" class="act act-list" id="navCart" data-nav="cart">
+          <span class="act-i">&#9776;</span><span class="act-t" data-t="cart"></span><b id="cartCount">0</b></a>
+        <a href="#" class="act act-order" id="navOrder">
+          <span class="act-i">&#10148;</span><span class="act-t" data-t="order_btn"></span></a>
         <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
           <span class="menu-lines"><span></span><span></span><span></span></span>
           <span class="menu-word" data-t="menu_open"></span>
@@ -245,14 +249,6 @@
       <div class="wrap">
         <h2 class="sec-title" data-t="books_standard"></h2>
         <div class="std-grid" id="stdGrid"></div>
-
-        <div class="order-strip">
-          <div class="order-strip-t">
-            <h2 data-t="order_head"></h2>
-            <p data-t="order_head_sub"></p>
-          </div>
-          <button class="btn btn-gold order-strip-b" id="orderStripBtn" data-t="order_btn"></button>
-        </div>
 
         <h2 class="sec-title" data-t="offer_hook_head"></h2>
         <p class="sec-sub" data-t="offer_hook_sub"></p>
@@ -342,6 +338,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=9i"></script>
+<script src="assets/js/app.js?v=9l"></script>
 </body>
 </html>

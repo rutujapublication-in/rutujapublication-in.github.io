@@ -1,14 +1,14 @@
-RUTUJA WEBSITE — BUILD v9i
+RUTUJA WEBSITE — BUILD v9l
 
 HOW TO CHECK THE UPLOAD WORKED
 ------------------------------
 After uploading and waiting 2 minutes, open the site.
-You should see "v9i" in two places:
+You should see "v9l" in two places:
   1. small grey text under the tagline on the welcome banner
   2. at the end of the footer, after the copyright line
 
-If you do NOT see v9i, the upload did not go through.
-Do not debug anything else until v9i appears.
+If you do NOT see v9l, the upload did not go through.
+Do not debug anything else until v9l appears.
 
 WHAT IS IN THIS BUILD
 ---------------------
