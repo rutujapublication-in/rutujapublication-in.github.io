@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11d',
+  VERSION: 'v11f',
   lang: 'mr',
   text: {},
   locations: null,
@@ -21,10 +21,10 @@ const RUTUJA = {
 
     try {
       const [t, l, c, s] = await Promise.all([
-        fetch('data/sitetext.json').then(r => r.json()),
-        fetch('data/locations.json').then(r => r.json()),
-        fetch('data/content.json').then(r => r.json()),
-        fetch('data/story.json').then(r => r.json()).catch(() => ({ slides: [] }))
+        fetch('data/sitetext.json?v=' + this.VERSION).then(r => r.json()),
+        fetch('data/locations.json?v=' + this.VERSION).then(r => r.json()),
+        fetch('data/content.json?v=' + this.VERSION).then(r => r.json()),
+        fetch('data/story.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] }))
       ]);
       this.text = t;
       this.locations = l;
@@ -2104,28 +2104,7 @@ const STORY = {
   /* A starting size only. The real size is measured after rendering. */
   narSize() { return 'auto'; },
 
-  /* Shrink the narrative until it genuinely fits its box on THIS phone.
-     Nothing is ever clipped, and nothing ever sits behind the steps. */
-  fit() {
-    document.querySelectorAll('.st .st-m').forEach(box => {
-      box.style.removeProperty('--fs');
-      const room = box.clientHeight - 4;   // a little air at the foot
-      if (room <= 0) return;
-      let px = box.dataset.max ? Number(box.dataset.max) : 0;
-      if (!px) {
-        px = parseFloat(getComputedStyle(box).getPropertyValue('--fs-max')) || 16;
-        box.dataset.max = px;
-      }
-      let size = px;
-      box.style.setProperty('--fs', size + 'px');
-      let guard = 0;
-      while (box.scrollHeight > room && size > 9.5 && guard < 40) {
-        size -= 0.4;
-        box.style.setProperty('--fs', size.toFixed(1) + 'px');
-        guard++;
-      }
-    });
-  },
+
 
   /* Key concepts are lifted in contrast colour, not merely bolded. */
   mark(text) {
@@ -2232,16 +2211,6 @@ const STORY = {
     this.go(this.i);
     this.start();
 
-    const run = () => this.fit();
-    if (typeof requestAnimationFrame === 'function') {
-      requestAnimationFrame(() => requestAnimationFrame(run));
-    } else { run(); }
-    if (typeof setTimeout === 'function') setTimeout(run, 120);
-    if (!this._bound && typeof window !== 'undefined') {
-      this._bound = true;
-      window.addEventListener('resize', () => this.fit());
-      window.addEventListener('orientationchange', () => setTimeout(() => this.fit(), 260));
-    }
   },
 
   go(n) {

@@ -2036,7 +2036,7 @@ img.w-logo{
   color:var(--imp);font-weight:700;
   text-shadow:0 0 12px color-mix(in srgb,var(--imp) 30%,transparent);
 }
-.st-nar.em .st-key{color:#fff;text-shadow:none}
+.st-nar.em .st-nar.em .st-nar.em .st-key{color:#fff;text-shadow:none}
 
 @media(min-width:560px){
   .st-blk.next{margin-top:15px}
@@ -2191,13 +2191,12 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   flex:1;display:flex;flex-direction:column;justify-content:center;
   gap:1px;padding:9px 16px 6px;min-width:0;min-height:0;overflow:hidden;
 }
-.st-nar{margin-left:0;text-align:center}
 .st-blk{align-items:center}
 .st .st-chain{justify-content:center}
 
 .st .sh-steps{padding:0 14px 13px;gap:6px}
 .st .sh-steps.ruled{border-top:1px solid rgba(247,200,107,.3);padding-top:10px;margin:0 14px}
-.st .sh-step{font-size:13.5px;padding:7px 3px}
+.st .sh-step{font-size:13px;padding:6px 3px}
 
 @media(min-width:560px){
   .st   .st .st-orb{width:48px;height:48px}
@@ -2219,33 +2218,35 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 /* slide 1's title box sits at the top of the column, level with the logo */
 
 /* the symbol now sits BEFORE the title on slides 2 to 9 */
-.st .st .sh-underline{margin-top:7px;margin-bottom:2px;position:relative;z-index:0}
+.st .st .sh-underline{margin-top:6px;margin-bottom:1px;position:relative;z-index:0}
 .st .st-m{padding:7px 15px 5px}
-.st .sh-steps{padding:0 13px 11px}
+.st .sh-steps{padding:0 13px 7px}
 @media(min-width:560px){}
 
 /* ---------- the narrative is measured, not guessed ---------- */
 .st-m{
-  --fs-max:16px;
+  --fs-max:14.5px;
   flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
   gap:0;padding:2px 15px 12px;min-width:0;min-height:0;overflow:hidden;
 }
 /* the narrative sits close under the rule rather than floating below it */
 .st .st-m{padding-top:0;margin-top:-2px}
 .st-nar{
-  font-size:var(--fs, var(--fs-max));line-height:1.4;margin:0;text-align:center;
+  font-family:Mukta,system-ui,sans-serif;
+  font-size:var(--fs-max);font-weight:600;line-height:1.42;
+  color:var(--nar);margin:0;text-align:center;
   text-wrap:balance;overflow-wrap:break-word;max-width:100%;
 }
 .st-nar.em{
-  font-size:calc(var(--fs, var(--fs-max)) * 1.08);line-height:1.3;
+  font-size:calc(var(--fs-max) * 1.08);line-height:1.3;
   max-width:100%;overflow-wrap:break-word;
   padding:5px 10px;margin:3px 0;border-radius:8px;
   border-left:3px solid var(--imp);
   background:linear-gradient(90deg,color-mix(in srgb,var(--imp) 18%,transparent),transparent 80%);
   color:#fff;text-align:left;align-self:stretch;
 }
-.st-blk.next{margin-top:calc(var(--fs, 15px) * 0.55)}
-.st-chain{font-size:calc(var(--fs, var(--fs-max)) * 0.92)}
+.st-blk.next{margin-top:calc(var(--fs-max) * 0.5)}
+.st-chain{font-size:calc(var(--fs-max) * 0.92)}
 .st-chain span{padding:2px 7px}
 
 /* real clearance so nothing can sit under the steps */
@@ -2362,8 +2363,8 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 
 /* slides 2 to 9 keep the symbol BESIDE the title, and their own spacing */
 .st:not(.st-hero) .sh-title{
-  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;
-  padding:9px 16px 0;flex-shrink:0;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:9px;
+  padding:5px 16px 0;flex-shrink:0;
 }
-.st:not(.st-hero) .sh-underline{align-self:center;margin-top:7px;margin-bottom:2px;
+.st:not(.st-hero) .sh-underline{align-self:center;margin-top:6px;margin-bottom:1px;
   position:relative;z-index:0}
