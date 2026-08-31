@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v10u',
+  VERSION: 'v11b',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2213,7 +2213,7 @@ const STORY = {
           }).join('')}
         </div>
 
-        <div class="sh-steps${mid ? ' ruled' : ''}">
+        <div class="sh-steps${mid ? ' ruled' : ''}${words.length === 1 ? ' one' : ''}">
           ${words.map((w, wi) =>
             `<span class="sh-step" style="--d:${wi * 0.6}s">${w.trim()}</span>`).join('')}
         </div>
