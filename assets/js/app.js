@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11f',
+  VERSION: 'v11i',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2118,6 +2118,18 @@ const STORY = {
     return 'lg';
   },
 
+  /* A one-box phrase is sized so it stays on a single line.
+     Worked out from its length, once, at render time. */
+  oneLine(text) {
+    const n = text.trim().length;
+    if (!n) return null;
+    const dev = /[\u0900-\u097F]/.test(text);
+    const px = Math.round((302 / (n * (dev ? 0.50 : 0.47))) * 10) / 10;
+    if (px >= 19) return 19;
+    if (px >= 15) return px;      // fits one line and still reads well
+    return null;                  // too long for one line — let it wrap
+  },
+
   paint() {
     const track = document.getElementById('storyTrack');
     if (!track) return;
@@ -2162,8 +2174,9 @@ const STORY = {
           <p class="sh-quote">${F(n, 'tagline')}</p>
 
           <div class="sh-steps${F(n,'impact').split('|').length === 1 ? ' one' : ''}">
-            ${F(n, 'impact').split('|').map((w, wi) =>
-              `<span class="sh-step" style="--d:${wi * 0.6}s">${w.trim()}</span>`).join('')}
+            ${F(n, 'impact').split('|').map((w, wi, arr) =>
+              `<span class="sh-step" style="--d:${wi * 0.6}s${
+                arr.length === 1 && this.oneLine(w) ? `;--one:${this.oneLine(w)}px;white-space:nowrap` : ''}">${w.trim()}</span>`).join('')}
           </div>
 
           <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
@@ -2196,7 +2209,8 @@ const STORY = {
 
         <div class="sh-steps${mid ? ' ruled' : ''}${words.length === 1 ? ' one' : ''}">
           ${words.map((w, wi) =>
-            `<span class="sh-step" style="--d:${wi * 0.6}s">${w.trim()}</span>`).join('')}
+            `<span class="sh-step" style="--d:${wi * 0.6}s${
+              words.length === 1 && this.oneLine(w) ? `;--one:${this.oneLine(w)}px;white-space:nowrap` : ''}">${w.trim()}</span>`).join('')}
         </div>
 
         <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
