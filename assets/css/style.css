@@ -83,10 +83,28 @@ a{color:inherit;text-decoration:none}
 @media(prefers-reduced-motion:reduce){.strip-track{animation:none;padding-left:20px}}
 
 /* ---------- HEADER ---------- */
-.topbar{position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.13)}
-.header{position:relative}
+.topbar{
+  position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.13);
+}
+/* a thin gold rim on the ribbon, with a silver light passing along it */
+.topbar::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;z-index:2;
+  background:linear-gradient(90deg,
+    var(--gold) 0%, var(--gold) 34%,
+    #FFFFFF 46%, #EDF1F4 52%,
+    var(--gold) 64%, var(--gold) 100%);
+  background-size:240% 100%;
+  animation:ribbonSweep 4.4s ease-in-out infinite;
+}
+.header{border-top:2px solid var(--gold)}
+@keyframes ribbonSweep{
+  0%,55%{background-position:170% 0}
+  88%,100%{background-position:-70% 0}
+}
+@media(prefers-reduced-motion:reduce){.topbar::after{animation:none}}
+.header{position:relative;display:block;font-size:0}
 .header{background:var(--green)}
-.header-inner{display:flex;align-items:center;gap:18px;height:var(--head-h)}
+.header-inner{display:flex;align-items:center;gap:18px;height:var(--head-h);font-size:16px}
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
 .brand-mark{
   width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--green-dark);
@@ -1340,7 +1358,7 @@ html[lang="en"] body{line-height:1.65}
    colours so they read as a pair rather than a crowd.
    =================================================================== */
 
-.header-inner{display:flex;align-items:center;gap:14px;height:var(--head-h)}
+.header-inner{display:flex;align-items:center;gap:14px;height:var(--head-h);font-size:16px}
 .brand{flex-shrink:0;display:flex;align-items:center}
 .nav{display:flex;gap:2px;margin:0 auto;flex-wrap:nowrap;overflow:hidden}
 .header-actions{display:flex;align-items:center;gap:9px;margin-left:auto;flex-shrink:0}
@@ -1766,16 +1784,16 @@ html[lang="en"] body{line-height:1.65}
    LEFT keyword + symbol | MIDDLE narrative | RIGHT impact zone
    =================================================================== */
 .story{
-  position:relative;overflow:hidden;background:#0F6E56;
-  width:100%;max-width:100%;
-  border-bottom:3px solid var(--gold);
+  position:relative;overflow:hidden;background:transparent;
+  width:100%;max-width:100%;display:block;line-height:0;
   box-shadow:0 6px 18px rgba(18,56,33,.18);
 }
-.story-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
+.story-track{line-height:normal}
+.story-track{display:flex;width:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
 @media(prefers-reduced-motion:reduce){.story-track{transition:none}}
 
 .st{
-  position:relative;flex:0 0 100%;width:100%;max-width:100%;height:300px;overflow:hidden;
+  position:relative;flex:0 0 100%;width:100%;min-width:0;max-width:100%;height:244px;overflow:hidden;overflow:hidden;
   background:var(--bg);
   display:flex;flex-direction:column;touch-action:pan-y;
 }
@@ -1808,14 +1826,7 @@ html[lang="en"] body{line-height:1.65}
   display:flex;flex-direction:column;justify-content:flex-start;gap:1px;
   padding:12px 14px 10px 12px;min-width:0;
 }
-.st-nar{
-  font-family:Mukta,system-ui,sans-serif;font-weight:600;color:var(--nar);
-  margin:0;margin-left:var(--in);line-height:1.42;
-}
-.st-nar.lg{font-size:15px;line-height:1.45}
-.st-nar.md{font-size:14px;line-height:1.42}
-.st-nar.sm{font-size:12.5px;line-height:1.36}
-.st-nar.last{color:var(--kw);font-weight:700}
+
 
 /* ---------- RIGHT: the impact zone ---------- */
 
@@ -1836,7 +1847,7 @@ html[lang="en"] body{line-height:1.65}
 /* ---------- 560px and up: true three columns, as specified ---------- */
 @media(min-width:560px){
   .st{
-    height:320px;
+    height:272px;
     grid-template-columns:22% minmax(0,1fr) 26%;
     grid-template-areas:"l m r";
   }
@@ -1848,12 +1859,8 @@ html[lang="en"] body{line-height:1.65}
   .st-kw{font-size:19px}
   .st-orb{width:62px;height:62px}
   .st-orb svg{width:40px;height:40px}
-  .st-nar.lg{font-size:19px;line-height:1.5}
-  .st-m{padding:20px 26px;gap:3px}
-  .st-nar.lg{font-size:19px}
-  .st-nar.md{font-size:17.5px}
-  .st-nar.sm{font-size:16px}
-  
+    .st-m{padding:20px 26px;gap:3px}
+        
   
   
 }
@@ -1862,22 +1869,16 @@ html[lang="en"] body{line-height:1.65}
   .st-kw{font-size:22px}
   .st-orb{width:74px;height:74px}
   .st-orb svg{width:48px;height:48px}
-  .st-nar.lg{font-size:22px}
-  .st-nar.md{font-size:20px}
-  .st-nar.sm{font-size:18px}
-  
+        
   
   
 }
 @media(max-width:359px){
-  .st{height:288px}
+  .st{height:236px}
   .st-kw{font-size:14px}
   .st-orb{width:44px;height:44px}
   .st-orb svg{width:28px;height:28px}
-  .st-nar.lg{font-size:15px}
-  .st-nar.md{font-size:14px}
-  .st-nar.sm{font-size:12.5px}
-  
+        
   
   
 }
@@ -2021,12 +2022,9 @@ img.w-logo{
 
 /* ---------- the narrative as intentional blocks, not a list ---------- */
 .st-blk{display:flex;flex-direction:column;gap:0}
-.st-blk.next{margin-top:9px;padding-top:8px;position:relative}
+.st-blk.next{margin-top:11px}
 /* a short gold tick marks each new thought */
-.st-blk.next::before{
-  content:"";position:absolute;left:0;top:0;width:18px;height:2px;border-radius:1px;
-  background:color-mix(in srgb,var(--imp) 70%,transparent);
-}
+
 /* the opening line carries the slide in */
 .st-nar.lead{font-size:1.1em;letter-spacing:.2px}
 /* a key concept is lifted by colour, not by bolding alone */
@@ -2037,8 +2035,8 @@ img.w-logo{
 .st-nar.em .st-key{color:#fff;text-shadow:none}
 
 @media(min-width:560px){
-  .st-blk.next{margin-top:14px;padding-top:12px}
-  .st-blk.next::before{width:26px}
+  .st-blk.next{margin-top:15px}
+
 }
 
 /* nothing on the page may extend past the screen */
@@ -2079,12 +2077,8 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 
 /* ---------- the title, in a ring that turns and breathes ---------- */
-.sh-title{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:12px 16px 0;flex-shrink:0;
-}
 .sh-box{
-  position:relative;display:inline-block;border-radius:12px;padding:2px;
+  position:relative;z-index:2;display:inline-block;border-radius:12px;padding:2px;
   overflow:hidden;isolation:isolate;
   animation:shBreathe 3.6s ease-in-out infinite;
 }
@@ -2126,10 +2120,6 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 @keyframes shSweep{0%,58%{background-position:170% 0}90%,100%{background-position:-70% 0}}
 
 /* ---------- logo on the left, the quote on the right ---------- */
-.sh-main{
-  flex:1;display:grid;grid-template-columns:auto minmax(0,1fr);
-  align-items:center;gap:14px;padding:10px 16px 8px;min-height:0;
-}
 .sh-logo-wrap{
   position:relative;flex-shrink:0;border-radius:16px;padding:2px;
   overflow:hidden;isolation:isolate;
@@ -2149,21 +2139,22 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 .sh-logo-wrap{box-shadow:0 0 34px 6px rgba(247,200,107,.26),0 8px 22px rgba(0,0,0,.34)}
 .sh-logo{
   position:relative;z-index:2;display:block;
-  width:116px;height:auto;border-radius:13px;background:#fff;padding:6px 7px;
+  width:132px;height:auto;border-radius:13px;background:#fff;padding:5px 6px;
 }
 .sh-quote{
   margin:0;white-space:pre-line;
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:19px;line-height:1.34;color:#EEF2F4;letter-spacing:.1px;
+  font-size:18px;line-height:1.3;color:#EEF2F4;letter-spacing:.1px;
   text-shadow:0 2px 14px rgba(0,0,0,.35);
 }
 
 /* ---------- the three steps, boxed and breathing in turn ---------- */
 .sh-steps{
-  display:flex;align-items:stretch;gap:7px;padding:0 16px 14px;flex-shrink:0;
+  display:flex;align-items:stretch;justify-content:center;gap:7px;
+  padding:0 16px 14px;flex-shrink:0;
 }
 .sh-step{
-  flex:1;text-align:center;padding:8px 4px;border-radius:9px;
+  flex:1 1 0;max-width:190px;text-align:center;padding:8px 4px;border-radius:9px;
   border:1px solid rgba(247,200,107,.42);
   background:linear-gradient(180deg,rgba(247,200,107,.14),rgba(247,200,107,.05));
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
@@ -2186,20 +2177,19 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   .sh-title{padding:16px 26px 0;gap:8px}
   .sh-box em{font-size:18px;padding:8px 26px}
   .sh-underline{width:84px}
-  .sh-main{gap:24px;padding:14px 26px 10px}
-  .sh-logo{width:168px}
+    .sh-logo{width:186px}
   .sh-quote{font-size:29px;line-height:1.3}
   .sh-steps{gap:12px;padding:0 26px 18px}
   .sh-step{font-size:18px;padding:11px 8px;border-radius:11px}
 }
 @media(min-width:1100px){
-  .sh-logo{width:208px}
+  .sh-logo{width:228px}
   .sh-quote{font-size:36px}
   .sh-step{font-size:21px}
   .sh-box em{font-size:20px}
 }
 @media(max-width:359px){
-  .sh-logo{width:96px}
+  .sh-logo{width:112px}
   .sh-quote{font-size:16.5px}
   .sh-step{font-size:12.5px;padding:7px 3px}
   .sh-box em{font-size:13.5px;padding:5px 15px}
@@ -2210,8 +2200,8 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
    narrative gets the full width instead of a 242px column.
    =================================================================== */
 .st .sh-title{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  padding:11px 16px 0;flex-shrink:0;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;
+  padding:9px 16px 0;flex-shrink:0;
 }
 .st .sh-underline{align-self:center;margin-top:6px;flex-shrink:0}
 
@@ -2255,3 +2245,59 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   .st .sh-step{font-size:12px;padding:6px 2px}
   .st-m{padding:8px 13px 5px}
 }
+
+/* ---------- slide 1: logo left, title and quote beside it ---------- */
+.sh-main{
+  flex:1;display:grid;grid-template-columns:auto minmax(0,1fr);
+  align-items:stretch;gap:12px;padding:10px 14px 6px;min-height:0;
+}
+.sh-side{
+  display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:space-between;min-width:0;padding:1px 0;
+}
+.sh-side .sh-underline{margin:5px 0 0}
+.st-hero .sh-quote{margin:0;text-align:left}
+.st-hero .sh-steps{padding:0 14px 10px}
+.st-hero .sh-main{padding:9px 14px 5px}
+
+/* slide 1's title box sits at the top of the column, level with the logo */
+.st-hero .sh-box{align-self:flex-start}
+
+/* the symbol now sits BEFORE the title on slides 2 to 9 */
+.st .sh-title{flex-direction:row;padding-bottom:0}
+.st .sh-underline{margin-top:7px;margin-bottom:2px;position:relative;z-index:0}
+.st .st-m{padding:7px 15px 5px}
+.st .sh-steps{padding:0 13px 11px}
+@media(min-width:560px){}
+
+/* ---------- the narrative is measured, not guessed ---------- */
+.st-m{
+  --fs-max:16px;
+  flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
+  gap:0;padding:2px 15px 12px;min-width:0;min-height:0;overflow:hidden;
+}
+/* the narrative sits close under the rule rather than floating below it */
+.st .st-m{padding-top:0;margin-top:-2px}
+.st-nar{
+  font-size:var(--fs, var(--fs-max));line-height:1.4;margin:0;text-align:center;
+  text-wrap:balance;overflow-wrap:break-word;max-width:100%;
+}
+.st-nar.em{
+  font-size:calc(var(--fs, var(--fs-max)) * 1.08);line-height:1.3;
+  max-width:100%;overflow-wrap:break-word;
+  padding:5px 10px;margin:3px 0;border-radius:8px;
+  border-left:3px solid var(--imp);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--imp) 18%,transparent),transparent 80%);
+  color:#fff;text-align:left;align-self:stretch;
+}
+.st-blk.next{margin-top:calc(var(--fs, 15px) * 0.55)}
+.st-chain{font-size:calc(var(--fs, var(--fs-max)) * 0.92)}
+.st-chain span{padding:2px 7px}
+
+/* real clearance so nothing can sit under the steps */
+.st .sh-steps{margin-top:0;padding-top:2px}
+.st-m + .sh-steps{border-top:0}
+
+@media(min-width:560px){ .st-m{--fs-max:21px;padding:12px 32px 12px} }
+@media(min-width:1100px){ .st-m{--fs-max:25px} }
+@media(max-width:359px){ .st-m{--fs-max:14.5px;padding:6px 12px 8px} }

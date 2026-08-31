@@ -1,14 +1,14 @@
-RUTUJA WEBSITE — BUILD v10p
+RUTUJA WEBSITE — BUILD v10u
 
 HOW TO CHECK THE UPLOAD WORKED
 ------------------------------
 After uploading and waiting 2 minutes, open the site.
-You should see "v10p" in two places:
+You should see "v10u" in two places:
   1. small grey text under the tagline on the welcome banner
   2. at the end of the footer, after the copyright line
 
-If you do NOT see v10p, the upload did not go through.
-Do not debug anything else until v10p appears.
+If you do NOT see v10u, the upload did not go through.
+Do not debug anything else until v10u appears.
 
 WHAT IS IN THIS BUILD
 ---------------------

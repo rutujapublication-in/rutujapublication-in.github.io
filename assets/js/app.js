@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v10p',
+  VERSION: 'v10u',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2101,13 +2101,30 @@ const STORY = {
   },
 
   /* Size responds to how much the slide actually carries. */
-  narSize(blocks) {
-    const lines = blocks.flat();
-    const n = lines.length;
-    const longest = Math.max(...lines.map(l => l.replace(/\[\[|\]\]|^\*\*|^>>/g, '').length));
-    if (n >= 6 || longest > 42) return 'sm';
-    if (n >= 5 || longest > 34) return 'md';
-    return 'lg';
+  /* A starting size only. The real size is measured after rendering. */
+  narSize() { return 'auto'; },
+
+  /* Shrink the narrative until it genuinely fits its box on THIS phone.
+     Nothing is ever clipped, and nothing ever sits behind the steps. */
+  fit() {
+    document.querySelectorAll('.st .st-m').forEach(box => {
+      box.style.removeProperty('--fs');
+      const room = box.clientHeight - 4;   // a little air at the foot
+      if (room <= 0) return;
+      let px = box.dataset.max ? Number(box.dataset.max) : 0;
+      if (!px) {
+        px = parseFloat(getComputedStyle(box).getPropertyValue('--fs-max')) || 16;
+        box.dataset.max = px;
+      }
+      let size = px;
+      box.style.setProperty('--fs', size + 'px');
+      let guard = 0;
+      while (box.scrollHeight > room && size > 9.5 && guard < 40) {
+        size -= 0.4;
+        box.style.setProperty('--fs', size.toFixed(1) + 'px');
+        guard++;
+      }
+    });
   },
 
   /* Key concepts are lifted in contrast colour, not merely bolded. */
@@ -2153,15 +2170,14 @@ const STORY = {
       if (isLogo) {
         return `<article class="st st-hero" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
 
-          <div class="sh-title">
-            <span class="sh-box"><em>${F(n, 'chapter')}</em></span>
-            <span class="sh-underline"></span>
-          </div>
-
           <div class="sh-main">
             <div class="sh-logo-wrap"><img src="assets/img/rutuja-logo.png"
                  alt="${t('pub_name')}" class="sh-logo"></div>
-            <p class="sh-quote">${F(n, 'tagline')}</p>
+            <div class="sh-side">
+              <span class="sh-box"><em>${F(n, 'chapter')}</em></span>
+              <span class="sh-underline"></span>
+              <p class="sh-quote">${F(n, 'tagline')}</p>
+            </div>
           </div>
 
           <div class="sh-steps">
@@ -2191,8 +2207,7 @@ const STORY = {
               if (chain) return `<p class="st-chain">${txt.split('→').map(x =>
                 `<span>${x.trim()}</span>`).join('<i class="st-arw">&rarr;</i>')}</p>`;
               if (em) return `<p class="st-nar ${size} em">${txt}</p>`;
-              const tail = lastBlock && li === blk.length - 1;
-              return `<p class="st-nar ${size}${tail ? ' last' : ''}">${txt}</p>`;
+              return `<p class="st-nar ${size}">${txt}</p>`;
             }).join('');
             return `<div class="st-blk${bi ? ' next' : ''}">${rows}</div>`;
           }).join('')}
@@ -2214,6 +2229,17 @@ const STORY = {
 
     this.go(this.i);
     this.start();
+
+    const run = () => this.fit();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => requestAnimationFrame(run));
+    } else { run(); }
+    if (typeof setTimeout === 'function') setTimeout(run, 120);
+    if (!this._bound && typeof window !== 'undefined') {
+      this._bound = true;
+      window.addEventListener('resize', () => this.fit());
+      window.addEventListener('orientationchange', () => setTimeout(() => this.fit(), 260));
+    }
   },
 
   go(n) {
