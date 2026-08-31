@@ -2384,8 +2384,17 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   display:flex;align-items:center;gap:9px;
   padding:11px 11px 11px 12px;border-radius:14px;text-align:left;
   border:1px solid transparent;cursor:pointer;
-  transition:transform .18s cubic-bezier(.34,1.4,.64,1), box-shadow .2s;
+  transition:transform .14s ease, box-shadow .14s ease;
 }
+/* a light along the top edge, the way a physical key catches light */
+.cta::before{
+  content:"";position:absolute;left:10px;right:10px;top:0;height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+}
+/* pressing sinks it — the shadow collapses and it moves down */
+.cta:active{transform:translateY(2px)}
+.cta-books:active{box-shadow:0 1px 3px rgba(18,56,33,.34)}
+.cta-order:active{box-shadow:0 1px 3px rgba(184,122,30,.4)}
 .cta-txt{display:flex;flex-direction:column;min-width:0;flex:1}
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
@@ -2396,13 +2405,17 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   font-size:11px;line-height:1.35;margin-top:2px;opacity:.9;
 }
 .cta-ico{font-size:15px;line-height:1;flex-shrink:0;opacity:.9}
-.cta-go{font-size:20px;line-height:1;flex-shrink:0;opacity:.7;
-  transition:transform .2s}
-.cta:active{transform:scale(.975)}
+.cta-go{
+  font-size:20px;line-height:1;flex-shrink:0;opacity:.75;
+  display:inline-block;animation:beckon 1.6s cubic-bezier(.4,0,.2,1) infinite;
+}
+
 @media(hover:hover){
   .cta:hover{transform:translateY(-2px)}
-  .cta:hover .cta-go{transform:translateX(3px)}
+  .cta-books:hover{box-shadow:0 6px 0 rgba(9,38,22,.55), 0 11px 22px rgba(18,56,33,.36)}
+  .cta-order:hover{box-shadow:0 6px 0 rgba(150,95,12,.6), 0 11px 22px rgba(184,122,30,.4)}
 }
+@media(prefers-reduced-motion:reduce){.cta-go{animation:none}}
 
 /* books — deep green through to a lighter leaf */
 .cta-books{
@@ -2411,7 +2424,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
     radial-gradient(120% 100% at 6% 0%, rgba(255,255,255,.16), transparent 55%),
     linear-gradient(135deg,#1E6B45 0%,#1A4D2E 52%,#12381F 100%);
   border-color:rgba(255,255,255,.14);
-  box-shadow:0 3px 12px rgba(18,56,33,.30);
+  box-shadow:0 4px 0 rgba(9,38,22,.55), 0 7px 16px rgba(18,56,33,.32);
 }
 .cta-books .cta-txt i{color:#A9D8BE}
 
@@ -2422,7 +2435,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
     radial-gradient(120% 100% at 6% 0%, rgba(255,255,255,.34), transparent 55%),
     linear-gradient(135deg,#F8CE7C 0%,#EFA83F 48%,#D98A20 100%);
   border-color:rgba(0,0,0,.06);
-  box-shadow:0 3px 12px rgba(184,122,30,.36);
+  box-shadow:0 4px 0 rgba(150,95,12,.6), 0 7px 16px rgba(184,122,30,.34);
 }
 .cta-order .cta-txt i{color:#6B4708}
 
