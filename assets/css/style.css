@@ -137,8 +137,8 @@ a{color:inherit;text-decoration:none}
 .page.active{display:block;animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-.hero{background:var(--green-light);border-bottom:1px solid var(--line);margin-bottom:14px}
-.hero-inner{padding:22px 20px 24px;text-align:center}
+.hero{background:transparent;border-bottom:1px solid var(--line);margin-bottom:14px}
+.hero-inner{padding:6px 20px 22px;text-align:center}
 .hero-title{font-size:36px;color:var(--green-dark);max-width:740px;margin:0 auto 12px}
 .hero-sub{font-size:17px;color:var(--ink-soft);max-width:620px;margin:0 auto 26px}
 .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -199,10 +199,12 @@ a{color:inherit;text-decoration:none}
 @media(max-width:1180px){
   .nav{
     position:absolute;top:100%;left:0;right:0;
-    background:var(--green-dark);flex-direction:column;gap:0;padding:8px;
-    max-height:0;overflow:hidden;transition:max-height .28s ease;margin-left:0;
+    background:var(--green-dark);flex-direction:column;gap:0;margin-left:0;
+    padding:0;max-height:0;overflow:hidden;
+    transition:max-height .28s ease, padding .28s ease;
     box-shadow:0 10px 24px rgba(0,0,0,.28);
   }
+  .nav.open{padding:8px}
   .nav.open{max-height:520px;overflow:auto}
   .nav a{padding:13px 16px;border-radius:8px;font-size:16px}
   .menu-btn{display:flex}
@@ -1786,7 +1788,9 @@ html[lang="en"] body{line-height:1.65}
 .story{
   position:relative;overflow:hidden;background:transparent;
   width:100%;max-width:100%;display:block;line-height:0;
-  box-shadow:0 6px 18px rgba(18,56,33,.18);
+  border-bottom:2px solid var(--gold);
+  margin-bottom:14px;
+  box-shadow:0 5px 16px rgba(18,56,33,.16);
 }
 .story-track{line-height:normal}
 .story-track{display:flex;width:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
@@ -2120,33 +2124,8 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 @keyframes shSweep{0%,58%{background-position:170% 0}90%,100%{background-position:-70% 0}}
 
 /* ---------- logo on the left, the quote on the right ---------- */
-.sh-logo-wrap{
-  position:relative;flex-shrink:0;border-radius:16px;padding:2px;
-  overflow:hidden;isolation:isolate;
-}
 /* the same turning ring, so the two objects speak the same language */
-.sh-logo-wrap::before{
-  content:"";position:absolute;inset:-60%;z-index:0;
-  background:conic-gradient(from 0deg,
-    #F7C86B 0deg, #F7C86B 40deg, #FFFFFF 62deg, #E6EBEF 74deg,
-    #F7C86B 96deg, #B98B2E 210deg, #F7C86B 360deg);
-  animation:shSpin 4.2s linear infinite;
-}
-.sh-logo-wrap::after{
-  content:"";position:absolute;inset:2px;z-index:1;border-radius:14px;background:#fff;
-}
 /* sun-rays reaching out from behind the logo */
-.sh-logo-wrap{box-shadow:0 0 34px 6px rgba(247,200,107,.26),0 8px 22px rgba(0,0,0,.34)}
-.sh-logo{
-  position:relative;z-index:2;display:block;
-  width:132px;height:auto;border-radius:13px;background:#fff;padding:5px 6px;
-}
-.sh-quote{
-  margin:0;white-space:pre-line;
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:18px;line-height:1.3;color:#EEF2F4;letter-spacing:.1px;
-  text-shadow:0 2px 14px rgba(0,0,0,.35);
-}
 
 /* ---------- the three steps, boxed and breathing in turn ---------- */
 .sh-steps{
@@ -2174,24 +2153,17 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 }
 
 @media(min-width:560px){
-  .sh-title{padding:16px 26px 0;gap:8px}
-  .sh-box em{font-size:18px;padding:8px 26px}
+    .sh-box em{font-size:18px;padding:8px 26px}
   .sh-underline{width:84px}
-    .sh-logo{width:186px}
-  .sh-quote{font-size:29px;line-height:1.3}
-  .sh-steps{gap:12px;padding:0 26px 18px}
+        .sh-steps{gap:12px;padding:0 26px 18px}
   .sh-step{font-size:18px;padding:11px 8px;border-radius:11px}
 }
 @media(min-width:1100px){
-  .sh-logo{width:228px}
-  .sh-quote{font-size:36px}
-  .sh-step{font-size:21px}
+      .sh-step{font-size:21px}
   .sh-box em{font-size:20px}
 }
 @media(max-width:359px){
-  .sh-logo{width:112px}
-  .sh-quote{font-size:16.5px}
-  .sh-step{font-size:12.5px;padding:7px 3px}
+      .sh-step{font-size:12.5px;padding:7px 3px}
   .sh-box em{font-size:13.5px;padding:5px 15px}
 }
 
@@ -2199,11 +2171,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
    SLIDES 2 to 9 — the same system as slide 1, stacked in rows so the
    narrative gets the full width instead of a 242px column.
    =================================================================== */
-.st .sh-title{
-  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;
-  padding:9px 16px 0;flex-shrink:0;
-}
-.st .sh-underline{align-self:center;margin-top:6px;flex-shrink:0}
+.st .st .sh-underline{align-self:center;margin-top:6px;flex-shrink:0}
 
 .st .st-orb{
   width:36px;height:36px;flex-shrink:0;border-radius:50%;
@@ -2232,8 +2200,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 .st .sh-step{font-size:13.5px;padding:7px 3px}
 
 @media(min-width:560px){
-  .st .sh-title{gap:14px;padding:15px 26px 0}
-  .st .st-orb{width:48px;height:48px}
+  .st   .st .st-orb{width:48px;height:48px}
   .st .st-orb svg{width:30px;height:30px}
   .st-m{padding:14px 34px 8px}
   .st .sh-steps{padding:0 26px 16px;gap:10px}
@@ -2247,25 +2214,12 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 }
 
 /* ---------- slide 1: logo left, title and quote beside it ---------- */
-.sh-main{
-  flex:1;display:grid;grid-template-columns:auto minmax(0,1fr);
-  align-items:stretch;gap:12px;padding:10px 14px 6px;min-height:0;
-}
-.sh-side{
-  display:flex;flex-direction:column;align-items:flex-start;
-  justify-content:space-between;min-width:0;padding:1px 0;
-}
-.sh-side .sh-underline{margin:5px 0 0}
-.st-hero .sh-quote{margin:0;text-align:left}
 .st-hero .sh-steps{padding:0 14px 10px}
-.st-hero .sh-main{padding:9px 14px 5px}
-
+.st-hero 
 /* slide 1's title box sits at the top of the column, level with the logo */
-.st-hero .sh-box{align-self:flex-start}
 
 /* the symbol now sits BEFORE the title on slides 2 to 9 */
-.st .sh-title{flex-direction:row;padding-bottom:0}
-.st .sh-underline{margin-top:7px;margin-bottom:2px;position:relative;z-index:0}
+.st .st .sh-underline{margin-top:7px;margin-bottom:2px;position:relative;z-index:0}
 .st .st-m{padding:7px 15px 5px}
 .st .sh-steps{padding:0 13px 11px}
 @media(min-width:560px){}
@@ -2311,3 +2265,105 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 @media(min-width:560px){ .sh-steps.one .sh-step{font-size:26px;padding:13px 18px} }
 @media(min-width:1100px){ .sh-steps.one .sh-step{font-size:31px} }
 @media(max-width:359px){ .sh-steps.one .sh-step{font-size:16.5px;padding:9px 11px} }
+
+/* ===================================================================
+   SLIDE 1 — everything centred in one column
+   =================================================================== */
+.st-hero{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:4px 14px;gap:0;
+  background:
+    radial-gradient(72% 48% at 50% 44%, rgba(247,200,107,.20) 0%, transparent 64%),
+    linear-gradient(158deg,#3A2450 0%,#2B1B3A 48%,#20142C 100%);
+}
+.sh-title{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0}
+
+/* ---------- the logo, with sun-rays reaching out behind it ---------- */
+.sh-logo-wrap{
+  position:relative;flex-shrink:0;margin-top:6px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:14px;padding:2px;overflow:visible;
+}
+/* the turning gold rim */
+.sh-logo-wrap::before{
+  content:"";position:absolute;inset:0;border-radius:14px;z-index:1;
+  background:conic-gradient(from 0deg,
+    #F7C86B 0deg,#F7C86B 40deg,#FFFFFF 62deg,#E6EBEF 74deg,
+    #F7C86B 96deg,#B98B2E 210deg,#F7C86B 360deg);
+  animation:shSpin 4.2s linear infinite;
+}
+.sh-logo-wrap::after{
+  content:"";position:absolute;inset:2px;border-radius:12px;z-index:2;background:#fff;
+}
+/* rays spreading outward, breathing slowly */
+.sh-rays{
+  position:absolute;left:50%;top:50%;width:230%;height:230%;z-index:0;
+  transform:translate(-50%,-50%);pointer-events:none;border-radius:22px;
+  background:
+    conic-gradient(from 0deg,
+      rgba(247,200,107,.30) 0deg,  transparent 8deg,
+      rgba(247,200,107,.24) 22deg, transparent 30deg,
+      rgba(247,200,107,.30) 45deg, transparent 53deg,
+      rgba(247,200,107,.22) 68deg, transparent 76deg,
+      rgba(247,200,107,.30) 90deg, transparent 98deg,
+      rgba(247,200,107,.24) 112deg,transparent 120deg,
+      rgba(247,200,107,.30) 135deg,transparent 143deg,
+      rgba(247,200,107,.22) 158deg,transparent 166deg,
+      rgba(247,200,107,.30) 180deg,transparent 188deg,
+      rgba(247,200,107,.24) 202deg,transparent 210deg,
+      rgba(247,200,107,.30) 225deg,transparent 233deg,
+      rgba(247,200,107,.22) 248deg,transparent 256deg,
+      rgba(247,200,107,.30) 270deg,transparent 278deg,
+      rgba(247,200,107,.24) 292deg,transparent 300deg,
+      rgba(247,200,107,.30) 315deg,transparent 323deg,
+      rgba(247,200,107,.22) 338deg,transparent 346deg,
+      rgba(247,200,107,.30) 360deg),
+    radial-gradient(closest-side, rgba(247,200,107,.34), transparent 72%);
+  -webkit-mask-image:radial-gradient(closest-side,#000 26%,rgba(0,0,0,.55) 58%,transparent 82%);
+          mask-image:radial-gradient(closest-side,#000 26%,rgba(0,0,0,.55) 58%,transparent 82%);
+  animation:shRays 5.2s ease-in-out infinite;
+}
+@keyframes shRays{
+  0%,100%{transform:translate(-50%,-50%) scale(.94) rotate(0deg);   opacity:.55}
+  50%    {transform:translate(-50%,-50%) scale(1.06) rotate(9deg);  opacity:1}
+}
+.sh-logo{
+  position:relative;z-index:3;display:block;
+  width:107px;height:auto;border-radius:12px;background:#fff;padding:4px 5px;
+}
+
+/* ---------- the quote ---------- */
+.sh-quote{
+  margin:7px 0 0;white-space:pre-line;text-align:center;flex-shrink:0;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:15px;line-height:1.32;color:#EEF2F4;letter-spacing:.1px;
+  text-shadow:0 2px 12px rgba(0,0,0,.34);
+}
+
+/* ---------- the three boxes ---------- */
+.st-hero .sh-steps{margin-top:auto;padding:6px 0 6px;width:100%;gap:7px}
+
+@media(prefers-reduced-motion:reduce){ .sh-rays{animation:none;opacity:.8} }
+
+@media(min-width:560px){
+  .st-hero{padding:8px 26px}
+  .sh-logo{width:150px;padding:6px 7px}
+  .sh-quote{font-size:22px;margin-top:11px}
+  .st-hero .sh-steps{gap:11px;padding:10px 0}
+}
+@media(min-width:1100px){
+  .sh-logo{width:180px}
+  .sh-quote{font-size:27px}
+}
+@media(max-width:359px){
+  .sh-logo{width:94px}
+  .sh-quote{font-size:13.5px;margin-top:5px}
+}
+
+/* slides 2 to 9 keep the symbol BESIDE the title, and their own spacing */
+.st:not(.st-hero) .sh-title{
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;
+  padding:9px 16px 0;flex-shrink:0;
+}
+.st:not(.st-hero) .sh-underline{align-self:center;margin-top:7px;margin-bottom:2px;
+  position:relative;z-index:0}

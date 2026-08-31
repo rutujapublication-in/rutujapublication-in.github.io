@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11b',
+  VERSION: 'v11d',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2170,17 +2170,19 @@ const STORY = {
       if (isLogo) {
         return `<article class="st st-hero" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
 
-          <div class="sh-main">
-            <div class="sh-logo-wrap"><img src="assets/img/rutuja-logo.png"
-                 alt="${t('pub_name')}" class="sh-logo"></div>
-            <div class="sh-side">
-              <span class="sh-box"><em>${F(n, 'chapter')}</em></span>
-              <span class="sh-underline"></span>
-              <p class="sh-quote">${F(n, 'tagline')}</p>
-            </div>
+          <div class="sh-title">
+            <span class="sh-box"><em>${F(n, 'chapter')}</em></span>
+            <span class="sh-underline"></span>
           </div>
 
-          <div class="sh-steps">
+          <div class="sh-logo-wrap">
+            <span class="sh-rays" aria-hidden="true"></span>
+            <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo">
+          </div>
+
+          <p class="sh-quote">${F(n, 'tagline')}</p>
+
+          <div class="sh-steps${F(n,'impact').split('|').length === 1 ? ' one' : ''}">
             ${F(n, 'impact').split('|').map((w, wi) =>
               `<span class="sh-step" style="--d:${wi * 0.6}s">${w.trim()}</span>`).join('')}
           </div>
