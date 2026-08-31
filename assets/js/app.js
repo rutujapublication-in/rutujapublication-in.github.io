@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v10n',
+  VERSION: 'v10p',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2152,28 +2152,34 @@ const STORY = {
       const mid = sl.right_divider !== undefined ? !!sl.right_divider : !!this.MIDRULE[k];
       if (isLogo) {
         return `<article class="st st-hero" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
-          <div class="sh-top">
-            <span class="sh-chap fx-${fx}">${F(n, 'chapter')}</span>
-            <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo">
-            <span class="sh-rule"></span>
-            <p class="sh-tag">${F(n, 'tagline')}</p>
+
+          <div class="sh-title">
+            <span class="sh-box"><em>${F(n, 'chapter')}</em></span>
+            <span class="sh-underline"></span>
           </div>
-          <div class="st-r sh-r">
-            ${F(n, 'impact').split('|').map((w, wi, arr) =>
-              `<span class="st-imp ${this.impSize(arr)}${wi === arr.length - 1 ? ' key' : ''}">${w}</span>`).join('')}
+
+          <div class="sh-main">
+            <div class="sh-logo-wrap"><img src="assets/img/rutuja-logo.png"
+                 alt="${t('pub_name')}" class="sh-logo"></div>
+            <p class="sh-quote">${F(n, 'tagline')}</p>
           </div>
+
+          <div class="sh-steps">
+            ${F(n, 'impact').split('|').map((w, wi) =>
+              `<span class="sh-step" style="--d:${wi * 0.6}s">${w.trim()}</span>`).join('')}
+          </div>
+
           <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
         </article>`;
       }
 
       return `<article class="st" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
 
-        <div class="st-l">
-          <span class="st-kw fx-${fx}">${F(n, 'chapter')}</span>
-          <span class="st-orb">
-            <svg viewBox="0 0 48 48" aria-hidden="true">${sym}</svg>
-          </span>
+        <div class="sh-title">
+          <span class="st-orb"><svg viewBox="0 0 48 48" aria-hidden="true">${sym}</svg></span>
+          <span class="sh-box"><em>${F(n, 'chapter')}</em></span>
         </div>
+        <span class="sh-underline"></span>
 
         <div class="st-m">
           ${blocks.map((blk, bi) => {
@@ -2185,17 +2191,16 @@ const STORY = {
               if (chain) return `<p class="st-chain">${txt.split('→').map(x =>
                 `<span>${x.trim()}</span>`).join('<i class="st-arw">&rarr;</i>')}</p>`;
               if (em) return `<p class="st-nar ${size} em">${txt}</p>`;
-              const lead = bi === 0 && li === 0;          /* the opening line leads */
               const tail = lastBlock && li === blk.length - 1;
-              return `<p class="st-nar ${size}${lead ? ' lead' : ''}${tail ? ' last' : ''}"
-                style="--in:${li ? 9 : 0}px">${txt}</p>`;
+              return `<p class="st-nar ${size}${tail ? ' last' : ''}">${txt}</p>`;
             }).join('');
             return `<div class="st-blk${bi ? ' next' : ''}">${rows}</div>`;
           }).join('')}
         </div>
 
-        <div class="st-r ${mid ? 'ruled' : ''}${n === 7 ? ' airy' : ''}">
-          ${words.map((w, wi) => `<span class="st-imp ${this.impSize(words)}${wi === words.length - 1 ? ' key' : ''}">${w}</span>`).join('')}
+        <div class="sh-steps${mid ? ' ruled' : ''}">
+          ${words.map((w, wi) =>
+            `<span class="sh-step" style="--d:${wi * 0.6}s">${w.trim()}</span>`).join('')}
         </div>
 
         <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>

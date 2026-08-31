@@ -1775,22 +1775,16 @@ html[lang="en"] body{line-height:1.65}
 @media(prefers-reduced-motion:reduce){.story-track{transition:none}}
 
 .st{
-  position:relative;flex:0 0 100%;width:100%;max-width:100%;height:318px;overflow:hidden;
+  position:relative;flex:0 0 100%;width:100%;max-width:100%;height:300px;overflow:hidden;
   background:var(--bg);
-  display:grid;grid-template-columns:92px minmax(0,1fr);
-  grid-template-areas:"l m" "r r";
-  touch-action:pan-y;
+  display:flex;flex-direction:column;touch-action:pan-y;
 }
 
 /* ---------- LEFT: keyword and symbol, always divided ---------- */
-.st-l{
-  grid-area:l;background:var(--deep);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  padding:12px 4px;position:relative;
-}
+
 .st-kw{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;font-size:14px;
-  color:var(--kw);letter-spacing:.3px;line-height:1.2;position:relative;
+  color:var(--kw);letter-spacing:0;line-height:1.2;position:relative;
   text-align:center;overflow-wrap:break-word;width:100%;
 }
 /* the keyword is revealed rather than simply printed */
@@ -1811,7 +1805,7 @@ html[lang="en"] body{line-height:1.65}
 
 /* ---------- MIDDLE: the narrative, primary carrier ---------- */
 .st-m{
-  grid-area:m;display:flex;flex-direction:column;justify-content:flex-start;gap:1px;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:1px;
   padding:12px 14px 10px 12px;min-width:0;
 }
 .st-nar{
@@ -1824,24 +1818,13 @@ html[lang="en"] body{line-height:1.65}
 .st-nar.last{color:var(--kw);font-weight:700}
 
 /* ---------- RIGHT: the impact zone ---------- */
-.st-r{
-  grid-area:r;display:flex;align-items:stretch;gap:0;
-  background:color-mix(in srgb,var(--deep) 88%,#000);
-  border-top:2px solid color-mix(in srgb,var(--rule) 60%,transparent);
-  padding:0;
-}
-.st-imp{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:9px 5px;
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;color:var(--imp);
-  line-height:1.1;letter-spacing:.2px;
-  overflow-wrap:break-word;hyphens:none;
-}
-.st-imp.lg{font-size:19px}
-.st-imp.md{font-size:17px}
-.st-imp.sm{font-size:14.5px}
-.st-imp + .st-imp{border-left:1px solid color-mix(in srgb,var(--imp) 26%,transparent)}
-.st-r.ruled{box-shadow:inset 0 3px 0 color-mix(in srgb,var(--rule) 80%,transparent)}
+
+
+
+
+
+
+
 
 .st-pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.32);z-index:2}
 .st-pg i{display:block;height:100%;background:var(--imp);transition:width .6s ease}
@@ -1853,18 +1836,15 @@ html[lang="en"] body{line-height:1.65}
 /* ---------- 560px and up: true three columns, as specified ---------- */
 @media(min-width:560px){
   .st{
-    height:330px;
+    height:320px;
     grid-template-columns:22% minmax(0,1fr) 26%;
     grid-template-areas:"l m r";
   }
-  .st-r{
-    flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;
-    background:transparent;border-top:0;padding:18px 14px;
-  }
-  .st-imp{flex:0 0 auto;width:100%;display:block;text-align:left;padding:5px 0}
-  .st-imp + .st-imp{border-left:0}
-  .st-r.ruled{box-shadow:none;border-left:2px solid color-mix(in srgb,var(--rule) 55%,transparent)}
-  .st-l{gap:16px;padding:18px 8px}
+  
+  
+  
+  
+  
   .st-kw{font-size:19px}
   .st-orb{width:62px;height:62px}
   .st-orb svg{width:40px;height:40px}
@@ -1873,9 +1853,9 @@ html[lang="en"] body{line-height:1.65}
   .st-nar.lg{font-size:19px}
   .st-nar.md{font-size:17.5px}
   .st-nar.sm{font-size:16px}
-  .st-imp.lg{font-size:34px}
-  .st-imp.md{font-size:29px}
-  .st-imp.sm{font-size:24px}
+  
+  
+  
 }
 @media(min-width:1100px){
   .st{height:360px}
@@ -1885,38 +1865,26 @@ html[lang="en"] body{line-height:1.65}
   .st-nar.lg{font-size:22px}
   .st-nar.md{font-size:20px}
   .st-nar.sm{font-size:18px}
-  .st-imp.lg{font-size:42px}
-  .st-imp.md{font-size:36px}
-  .st-imp.sm{font-size:30px}
+  
+  
+  
 }
 @media(max-width:359px){
-  .st{height:300px}
+  .st{height:288px}
   .st-kw{font-size:14px}
   .st-orb{width:44px;height:44px}
   .st-orb svg{width:28px;height:28px}
   .st-nar.lg{font-size:15px}
   .st-nar.md{font-size:14px}
   .st-nar.sm{font-size:12.5px}
-  .st-imp.lg{font-size:20px}
-  .st-imp.md{font-size:17px}
-  .st-imp.sm{font-size:15px}
+  
+  
+  
 }
 
 /* ---------- the left divider: a graphic separation, not a table line ---------- */
-.st-l::after{
-  content:"";position:absolute;right:-1px;top:8%;bottom:8%;width:2px;border-radius:1px;
-  background:linear-gradient(180deg,
-    transparent 0%,
-    color-mix(in srgb,var(--rule) 70%,transparent) 18%,
-    var(--rule) 50%,
-    color-mix(in srgb,var(--rule) 70%,transparent) 82%,
-    transparent 100%);
-}
-.st-l::before{
-  content:"";position:absolute;right:-4px;top:50%;width:8px;height:8px;border-radius:50%;
-  transform:translateY(-50%);background:var(--rule);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--bg) 85%,transparent);
-}
+
+
 
 /* ---------- nine keyword activations, one language ---------- */
 .st-kw{position:relative}
@@ -1970,12 +1938,12 @@ html[lang="en"] body{line-height:1.65}
 @media(prefers-reduced-motion:reduce){.st-arw{animation:none;opacity:.9}}
 
 /* ---------- the closing word of each stack is enlarged ---------- */
-.st-imp.key{font-size:1.28em;color:#fff}
+
 
 /* ---------- slide 7: intentional negative space ---------- */
 .st-r.airy{gap:8px}
-.st-r.airy .st-imp{padding:6px 0}
-.st-r.airy .st-imp:nth-child(2){font-size:.58em;opacity:.7;padding:0;margin-left:4px}
+.st-r.airy 
+.st-r.airy 
 
 @media(min-width:560px){
   .st-chain{font-size:15px;gap:7px}
@@ -1983,8 +1951,8 @@ html[lang="en"] body{line-height:1.65}
   .st-arw{font-size:17px}
   .st-nar.em{padding:9px 0 9px 14px;border-left-width:4px}
   .st-r.airy{gap:14px}
-  .st-r.airy .st-imp:nth-child(2){margin-left:6px}
-  .st-l::before{width:10px;height:10px;right:-5px}
+  .st-r.airy 
+  
 }
 
 /* ---------- the real logo ---------- */
@@ -2043,18 +2011,12 @@ img.w-logo{
 
 /* the middle: name, English, then the trademark line lifted */
 /* the impact stack gains a warm plate so it reads as a destination */
-.st-hero .st-r{
-  background:linear-gradient(180deg, rgba(250,199,117,.13), rgba(250,199,117,.04));
-  border-radius:10px;margin:12px 8px 12px 0;padding:12px 10px;
-}
-.st-hero .st-r.ruled{border-left:2px solid rgba(250,199,117,.55)}
-.st-hero .st-imp{color:#FFE6B4}
-.st-hero .st-imp.key{
-  color:#fff;
-  text-shadow:0 0 18px rgba(250,199,117,.5);
-}
+.st-hero 
+.st-hero 
+.st-hero 
+.st-hero 
 @media(min-width:560px){
-      .st-hero .st-r{margin:16px 10px 16px 0;padding:16px 12px}
+      .st-hero 
 }
 
 /* ---------- the narrative as intentional blocks, not a list ---------- */
@@ -2083,89 +2045,213 @@ img.w-logo{
 html,body{max-width:100%;overflow-x:hidden}
 
 /* ---------- the impact band breathes and never truncates ---------- */
-.st-imp{line-height:1.24;min-width:0}
-.st-r{min-height:46px;align-items:stretch}
+
+
 @media(max-width:479px){
-  .st-imp.lg{font-size:17px}
-  .st-imp.md{font-size:15.5px}
-  .st-imp.sm{font-size:13.5px}
-  .st-imp{padding:9px 5px}
-}
-
-/* ===================================================================
-   SLIDE 1 — composed on its own terms: the logo is the identity
-   =================================================================== */
-.st-hero{
-  display:flex;flex-direction:column;
-  background:
-    radial-gradient(115% 85% at 50% 18%, rgba(239,159,39,.26) 0%, transparent 58%),
-    radial-gradient(95% 110% at 92% 96%, rgba(93,202,165,.22) 0%, transparent 62%),
-    linear-gradient(152deg,#12805F 0%,#0F6E56 40%,#0A5240 76%,#073F31 100%);
-}
-.sh-top{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:9px;padding:14px 18px 10px;text-align:center;position:relative;
-}
-.sh-chap{
-  position:relative;font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
-  font-size:11.5px;letter-spacing:3.5px;color:#FAC775;
-}
-.sh-chap::after{
-  content:"";position:absolute;left:50%;bottom:-6px;width:26px;height:2px;
-  margin-left:-13px;border-radius:1px;background:#FAC775;
-}
-.sh-logo{
-  width:104px;height:104px;object-fit:contain;background:#fff;
-  border-radius:24px;padding:8px;margin-top:4px;
-  box-shadow:0 8px 26px rgba(0,0,0,.34), 0 0 0 1px rgba(250,199,117,.5),
-             0 0 30px rgba(250,199,117,.28);
-}
-.sh-rule{
-  display:block;width:54px;height:2px;border-radius:1px;margin-top:2px;
-  background:linear-gradient(90deg,transparent,#FAC775,transparent);
-}
-.sh-tag{
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;font-size:19px;
-  line-height:1.28;color:#fff;margin:0;white-space:pre-line;
-  text-shadow:0 2px 12px rgba(0,0,0,.28);
-}
-.sh-tag-en{
-  font-family:Mukta,system-ui,sans-serif;font-size:11.5px;line-height:1.4;
-  color:#9FE1CB;margin:0;letter-spacing:.2px;
-}
-.sh-r{
-  border-top:2px solid rgba(250,199,117,.55);
-  background:linear-gradient(180deg,rgba(250,199,117,.14),rgba(250,199,117,.05));
-}
-.st-hero .st-imp{color:#FFE6B4}
-.st-hero .st-imp.key{color:#fff;text-shadow:0 0 16px rgba(250,199,117,.5)}
-
-@media(min-width:560px){
-  .sh-top{gap:12px;padding:22px 26px 14px}
-  .sh-logo{width:142px;height:142px;padding:11px;border-radius:28px}
-  .sh-tag{font-size:26px}
-  .sh-tag-en{font-size:13.5px}
-  .sh-chap{font-size:12.5px}
-  .sh-rule{width:72px}
-}
-@media(min-width:1100px){
-  .sh-logo{width:168px;height:168px}
-  .sh-tag{font-size:32px}
-  .sh-tag-en{font-size:15px}
-}
-@media(max-width:359px){
-  .sh-logo{width:88px;height:88px;padding:7px}
-  .sh-tag{font-size:17px}
+  
+  
+  
+  
 }
 
 /* the keyword sits above the circle, so give it room */
-.st-l{justify-content:center}
+
 .st-kw{padding:0 2px}
 @media(min-width:560px){
-  .st{grid-template-columns:22% minmax(0,1fr) 26%}
+
   .st-kw{font-size:18px}
 }
 @media(max-width:359px){
-  .st{grid-template-columns:82px minmax(0,1fr)}
+
   .st-kw{font-size:13px}
+}
+
+/* ===================================================================
+   SLIDE 1 — the identity slide
+   Two colours only: gold for the labels, silver-white for the quote.
+   =================================================================== */
+.st-hero{
+  display:flex;flex-direction:column;gap:0;
+  background:
+    radial-gradient(78% 58% at 30% 44%, rgba(247,200,107,.20) 0%, transparent 62%),
+    radial-gradient(90% 70% at 88% 8%, rgba(196,163,232,.14) 0%, transparent 60%),
+    linear-gradient(158deg,#3A2450 0%,#2B1B3A 46%,#20142C 100%);
+}
+
+/* ---------- the title, in a ring that turns and breathes ---------- */
+.sh-title{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:12px 16px 0;flex-shrink:0;
+}
+.sh-box{
+  position:relative;display:inline-block;border-radius:12px;padding:2px;
+  overflow:hidden;isolation:isolate;
+  animation:shBreathe 3.6s ease-in-out infinite;
+}
+/* a silver light travelling clockwise around a gold rim */
+.sh-box::before{
+  content:"";position:absolute;inset:-60%;z-index:0;
+  background:conic-gradient(from 0deg,
+    #F7C86B 0deg, #F7C86B 40deg,
+    #FFFFFF 62deg, #E6EBEF 74deg,
+    #F7C86B 96deg, #B98B2E 200deg, #F7C86B 360deg);
+  animation:shSpin 3.4s linear infinite;
+}
+.sh-box::after{
+  content:"";position:absolute;inset:2px;z-index:1;border-radius:10px;
+  background:linear-gradient(160deg,#3A2450,#241733);
+}
+.sh-box em{
+  position:relative;z-index:2;display:block;padding:6px 20px;font-style:normal;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:15px;color:#F7C86B;line-height:1.25;white-space:nowrap;
+}
+html[lang="en"] .sh-box em{letter-spacing:2px}
+html[lang="en"] .st-kw{letter-spacing:1.4px}
+@keyframes shSpin{to{transform:rotate(360deg)}}
+@keyframes shBreathe{
+  0%,100%{transform:scale(1);   box-shadow:0 0 0 0 rgba(247,200,107,.0)}
+  50%    {transform:scale(1.035);box-shadow:0 0 22px 2px rgba(247,200,107,.30)}
+}
+/* the rule beneath, with a light running left to right */
+.sh-underline{
+  position:relative;display:block;width:62px;height:2px;border-radius:1px;
+  background:rgba(247,200,107,.32);overflow:hidden;
+}
+.sh-underline::after{
+  content:"";position:absolute;inset:0;border-radius:1px;
+  background:linear-gradient(90deg,transparent,#FFFFFF 45%,#F7C86B 55%,transparent);
+  background-size:220% 100%;animation:shSweep 3.4s ease-in-out infinite;
+}
+@keyframes shSweep{0%,58%{background-position:170% 0}90%,100%{background-position:-70% 0}}
+
+/* ---------- logo on the left, the quote on the right ---------- */
+.sh-main{
+  flex:1;display:grid;grid-template-columns:auto minmax(0,1fr);
+  align-items:center;gap:14px;padding:10px 16px 8px;min-height:0;
+}
+.sh-logo-wrap{
+  position:relative;flex-shrink:0;border-radius:16px;padding:2px;
+  overflow:hidden;isolation:isolate;
+}
+/* the same turning ring, so the two objects speak the same language */
+.sh-logo-wrap::before{
+  content:"";position:absolute;inset:-60%;z-index:0;
+  background:conic-gradient(from 0deg,
+    #F7C86B 0deg, #F7C86B 40deg, #FFFFFF 62deg, #E6EBEF 74deg,
+    #F7C86B 96deg, #B98B2E 210deg, #F7C86B 360deg);
+  animation:shSpin 4.2s linear infinite;
+}
+.sh-logo-wrap::after{
+  content:"";position:absolute;inset:2px;z-index:1;border-radius:14px;background:#fff;
+}
+/* sun-rays reaching out from behind the logo */
+.sh-logo-wrap{box-shadow:0 0 34px 6px rgba(247,200,107,.26),0 8px 22px rgba(0,0,0,.34)}
+.sh-logo{
+  position:relative;z-index:2;display:block;
+  width:116px;height:auto;border-radius:13px;background:#fff;padding:6px 7px;
+}
+.sh-quote{
+  margin:0;white-space:pre-line;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:19px;line-height:1.34;color:#EEF2F4;letter-spacing:.1px;
+  text-shadow:0 2px 14px rgba(0,0,0,.35);
+}
+
+/* ---------- the three steps, boxed and breathing in turn ---------- */
+.sh-steps{
+  display:flex;align-items:stretch;gap:7px;padding:0 16px 14px;flex-shrink:0;
+}
+.sh-step{
+  flex:1;text-align:center;padding:8px 4px;border-radius:9px;
+  border:1px solid rgba(247,200,107,.42);
+  background:linear-gradient(180deg,rgba(247,200,107,.14),rgba(247,200,107,.05));
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:14px;line-height:1.25;color:#F7C86B;
+  animation:shStep 3.6s ease-in-out infinite;animation-delay:var(--d);
+}
+@keyframes shStep{
+  0%,100%{transform:scale(1);border-color:rgba(247,200,107,.42);
+          box-shadow:0 0 0 0 rgba(247,200,107,0)}
+  50%    {transform:scale(1.045);border-color:rgba(255,255,255,.8);
+          box-shadow:0 0 16px 1px rgba(247,200,107,.34)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .sh-box,.sh-step{animation:none}
+  .sh-box::before,.sh-logo-wrap::before,.sh-underline::after{animation:none}
+}
+
+@media(min-width:560px){
+  .sh-title{padding:16px 26px 0;gap:8px}
+  .sh-box em{font-size:18px;padding:8px 26px}
+  .sh-underline{width:84px}
+  .sh-main{gap:24px;padding:14px 26px 10px}
+  .sh-logo{width:168px}
+  .sh-quote{font-size:29px;line-height:1.3}
+  .sh-steps{gap:12px;padding:0 26px 18px}
+  .sh-step{font-size:18px;padding:11px 8px;border-radius:11px}
+}
+@media(min-width:1100px){
+  .sh-logo{width:208px}
+  .sh-quote{font-size:36px}
+  .sh-step{font-size:21px}
+  .sh-box em{font-size:20px}
+}
+@media(max-width:359px){
+  .sh-logo{width:96px}
+  .sh-quote{font-size:16.5px}
+  .sh-step{font-size:12.5px;padding:7px 3px}
+  .sh-box em{font-size:13.5px;padding:5px 15px}
+}
+
+/* ===================================================================
+   SLIDES 2 to 9 — the same system as slide 1, stacked in rows so the
+   narrative gets the full width instead of a 242px column.
+   =================================================================== */
+.st .sh-title{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:11px 16px 0;flex-shrink:0;
+}
+.st .sh-underline{align-self:center;margin-top:6px;flex-shrink:0}
+
+.st .st-orb{
+  width:36px;height:36px;flex-shrink:0;border-radius:50%;
+  border:1.5px solid rgba(247,200,107,.5);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(247,200,107,.09);
+}
+.st .st-orb svg{width:22px;height:22px}
+.st-orb .o{fill:none;stroke:#F7C86B;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.st-orb .o2{fill:none;stroke:#F7C86B;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.st-orb .f{fill:#F7C86B;stroke:none}
+.st-orb .f2{fill:rgba(247,200,107,.3);stroke:#F7C86B;stroke-width:1.8}
+.st-orb .g{fill:#F7C86B;font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:600;text-anchor:middle}
+
+/* the narrative now runs the full measure */
+.st-m{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  gap:1px;padding:9px 16px 6px;min-width:0;min-height:0;overflow:hidden;
+}
+.st-nar{margin-left:0;text-align:center}
+.st-blk{align-items:center}
+.st .st-chain{justify-content:center}
+
+.st .sh-steps{padding:0 14px 13px;gap:6px}
+.st .sh-steps.ruled{border-top:1px solid rgba(247,200,107,.3);padding-top:10px;margin:0 14px}
+.st .sh-step{font-size:13.5px;padding:7px 3px}
+
+@media(min-width:560px){
+  .st .sh-title{gap:14px;padding:15px 26px 0}
+  .st .st-orb{width:48px;height:48px}
+  .st .st-orb svg{width:30px;height:30px}
+  .st-m{padding:14px 34px 8px}
+  .st .sh-steps{padding:0 26px 16px;gap:10px}
+  .st .sh-step{font-size:17px;padding:10px 6px}
+}
+@media(max-width:359px){
+  .st .st-orb{width:32px;height:32px}
+  .st .st-orb svg{width:19px;height:19px}
+  .st .sh-step{font-size:12px;padding:6px 2px}
+  .st-m{padding:8px 13px 5px}
 }
