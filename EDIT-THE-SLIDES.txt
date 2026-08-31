@@ -1,0 +1,138 @@
+HOW TO EDIT THE NINE STORY SLIDES
+=================================
+
+The words on the nine slides live in ONE small file:
+
+    data/story.json
+
+Nothing else needs to be touched.
+
+
+TO EDIT ON GITHUB
+-----------------
+1. Open your repository  rutujapublication-in.github.io
+2. Click the  data  folder
+3. Click  story.json
+4. Click the PENCIL icon  at the top right of the file
+5. Change any line you want
+6. Scroll to the bottom, click  Commit changes
+7. Wait 2 minutes, then open the site and press Ctrl+Shift+R
+
+That is all. No other file changes.
+
+
+WHAT EACH FIELD DOES
+--------------------
+chapter_mr / chapter_en    the word in the left column. Keep it 1 to 2 words.
+narrative_mr / _en         the main text in the middle.
+impact_mr / _en            the 2 to 4 words in the highlight zone.
+tagline_mr / _en           slide 1 only, instead of narrative.
+
+
+MARKS YOU CAN USE IN THE NARRATIVE
+----------------------------------
+  |      a new line, still the same thought
+  //     a new block, leaves real space between thoughts
+  [[ ]]  a key word, shown in gold
+  **     at the START of a line, emphasises that whole line
+  >>     at the START of a line, draws it as a chain with arrows
+
+Example:
+
+  "narrative_mr": "राजमाता [[जिजाऊंनी]] शिवबाला घडवलं,|आणि [[शिवाजी महाराजांनी]] पाया रचला।//पुढचा विचार इथे."
+
+  reads as:
+
+      राजमाता जिजाऊंनी शिवबाला घडवलं,        <- जिजाऊंनी in gold
+      आणि शिवाजी महाराजांनी पाया रचला।
+
+      ▬
+      पुढचा विचार इथे.                        <- a new block
+
+
+MARKS IN THE IMPACT FIELD
+-------------------------
+  |      separates the words. The LAST word is shown largest.
+
+  "impact_mr": "मुलींपासून|नवी|सुरुवात"
+
+
+RULES — PLEASE FOLLOW
+---------------------
+1. Keep exactly 9 slides. Do not add or remove any.
+2. Every [[ needs a matching ]]. An unclosed one shows as plain text.
+3. Keep the quotation marks " " around every value.
+4. Keep the comma at the end of every line except the last one in a block.
+5. Keep impact to 2 to 4 words. More will crowd on a phone.
+6. Keep chapter short. Long words shrink the middle column.
+7. Slide 1 has tagline, not narrative. That is correct, leave it.
+
+
+IF SOMETHING BREAKS
+-------------------
+If the band goes blank after an edit, the file has a typo.
+GitHub keeps every version: open story.json, click History,
+open the last working version, click the three dots, Revert.
+
+
+THE TIMING
+----------
+3 seconds per slide. To change it, open  data/content.json
+and edit  "story_seconds": 3
+
+
+COLOURS AND LOOK — ALSO IN THE SAME FILE
+========================================
+Every slide carries its own colours. Change a hex code and commit.
+
+  background         the whole slide behind everything
+  left_panel         the darker column holding keyword and symbol
+  chapter_colour     the keyword text in the left column
+  narrative_colour   the ordinary sentences in the middle
+  highlight_colour   the [[key words]], impact words and rules
+  divider_colour     the line between left column and middle
+
+RULE OF THUMB
+  Keep background dark and narrative_colour a pale tint of it,
+  so highlight_colour stands out. If narrative_colour is too
+  bright it fights the highlight and nothing stands out.
+
+keyword_effect   how the mark under the keyword animates:
+  beam   a stroke widening and narrowing
+  rings  dots multiplying downward
+  door   opening outward
+  arrow  travelling across and away
+  triad  one, then two, then three
+  rise   growing outward from the centre
+  spark  expanding from a point
+  join   two ends meeting
+  glow   a steady halo
+
+symbol           the drawing inside the circle:
+  logo    your publication logo (slide 1)
+  rings   concentric rings, for legacy
+  door    an open door, for access
+  arrow   an arrow in a ring, for direction
+  triad   three interlocking circles
+  base    stacked courses, for foundation
+  letter  the letter अ, for beginning
+  arc     an arc joining two points
+  check   a rising check, for belief
+
+right_divider    true  draws a line between middle and impact zone
+                 false separates them by space alone
+
+
+CURRENT COLOURS
+---------------
+  1 ओळख        #0F6E56  deep green
+  2 वारसा       #26215C  indigo
+  3 दारं        #1E1A4A  deeper indigo
+  4 दिशा        #0B3D28  green-black
+  5 तीन विचार    #0F6E56  deep green
+  6 पाया        #1E332B  charcoal green
+  7 सुरुवात      #993C1D  terracotta
+  8 म्हणूनच      #0F6E56  deep green
+  9 विश्वास      #0E5C57  deep teal
+
+  gold used throughout: #FAC775 and #EF9F27

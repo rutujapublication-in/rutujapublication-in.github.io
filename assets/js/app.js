@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v10l',
+  VERSION: 'v10n',
   lang: 'mr',
   text: {},
   locations: null,
@@ -20,14 +20,16 @@ const RUTUJA = {
     this.bindLangToggle();
 
     try {
-      const [t, l, c] = await Promise.all([
+      const [t, l, c, s] = await Promise.all([
         fetch('data/sitetext.json').then(r => r.json()),
         fetch('data/locations.json').then(r => r.json()),
-        fetch('data/content.json').then(r => r.json())
+        fetch('data/content.json').then(r => r.json()),
+        fetch('data/story.json').then(r => r.json()).catch(() => ({ slides: [] }))
       ]);
       this.text = t;
       this.locations = l;
       this.content = c;
+      this.story = (s && s.slides) || [];
     } catch (e) {
       console.error('Data load failed', e);
     }
@@ -2025,17 +2027,17 @@ const STORY = {
 
   /* One symbol per chapter, drawn rather than illustrated, so it stays
      sharp at any size and carries the idea rather than decorating it. */
-  SYM: [
-''  /* slide 1 has its own composition */,
-    '<circle cx="24" cy="24" r="6" class="f"/><circle cx="24" cy="24" r="12" class="o"/><circle cx="24" cy="24" r="18" class="o" opacity=".45"/>',
-    '<rect x="12" y="10" width="24" height="28" rx="2" class="o"/><path d="M24 10v28" class="o"/><path d="M30 38 42 30V14L30 10" class="f2"/>',
-    '<circle cx="24" cy="24" r="17" class="o" opacity=".4"/><path d="M24 8v32M24 8l-6 8M24 8l6 8" class="o"/>',
-    '<circle cx="17" cy="20" r="9" class="o"/><circle cx="31" cy="20" r="9" class="o"/><circle cx="24" cy="31" r="9" class="o"/>',
-    '<rect x="8" y="30" width="32" height="7" rx="1.5" class="f"/><rect x="13" y="21" width="22" height="7" rx="1.5" class="o"/><rect x="18" y="12" width="12" height="7" rx="1.5" class="o" opacity=".5"/>',
-    '<circle cx="24" cy="24" r="17" class="o" opacity=".35"/><text x="24" y="32" class="g">अ</text>',
-    '<path d="M10 32c8 0 8-16 14-16s6 16 14 16" class="o"/><circle cx="10" cy="32" r="4" class="f"/><circle cx="38" cy="32" r="4" class="f"/>',
-    '<path d="M12 26l8 8 16-18" class="o2"/><circle cx="24" cy="24" r="18" class="o" opacity=".35"/>'
-  ],
+  SYM: {
+    logo:   '',
+    rings:  '<circle cx="24" cy="24" r="6" class="f"/><circle cx="24" cy="24" r="12" class="o"/><circle cx="24" cy="24" r="18" class="o" opacity=".45"/>',
+    door:   '<rect x="12" y="10" width="24" height="28" rx="2" class="o"/><path d="M24 10v28" class="o"/><path d="M30 38 42 30V14L30 10" class="f2"/>',
+    arrow:  '<circle cx="24" cy="24" r="17" class="o" opacity=".4"/><path d="M24 8v32M24 8l-6 8M24 8l6 8" class="o"/>',
+    triad:  '<circle cx="17" cy="20" r="9" class="o"/><circle cx="31" cy="20" r="9" class="o"/><circle cx="24" cy="31" r="9" class="o"/>',
+    base:   '<rect x="8" y="30" width="32" height="7" rx="1.5" class="f"/><rect x="13" y="21" width="22" height="7" rx="1.5" class="o"/><rect x="18" y="12" width="12" height="7" rx="1.5" class="o" opacity=".5"/>',
+    letter: '<circle cx="24" cy="24" r="17" class="o" opacity=".35"/><text x="24" y="32" class="g">अ</text>',
+    arc:    '<path d="M10 32c8 0 8-16 14-16s6 16 14 16" class="o"/><circle cx="10" cy="32" r="4" class="f"/><circle cx="38" cy="32" r="4" class="f"/>',
+    check:  '<path d="M12 26l8 8 16-18" class="o2"/><circle cx="24" cy="24" r="18" class="o" opacity=".35"/>'
+  },
 
   /* Each keyword is revealed differently: beam, radiate, strokes,
      sweep, pulse — one visual language, nine expressions. */
@@ -2125,36 +2127,51 @@ const STORY = {
     if (!track) return;
     const t = k => this.app.t(k);
 
-    track.innerHTML = this.SKIN.map((sk, k) => {
-      const n = k + 1;
-      const [bg, deep, kw, nar, imp, rule] = sk;
-      const blocks = t(`st${n}_nar`).split('//').map(b => b.split('|'));
+    const L = this.app.lang === 'mr' ? 'mr' : 'en';
+    const S = i => (this.app.story || []).find(x => Number(x.slide) === i) || {};
+    const F = (i, f) => { const o = S(i); return o[f + '_' + L] || o[f + '_mr'] || ''; };
+
+    const slides = (this.app.story || []);
+    if (!slides.length) return;
+
+    track.innerHTML = slides.map((sl, k) => {
+      const n = Number(sl.slide) || (k + 1);
+      const fb = this.SKIN[k] || this.SKIN[0];
+      const bg   = sl.background       || fb[0];
+      const deep = sl.left_panel       || fb[1];
+      const kw   = sl.chapter_colour   || fb[2];
+      const nar  = sl.narrative_colour || fb[3];
+      const imp  = sl.highlight_colour || fb[4];
+      const rule = sl.divider_colour   || fb[5];
+      const fx   = sl.keyword_effect   || this.KWFX[k] || 'beam';
+      const sym  = this.SYM[sl.symbol] !== undefined ? this.SYM[sl.symbol] : this.SYM.rings;
+      const isLogo = (sl.symbol || '') === 'logo';
+      const blocks = F(n, 'narrative').split('//').map(b => b.split('|'));
       const size = this.narSize(blocks);
-      const words = t(`st${n}_imp`).split('|');
-      const mid = this.MIDRULE[k];
-      if (n === 1) {
+      const words = F(n, 'impact').split('|');
+      const mid = sl.right_divider !== undefined ? !!sl.right_divider : !!this.MIDRULE[k];
+      if (isLogo) {
         return `<article class="st st-hero" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
           <div class="sh-top">
-            <span class="sh-chap fx-${this.KWFX[k]}">${t('st1_chap')}</span>
+            <span class="sh-chap fx-${fx}">${F(n, 'chapter')}</span>
             <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo">
             <span class="sh-rule"></span>
-            <p class="sh-tag">${t('st1_tag')}</p>
-            <p class="sh-tag-en">${t('st1_tag_en')}</p>
+            <p class="sh-tag">${F(n, 'tagline')}</p>
           </div>
           <div class="st-r sh-r">
-            ${t('st1_imp').split('|').map((w, wi, arr) =>
+            ${F(n, 'impact').split('|').map((w, wi, arr) =>
               `<span class="st-imp ${this.impSize(arr)}${wi === arr.length - 1 ? ' key' : ''}">${w}</span>`).join('')}
           </div>
-          <span class="st-pg"><i style="width:11%"></i></span>
+          <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
         </article>`;
       }
 
       return `<article class="st" style="--bg:${bg};--deep:${deep};--kw:${kw};--nar:${nar};--imp:${imp};--rule:${rule}">
 
         <div class="st-l">
-          <span class="st-kw fx-${this.KWFX[k]}">${t(`st${n}_chap`)}</span>
+          <span class="st-kw fx-${fx}">${F(n, 'chapter')}</span>
           <span class="st-orb">
-            <svg viewBox="0 0 48 48" aria-hidden="true">${this.SYM[k]}</svg>
+            <svg viewBox="0 0 48 48" aria-hidden="true">${sym}</svg>
           </span>
         </div>
 
@@ -2181,12 +2198,12 @@ const STORY = {
           ${words.map((w, wi) => `<span class="st-imp ${this.impSize(words)}${wi === words.length - 1 ? ' key' : ''}">${w}</span>`).join('')}
         </div>
 
-        <span class="st-pg"><i style="width:${Math.round((n / 9) * 100)}%"></i></span>
+        <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
       </article>`;
     }).join('');
 
     document.getElementById('storyDots').innerHTML =
-      this.SKIN.map((_, k) => `<button class="st-dot${k === this.i ? ' on' : ''}" data-s="${k}"></button>`).join('');
+      slides.map((_, k) => `<button class="st-dot${k === this.i ? ' on' : ''}" data-s="${k}"></button>`).join('');
     document.querySelectorAll('.st-dot').forEach(d =>
       d.addEventListener('click', () => { this.go(+d.dataset.s); this.start(); }));
 
@@ -2195,7 +2212,8 @@ const STORY = {
   },
 
   go(n) {
-    this.i = (n + 9) % 9;
+    const total = (this.app.story || []).length || 1;
+    this.i = (n + total) % total;
     const tr = document.getElementById('storyTrack');
     if (tr) { tr.style.transition = ''; tr.style.transform = `translateX(-${this.i * 100}%)`; }
     document.querySelectorAll('.st-dot').forEach((d, k) =>
