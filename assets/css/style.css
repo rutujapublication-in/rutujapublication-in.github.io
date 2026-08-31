@@ -137,11 +137,11 @@ a{color:inherit;text-decoration:none}
 .page.active{display:block;animation:fade .25s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-.hero{background:transparent;border-bottom:1px solid var(--line);margin-bottom:14px}
-.hero-inner{padding:6px 20px 22px;text-align:center}
+.hero{background:transparent;border-bottom:0;margin-bottom:10px}
+.hero-inner{padding:8px 18px 14px;text-align:left}
 .hero-title{font-size:36px;color:var(--green-dark);max-width:740px;margin:0 auto 12px}
 .hero-sub{font-size:17px;color:var(--ink-soft);max-width:620px;margin:0 auto 26px}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
 
 .btn{
   min-height:48px;padding:0 26px;border-radius:10px;font-size:16px;font-weight:500;
@@ -1718,8 +1718,8 @@ html[lang="en"] body{line-height:1.65}
   
   .hero-title{font-size:26px}
   .hero-sub{font-size:14.5px}
-  .hero-btns{flex-direction:column;gap:10px}
-  .hero-btns .btn{width:100%}
+  
+
 .std-card{min-height:122px}
   .std-left{min-width:80px;padding:14px 11px}
   .std-num{font-size:38px}
@@ -1789,7 +1789,7 @@ html[lang="en"] body{line-height:1.65}
   position:relative;overflow:hidden;background:transparent;
   width:100%;max-width:100%;display:block;line-height:0;
   border-bottom:2px solid var(--gold);
-  margin-bottom:14px;
+  margin-bottom:0;
   box-shadow:0 5px 16px rgba(18,56,33,.16);
 }
 .story-track{line-height:normal}
@@ -1844,9 +1844,12 @@ html[lang="en"] body{line-height:1.65}
 .st-pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.32);z-index:2}
 .st-pg i{display:block;height:100%;background:var(--imp);transition:width .6s ease}
 
-.story-dots{position:absolute;left:0;right:0;bottom:9px;z-index:3;display:flex;gap:6px;justify-content:center}
-.st-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.32);transition:.22s;padding:0}
-.st-dot.on{background:#FAC775;width:18px;border-radius:3px}
+.story-dots{
+  display:flex;gap:5px;justify-content:center;align-items:center;
+  height:14px;margin:5px 0 4px;
+}
+.st-dot{width:5px;height:5px;border-radius:50%;background:rgba(26,77,46,.28);transition:.22s;padding:0}
+.st-dot.on{background:var(--gold-dark);width:16px;border-radius:2.5px}
 
 /* ---------- 560px and up: true three columns, as specified ---------- */
 @media(min-width:560px){
@@ -2368,3 +2371,82 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 }
 .st:not(.st-hero) .sh-underline{align-self:center;margin-top:6px;margin-bottom:1px;
   position:relative;z-index:0}
+
+/* ===================================================================
+   THE TWO ACTIONS — side by side, each saying what it does
+   =================================================================== */
+.hero-btns{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  align-items:stretch;margin:0;
+}
+.cta{
+  position:relative;overflow:hidden;isolation:isolate;
+  display:flex;align-items:center;gap:9px;
+  padding:11px 11px 11px 12px;border-radius:14px;text-align:left;
+  border:1px solid transparent;cursor:pointer;
+  transition:transform .18s cubic-bezier(.34,1.4,.64,1), box-shadow .2s;
+}
+.cta-txt{display:flex;flex-direction:column;min-width:0;flex:1}
+.cta-txt b{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:15px;line-height:1.2;letter-spacing:.1px;
+}
+.cta-txt i{
+  font-style:normal;font-family:Mukta,system-ui,sans-serif;
+  font-size:11px;line-height:1.35;margin-top:2px;opacity:.9;
+}
+.cta-ico{font-size:15px;line-height:1;flex-shrink:0;opacity:.9}
+.cta-go{font-size:20px;line-height:1;flex-shrink:0;opacity:.7;
+  transition:transform .2s}
+.cta:active{transform:scale(.975)}
+@media(hover:hover){
+  .cta:hover{transform:translateY(-2px)}
+  .cta:hover .cta-go{transform:translateX(3px)}
+}
+
+/* books — deep green through to a lighter leaf */
+.cta-books{
+  color:#EAF4EE;
+  background:
+    radial-gradient(120% 100% at 6% 0%, rgba(255,255,255,.16), transparent 55%),
+    linear-gradient(135deg,#1E6B45 0%,#1A4D2E 52%,#12381F 100%);
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 3px 12px rgba(18,56,33,.30);
+}
+.cta-books .cta-txt i{color:#A9D8BE}
+
+/* order — gold through to amber, the warmer of the two */
+.cta-order{
+  color:#3A2405;
+  background:
+    radial-gradient(120% 100% at 6% 0%, rgba(255,255,255,.34), transparent 55%),
+    linear-gradient(135deg,#F8CE7C 0%,#EFA83F 48%,#D98A20 100%);
+  border-color:rgba(0,0,0,.06);
+  box-shadow:0 3px 12px rgba(184,122,30,.36);
+}
+.cta-order .cta-txt i{color:#6B4708}
+
+/* a light passes over the gold one, the way it does on the ribbon */
+.cta-order::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(100deg,transparent 34%,rgba(255,255,255,.5) 50%,transparent 66%);
+  background-size:280% 100%;animation:sheen 4.6s ease-in-out infinite;
+}
+.cta > *{position:relative;z-index:2}
+@media(prefers-reduced-motion:reduce){.cta-order::after{animation:none}}
+
+@media(max-width:399px){
+  .cta{padding:10px 9px;gap:7px}
+  .cta-txt b{font-size:13.5px}
+  .cta-txt i{font-size:10px}
+  .cta-ico{font-size:13px}
+  .cta-go{font-size:17px}
+}
+@media(min-width:560px){
+  .hero-btns{gap:14px;max-width:640px;margin:0 auto}
+  .cta{padding:14px 15px;gap:12px;border-radius:16px}
+  .cta-txt b{font-size:18px}
+  .cta-txt i{font-size:13px;margin-top:3px}
+  .cta-ico{font-size:18px}
+  .cta-go{font-size:24px}
+}

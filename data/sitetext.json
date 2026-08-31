@@ -277,7 +277,9 @@
   "ph_district": "जिल्ह्याचे नाव लिहा",
   "ph_taluka": "तालुक्याचे नाव लिहा",
   "ph_village": "गाव किंवा शहराचे नाव",
-  "ph_pin": "६ अंकी पिन कोड"
+  "ph_pin": "६ अंकी पिन कोड",
+  "btn_books_sub": "५ पुस्तके · इयत्ता १ ली ते ५ वी",
+  "btn_order_sub": "दर विचारा किंवा मागणी नोंदवा"
  },
  "en": {
   "nav_home": "Home",
@@ -557,6 +559,8 @@
   "ph_district": "Type the district name",
   "ph_taluka": "Type the taluka name",
   "ph_village": "Village or city name",
-  "ph_pin": "6 digit PIN code"
+  "ph_pin": "6 digit PIN code",
+  "btn_books_sub": "5 books · Std 1 to 5",
+  "btn_order_sub": "Ask a rate or place an order"
  }
 }

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=11i">
+<link rel="stylesheet" href="assets/css/style.css?v=11k">
 </head>
 <body>
 
@@ -35,7 +35,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v11i</p>
+        <p class="w-ver">v11k</p>
       </div>
 
       <aside class="w-side w-right">
@@ -238,13 +238,27 @@
     <section class="page active" id="page-home">
       <div class="story" id="story">
         <div class="story-track" id="storyTrack"></div>
-        <div class="story-dots" id="storyDots"></div>
       </div>
+      <div class="story-dots" id="storyDots"></div>
 
       <div class="hero"><div class="wrap hero-inner">
         <div class="hero-btns">
-          <button class="btn btn-primary" data-nav="books" data-t="nav_books"></button>
-          <button class="btn btn-gold" id="heroOrder" data-t="order_btn"></button>
+          <button class="cta cta-books" data-nav="books">
+            <span class="cta-ico" aria-hidden="true">&#9776;</span>
+            <span class="cta-txt">
+              <b data-t="nav_books"></b>
+              <i data-t="btn_books_sub"></i>
+            </span>
+            <span class="cta-go" aria-hidden="true">&rsaquo;</span>
+          </button>
+          <button class="cta cta-order" id="heroOrder">
+            <span class="cta-ico" aria-hidden="true">&#10148;</span>
+            <span class="cta-txt">
+              <b data-t="order_btn"></b>
+              <i data-t="btn_order_sub"></i>
+            </span>
+            <span class="cta-go" aria-hidden="true">&rsaquo;</span>
+          </button>
         </div>
       </div></div>
 
@@ -340,6 +354,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=11i"></script>
+<script src="assets/js/app.js?v=11k"></script>
 </body>
 </html>
