@@ -280,7 +280,7 @@
   "ph_pin": "६ अंकी पिन कोड",
   "btn_books_sub": "दर व विशेष सवलती",
   "btn_order_sub": "थेट व्हॉट्सॲपवर बोला",
-  "btn_videos": "पुस्तक\nव्हिडिओ",
+  "btn_videos": "व्हिडिओ\nबघा",
   "videos_book_only": "पुस्तकांचे व्हिडिओ"
  },
  "en": {
@@ -564,7 +564,7 @@
   "ph_pin": "6 digit PIN code",
   "btn_books_sub": "Rates with Its Offers",
   "btn_order_sub": "Talk to us on WhatsApp",
-  "btn_videos": "Book\nVideos",
+  "btn_videos": "Watch\nVideos",
   "videos_book_only": "Book Videos"
  }
 }

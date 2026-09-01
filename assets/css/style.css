@@ -2441,6 +2441,7 @@ html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3, html[lang="en"] h4,
 html[lang="en"] p,  html[lang="en"] li,  html[lang="en"] blockquote,
 html[lang="en"] .sec-title, html[lang="en"] .sec-sub,
 html[lang="en"] .st-nar, html[lang="en"] .sh-quote,
+html[lang="en"] .cta-txt b, html[lang="en"] .cta-txt i, html[lang="en"] .cv-txt,
 html[lang="en"] .sh-box em, html[lang="en"] .st-kw, html[lang="en"] .sh-chap,
 html[lang="en"] .sh-step, html[lang="en"] .st-imp, html[lang="en"] .st-chain,
 html[lang="en"] .book-name, html[lang="en"] .book-sub, html[lang="en"] .book-meta,
@@ -2453,8 +2454,7 @@ html[lang="en"] .w-side-p, html[lang="en"] .w-quote, html[lang="en"] .std-mid li
 }
 
 /* --- things you PRESS or scan quickly --- */
-html[lang="en"] button, html[lang="en"] .btn, html[lang="en"] .cta,
-html[lang="en"] .cta-txt b, html[lang="en"] .cta-txt i,
+html[lang="en"] button, html[lang="en"] .btn,
 html[lang="en"] .act, html[lang="en"] .nav a, html[lang="en"] .icon-btn,
 html[lang="en"] input, html[lang="en"] select, html[lang="en"] textarea,
 html[lang="en"] label, html[lang="en"] .f label,
@@ -2695,13 +2695,13 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
 /* main label — bold, bright, its own colour */
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:14.5px;line-height:1.16;letter-spacing:.1px;white-space:pre-line;
+  font-size:16.5px;line-height:1.14;letter-spacing:.1px;white-space:pre-line;
   margin:0;
 }
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:10px;line-height:1.2;margin:4px 0 0;
+  font-size:10.5px;line-height:1.2;margin:5px 0 0 19px;
   padding:3px 7px;border-radius:6px;align-self:flex-start;
   border:1px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
 }
@@ -2714,9 +2714,11 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
 }
 .cta-ico svg{width:14px;height:14px}
 @keyframes icoFlash{
-  0%,100%{transform:translateX(0)   scale(1);   opacity:.7;  filter:none}
-  50%    {transform:translateX(3px) scale(1.18);opacity:1;
-          filter:drop-shadow(0 0 6px currentColor)}
+  0%,  100%{transform:translateX(0)   scale(.92); opacity:.65; filter:none}
+  35%      {transform:translateX(2px) scale(1.22); opacity:1;
+            filter:drop-shadow(0 0 7px currentColor)}
+  65%      {transform:translateX(4px) scale(1.05); opacity:.9;
+            filter:drop-shadow(0 0 4px currentColor)}
 }
 
 /* ---- green key ---- */
@@ -2823,4 +2825,18 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   .cv-orb svg{width:29px;height:29px}
   .cv-txt{font-size:15px}
   html[lang="en"] .cv-txt{font-size:14px}
+}
+
+/* English buttons use the slide face, which sits a shade smaller */
+html[lang="en"] .cta-txt b{font-size:15.5px;font-weight:700;line-height:1.16}
+html[lang="en"] .cta-txt i{font-size:10.5px;font-weight:600}
+html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
+@media(max-width:389px){
+  html[lang="en"] .cta-txt b{font-size:13.5px}
+  html[lang="en"] .cv-txt{font-size:10.5px}
+}
+@media(min-width:560px){
+  html[lang="en"] .cta-txt b{font-size:19px}
+  html[lang="en"] .cta-txt i{font-size:13px}
+  html[lang="en"] .cv-txt{font-size:15px}
 }
