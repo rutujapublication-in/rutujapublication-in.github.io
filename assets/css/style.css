@@ -2492,7 +2492,6 @@ html[lang="en"] .book-name{font-size:17px}
   linear-gradient(100deg,transparent 32%,rgba(255,255,255,.62) 50%,transparent 68%)}
 
 /* ---- text ---- */
-.cta-txt{display:flex;flex-direction:column;min-width:0;flex:1}
 
 
 
@@ -2602,38 +2601,17 @@ input, textarea{-webkit-touch-callout:default}
    The outer two keep their height; the middle one is narrower and
    carries a different colour so it reads as its own thing.
    =================================================================== */
-.hero-btns{
-  display:grid;grid-template-columns:1fr 82px 1fr;gap:8px;
-  align-items:stretch;margin:0;
-}
 
 /* ---- the symbol before each label ---- */
-.cta-ico{
-  flex-shrink:0;width:19px;height:19px;display:flex;align-items:center;justify-content:center;
-  animation:icoPulse 2.6s ease-in-out infinite;
-}
-.cta-ico svg{width:19px;height:19px}
 .cta-books .cta-ico svg path{fill:#8FE3B4}
 .cta-order .cta-ico svg path{fill:#5C3B04;stroke:none}
 .cta-order .cta-ico svg path:last-child{fill:none;stroke:#5C3B04;stroke-width:1.6}
-@keyframes icoPulse{
-  0%,100%{transform:scale(1)   translateY(0);   opacity:.85}
-  50%    {transform:scale(1.16) translateY(-1px);opacity:1}
-}
 
 /* ---- main label and secondary label read differently ---- */
-.cta-txt b{white-space:pre-line;font-size:14.5px;line-height:1.2}
-.cta-txt i{
-  font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:10.5px;line-height:1.28;margin-top:4px;
-  padding:3px 7px;border-radius:6px;align-self:flex-start;
-  border:1px solid;backdrop-filter:blur(2px);
-}
 .cta-books .cta-txt i{color:#CFF0DD;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.24)}
 .cta-order .cta-txt i{color:#4A2F03;background:rgba(255,255,255,.5);border-color:rgba(120,72,6,.24)}
 
 /* ---- a silver light turning round the rim of each key ---- */
-.cta{position:relative;overflow:hidden;padding:11px 9px 11px 10px}
 .cta-rim{position:absolute;inset:0;border-radius:15px;pointer-events:none;z-index:2}
 .cta::before{
   content:"";position:absolute;left:12px;right:12px;top:0;height:1px;z-index:4;
@@ -2642,42 +2620,10 @@ input, textarea{-webkit-touch-callout:default}
 .cta > *{position:relative;z-index:3}
 
 /* ---- the middle button: its own colour, its own shape ---- */
-.cta-video{
-  flex-direction:column;justify-content:center;gap:7px;padding:9px 4px;
-  color:#F2E9FF;
-  background:
-    radial-gradient(120% 100% at 50% -14%, rgba(255,255,255,.26), transparent 56%),
-    linear-gradient(160deg,#6B3FA0 0%,#4E2C7A 46%,#331B52 100%);
-  border-color:rgba(255,255,255,.2);
-  box-shadow:0 4px 0 rgba(38,18,62,.8), 0 8px 20px rgba(78,44,122,.42);
-}
 .cta-video:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(38,18,62,.8),0 3px 8px rgba(78,44,122,.34)}
 
 /* the play mark, framed the way the logo is */
-.cv-orb{
-  position:relative;width:40px;height:40px;flex-shrink:0;border-radius:13px;
-  display:flex;align-items:center;justify-content:center;
-  background:#fff;
-  box-shadow:0 0 0 1.5px rgba(255,214,120,.85), 0 0 16px rgba(196,142,255,.55);
-  animation:orbBreathe 3.2s ease-in-out infinite;
-}
-.cv-orb::before{
-  content:"";position:absolute;inset:-7px;border-radius:18px;z-index:-1;
-  background:conic-gradient(from 0deg,rgba(255,214,120,.9) 0deg,transparent 44deg,
-    rgba(214,178,255,.9) 96deg,transparent 150deg,rgba(255,214,120,.9) 360deg);
-  animation:shSpin 3.6s linear infinite;
-}
-.cv-orb svg{width:22px;height:22px}
 .cv-orb svg path{fill:#5E2FA5}
-@keyframes orbBreathe{
-  0%,100%{transform:scale(1);   box-shadow:0 0 0 1.5px rgba(255,214,120,.85), 0 0 14px rgba(196,142,255,.45)}
-  50%    {transform:scale(1.09);box-shadow:0 0 0 1.5px rgba(255,255,255,.95), 0 0 26px rgba(214,178,255,.85)}
-}
-.cv-txt{
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
-  font-size:11.5px;line-height:1.2;text-align:center;color:#EBDBFF;
-  letter-spacing:.2px;
-}
 html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
 
 @media(prefers-reduced-motion:reduce){
@@ -2728,3 +2674,153 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
   animation-duration:3.8s;
 }
 @media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
+
+/* ===================================================================
+   THREE ACTIONS — compact keys, one visual language
+   =================================================================== */
+.hero-btns{
+  display:grid;grid-template-columns:1fr 78px 1fr;gap:8px;
+  align-items:stretch;margin:0;
+}
+.cta{
+  position:relative;overflow:hidden;isolation:isolate;
+  display:flex;align-items:center;gap:0;
+  padding:9px 9px 9px 10px;border-radius:14px;text-align:left;cursor:pointer;
+  border:1px solid transparent;
+  transition:transform .14s ease, box-shadow .14s ease;
+  animation:ctaBreathe 3.8s ease-in-out infinite;
+}
+.cta-txt{display:flex;flex-direction:column;min-width:0;flex:1;gap:0}
+
+/* main label — bold, bright, its own colour */
+.cta-txt b{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:14.5px;line-height:1.16;letter-spacing:.1px;white-space:pre-line;
+  margin:0;
+}
+/* secondary — one line, on its own plate, a quieter colour */
+.cta-txt i{
+  font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:10px;line-height:1.2;margin:4px 0 0;
+  padding:3px 7px;border-radius:6px;align-self:flex-start;
+  border:1px solid;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;
+}
+
+/* the arrow points at the first word and flashes */
+.cta-ico{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:14px;height:14px;margin-right:5px;vertical-align:-1px;
+  animation:icoFlash 2.2s ease-in-out infinite;
+}
+.cta-ico svg{width:14px;height:14px}
+@keyframes icoFlash{
+  0%,100%{transform:translateX(0)   scale(1);   opacity:.7;  filter:none}
+  50%    {transform:translateX(3px) scale(1.18);opacity:1;
+          filter:drop-shadow(0 0 6px currentColor)}
+}
+
+/* ---- green key ---- */
+.cta-books{
+  color:#FFFFFF;
+  background:
+    radial-gradient(130% 110% at 4% -10%, rgba(255,255,255,.22), transparent 52%),
+    linear-gradient(140deg,#2A8A5A 0%,#1E6B45 34%,#164C31 68%,#0E3520 100%);
+  border-color:rgba(255,255,255,.16);
+  box-shadow:0 4px 0 rgba(8,36,21,.7), 0 8px 18px rgba(18,56,33,.34);
+}
+.cta-books .cta-ico{color:#7FE8AE}
+.cta-books .cta-ico svg path{fill:currentColor}
+.cta-books .cta-txt b{color:#FFFFFF;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.cta-books .cta-txt i{color:#B7E9CE;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.26)}
+.cta-books:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(8,36,21,.7),0 3px 8px rgba(18,56,33,.3)}
+
+/* ---- gold key ---- */
+.cta-order{
+  color:#3A2405;
+  background:
+    radial-gradient(130% 110% at 4% -10%, rgba(255,255,255,.48), transparent 52%),
+    linear-gradient(140deg,#FFDF9E 0%,#F6C267 30%,#EFA83F 62%,#D2841B 100%);
+  border-color:rgba(120,72,6,.18);
+  box-shadow:0 4px 0 rgba(146,90,10,.75), 0 8px 20px rgba(196,130,26,.42);
+}
+.cta-order .cta-ico{color:#7A4A05}
+.cta-order .cta-ico svg path{fill:currentColor}
+.cta-order .cta-txt b{color:#2E1B02}
+.cta-order .cta-txt i{color:#4A2F03;background:rgba(255,255,255,.52);border-color:rgba(120,72,6,.26)}
+.cta-order:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(146,90,10,.75),0 3px 8px rgba(196,130,26,.34)}
+
+/* ---- the middle key ---- */
+.cta-video{
+  flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  padding:8px 4px;color:#F2E9FF;
+  background:
+    radial-gradient(120% 100% at 50% -14%, rgba(255,255,255,.24), transparent 56%),
+    linear-gradient(160deg,#7245AC 0%,#4E2C7A 46%,#2E1849 100%);
+  border-color:rgba(255,255,255,.2);
+  box-shadow:0 4px 0 rgba(34,16,56,.82), 0 8px 20px rgba(78,44,122,.42);
+}
+.cta-video:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(34,16,56,.82),0 3px 8px rgba(78,44,122,.34)}
+
+.cv-orb{
+  position:relative;width:34px;height:34px;flex-shrink:0;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,#FFF7E4 0%,#F3D9A0 44%,#C9A860 100%);
+  box-shadow:0 2px 5px rgba(20,8,40,.5), inset 0 1px 0 rgba(255,255,255,.9);
+  animation:orbPulse 2.6s ease-in-out infinite;
+}
+.cv-orb::before{
+  content:"";position:absolute;inset:-4px;border-radius:15px;z-index:-1;
+  background:conic-gradient(from 0deg,rgba(255,214,120,.95) 0deg,transparent 48deg,
+    rgba(214,178,255,.95) 104deg,transparent 158deg,rgba(255,214,120,.95) 360deg);
+  animation:shSpin 3.4s linear infinite;
+}
+.cv-orb svg{width:19px;height:19px;position:relative;z-index:1}
+.cv-orb svg path{fill:#3D1F6E}
+@keyframes orbPulse{
+  0%,100%{transform:scale(1);   filter:drop-shadow(0 0 0 rgba(255,214,120,0))}
+  50%    {transform:scale(1.11);filter:drop-shadow(0 0 10px rgba(255,214,120,.85))}
+}
+.cv-txt{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:11px;line-height:1.18;text-align:center;color:#F3E7FF;
+  white-space:pre-line;letter-spacing:.2px;
+  text-shadow:0 0 10px rgba(196,142,255,.55);
+  animation:txtGlow 3.2s ease-in-out infinite;
+}
+@keyframes txtGlow{
+  0%,100%{opacity:.86;text-shadow:0 0 8px rgba(196,142,255,.4)}
+  50%    {opacity:1;  text-shadow:0 0 14px rgba(226,196,255,.9)}
+}
+html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
+
+@keyframes ctaBreathe{
+  0%,100%{transform:translateY(0)     scale(1)}
+  50%    {transform:translateY(-1.5px) scale(1.012)}
+}
+@media(hover:hover){
+  .cta:hover{transform:translateY(-3px);animation-play-state:paused}
+}
+@media(prefers-reduced-motion:reduce){
+  .cta,.cta::after,.cta-ico,.cv-orb,.cv-orb::before,.cv-txt,.cta-rim{animation:none}
+}
+@media(max-width:389px){
+  .hero-btns{grid-template-columns:1fr 68px 1fr;gap:6px}
+  .cta{padding:8px 6px}
+  .cta-txt b{font-size:13px}
+  .cta-txt i{font-size:9px;padding:2px 5px}
+  .cv-orb{width:30px;height:30px}
+  .cv-orb svg{width:17px;height:17px}
+  .cv-txt{font-size:10px}
+}
+@media(min-width:560px){
+  .hero-btns{grid-template-columns:1fr 120px 1fr;gap:14px;max-width:720px;margin:0 auto}
+  .cta{padding:14px 13px;gap:12px;border-radius:16px}
+  .cta-txt b{font-size:18px}
+  .cta-txt i{font-size:12.5px;padding:3px 9px;margin-top:6px}
+  .cta-ico,.cta-ico svg{width:19px;height:19px}
+  .cta-ico{margin-right:7px}
+  .cv-orb{width:52px;height:52px;border-radius:16px}
+  .cv-orb svg{width:29px;height:29px}
+  .cv-txt{font-size:15px}
+  html[lang="en"] .cv-txt{font-size:14px}
+}
