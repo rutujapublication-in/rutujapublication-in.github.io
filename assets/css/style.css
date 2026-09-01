@@ -2230,7 +2230,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 .st-m{
   --fs-max:14.5px;
   flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
-  gap:0;padding:2px 15px 12px;min-width:0;min-height:0;overflow:hidden;
+  gap:0;padding:4px 15px 12px;min-width:0;min-height:0;overflow:hidden;
 }
 /* the narrative sits close under the rule rather than floating below it */
 .st .st-m{padding-top:0;margin-top:-2px}
@@ -2440,6 +2440,8 @@ html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3, html[lang="en"] h4,
 html[lang="en"] p,  html[lang="en"] li,  html[lang="en"] blockquote,
 html[lang="en"] .sec-title, html[lang="en"] .sec-sub,
 html[lang="en"] .st-nar, html[lang="en"] .sh-quote,
+html[lang="en"] .sh-box em, html[lang="en"] .st-kw, html[lang="en"] .sh-chap,
+html[lang="en"] .sh-step, html[lang="en"] .st-imp, html[lang="en"] .st-chain,
 html[lang="en"] .book-name, html[lang="en"] .book-sub, html[lang="en"] .book-meta,
 html[lang="en"] .bd-title, html[lang="en"] .bd-subtitle, html[lang="en"] .bd-desc,
 html[lang="en"] .vcard-title, html[lang="en"] .vcard-cap,
@@ -2455,16 +2457,14 @@ html[lang="en"] .cta-txt b, html[lang="en"] .cta-txt i,
 html[lang="en"] .act, html[lang="en"] .nav a, html[lang="en"] .icon-btn,
 html[lang="en"] input, html[lang="en"] select, html[lang="en"] textarea,
 html[lang="en"] label, html[lang="en"] .f label,
-html[lang="en"] .sh-step, html[lang="en"] .st-imp,
-html[lang="en"] .sh-box em, html[lang="en"] .st-kw, html[lang="en"] .sh-chap,
 html[lang="en"] .chip, html[lang="en"] .brand-name, html[lang="en"] .brand-tag,
-html[lang="en"] .strip-track, html[lang="en"] .st-chain,
+html[lang="en"] .strip-track,
 html[lang="en"] .book-price, html[lang="en"] .rung, html[lang="en"] .calc-line{
   font-family:Mukta, system-ui, sans-serif;
 }
 
 /* Lora sits a shade smaller than Mukta, so reading text gains a little */
-html[lang="en"] .st-nar{font-size:calc(var(--fs-max) * 1.06)}
+
 html[lang="en"] .sh-quote{font-size:16px}
 html[lang="en"] .bd-desc{font-size:16px;line-height:1.75}
 html[lang="en"] .book-name{font-size:17px}

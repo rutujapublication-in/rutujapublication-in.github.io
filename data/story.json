@@ -53,7 +53,13 @@
     "               medium 3, 5, 9: 5.0",
     "               long 2, 4, 6, 7: 5.5",
     "               full cycle 45 seconds. Leave it out and the slide",
-    "               uses story_seconds from data/content.json."
+    "               uses story_seconds from data/content.json.",
+    "",
+    "box_size       size in px for the single bottom box on THIS slide.",
+    "               Leave it out and the box sizes itself.",
+    "text_size_en   a size just for the English version of this slide,",
+    "text_size_mr   or just for the Marathi. Useful when one language",
+    "               runs much longer than the other."
   ],
   "slides": [
     {
@@ -93,17 +99,17 @@
       "symbol": "rings",
       "right_divider": false,
       "box_one_line": true,
-      "text_size": 13.2,
+      "text_size": 12.6,
       "seconds": 5.5
     },
     {
       "slide": 3,
       "chapter_mr": "दारं",
       "chapter_en": "Doorway",
-      "narrative_mr": "[[राजर्षी शाहू महाराजांनी]] त्या शिक्षणाची|दारं [[सर्वांसाठी]] खुली केली.//[[डॉ. बाबासाहेब आंबेडकरांनी]] शिक्षण,|समता आणि न्यायाच्या विचारांना आधार दिला.",
-      "narrative_en": "[[Rajarshi Shahu Maharaj]] Opened|Those Doors [[To Everyone]].//[[Dr. Babasaheb Ambedkar]] Gave Education,|Equality & Justice A Foundation.",
-      "impact_mr": "भारतीय संविधानाचा आधार...",
-      "impact_en": "The Constitution's Foundation...",
+      "narrative_mr": "[[राजर्षी शाहू महाराजांनी]] आपल्या [[शैक्षणिक धोरणातून]]|शिक्षणाची दारं [[सर्वांसाठी]] खुली केली—|आणि [[बदलत्या समाजाची पायाभरणी केली]].//[[डॉ. बाबासाहेब आंबेडकरांनी]] त्या बदलाला|[[शिक्षण, समता आणि न्यायाच्या विचारांचा]] आधार दिला.",
+      "narrative_en": "[[Rajarshi Shahu Maharaj]], Through His [[Educational Policies]],|Opened The Doors Of Education [[To All]]—|And [[Laid The Foundation For A Changing Society]].//[[Dr. Babasaheb Ambedkar]] Gave That Transformation|The Direction Of [[Education, Equality And Justice]].",
+      "impact_mr": "भारतीय संविधानाने या तत्त्वांना कायद्याचं बळ दिलं...",
+      "impact_en": "India's Constitution Gave These Principles The Force Of Law...",
       "background": "#2E4051",
       "left_panel": "#212E3A",
       "chapter_colour": "#F7C86B",
@@ -113,7 +119,10 @@
       "keyword_effect": "door",
       "symbol": "door",
       "right_divider": true,
-      "seconds": 5.0
+      "seconds": 5.0,
+      "box_one_line": false,
+      "box_size": 16,
+      "text_size": 12.0
     },
     {
       "slide": 4,
@@ -133,7 +142,9 @@
       "symbol": "arrow",
       "right_divider": false,
       "box_one_line": true,
-      "seconds": 5.5
+      "seconds": 5.5,
+      "box_size": 25,
+      "text_size": 13.5
     },
     {
       "slide": 5,
@@ -172,7 +183,8 @@
       "keyword_effect": "rise",
       "symbol": "base",
       "right_divider": false,
-      "seconds": 5.5
+      "seconds": 5.5,
+      "text_size_en": 12.8
     },
     {
       "slide": 7,

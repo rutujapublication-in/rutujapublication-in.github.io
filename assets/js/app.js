@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11t',
+  VERSION: 'v11v',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2126,8 +2126,9 @@ const STORY = {
   /* A one-box phrase is sized so it stays on a single line.
      Worked out from its length, once, at render time. */
   /* force is true, false, or undefined for the automatic rule */
-  oneLine(text, force) {
+  oneLine(text, force, fixed) {
     if (force === false) return null;
+    if (fixed) return Number(fixed);
     const n = text.trim().length;
     if (!n) return null;
     const dev = /[\u0900-\u097F]/.test(text);
@@ -2184,8 +2185,11 @@ const STORY = {
           <div class="sh-steps${F(n,'impact').split('|').length === 1 ? ' one' : ''}${sl.big_boxes ? ' big' : ''}">
             ${F(n, 'impact').split('|').map((w, wi, arr) =>
               `<span class="sh-step" style="--d:${wi * 0.6}s${
-                arr.length === 1 && this.oneLine(w, sl.box_one_line)
-                  ? `;--one:${this.oneLine(w, sl.box_one_line)}px;white-space:nowrap` : ''}">${w.trim()}</span>`).join('')}
+                arr.length === 1
+                  ? (this.oneLine(w, sl.box_one_line, sl.box_size)
+                      ? `;--one:${this.oneLine(w, sl.box_one_line, sl.box_size)}px;white-space:nowrap`
+                      : (sl.box_size ? `;--one:${sl.box_size}px` : ''))
+                  : ''}">${w.trim()}</span>`).join('')}
           </div>
 
           <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
@@ -2200,7 +2204,10 @@ const STORY = {
         </div>
         <span class="sh-underline"></span>
 
-        <div class="st-m"${sl.text_size ? ` style="--fs-max:${sl.text_size}px"` : ''}>
+        <div class="st-m"${(() => {
+          const px = sl['text_size_' + L] || sl.text_size;
+          return px ? ` style="--fs-max:${px}px"` : '';
+        })()}>
           ${blocks.map((blk, bi) => {
             const lastBlock = bi === blocks.length - 1;
             const rows = blk.map((l, li) => {
@@ -2219,8 +2226,11 @@ const STORY = {
         <div class="sh-steps${mid ? ' ruled' : ''}${words.length === 1 ? ' one' : ''}${sl.big_boxes ? ' big' : ''}">
           ${words.map((w, wi) =>
             `<span class="sh-step" style="--d:${wi * 0.6}s${
-              words.length === 1 && this.oneLine(w, sl.box_one_line)
-                ? `;--one:${this.oneLine(w, sl.box_one_line)}px;white-space:nowrap` : ''}">${w.trim()}</span>`).join('')}
+              words.length === 1
+                ? (this.oneLine(w, sl.box_one_line, sl.box_size)
+                    ? `;--one:${this.oneLine(w, sl.box_one_line, sl.box_size)}px;white-space:nowrap`
+                    : (sl.box_size ? `;--one:${sl.box_size}px` : ''))
+                : ''}">${w.trim()}</span>`).join('')}
         </div>
 
         <span class="st-pg"><i style="width:${Math.round(((k + 1) / slides.length) * 100)}%"></i></span>
