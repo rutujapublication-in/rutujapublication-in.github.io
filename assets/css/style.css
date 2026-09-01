@@ -517,7 +517,6 @@ a{color:inherit;text-decoration:none}
 
 /* Videos on a book page */
 .bd-videos{margin-top:24px}
-.bd-videos 
 
 /* Mobile dropdown hangs from the sticky bar itself */
 @media(max-width:1180px){
@@ -615,8 +614,6 @@ a{color:inherit;text-decoration:none}
 .car-media.playing .car-full{display:none}
 
 /* Video grid thumbnails, larger */
-
-.bd-videos 
 
 /* Book covers render at full quality, never stretched */
 .book-cover img,
@@ -871,7 +868,6 @@ a{color:inherit;text-decoration:none}
 /* very narrow phones: one book per row so nothing is cramped */
 
 /* the featured row is a shelf only on narrow screens */
-.book-grid.shelf{}
 
 /* ===================================================================
    v8k — STANDARD CARDS: THREE ZONES SIDE BY SIDE
@@ -1486,7 +1482,6 @@ html[lang="en"] body{line-height:1.65}
 .menu-btn{display:flex}
 .media-wide{padding:0 12px}
   
-  .bd-videos 
   .car-full{width:40px;height:40px}
 .bd{grid-template-columns:1fr;gap:26px}
   .bd-stage{max-width:270px;margin:0 auto}
@@ -1928,8 +1923,6 @@ html[lang="en"] body{line-height:1.65}
 
 /* ---------- slide 7: intentional negative space ---------- */
 .st-r.airy{gap:8px}
-.st-r.airy 
-.st-r.airy 
 
 @media(min-width:560px){
   .st-chain{font-size:15px;gap:7px}
@@ -1937,7 +1930,6 @@ html[lang="en"] body{line-height:1.65}
   .st-arw{font-size:17px}
   .st-nar.em{padding:9px 0 9px 14px;border-left-width:4px}
   .st-r.airy{gap:14px}
-  .st-r.airy 
   
 }
 
@@ -1997,13 +1989,6 @@ img.w-logo{
 
 /* the middle: name, English, then the trademark line lifted */
 /* the impact stack gains a warm plate so it reads as a destination */
-.st-hero 
-.st-hero 
-.st-hero 
-.st-hero 
-@media(min-width:560px){
-      .st-hero 
-}
 
 /* ---------- the narrative as intentional blocks, not a list ---------- */
 .st-blk{display:flex;flex-direction:column;gap:0}
@@ -2187,7 +2172,6 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 
 /* ---------- slide 1: logo left, title and quote beside it ---------- */
 .st-hero .sh-steps{padding:0 14px 10px}
-.st-hero 
 /* slide 1's title box sits at the top of the column, level with the logo */
 
 /* the symbol now sits BEFORE the title on slides 2 to 9 */
@@ -2346,9 +2330,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
    =================================================================== */
 
 /* books — deep green through to a lighter leaf */
-.cta-books 
 /* order — gold through to amber, the warmer of the two */
-.cta-order 
 /* a light passes over the gold one, the way it does on the ribbon */
 
 /* ---------- a slide whose three words ARE the point ---------- */
@@ -2453,13 +2435,6 @@ html[lang="en"] .book-name{font-size:17px}
   50%    {transform:translateY(-1.5px) scale(1.012)}
 }
 
-@media(prefers-reduced-motion:reduce){
-  .cta,.cta::after,}
-@media(max-width:399px){
-  .cta-go,}
-@media(min-width:560px){
-    .cta-go,  }
-
 /* English chain chips run wider in Lora, so they step down to stay on one row */
 html[lang="en"] .st-chain{font-size:calc(var(--fs-max) * 0.74);gap:4px}
 html[lang="en"] .st-chain span{padding:2px 5px}
@@ -2523,17 +2498,6 @@ input, textarea{-webkit-touch-callout:default}
 
 /* ---- main label and secondary label read differently ---- */
 /* ---- a silver light turning round the rim of each key ---- */
-/* ---- the middle button: its own colour, its own shape ---- */
-/* the play mark, framed the way the logo is */
-.cv-orb svg path{fill:#5E2FA5}
-html[lang="en"] @media(prefers-reduced-motion:reduce){
-  .cta-ico,.cv-orb,.cv-orb::before,}
-@media(min-width:560px){
-  .cta-ico,html[lang="en"] }
-
-/* the silver light turning round the rim — a real element, masked so
-   only the border shows, and above the button's own background */
-.cta-video 
 /* ===================================================================
    THREE ACTIONS — compact keys, one visual language
    =================================================================== */
