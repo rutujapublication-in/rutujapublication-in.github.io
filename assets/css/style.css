@@ -2534,7 +2534,7 @@ input, textarea{-webkit-touch-callout:default}
 /* main label — bold, bright, its own colour */
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:16.5px;line-height:1.14;letter-spacing:.1px;
+  font-size:17.5px;line-height:1.14;letter-spacing:.1px;
   margin:0;display:flex;align-items:flex-start;gap:3px;min-width:0;
 }
 /* the secondary plate starts at the same edge as the text column */
@@ -2543,7 +2543,7 @@ input, textarea{-webkit-touch-callout:default}
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:8.6px;line-height:1.22;margin:5px 0 0 15px;
+  font-size:9.3px;line-height:1.22;margin:5px 0 0 15px;
   padding:3px 6px;border-radius:6px;align-self:flex-start;
   border:1px solid;white-space:nowrap;
   max-width:100%;box-sizing:border-box;
