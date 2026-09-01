@@ -142,7 +142,6 @@ a{color:inherit;text-decoration:none}
 .hero-title{font-size:36px;color:var(--green-dark);max-width:740px;margin:0 auto 12px}
 .hero-sub{font-size:17px;color:var(--ink-soft);max-width:620px;margin:0 auto 26px}
 
-
 .btn{
   min-height:48px;padding:0 26px;border-radius:10px;font-size:16px;font-weight:500;
   display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.15s;
@@ -621,15 +620,6 @@ a{color:inherit;text-decoration:none}
 
 /* Book covers render at full quality, never stretched */
 .book-cover img,
-
-@media(min-width:1500px){
-  
-  
-}
-@media(max-width:1100px){
-  
-  
-}
 
 /* ===================================================================
    v8f — ONE VIDEO CARD, USED EVERYWHERE
@@ -1455,8 +1445,6 @@ html[lang="en"] body{line-height:1.65}
 
 /* the order totals block, sized for a phone */
 
-
-
 /* ===================================================================
    BREAKPOINT TIERS
    360 x 800 is the commonest phone in the world and the budget
@@ -1780,7 +1768,6 @@ html[lang="en"] body{line-height:1.65}
   .opick-name{font-size:14px}
 }
 
-
 /* ===================================================================
    STORY BAND — one system, nine chapters
    LEFT keyword + symbol | MIDDLE narrative | RIGHT impact zone
@@ -1833,15 +1820,7 @@ html[lang="en"] body{line-height:1.65}
   padding:12px 14px 10px 12px;min-width:0;
 }
 
-
 /* ---------- RIGHT: the impact zone ---------- */
-
-
-
-
-
-
-
 
 .st-pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.32);z-index:2}
 .st-pg i{display:block;height:100%;background:var(--imp);transition:width .6s ease}
@@ -1893,8 +1872,6 @@ html[lang="en"] body{line-height:1.65}
 }
 
 /* ---------- the left divider: a graphic separation, not a table line ---------- */
-
-
 
 /* ---------- nine keyword activations, one language ---------- */
 .st-kw{position:relative}
@@ -1948,7 +1925,6 @@ html[lang="en"] body{line-height:1.65}
 @media(prefers-reduced-motion:reduce){.st-arw{animation:none;opacity:.9}}
 
 /* ---------- the closing word of each stack is enlarged ---------- */
-
 
 /* ---------- slide 7: intentional negative space ---------- */
 .st-r.airy{gap:8px}
@@ -2052,14 +2028,6 @@ img.w-logo{
 html,body{max-width:100%;overflow-x:hidden}
 
 /* ---------- the impact band breathes and never truncates ---------- */
-
-
-@media(max-width:479px){
-  
-  
-  
-  
-}
 
 /* the keyword sits above the circle, so give it room */
 
@@ -2226,7 +2194,6 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 .st .st .sh-underline{margin-top:6px;margin-bottom:1px;position:relative;z-index:0}
 .st .st-m{padding:7px 15px 5px}
 .st .sh-steps{padding:0 13px 6px}
-@media(min-width:560px){}
 
 /* ---------- the narrative is measured, not guessed ---------- */
 .st-m{
@@ -2383,12 +2350,6 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 /* order — gold through to amber, the warmer of the two */
 .cta-order 
 /* a light passes over the gold one, the way it does on the ribbon */
-@media(prefers-reduced-motion:reduce){}
-
-@media(max-width:399px){
-          }
-@media(min-width:560px){
-            }
 
 /* ---------- a slide whose three words ARE the point ---------- */
 .sh-steps.big{gap:6px}
@@ -2425,7 +2386,6 @@ html[lang="en"] .sh-steps.big .sh-step{font-size:16px;letter-spacing:-.2px}
 @media(max-width:359px){
   .sh-steps.big .sh-step{padding:12px 3px;font-size:15px}
 }
-
 
 /* ===================================================================
    ENGLISH — Lora for reading, Mukta for pressing
@@ -2477,74 +2437,28 @@ html[lang="en"] .book-name{font-size:17px}
    THE TWO ACTIONS — raised keys that breathe, with a travelling arrow
    =================================================================== */
 
-.cta-order{animation-delay:.6s}
-.cta > *{position:relative;z-index:3}
-
 /* the top edge catches light, the way a physical key does */
 
 /* a light travels across, left to right, behind the text */
-.cta::after{
-  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(100deg,transparent 32%,rgba(255,255,255,.42) 50%,transparent 68%);
-  background-size:300% 100%;animation:sheen 4.4s ease-in-out infinite;
-}
 .cta-order::after{animation-duration:3.6s;background-image:
   linear-gradient(100deg,transparent 32%,rgba(255,255,255,.62) 50%,transparent 68%)}
 
 /* ---- text ---- */
 
-
-
-
 /* ---- green key ---- */
-.cta-books{
-  color:#EFF8F2;
-  background:
-    radial-gradient(130% 110% at 4% -10%, rgba(255,255,255,.22), transparent 52%),
-    linear-gradient(140deg,#2A8A5A 0%,#1E6B45 34%,#164C31 68%,#0E3520 100%);
-  border-color:rgba(255,255,255,.16);
-  box-shadow:0 4px 0 rgba(8,36,21,.7), 0 8px 18px rgba(18,56,33,.34);
-}
-.cta-books .cta-txt i{color:#BFE8D0;background:rgba(255,255,255,.13)}
-.cta-books .cta-books:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(8,36,21,.7),0 3px 8px rgba(18,56,33,.3)}
-
-/* ---- gold key, the warmer of the two ---- */
-.cta-order{
-  color:#3A2405;
-  background:
-    radial-gradient(130% 110% at 4% -10%, rgba(255,255,255,.48), transparent 52%),
-    linear-gradient(140deg,#FFDF9E 0%,#F6C267 30%,#EFA83F 62%,#D2841B 100%);
-  border-color:rgba(120,72,6,.18);
-  box-shadow:0 4px 0 rgba(146,90,10,.75), 0 8px 20px rgba(196,130,26,.42);
-}
-.cta-order .cta-txt i{color:#5C3B04;background:rgba(255,255,255,.42)}
-.cta-order .cta-order:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(146,90,10,.75),0 3px 8px rgba(196,130,26,.34)}
-
-/* the whole key inhales and exhales, out of step with each other */
+.cta-books /* ---- gold key, the warmer of the two ---- */
+.cta-order /* the whole key inhales and exhales, out of step with each other */
 @keyframes ctaBreathe{
   0%,100%{transform:translateY(0)     scale(1)}
   50%    {transform:translateY(-1.5px) scale(1.012)}
 }
 
-@media(hover:hover){
-  .cta:hover{transform:translateY(-3px);animation-play-state:paused}
-  .cta-books:hover{box-shadow:0 7px 0 rgba(8,36,21,.7), 0 13px 26px rgba(18,56,33,.4)}
-  .cta-order:hover{box-shadow:0 7px 0 rgba(146,90,10,.75), 0 13px 28px rgba(196,130,26,.5)}
-}
 @media(prefers-reduced-motion:reduce){
   .cta,.cta::after,}
 @media(max-width:399px){
-  .cta{padding:10px 8px 10px 10px;gap:7px}
-  .cta-txt b{font-size:14px}
-  .cta-txt i{font-size:10px;padding:2px 5px}
-  .cta-ico{font-size:13px}
   .cta-go,}
 @media(min-width:560px){
-    .cta{padding:16px 14px 16px 16px;gap:13px;border-radius:18px}
-  .cta-txt b{font-size:19px}
-  .cta-txt i{font-size:13px;margin-top:4px;padding:3px 9px}
-  .cta-ico{font-size:19px}
-  .cta-go,  }
+    .cta-go,  }
 
 /* English chain chips run wider in Lora, so they step down to stay on one row */
 html[lang="en"] .st-chain{font-size:calc(var(--fs-max) * 0.74);gap:4px}
@@ -2608,73 +2522,18 @@ input, textarea{-webkit-touch-callout:default}
 .cta-order .cta-ico svg path:last-child{fill:none;stroke:#5C3B04;stroke-width:1.6}
 
 /* ---- main label and secondary label read differently ---- */
-.cta-books .cta-txt i{color:#CFF0DD;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.24)}
-.cta-order .cta-txt i{color:#4A2F03;background:rgba(255,255,255,.5);border-color:rgba(120,72,6,.24)}
-
 /* ---- a silver light turning round the rim of each key ---- */
-.cta-rim{position:absolute;inset:0;border-radius:15px;pointer-events:none;z-index:2}
-.cta::before{
-  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;z-index:4;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
-}
-.cta > *{position:relative;z-index:3}
-
 /* ---- the middle button: its own colour, its own shape ---- */
-.cta-video:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(38,18,62,.8),0 3px 8px rgba(78,44,122,.34)}
-
 /* the play mark, framed the way the logo is */
 .cv-orb svg path{fill:#5E2FA5}
-html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
-
-@media(prefers-reduced-motion:reduce){
-  .cta-ico,.cv-orb,.cv-orb::before,.cta::before{animation:none}
-}
-@media(max-width:389px){
-  .hero-btns{grid-template-columns:1fr 70px 1fr;gap:6px}
-  .cta{padding:9px 7px}
-  .cta-txt b{font-size:13px}
-  .cta-txt i{font-size:9.5px;padding:2px 5px}
-  .cv-orb{width:34px;height:34px}
-  .cv-orb svg{width:19px;height:19px}
-  .cv-txt{font-size:10px}
-}
+html[lang="en"] @media(prefers-reduced-motion:reduce){
+  .cta-ico,.cv-orb,.cv-orb::before,}
 @media(min-width:560px){
-  .hero-btns{grid-template-columns:1fr 130px 1fr;gap:14px;max-width:720px;margin:0 auto}
-  .cta{padding:15px 14px}
-  .cta-txt b{font-size:18px}
-  .cta-txt i{font-size:12.5px;padding:3px 9px}
-  .cta-ico,.cta-ico svg{width:24px;height:24px}
-  .cv-orb{width:60px;height:60px;border-radius:18px}
-  .cv-orb svg{width:32px;height:32px}
-  .cv-txt{font-size:15px}
-  html[lang="en"] .cv-txt{font-size:14px}
-}
+  .cta-ico,html[lang="en"] }
 
 /* the silver light turning round the rim — a real element, masked so
    only the border shows, and above the button's own background */
-.cta-rim{
-  position:absolute;inset:0;border-radius:15px;z-index:2;pointer-events:none;
-  padding:1.5px;
-  background:conic-gradient(from 0deg,
-    rgba(255,255,255,0) 0deg,
-    rgba(255,255,255,.95) 22deg,
-    rgba(226,235,242,.55) 40deg,
-    rgba(255,255,255,0) 70deg,
-    rgba(255,255,255,0) 360deg);
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude;
-  animation:shSpin 4.5s linear infinite;
-}
-.cta-video .cta-rim{
-  background:conic-gradient(from 0deg,
-    rgba(255,214,120,0) 0deg, rgba(255,214,120,.95) 20deg,
-    rgba(226,196,255,.8) 44deg, rgba(255,214,120,0) 76deg,
-    rgba(255,214,120,0) 360deg);
-  animation-duration:3.8s;
-}
-@media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
-
+.cta-video 
 /* ===================================================================
    THREE ACTIONS — compact keys, one visual language
    =================================================================== */
@@ -2695,22 +2554,26 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
 /* main label — bold, bright, its own colour */
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:16.5px;line-height:1.14;letter-spacing:.1px;white-space:pre-line;
-  margin:0;padding-left:19px;text-indent:-19px;
+  font-size:16.5px;line-height:1.14;letter-spacing:.1px;
+  margin:0;display:flex;align-items:flex-start;gap:5px;min-width:0;
 }
+/* the secondary plate starts at the same edge as the text column */
+.cta-txt i{margin-left:19px}
+@media(min-width:560px){.cta-txt i{margin-left:24px}}
+.cta-txt b > span:last-child{white-space:pre-line;flex:1;min-width:0}
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
   font-size:9.6px;line-height:1.2;margin:5px 0 0 19px;
   padding:3px 6px;border-radius:6px;align-self:flex-start;
-  border:1px solid;white-space:nowrap;max-width:none;
-  transform-origin:left center;
+  border:1px solid;white-space:nowrap;
+  max-width:calc(100% - 19px);overflow:hidden;box-sizing:border-box;
 }
 
 /* the arrow points at the first word and flashes */
 .cta-ico{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:14px;height:14px;margin-right:5px;vertical-align:-1px;text-indent:0;
+  display:flex;align-items:center;justify-content:center;
+  width:14px;height:14px;flex-shrink:0;margin:2px 0 0;
   animation:icoFlash 2.2s ease-in-out infinite;
 }
 .cta-ico svg{width:14px;height:14px}
@@ -2783,6 +2646,11 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
   0%,100%{transform:scale(1);   filter:drop-shadow(0 0 0 rgba(255,214,120,0))}
   50%    {transform:scale(1.11);filter:drop-shadow(0 0 10px rgba(255,214,120,.85))}
 }
+/* English buttons use the slide face, which sits a shade smaller */
+html[lang="en"] .cta-txt b{font-size:15.5px;font-weight:700;line-height:1.16}
+html[lang="en"] .cta-txt i{font-size:8.8px;font-weight:600;letter-spacing:-.1px}
+html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
+
 .cv-txt{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:11px;line-height:1.18;text-align:center;color:#F3E7FF;
@@ -2809,37 +2677,28 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
 @media(max-width:389px){
   .hero-btns{grid-template-columns:1fr 64px 1fr;gap:5px}
   .cta{padding:8px 6px}
-  .cta-txt b{font-size:13px}
+  .cta-txt b{font-size:13.5px}
+  html[lang="en"] .cta-txt b{font-size:13px}
   .cta-txt i{font-size:8.8px;padding:2px 5px;margin-left:17px}
+  html[lang="en"] .cta-txt i{font-size:8.2px}
   .cta-video{gap:8px}
   .cv-orb{width:30px;height:30px}
   .cv-orb svg{width:17px;height:17px}
   .cv-txt{font-size:10px}
+  html[lang="en"] .cv-txt{font-size:10.5px}
 }
 @media(min-width:560px){
   .hero-btns{grid-template-columns:1fr 120px 1fr;gap:14px;max-width:720px;margin:0 auto}
   .cta{padding:14px 13px;gap:12px;border-radius:16px}
-  .cta-txt b{font-size:18px}
+  .cta-txt b{font-size:19px}
+  html[lang="en"] .cta-txt b{font-size:18px}
   .cta-txt i{font-size:12.5px;padding:3px 9px;margin-top:6px}
+  html[lang="en"] .cta-txt i{font-size:12.5px}
   .cta-ico,.cta-ico svg{width:19px;height:19px}
-  .cta-ico{margin-right:7px}
   .cta-video{gap:13px}
   .cv-orb{width:52px;height:52px;border-radius:16px}
   .cv-orb svg{width:29px;height:29px}
   .cv-txt{font-size:15px}
-  html[lang="en"] .cv-txt{font-size:14px}
+  html[lang="en"] .cv-txt{font-size:14.5px}
 }
 
-/* English buttons use the slide face, which sits a shade smaller */
-html[lang="en"] .cta-txt b{font-size:15.5px;font-weight:700;line-height:1.16}
-html[lang="en"] .cta-txt i{font-size:9.6px;font-weight:600}
-html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
-@media(max-width:389px){
-  html[lang="en"] .cta-txt b{font-size:13.5px}
-  html[lang="en"] .cv-txt{font-size:10.5px}
-}
-@media(min-width:560px){
-  html[lang="en"] .cta-txt b{font-size:19px}
-  html[lang="en"] .cta-txt i{font-size:13px}
-  html[lang="en"] .cv-txt{font-size:15px}
-}
