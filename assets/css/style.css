@@ -2502,7 +2502,7 @@ input, textarea{-webkit-touch-callout:default}
    THREE ACTIONS — compact keys, one visual language
    =================================================================== */
 .hero-btns{
-  display:grid;grid-template-columns:1fr 72px 1fr;gap:7px;
+  display:grid;grid-template-columns:1fr 56px 1fr;gap:6px;
   align-items:stretch;margin:0;
 }
 /* the top edge catches light, the way a physical key does */
@@ -2524,7 +2524,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta{
   position:relative;overflow:hidden;isolation:isolate;
   display:flex;align-items:center;gap:0;
-  padding:9px 9px 9px 10px;border-radius:14px;text-align:left;cursor:pointer;
+  padding:9px 6px 9px 6px;border-radius:14px;text-align:left;cursor:pointer;
   border:1px solid transparent;
   transition:transform .14s ease, box-shadow .14s ease;
   animation:ctaBreathe 3.8s ease-in-out infinite;
@@ -2535,7 +2535,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:16.5px;line-height:1.14;letter-spacing:.1px;
-  margin:0;display:flex;align-items:flex-start;gap:5px;min-width:0;
+  margin:0;display:flex;align-items:flex-start;gap:3px;min-width:0;
 }
 /* the secondary plate starts at the same edge as the text column */
 
@@ -2543,8 +2543,8 @@ input, textarea{-webkit-touch-callout:default}
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:8.6px;line-height:1.22;margin:5px 0 0 0;
-  padding:3px 7px;border-radius:6px;align-self:flex-start;
+  font-size:8.6px;line-height:1.22;margin:5px 0 0 15px;
+  padding:3px 6px;border-radius:6px;align-self:flex-start;
   border:1px solid;white-space:nowrap;
   max-width:100%;box-sizing:border-box;
 }
@@ -2552,10 +2552,10 @@ input, textarea{-webkit-touch-callout:default}
 /* the arrow points at the first word and flashes */
 .cta-ico{
   display:flex;align-items:center;justify-content:center;
-  width:14px;height:14px;flex-shrink:0;margin:2px 0 0;
+  width:12px;height:12px;flex-shrink:0;margin:2px 0 0;
   animation:icoFlash 2.2s ease-in-out infinite;
 }
-.cta-ico svg{width:14px;height:14px}
+.cta-ico svg{width:12px;height:12px}
 @keyframes icoFlash{
   0%,  100%{transform:translateX(0)   scale(.92); opacity:.65; filter:none}
   35%      {transform:translateX(2px) scale(1.22); opacity:1;
@@ -2654,7 +2654,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   .cta,.cta::after,.cta-ico,.cv-orb,.cv-orb::before,.cv-txt,.cta-rim{animation:none}
 }
 @media(max-width:389px){
-  .hero-btns{grid-template-columns:1fr 64px 1fr;gap:5px}
+  .hero-btns{grid-template-columns:1fr 50px 1fr;gap:5px}
   .cta{padding:8px 6px}
   .cta-txt b{font-size:13.5px}
   html[lang="en"] .cta-txt b{font-size:13px}
@@ -2667,7 +2667,8 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   html[lang="en"] .cv-txt{font-size:10.5px}
 }
 @media(min-width:560px){
-  .hero-btns{grid-template-columns:1fr 120px 1fr;gap:14px;max-width:720px;margin:0 auto}
+  .hero-btns{grid-template-columns:1fr 110px 1fr;gap:14px;max-width:720px;margin:0 auto}
+  .cta-txt i{margin-left:22px}
   .cta{padding:14px 13px;gap:12px;border-radius:16px}
   .cta-txt b{font-size:19px}
   html[lang="en"] .cta-txt b{font-size:18px}
@@ -2681,3 +2682,25 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   html[lang="en"] .cv-txt{font-size:14.5px}
 }
 
+
+/* the silver light turning round the rim of each key */
+.cta-rim{
+  position:absolute;inset:0;border-radius:14px;z-index:2;pointer-events:none;
+  padding:1.5px;
+  background:conic-gradient(from 0deg,
+    rgba(255,255,255,0) 0deg, rgba(255,255,255,.95) 22deg,
+    rgba(226,235,242,.55) 40deg, rgba(255,255,255,0) 70deg,
+    rgba(255,255,255,0) 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:shSpin 4.5s linear infinite;
+}
+.cta-video .cta-rim{
+  background:conic-gradient(from 0deg,
+    rgba(255,214,120,0) 0deg, rgba(255,214,120,.95) 20deg,
+    rgba(226,196,255,.8) 44deg, rgba(255,214,120,0) 76deg,
+    rgba(255,214,120,0) 360deg);
+  animation-duration:3.8s;
+}
+@media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
