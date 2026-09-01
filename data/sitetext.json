@@ -241,7 +241,7 @@
   "order_new": "नवीन ऑर्डर",
   "sample_ask": "शाळेसाठी नमुना प्रत मागवा",
   "share_book": "हे पुस्तक शेअर करा",
-  "order_btn": "चौकशी करा / मागणी नोंदवा",
+  "order_btn": "चौकशी करा /\nमागणी नोंदवा",
   "order_head": "चौकशी करा किंवा मागणी नोंदवा",
   "order_head_sub": "यादीत न टाकताही इथून थेट मागणी नोंदवता येते.",
   "order_pick": "पुस्तके निवडा",
@@ -279,7 +279,9 @@
   "ph_village": "गाव किंवा शहराचे नाव",
   "ph_pin": "६ अंकी पिन कोड",
   "btn_books_sub": "सर्व पुस्तके, दर व सवलत",
-  "btn_order_sub": "थेट व्हॉट्सॲपवर बोला"
+  "btn_order_sub": "थेट व्हॉट्सॲपवर बोला",
+  "btn_videos": "पुस्तक व्हिडिओ",
+  "videos_book_only": "पुस्तकांचे व्हिडिओ"
  },
  "en": {
   "nav_home": "Home",
@@ -523,7 +525,7 @@
   "order_new": "New Order",
   "sample_ask": "Request a sample copy for your school",
   "share_book": "Share This Book",
-  "order_btn": "Enquire / Place an Order",
+  "order_btn": "Enquire /\nPlace an Order",
   "order_head": "Enquire or Place an Order",
   "order_head_sub": "You can order right here without using the list.",
   "order_pick": "Choose Books",
@@ -561,6 +563,8 @@
   "ph_village": "Village or city name",
   "ph_pin": "6 digit PIN code",
   "btn_books_sub": "All books, rates and offers",
-  "btn_order_sub": "Talk to us on WhatsApp"
+  "btn_order_sub": "Talk to us on WhatsApp",
+  "btn_videos": "Book Videos",
+  "videos_book_only": "Book Videos"
  }
 }

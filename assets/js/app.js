@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v12c',
+  VERSION: 'v12e',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1198,7 +1198,10 @@ const MEDIA = {
     if (!this.app) return;
     this.rails.forEach(r => clearInterval(r.timer));
     this.rails = [];
-    const vids = this.live('videos', true);
+    /* Only book videos appear here. Advertisement and experience
+       videos carry a different video_type and stay out. */
+    const vids = this.live('videos', true)
+      .filter(v => !v.video_type || /book/i.test(v.video_type) || v.book_id);
     const ads  = this.live('ads', true);
 
     this.build('vidCar',  vids, 'video', this.cfg('video_rotate_seconds', 4000));

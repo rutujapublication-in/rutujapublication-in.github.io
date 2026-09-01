@@ -2377,10 +2377,6 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 /* ===================================================================
    THE TWO ACTIONS — side by side, each saying what it does
    =================================================================== */
-.hero-btns{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  align-items:stretch;margin:0;
-}
 
 /* books — deep green through to a lighter leaf */
 .cta-books 
@@ -2392,8 +2388,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 @media(max-width:399px){
           }
 @media(min-width:560px){
-  .hero-btns{gap:14px;max-width:640px;margin:0 auto}
-          }
+            }
 
 /* ---------- a slide whose three words ARE the point ---------- */
 .sh-steps.big{gap:6px}
@@ -2481,22 +2476,12 @@ html[lang="en"] .book-name{font-size:17px}
 /* ===================================================================
    THE TWO ACTIONS — raised keys that breathe, with a travelling arrow
    =================================================================== */
-.cta{
-  position:relative;overflow:hidden;isolation:isolate;
-  display:flex;align-items:center;gap:10px;
-  padding:12px 10px 12px 12px;border-radius:15px;text-align:left;cursor:pointer;
-  border:1px solid transparent;
-  transition:transform .14s ease, box-shadow .14s ease;
-  animation:ctaBreathe 3.8s ease-in-out infinite;
-}
+
 .cta-order{animation-delay:.6s}
 .cta > *{position:relative;z-index:3}
 
 /* the top edge catches light, the way a physical key does */
-.cta::before{
-  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;z-index:4;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
-}
+
 /* a light travels across, left to right, behind the text */
 .cta::after{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -2508,32 +2493,9 @@ html[lang="en"] .book-name{font-size:17px}
 
 /* ---- text ---- */
 .cta-txt{display:flex;flex-direction:column;min-width:0;flex:1}
-.cta-txt b{
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
-  font-size:15.5px;line-height:1.18;letter-spacing:.1px;
-}
-.cta-txt i{
-  font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:11px;line-height:1.3;margin-top:3px;
-  padding:2px 7px;border-radius:5px;align-self:flex-start;
-}
-.cta-ico{font-size:15px;line-height:1;flex-shrink:0;opacity:.92}
 
-/* ---- the arrow: a full shaft that travels and glows ---- */
-.cta-go{
-  flex-shrink:0;width:26px;height:16px;display:flex;align-items:center;
-  animation:arrowRun 1.9s cubic-bezier(.4,0,.2,1) infinite;
-}
-.cta-go svg{width:26px;height:16px;overflow:visible}
-.cta-go path{
-  fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
-  stroke-dasharray:30;stroke-dashoffset:0;
-}
-@keyframes arrowRun{
-  0%,100%{transform:translateX(0);   opacity:.6}
-  45%    {transform:translateX(5px); opacity:1}
-  70%    {transform:translateX(2px); opacity:.85}
-}
+
+
 
 /* ---- green key ---- */
 .cta-books{
@@ -2545,8 +2507,7 @@ html[lang="en"] .book-name{font-size:17px}
   box-shadow:0 4px 0 rgba(8,36,21,.7), 0 8px 18px rgba(18,56,33,.34);
 }
 .cta-books .cta-txt i{color:#BFE8D0;background:rgba(255,255,255,.13)}
-.cta-books .cta-go path{stroke:#8FE3B4;filter:drop-shadow(0 0 5px rgba(143,227,180,.9))}
-.cta-books:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(8,36,21,.7),0 3px 8px rgba(18,56,33,.3)}
+.cta-books .cta-books:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(8,36,21,.7),0 3px 8px rgba(18,56,33,.3)}
 
 /* ---- gold key, the warmer of the two ---- */
 .cta-order{
@@ -2558,8 +2519,7 @@ html[lang="en"] .book-name{font-size:17px}
   box-shadow:0 4px 0 rgba(146,90,10,.75), 0 8px 20px rgba(196,130,26,.42);
 }
 .cta-order .cta-txt i{color:#5C3B04;background:rgba(255,255,255,.42)}
-.cta-order .cta-go path{stroke:#5C3B04;filter:drop-shadow(0 0 5px rgba(255,255,255,.85))}
-.cta-order:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(146,90,10,.75),0 3px 8px rgba(196,130,26,.34)}
+.cta-order .cta-order:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(146,90,10,.75),0 3px 8px rgba(196,130,26,.34)}
 
 /* the whole key inhales and exhales, out of step with each other */
 @keyframes ctaBreathe{
@@ -2573,24 +2533,19 @@ html[lang="en"] .book-name{font-size:17px}
   .cta-order:hover{box-shadow:0 7px 0 rgba(146,90,10,.75), 0 13px 28px rgba(196,130,26,.5)}
 }
 @media(prefers-reduced-motion:reduce){
-  .cta,.cta::after,.cta-go{animation:none}
-}
+  .cta,.cta::after,}
 @media(max-width:399px){
   .cta{padding:10px 8px 10px 10px;gap:7px}
   .cta-txt b{font-size:14px}
   .cta-txt i{font-size:10px;padding:2px 5px}
   .cta-ico{font-size:13px}
-  .cta-go,.cta-go svg{width:21px;height:13px}
-}
+  .cta-go,}
 @media(min-width:560px){
-  .hero-btns{gap:14px;max-width:660px;margin:0 auto}
-  .cta{padding:16px 14px 16px 16px;gap:13px;border-radius:18px}
+    .cta{padding:16px 14px 16px 16px;gap:13px;border-radius:18px}
   .cta-txt b{font-size:19px}
   .cta-txt i{font-size:13px;margin-top:4px;padding:3px 9px}
   .cta-ico{font-size:19px}
-  .cta-go,.cta-go svg{width:34px;height:20px}
-  .cta-go path{stroke-width:2.6}
-}
+  .cta-go,  }
 
 /* English chain chips run wider in Lora, so they step down to stay on one row */
 html[lang="en"] .st-chain{font-size:calc(var(--fs-max) * 0.74);gap:4px}
@@ -2641,3 +2596,135 @@ input, textarea, select,
   -webkit-touch-callout:default;
 }
 input, textarea{-webkit-touch-callout:default}
+
+/* ===================================================================
+   THREE ACTIONS — books, videos, order
+   The outer two keep their height; the middle one is narrower and
+   carries a different colour so it reads as its own thing.
+   =================================================================== */
+.hero-btns{
+  display:grid;grid-template-columns:1fr 82px 1fr;gap:8px;
+  align-items:stretch;margin:0;
+}
+
+/* ---- the symbol before each label ---- */
+.cta-ico{
+  flex-shrink:0;width:19px;height:19px;display:flex;align-items:center;justify-content:center;
+  animation:icoPulse 2.6s ease-in-out infinite;
+}
+.cta-ico svg{width:19px;height:19px}
+.cta-books .cta-ico svg path{fill:#8FE3B4}
+.cta-order .cta-ico svg path{fill:#5C3B04;stroke:none}
+.cta-order .cta-ico svg path:last-child{fill:none;stroke:#5C3B04;stroke-width:1.6}
+@keyframes icoPulse{
+  0%,100%{transform:scale(1)   translateY(0);   opacity:.85}
+  50%    {transform:scale(1.16) translateY(-1px);opacity:1}
+}
+
+/* ---- main label and secondary label read differently ---- */
+.cta-txt b{white-space:pre-line;font-size:14.5px;line-height:1.2}
+.cta-txt i{
+  font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:10.5px;line-height:1.28;margin-top:4px;
+  padding:3px 7px;border-radius:6px;align-self:flex-start;
+  border:1px solid;backdrop-filter:blur(2px);
+}
+.cta-books .cta-txt i{color:#CFF0DD;background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.24)}
+.cta-order .cta-txt i{color:#4A2F03;background:rgba(255,255,255,.5);border-color:rgba(120,72,6,.24)}
+
+/* ---- a silver light turning round the rim of each key ---- */
+.cta{position:relative;overflow:hidden;padding:11px 9px 11px 10px}
+.cta-rim{position:absolute;inset:0;border-radius:15px;pointer-events:none;z-index:2}
+.cta::before{
+  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;z-index:4;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+}
+.cta > *{position:relative;z-index:3}
+
+/* ---- the middle button: its own colour, its own shape ---- */
+.cta-video{
+  flex-direction:column;justify-content:center;gap:7px;padding:9px 4px;
+  color:#F2E9FF;
+  background:
+    radial-gradient(120% 100% at 50% -14%, rgba(255,255,255,.26), transparent 56%),
+    linear-gradient(160deg,#6B3FA0 0%,#4E2C7A 46%,#331B52 100%);
+  border-color:rgba(255,255,255,.2);
+  box-shadow:0 4px 0 rgba(38,18,62,.8), 0 8px 20px rgba(78,44,122,.42);
+}
+.cta-video:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(38,18,62,.8),0 3px 8px rgba(78,44,122,.34)}
+
+/* the play mark, framed the way the logo is */
+.cv-orb{
+  position:relative;width:40px;height:40px;flex-shrink:0;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;
+  box-shadow:0 0 0 1.5px rgba(255,214,120,.85), 0 0 16px rgba(196,142,255,.55);
+  animation:orbBreathe 3.2s ease-in-out infinite;
+}
+.cv-orb::before{
+  content:"";position:absolute;inset:-7px;border-radius:18px;z-index:-1;
+  background:conic-gradient(from 0deg,rgba(255,214,120,.9) 0deg,transparent 44deg,
+    rgba(214,178,255,.9) 96deg,transparent 150deg,rgba(255,214,120,.9) 360deg);
+  animation:shSpin 3.6s linear infinite;
+}
+.cv-orb svg{width:22px;height:22px}
+.cv-orb svg path{fill:#5E2FA5}
+@keyframes orbBreathe{
+  0%,100%{transform:scale(1);   box-shadow:0 0 0 1.5px rgba(255,214,120,.85), 0 0 14px rgba(196,142,255,.45)}
+  50%    {transform:scale(1.09);box-shadow:0 0 0 1.5px rgba(255,255,255,.95), 0 0 26px rgba(214,178,255,.85)}
+}
+.cv-txt{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:11.5px;line-height:1.2;text-align:center;color:#EBDBFF;
+  letter-spacing:.2px;
+}
+html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11px}
+
+@media(prefers-reduced-motion:reduce){
+  .cta-ico,.cv-orb,.cv-orb::before,.cta::before{animation:none}
+}
+@media(max-width:389px){
+  .hero-btns{grid-template-columns:1fr 70px 1fr;gap:6px}
+  .cta{padding:9px 7px}
+  .cta-txt b{font-size:13px}
+  .cta-txt i{font-size:9.5px;padding:2px 5px}
+  .cv-orb{width:34px;height:34px}
+  .cv-orb svg{width:19px;height:19px}
+  .cv-txt{font-size:10px}
+}
+@media(min-width:560px){
+  .hero-btns{grid-template-columns:1fr 130px 1fr;gap:14px;max-width:720px;margin:0 auto}
+  .cta{padding:15px 14px}
+  .cta-txt b{font-size:18px}
+  .cta-txt i{font-size:12.5px;padding:3px 9px}
+  .cta-ico,.cta-ico svg{width:24px;height:24px}
+  .cv-orb{width:60px;height:60px;border-radius:18px}
+  .cv-orb svg{width:32px;height:32px}
+  .cv-txt{font-size:15px}
+  html[lang="en"] .cv-txt{font-size:14px}
+}
+
+/* the silver light turning round the rim — a real element, masked so
+   only the border shows, and above the button's own background */
+.cta-rim{
+  position:absolute;inset:0;border-radius:15px;z-index:2;pointer-events:none;
+  padding:1.5px;
+  background:conic-gradient(from 0deg,
+    rgba(255,255,255,0) 0deg,
+    rgba(255,255,255,.95) 22deg,
+    rgba(226,235,242,.55) 40deg,
+    rgba(255,255,255,0) 70deg,
+    rgba(255,255,255,0) 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  animation:shSpin 4.5s linear infinite;
+}
+.cta-video .cta-rim{
+  background:conic-gradient(from 0deg,
+    rgba(255,214,120,0) 0deg, rgba(255,214,120,.95) 20deg,
+    rgba(226,196,255,.8) 44deg, rgba(255,214,120,0) 76deg,
+    rgba(255,214,120,0) 360deg);
+  animation-duration:3.8s;
+}
+@media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
