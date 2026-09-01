@@ -1,14 +1,14 @@
-RUTUJA WEBSITE — BUILD v12g
+RUTUJA WEBSITE — BUILD v12h
 
 HOW TO CHECK THE UPLOAD WORKED
 ------------------------------
 After uploading and waiting 2 minutes, open the site.
-You should see "v12g" in two places:
+You should see "v12h" in two places:
   1. small grey text under the tagline on the welcome banner
   2. at the end of the footer, after the copyright line
 
-If you do NOT see v12g, the upload did not go through.
-Do not debug anything else until v12g appears.
+If you do NOT see v12h, the upload did not go through.
+Do not debug anything else until v12h appears.
 
 WHAT IS IN THIS BUILD
 ---------------------
