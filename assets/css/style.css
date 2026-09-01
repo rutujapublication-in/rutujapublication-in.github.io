@@ -2505,6 +2505,22 @@ input, textarea{-webkit-touch-callout:default}
   display:grid;grid-template-columns:1fr 72px 1fr;gap:7px;
   align-items:stretch;margin:0;
 }
+/* the top edge catches light, the way a physical key does */
+.cta::before{
+  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;z-index:4;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+}
+/* a light travels across, left to right, behind the text */
+.cta::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(100deg,transparent 32%,rgba(255,255,255,.42) 50%,transparent 68%);
+  background-size:300% 100%;animation:sheen 4.4s ease-in-out infinite;
+}
+.cta-order::after{animation-duration:3.6s;
+  background-image:linear-gradient(100deg,transparent 32%,rgba(255,255,255,.62) 50%,transparent 68%)}
+.cta-video::after{animation-duration:4s;
+  background-image:linear-gradient(100deg,transparent 32%,rgba(255,255,255,.5) 50%,transparent 68%)}
+
 .cta{
   position:relative;overflow:hidden;isolation:isolate;
   display:flex;align-items:center;gap:0;
@@ -2522,16 +2538,15 @@ input, textarea{-webkit-touch-callout:default}
   margin:0;display:flex;align-items:flex-start;gap:5px;min-width:0;
 }
 /* the secondary plate starts at the same edge as the text column */
-.cta-txt i{margin-left:19px}
-@media(min-width:560px){.cta-txt i{margin-left:24px}}
+
 .cta-txt b > span:last-child{white-space:pre-line;flex:1;min-width:0}
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:9.6px;line-height:1.2;margin:5px 0 0 19px;
-  padding:3px 6px;border-radius:6px;align-self:flex-start;
+  font-size:8.6px;line-height:1.22;margin:5px 0 0 0;
+  padding:3px 7px;border-radius:6px;align-self:flex-start;
   border:1px solid;white-space:nowrap;
-  max-width:calc(100% - 19px);overflow:hidden;box-sizing:border-box;
+  max-width:100%;box-sizing:border-box;
 }
 
 /* the arrow points at the first word and flashes */
@@ -2612,7 +2627,7 @@ input, textarea{-webkit-touch-callout:default}
 }
 /* English buttons use the slide face, which sits a shade smaller */
 html[lang="en"] .cta-txt b{font-size:15.5px;font-weight:700;line-height:1.16}
-html[lang="en"] .cta-txt i{font-size:8.8px;font-weight:600;letter-spacing:-.1px}
+html[lang="en"] .cta-txt i{font-size:8.4px;font-weight:600;letter-spacing:-.15px}
 html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
 
 .cv-txt{
@@ -2643,8 +2658,8 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   .cta{padding:8px 6px}
   .cta-txt b{font-size:13.5px}
   html[lang="en"] .cta-txt b{font-size:13px}
-  .cta-txt i{font-size:8.8px;padding:2px 5px;margin-left:17px}
-  html[lang="en"] .cta-txt i{font-size:8.2px}
+  .cta-txt i{font-size:7.9px;padding:2px 5px}
+  html[lang="en"] .cta-txt i{font-size:7.7px}
   .cta-video{gap:8px}
   .cv-orb{width:30px;height:30px}
   .cv-orb svg{width:17px;height:17px}
