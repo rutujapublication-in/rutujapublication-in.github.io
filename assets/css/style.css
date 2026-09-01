@@ -2463,3 +2463,82 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   .cta-ico{font-size:18px}
   .cta-go{font-size:24px}
 }
+
+/* ---------- a slide whose three words ARE the point ---------- */
+.sh-steps.big{gap:8px}
+.sh-steps.big .sh-step{
+  padding:14px 6px;font-size:19px;line-height:1.2;border-radius:12px;
+  border:1.5px solid rgba(247,200,107,.62);
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(247,200,107,.28), transparent 62%),
+    linear-gradient(180deg,rgba(247,200,107,.18),rgba(247,200,107,.06));
+  box-shadow:0 3px 0 rgba(150,95,12,.34), 0 0 0 0 rgba(247,200,107,0);
+  color:#FFE6B4;
+}
+.sh-steps.big .sh-step::after{
+  content:"";position:absolute;left:50%;bottom:7px;width:14px;height:2px;
+  margin-left:-7px;border-radius:1px;background:rgba(247,200,107,.5);
+}
+.sh-steps.big .sh-step{position:relative;overflow:hidden;animation:bigStep 3.6s ease-in-out infinite;
+  animation-delay:var(--d)}
+@keyframes bigStep{
+  0%,100%{transform:scale(1);border-color:rgba(247,200,107,.62);
+          box-shadow:0 3px 0 rgba(150,95,12,.34), 0 0 0 0 rgba(247,200,107,0);color:#FFE6B4}
+  50%    {transform:scale(1.06);border-color:rgba(255,255,255,.92);
+          box-shadow:0 3px 0 rgba(150,95,12,.34), 0 0 20px 2px rgba(247,200,107,.45);color:#fff}
+}
+@media(prefers-reduced-motion:reduce){.sh-steps.big .sh-step{animation:none}}
+@media(min-width:560px){
+  .sh-steps.big{gap:14px}
+  .sh-steps.big .sh-step{padding:20px 10px;font-size:28px;border-radius:14px}
+}
+@media(max-width:359px){
+  .sh-steps.big .sh-step{padding:12px 4px;font-size:16.5px}
+}
+
+
+/* ===================================================================
+   ENGLISH — Lora for reading, Mukta for pressing
+   Sentences, headings and descriptions are set in Lora, a serif drawn
+   for screens. Buttons, labels, navigation and form fields stay in
+   Mukta, so anything you act on still reads as something to press.
+   Mukta is the last fallback everywhere, so any Devanagari left on an
+   English page still renders.
+   =================================================================== */
+
+/* --- things you READ --- */
+html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3, html[lang="en"] h4,
+html[lang="en"] p,  html[lang="en"] li,  html[lang="en"] blockquote,
+html[lang="en"] .sec-title, html[lang="en"] .sec-sub,
+html[lang="en"] .st-nar, html[lang="en"] .sh-quote,
+html[lang="en"] .book-name, html[lang="en"] .book-sub, html[lang="en"] .book-meta,
+html[lang="en"] .bd-title, html[lang="en"] .bd-subtitle, html[lang="en"] .bd-desc,
+html[lang="en"] .vcard-title, html[lang="en"] .vcard-cap,
+html[lang="en"] .cart-name, html[lang="en"] .opick-name,
+html[lang="en"] .oline-name, html[lang="en"] .offer-d, html[lang="en"] .ex-d,
+html[lang="en"] .w-side-p, html[lang="en"] .w-quote, html[lang="en"] .std-mid li{
+  font-family:Lora, Georgia, 'Times New Roman', Mukta, serif;
+}
+
+/* --- things you PRESS or scan quickly --- */
+html[lang="en"] button, html[lang="en"] .btn, html[lang="en"] .cta,
+html[lang="en"] .cta-txt b, html[lang="en"] .cta-txt i,
+html[lang="en"] .act, html[lang="en"] .nav a, html[lang="en"] .icon-btn,
+html[lang="en"] input, html[lang="en"] select, html[lang="en"] textarea,
+html[lang="en"] label, html[lang="en"] .f label,
+html[lang="en"] .sh-step, html[lang="en"] .st-imp,
+html[lang="en"] .sh-box em, html[lang="en"] .st-kw, html[lang="en"] .sh-chap,
+html[lang="en"] .chip, html[lang="en"] .brand-name, html[lang="en"] .brand-tag,
+html[lang="en"] .strip-track, html[lang="en"] .st-chain,
+html[lang="en"] .book-price, html[lang="en"] .rung, html[lang="en"] .calc-line{
+  font-family:Mukta, system-ui, sans-serif;
+}
+
+/* Lora sits a shade smaller than Mukta, so reading text gains a little */
+html[lang="en"] .st-nar{font-size:calc(var(--fs-max) * 1.06)}
+html[lang="en"] .sh-quote{font-size:16px}
+html[lang="en"] .bd-desc{font-size:16px;line-height:1.75}
+html[lang="en"] .book-name{font-size:17px}
+@media(min-width:560px){
+  html[lang="en"] .sh-quote{font-size:24px}
+}

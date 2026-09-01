@@ -35,7 +35,16 @@
     "   (logo shows your publication logo, used on slide 1)",
     "",
     "right_divider  true draws a line between middle and impact zone,",
-    "               false leaves the impact zone separated by space alone."
+    "               false leaves the impact zone separated by space alone.",
+    "",
+    "box_one_line   true  keeps the box phrase on ONE line, shrinking it",
+    "                     as far as needed so the sentences keep their room",
+    "               false always lets it wrap onto two lines at full size",
+    "               leave it out for three-word boxes such as slides 1 and 5",
+    "",
+    "text_size      an optional size in px for THIS slide's sentences.",
+    "               Leave it out and the slide uses the shared size.",
+    "               Only set it when a slide carries more text than the rest."
   ],
   "slides": [
     {
@@ -60,10 +69,10 @@
       "slide": 2,
       "chapter_mr": "वारसा",
       "chapter_en": "Legacy",
-      "narrative_mr": "राजमाता [[जिजाऊंनी]] शिवबाला घडवलं,|आणि [[छत्रपती शिवाजी महाराजांनी]] स्वराज्याचा पाया रचला.//[[सावित्रीबाई फुले]] आणि [[महात्मा फुले]] यांनी|शिक्षणाची पहिली वीट रचली.",
-      "narrative_en": "[[Rajmata Jijau]] Shaped Shivba & [[Chhatrapati Shivaji Maharaj]]|Laid The Foundation Of Swarajya.//[[Savitribai]] & [[Mahatma Phule]] Laid|The First Brick Of Education.",
-      "impact_mr": "मुलींपासून नवी सुरुवात...",
-      "impact_en": "Beginning With Girls...",
+      "narrative_mr": "[[राजमाता जिजाऊंनी]] शिवबाला घडवलं,|व त्या संस्कारांतूनच [[छत्रपती शिवाजी महाराजांनी]] स्वराज्य साकारलं.//[[क्रांतिज्योती सावित्रीबाई फुले]] आणि [[महात्मा फुले]] यांनी|मुलींच्या शिक्षणाची वीट रचली, व समाजाच्या विचारांना नवी दिशा दिली.",
+      "narrative_en": "[[Rajmata Jijau]] Shaped Shivba With Her Values,|Those Values Built [[Chhatrapati Shivaji Maharaj]]'s Swarajya.//[[Krantijyoti Savitribai Phule]] And [[Mahatma Phule]]|Opened Girls' Education, Giving Society A New Direction.",
+      "impact_mr": "मुलींच्या शिक्षणातून नव्या विचारांची सुरुवात...",
+      "impact_en": "Girls' Education Sparked New Thinking...",
       "background": "#3C354B",
       "left_panel": "#2B2636",
       "chapter_colour": "#F7C86B",
@@ -72,7 +81,9 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "rings",
       "symbol": "rings",
-      "right_divider": false
+      "right_divider": false,
+      "box_one_line": true,
+      "text_size": 13.2
     },
     {
       "slide": 3,
@@ -96,10 +107,10 @@
       "slide": 4,
       "chapter_mr": "दिशा",
       "chapter_en": "Direction",
-      "narrative_mr": "प्रत्येक युगात [[महाराष्ट्राने]] भारताला दिशा दिली आहे.//ती दिशा [[शस्त्राने]] नाही, तर [[प्रखर विचारांनी]] दिली.",
-      "narrative_en": "In Every Age [[Maharashtra]] Has Given India Direction.//Not By The [[Sword]], But By [[Powerful Ideas]].",
-      "impact_mr": "विचारांनी दिलेली दिशा...",
-      "impact_en": "Direction Given By The Idea...",
+      "narrative_mr": "प्रत्येक युगात [[महाराष्ट्राने]]|[[भारताच्या विचारविश्वाला]] नवी दिशा दिली आहे.|ते विचारविश्व [[शस्त्राने]] नव्हे,|तर [[महाराष्ट्राच्या प्रखर विचारांनी]] समृद्ध झाले आहे —|आणि पुढेही विस्तारत राहील, [[हीच आशा]].",
+      "narrative_en": "Across Every Era, [[Maharashtra]]|Has Shaped [[India's World Of Thought]].|Not Through [[The Sword]],|But Through [[Maharashtra's Powerful Ideas]].|May It Continue To Grow, [[This Is Our Hope]].",
+      "impact_mr": "महाराष्ट्राच्या प्रखर विचारांनी दिलेली दिशा...",
+      "impact_en": "A Direction Guided By Maharashtra's Powerful Ideas...",
       "background": "#1F4A57",
       "left_panel": "#16343D",
       "chapter_colour": "#F7C86B",
@@ -108,7 +119,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "arrow",
       "symbol": "arrow",
-      "right_divider": false
+      "right_divider": false,
+      "box_one_line": true
     },
     {
       "slide": 5,
@@ -126,7 +138,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "triad",
       "symbol": "triad",
-      "right_divider": true
+      "right_divider": true,
+      "big_boxes": true
     },
     {
       "slide": 6,
@@ -188,8 +201,8 @@
       "chapter_en": "Belief",
       "narrative_mr": "“प्रत्येक मुलामध्ये [[शिकण्याची क्षमता]] असते;|गरज असते ती [[योग्य सुरुवातीची]].”//>>वाचन → लेखन → भाषा → गणित|>>समजून घेणे → सराव → आत्मविश्वास",
       "narrative_en": "“Every Child Has The [[Capacity To Learn]];|What Is Needed Is The [[Right Beginning]].”//>>Reading → Writing → Language → Maths|>>Understanding → Practice → Confidence",
-      "impact_mr": "योग्य सुरुवात...",
-      "impact_en": "The Right Beginning...",
+      "impact_mr": "योग्य सुरुवात... शिकण्यापासून आत्मविश्वासापर्यंत.",
+      "impact_en": "The Right Beginning... From Learning To Confidence...",
       "background": "#2F3A34",
       "left_panel": "#1F2622",
       "chapter_colour": "#F7C86B",
@@ -198,7 +211,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "glow",
       "symbol": "check",
-      "right_divider": false
+      "right_divider": false,
+      "box_one_line": false
     }
   ]
 }
