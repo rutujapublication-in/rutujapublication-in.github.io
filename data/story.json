@@ -227,7 +227,7 @@
       "narrative_mr": "पहिल्या [[अक्षरापासून]]...|पहिल्या [[आकड्यापासून]]...|पहिल्या [[आत्मविश्वासापासून]]...|[[ऋतुजा पब्लिकेशन]] तिथेच काम करतं...",
       "narrative_en": "From The First [[Letter]]...|From The First [[Number]]...|From The First [[Confidence]]...//[[Rutuja Publication]] Works Exactly There.",
       "impact_mr": "प्राथमिक शिक्षणाचा पाया पक्का करण्यावर...",
-      "impact_en": "Strengthening The Foundation Of Primary Education...",
+      "impact_en": "Strengthening The Foundation Of Primary Education...",
       "background": "#27413E",
       "left_panel": "#1A2B29",
       "chapter_colour": "#F7C86B",
@@ -238,7 +238,9 @@
       "symbol": "arc",
       "right_divider": true,
       "seconds": 4.0,
-      "text_size_en": 15.4
+      "text_size_en": 13.5,
+      "box_size_en": 17,
+      "box_one_line_en": false
     },
     {
       "slide": 9,
@@ -259,7 +261,7 @@
       "right_divider": false,
       "box_one_line": false,
       "seconds": 5.0,
-      "text_size_en": 15.4
+      "text_size_en": 12.5
     }
   ]
 }

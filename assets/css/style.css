@@ -2249,7 +2249,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   color:#fff;text-align:left;align-self:stretch;
 }
 .st-blk.next{margin-top:calc(var(--fs-max) * 0.5)}
-.st-chain{font-size:calc(var(--fs-max) * 0.92)}
+.st-chain{font-size:calc(var(--fs-max) * 0.92);row-gap:4px}
 .st-chain span{padding:2px 7px}
 
 /* real clearance so nothing can sit under the steps */
@@ -2588,4 +2588,13 @@ html[lang="en"] .book-name{font-size:17px}
   .cta-ico{font-size:19px}
   .cta-go,.cta-go svg{width:34px;height:20px}
   .cta-go path{stroke-width:2.6}
+}
+
+/* English chain chips run wider in Lora, so they step down to stay on one row */
+html[lang="en"] .st-chain{font-size:calc(var(--fs-max) * 0.74);gap:4px}
+html[lang="en"] .st-chain span{padding:2px 5px}
+html[lang="en"] .st-arw{font-size:calc(var(--fs-max) * 0.8)}
+@media(min-width:560px){
+  html[lang="en"] .st-chain{font-size:calc(var(--fs-max) * 0.8);gap:6px}
+  html[lang="en"] .st-chain span{padding:3px 8px}
 }

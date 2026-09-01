@@ -1,14 +1,14 @@
-RUTUJA WEBSITE — BUILD v11x
+RUTUJA WEBSITE — BUILD v11y
 
 HOW TO CHECK THE UPLOAD WORKED
 ------------------------------
 After uploading and waiting 2 minutes, open the site.
-You should see "v11x" in two places:
+You should see "v11y" in two places:
   1. small grey text under the tagline on the welcome banner
   2. at the end of the footer, after the copyright line
 
-If you do NOT see v11x, the upload did not go through.
-Do not debug anything else until v11x appears.
+If you do NOT see v11y, the upload did not go through.
+Do not debug anything else until v11y appears.
 
 WHAT IS IN THIS BUILD
 ---------------------
