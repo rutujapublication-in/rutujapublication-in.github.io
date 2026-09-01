@@ -1787,6 +1787,8 @@ html[lang="en"] body{line-height:1.65}
    =================================================================== */
 .story{
   position:relative;overflow:hidden;background:transparent;
+  -webkit-user-select:none;user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
   width:100%;max-width:100%;display:block;line-height:0;
   border-bottom:2px solid var(--gold);
   margin-bottom:0;
@@ -2598,3 +2600,44 @@ html[lang="en"] .st-arw{font-size:calc(var(--fs-max) * 0.8)}
   html[lang="en"] .st-chain{font-size:calc(var(--fs-max) * 0.8);gap:6px}
   html[lang="en"] .st-chain span{padding:3px 8px}
 }
+
+/* a finger on the band should move it, not select the words */
+.story, .story *{
+  -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+}
+.story img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
+.story-dots .st-dot{-webkit-tap-highlight-color:transparent}
+
+/* ===================================================================
+   NOTHING ON THE PAGE SHOULD SELECT OR POP A MENU WHILE SCROLLING
+   Text stays selectable only where someone would genuinely copy it —
+   a form field, a book description, a price.
+   =================================================================== */
+html, body{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+}
+body{
+  -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+}
+
+/* every image is inert: no drag, no long-press menu, no selection */
+img{
+  -webkit-user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;
+  -o-user-drag:none;user-drag:none;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;user-select:none;
+  pointer-events:none;
+}
+/* except where the image itself must respond to a tap */
+.car-media img, .peek-frame img, .vcard img, a img, button img{pointer-events:auto}
+
+/* only what a person genuinely needs to copy: form fields and the
+   numbers they may want to keep. Everything else is locked. */
+input, textarea, select,
+.gate-done-id, #orderNo, #regId{
+  -webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text;
+  -webkit-touch-callout:default;
+}
+input, textarea{-webkit-touch-callout:default}

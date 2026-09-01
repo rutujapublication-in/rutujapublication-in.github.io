@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11y',
+  VERSION: 'v12c',
   lang: 'mr',
   text: {},
   locations: null,
@@ -35,6 +35,15 @@ const RUTUJA = {
     }
 
     this.config = this.defaultConfig();
+
+    /* No right-click menu on images, on a laptop or a phone.
+       Delegated, so it covers images added later too. */
+    document.addEventListener('contextmenu', e => {
+      if (e.target && e.target.tagName === 'IMG') e.preventDefault();
+    });
+    document.addEventListener('dragstart', e => {
+      if (e.target && e.target.tagName === 'IMG') e.preventDefault();
+    });
 
     BOOKS.init(this);
     MEDIA.init(this);
