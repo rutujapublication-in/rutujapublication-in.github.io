@@ -2379,90 +2379,19 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   display:grid;grid-template-columns:1fr 1fr;gap:10px;
   align-items:stretch;margin:0;
 }
-.cta{
-  position:relative;overflow:hidden;isolation:isolate;
-  display:flex;align-items:center;gap:9px;
-  padding:11px 11px 11px 12px;border-radius:14px;text-align:left;
-  border:1px solid transparent;cursor:pointer;
-  transition:transform .14s ease, box-shadow .14s ease;
-}
-/* a light along the top edge, the way a physical key catches light */
-.cta::before{
-  content:"";position:absolute;left:10px;right:10px;top:0;height:1px;z-index:3;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
-}
-/* pressing sinks it — the shadow collapses and it moves down */
-.cta:active{transform:translateY(2px)}
-.cta-books:active{box-shadow:0 1px 3px rgba(18,56,33,.34)}
-.cta-order:active{box-shadow:0 1px 3px rgba(184,122,30,.4)}
-.cta-txt{display:flex;flex-direction:column;min-width:0;flex:1}
-.cta-txt b{
-  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
-  font-size:15px;line-height:1.2;letter-spacing:.1px;
-}
-.cta-txt i{
-  font-style:normal;font-family:Mukta,system-ui,sans-serif;
-  font-size:11px;line-height:1.35;margin-top:2px;opacity:.9;
-}
-.cta-ico{font-size:15px;line-height:1;flex-shrink:0;opacity:.9}
-.cta-go{
-  font-size:20px;line-height:1;flex-shrink:0;opacity:.75;
-  display:inline-block;animation:beckon 1.6s cubic-bezier(.4,0,.2,1) infinite;
-}
-
-@media(hover:hover){
-  .cta:hover{transform:translateY(-2px)}
-  .cta-books:hover{box-shadow:0 6px 0 rgba(9,38,22,.55), 0 11px 22px rgba(18,56,33,.36)}
-  .cta-order:hover{box-shadow:0 6px 0 rgba(150,95,12,.6), 0 11px 22px rgba(184,122,30,.4)}
-}
-@media(prefers-reduced-motion:reduce){.cta-go{animation:none}}
 
 /* books — deep green through to a lighter leaf */
-.cta-books{
-  color:#EAF4EE;
-  background:
-    radial-gradient(120% 100% at 6% 0%, rgba(255,255,255,.16), transparent 55%),
-    linear-gradient(135deg,#1E6B45 0%,#1A4D2E 52%,#12381F 100%);
-  border-color:rgba(255,255,255,.14);
-  box-shadow:0 4px 0 rgba(9,38,22,.55), 0 7px 16px rgba(18,56,33,.32);
-}
-.cta-books .cta-txt i{color:#A9D8BE}
-
+.cta-books 
 /* order — gold through to amber, the warmer of the two */
-.cta-order{
-  color:#3A2405;
-  background:
-    radial-gradient(120% 100% at 6% 0%, rgba(255,255,255,.34), transparent 55%),
-    linear-gradient(135deg,#F8CE7C 0%,#EFA83F 48%,#D98A20 100%);
-  border-color:rgba(0,0,0,.06);
-  box-shadow:0 4px 0 rgba(150,95,12,.6), 0 7px 16px rgba(184,122,30,.34);
-}
-.cta-order .cta-txt i{color:#6B4708}
-
+.cta-order 
 /* a light passes over the gold one, the way it does on the ribbon */
-.cta-order::after{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(100deg,transparent 34%,rgba(255,255,255,.5) 50%,transparent 66%);
-  background-size:280% 100%;animation:sheen 4.6s ease-in-out infinite;
-}
-.cta > *{position:relative;z-index:2}
-@media(prefers-reduced-motion:reduce){.cta-order::after{animation:none}}
+@media(prefers-reduced-motion:reduce){}
 
 @media(max-width:399px){
-  .cta{padding:10px 9px;gap:7px}
-  .cta-txt b{font-size:13.5px}
-  .cta-txt i{font-size:10px}
-  .cta-ico{font-size:13px}
-  .cta-go{font-size:17px}
-}
+          }
 @media(min-width:560px){
   .hero-btns{gap:14px;max-width:640px;margin:0 auto}
-  .cta{padding:14px 15px;gap:12px;border-radius:16px}
-  .cta-txt b{font-size:18px}
-  .cta-txt i{font-size:13px;margin-top:3px}
-  .cta-ico{font-size:18px}
-  .cta-go{font-size:24px}
-}
+          }
 
 /* ---------- a slide whose three words ARE the point ---------- */
 .sh-steps.big{gap:8px}
@@ -2541,4 +2470,118 @@ html[lang="en"] .bd-desc{font-size:16px;line-height:1.75}
 html[lang="en"] .book-name{font-size:17px}
 @media(min-width:560px){
   html[lang="en"] .sh-quote{font-size:24px}
+}
+
+/* ===================================================================
+   THE TWO ACTIONS — raised keys that breathe, with a travelling arrow
+   =================================================================== */
+.cta{
+  position:relative;overflow:hidden;isolation:isolate;
+  display:flex;align-items:center;gap:10px;
+  padding:12px 10px 12px 12px;border-radius:15px;text-align:left;cursor:pointer;
+  border:1px solid transparent;
+  transition:transform .14s ease, box-shadow .14s ease;
+  animation:ctaBreathe 3.8s ease-in-out infinite;
+}
+.cta-order{animation-delay:.6s}
+.cta > *{position:relative;z-index:3}
+
+/* the top edge catches light, the way a physical key does */
+.cta::before{
+  content:"";position:absolute;left:12px;right:12px;top:0;height:1px;z-index:4;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+}
+/* a light travels across, left to right, behind the text */
+.cta::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(100deg,transparent 32%,rgba(255,255,255,.42) 50%,transparent 68%);
+  background-size:300% 100%;animation:sheen 4.4s ease-in-out infinite;
+}
+.cta-order::after{animation-duration:3.6s;background-image:
+  linear-gradient(100deg,transparent 32%,rgba(255,255,255,.62) 50%,transparent 68%)}
+
+/* ---- text ---- */
+.cta-txt{display:flex;flex-direction:column;min-width:0;flex:1}
+.cta-txt b{
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:600;
+  font-size:15.5px;line-height:1.18;letter-spacing:.1px;
+}
+.cta-txt i{
+  font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:11px;line-height:1.3;margin-top:3px;
+  padding:2px 7px;border-radius:5px;align-self:flex-start;
+}
+.cta-ico{font-size:15px;line-height:1;flex-shrink:0;opacity:.92}
+
+/* ---- the arrow: a full shaft that travels and glows ---- */
+.cta-go{
+  flex-shrink:0;width:26px;height:16px;display:flex;align-items:center;
+  animation:arrowRun 1.9s cubic-bezier(.4,0,.2,1) infinite;
+}
+.cta-go svg{width:26px;height:16px;overflow:visible}
+.cta-go path{
+  fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:30;stroke-dashoffset:0;
+}
+@keyframes arrowRun{
+  0%,100%{transform:translateX(0);   opacity:.6}
+  45%    {transform:translateX(5px); opacity:1}
+  70%    {transform:translateX(2px); opacity:.85}
+}
+
+/* ---- green key ---- */
+.cta-books{
+  color:#EFF8F2;
+  background:
+    radial-gradient(130% 110% at 4% -10%, rgba(255,255,255,.22), transparent 52%),
+    linear-gradient(140deg,#2A8A5A 0%,#1E6B45 34%,#164C31 68%,#0E3520 100%);
+  border-color:rgba(255,255,255,.16);
+  box-shadow:0 4px 0 rgba(8,36,21,.7), 0 8px 18px rgba(18,56,33,.34);
+}
+.cta-books .cta-txt i{color:#BFE8D0;background:rgba(255,255,255,.13)}
+.cta-books .cta-go path{stroke:#8FE3B4;filter:drop-shadow(0 0 5px rgba(143,227,180,.9))}
+.cta-books:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(8,36,21,.7),0 3px 8px rgba(18,56,33,.3)}
+
+/* ---- gold key, the warmer of the two ---- */
+.cta-order{
+  color:#3A2405;
+  background:
+    radial-gradient(130% 110% at 4% -10%, rgba(255,255,255,.48), transparent 52%),
+    linear-gradient(140deg,#FFDF9E 0%,#F6C267 30%,#EFA83F 62%,#D2841B 100%);
+  border-color:rgba(120,72,6,.18);
+  box-shadow:0 4px 0 rgba(146,90,10,.75), 0 8px 20px rgba(196,130,26,.42);
+}
+.cta-order .cta-txt i{color:#5C3B04;background:rgba(255,255,255,.42)}
+.cta-order .cta-go path{stroke:#5C3B04;filter:drop-shadow(0 0 5px rgba(255,255,255,.85))}
+.cta-order:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(146,90,10,.75),0 3px 8px rgba(196,130,26,.34)}
+
+/* the whole key inhales and exhales, out of step with each other */
+@keyframes ctaBreathe{
+  0%,100%{transform:translateY(0)     scale(1)}
+  50%    {transform:translateY(-1.5px) scale(1.012)}
+}
+
+@media(hover:hover){
+  .cta:hover{transform:translateY(-3px);animation-play-state:paused}
+  .cta-books:hover{box-shadow:0 7px 0 rgba(8,36,21,.7), 0 13px 26px rgba(18,56,33,.4)}
+  .cta-order:hover{box-shadow:0 7px 0 rgba(146,90,10,.75), 0 13px 28px rgba(196,130,26,.5)}
+}
+@media(prefers-reduced-motion:reduce){
+  .cta,.cta::after,.cta-go{animation:none}
+}
+@media(max-width:399px){
+  .cta{padding:10px 8px 10px 10px;gap:7px}
+  .cta-txt b{font-size:14px}
+  .cta-txt i{font-size:10px;padding:2px 5px}
+  .cta-ico{font-size:13px}
+  .cta-go,.cta-go svg{width:21px;height:13px}
+}
+@media(min-width:560px){
+  .hero-btns{gap:14px;max-width:660px;margin:0 auto}
+  .cta{padding:16px 14px 16px 16px;gap:13px;border-radius:18px}
+  .cta-txt b{font-size:19px}
+  .cta-txt i{font-size:13px;margin-top:4px;padding:3px 9px}
+  .cta-ico{font-size:19px}
+  .cta-go,.cta-go svg{width:34px;height:20px}
+  .cta-go path{stroke-width:2.6}
 }

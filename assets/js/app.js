@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11q',
+  VERSION: 'v11t',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2095,9 +2095,14 @@ const STORY = {
     box.addEventListener('mouseleave', () => { if (!this.held) this.start(); });
   },
 
-  secs() {
-    const v = Number((this.app.content.config || {}).story_seconds);
-    return (v > 0 ? v : 3) * 1000;
+  /* Each slide may set its own seconds. Anything without one falls
+     back to story_seconds in Config, and that to 3. */
+  secs(i) {
+    const cfg = Number((this.app.content.config || {}).story_seconds);
+    const base = cfg > 0 ? cfg : 3;
+    const sl = (this.app.story || [])[i === undefined ? this.i : i] || {};
+    const own = Number(sl.seconds);
+    return (own > 0 ? own : base) * 1000;
   },
 
   /* Size responds to how much the slide actually carries. */
@@ -2241,6 +2246,9 @@ const STORY = {
       d.classList.toggle('on', k === this.i));
   },
 
-  start() { this.stop(); this.timer = setInterval(() => this.go(this.i + 1), this.secs()); },
-  stop() { clearInterval(this.timer); }
+  start() {
+    this.stop();
+    this.timer = setTimeout(() => { this.go(this.i + 1); this.start(); }, this.secs());
+  },
+  stop() { clearTimeout(this.timer); }
 };

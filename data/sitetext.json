@@ -1,7 +1,7 @@
 {
  "mr": {
   "nav_home": "मुख्यपृष्ठ",
-  "nav_books": "पुस्तके",
+  "nav_books": "पुस्तके पाहा",
   "nav_videos": "व्हिडिओ",
   "nav_experiences": "अनुभव",
   "nav_offers": "सवलती",
@@ -278,12 +278,12 @@
   "ph_taluka": "तालुक्याचे नाव लिहा",
   "ph_village": "गाव किंवा शहराचे नाव",
   "ph_pin": "६ अंकी पिन कोड",
-  "btn_books_sub": "५ पुस्तके · इयत्ता १ ली ते ५ वी",
-  "btn_order_sub": "दर विचारा किंवा मागणी नोंदवा"
+  "btn_books_sub": "सर्व पुस्तके, दर व सवलत",
+  "btn_order_sub": "थेट व्हॉट्सॲपवर बोला"
  },
  "en": {
   "nav_home": "Home",
-  "nav_books": "Books",
+  "nav_books": "Browse Books",
   "nav_videos": "Videos",
   "nav_experiences": "Experiences",
   "nav_offers": "Offers",
@@ -560,7 +560,7 @@
   "ph_taluka": "Type the taluka name",
   "ph_village": "Village or city name",
   "ph_pin": "6 digit PIN code",
-  "btn_books_sub": "5 books · Std 1 to 5",
-  "btn_order_sub": "Ask a rate or place an order"
+  "btn_books_sub": "All books, rates and offers",
+  "btn_order_sub": "Talk to us on WhatsApp"
  }
 }

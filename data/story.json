@@ -44,7 +44,16 @@
     "",
     "text_size      an optional size in px for THIS slide's sentences.",
     "               Leave it out and the slide uses the shared size.",
-    "               Only set it when a slide carries more text than the rest."
+    "               Only set it when a slide carries more text than the rest.",
+    "",
+    "               Leave it out and the slide uses story_seconds",
+    "               from data/content.json. Longer slides need more.",
+    "seconds        how long THIS slide stays before moving on.",
+    "               short slides 1 and 8: 4.0",
+    "               medium 3, 5, 9: 5.0",
+    "               long 2, 4, 6, 7: 5.5",
+    "               full cycle 45 seconds. Leave it out and the slide",
+    "               uses story_seconds from data/content.json."
   ],
   "slides": [
     {
@@ -63,7 +72,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "beam",
       "symbol": "logo",
-      "right_divider": true
+      "right_divider": true,
+      "seconds": 4.0
     },
     {
       "slide": 2,
@@ -83,7 +93,8 @@
       "symbol": "rings",
       "right_divider": false,
       "box_one_line": true,
-      "text_size": 13.2
+      "text_size": 13.2,
+      "seconds": 5.5
     },
     {
       "slide": 3,
@@ -101,7 +112,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "door",
       "symbol": "door",
-      "right_divider": true
+      "right_divider": true,
+      "seconds": 5.0
     },
     {
       "slide": 4,
@@ -120,7 +132,8 @@
       "keyword_effect": "arrow",
       "symbol": "arrow",
       "right_divider": false,
-      "box_one_line": true
+      "box_one_line": true,
+      "seconds": 5.5
     },
     {
       "slide": 5,
@@ -139,7 +152,8 @@
       "keyword_effect": "triad",
       "symbol": "triad",
       "right_divider": true,
-      "big_boxes": true
+      "big_boxes": true,
+      "seconds": 5.0
     },
     {
       "slide": 6,
@@ -157,7 +171,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "rise",
       "symbol": "base",
-      "right_divider": false
+      "right_divider": false,
+      "seconds": 5.5
     },
     {
       "slide": 7,
@@ -175,7 +190,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "spark",
       "symbol": "letter",
-      "right_divider": false
+      "right_divider": false,
+      "seconds": 5.5
     },
     {
       "slide": 8,
@@ -193,7 +209,8 @@
       "divider_colour": "#F7C86B",
       "keyword_effect": "join",
       "symbol": "arc",
-      "right_divider": true
+      "right_divider": true,
+      "seconds": 4.0
     },
     {
       "slide": 9,
@@ -212,7 +229,8 @@
       "keyword_effect": "glow",
       "symbol": "check",
       "right_divider": false,
-      "box_one_line": false
+      "box_one_line": false,
+      "seconds": 5.0
     }
   ]
 }
