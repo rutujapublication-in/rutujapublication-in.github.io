@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v11v',
+  VERSION: 'v11x',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2227,9 +2227,11 @@ const STORY = {
           ${words.map((w, wi) =>
             `<span class="sh-step" style="--d:${wi * 0.6}s${
               words.length === 1
-                ? (this.oneLine(w, sl.box_one_line, sl.box_size)
-                    ? `;--one:${this.oneLine(w, sl.box_one_line, sl.box_size)}px;white-space:nowrap`
-                    : (sl.box_size ? `;--one:${sl.box_size}px` : ''))
+                ? (this.oneLine(w, sl['box_one_line_' + L] !== undefined ? sl['box_one_line_' + L] : sl.box_one_line,
+                                sl['box_size_' + L] || sl.box_size)
+                    ? `;--one:${this.oneLine(w, sl['box_one_line_' + L] !== undefined ? sl['box_one_line_' + L] : sl.box_one_line,
+                                              sl['box_size_' + L] || sl.box_size)}px;white-space:nowrap`
+                    : ((sl['box_size_' + L] || sl.box_size) ? `;--one:${sl['box_size_' + L] || sl.box_size}px` : ''))
                 : ''}">${w.trim()}</span>`).join('')}
         </div>
 

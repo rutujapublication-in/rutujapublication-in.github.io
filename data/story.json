@@ -59,7 +59,12 @@
     "               Leave it out and the box sizes itself.",
     "text_size_en   a size just for the English version of this slide,",
     "text_size_mr   or just for the Marathi. Useful when one language",
-    "               runs much longer than the other."
+    "               runs much longer than the other.",
+    "",
+    "box_size_mr / box_size_en        a box size for one language only",
+    "box_one_line_mr / _en            force one line in one language only",
+    "               Marathi and English differ in width, so a phrase that",
+    "               fits one line in one may need two in the other."
   ],
   "slides": [
     {
@@ -98,9 +103,13 @@
       "keyword_effect": "rings",
       "symbol": "rings",
       "right_divider": false,
-      "box_one_line": true,
-      "text_size": 12.6,
-      "seconds": 5.5
+      "seconds": 5.5,
+      "box_one_line_mr": true,
+      "box_size_mr": 12.6,
+      "box_one_line_en": true,
+      "box_size_en": 16,
+      "text_size_mr": 13.0,
+      "text_size_en": 13.5
     },
     {
       "slide": 3,
@@ -120,9 +129,12 @@
       "symbol": "door",
       "right_divider": true,
       "seconds": 5.0,
-      "box_one_line": false,
-      "box_size": 16,
-      "text_size": 12.0
+      "box_one_line_mr": true,
+      "box_size_mr": 11.5,
+      "box_one_line_en": false,
+      "box_size_en": 17,
+      "text_size_mr": 14.5,
+      "text_size_en": 12.0
     },
     {
       "slide": 4,
@@ -141,10 +153,13 @@
       "keyword_effect": "arrow",
       "symbol": "arrow",
       "right_divider": false,
-      "box_one_line": true,
       "seconds": 5.5,
-      "box_size": 25,
-      "text_size": 13.5
+      "box_one_line_mr": true,
+      "box_size_mr": 13,
+      "box_one_line_en": false,
+      "box_size_en": 16,
+      "text_size_mr": 14.5,
+      "text_size_en": 13.5
     },
     {
       "slide": 5,
@@ -171,8 +186,8 @@
       "chapter_mr": "पाया",
       "chapter_en": "Foundation",
       "narrative_mr": "[[महाराष्ट्र]] हे भारतातील केवळ एक राज्य नाही,|तर ते भारताच्या [[वैचारिक प्रवासातील]] महत्त्वाचा पाया आहे.|आणि हा पाया [[दगड-विटांचा नाही]]...|तर तो [[वैचारिक महाराष्ट्राचा]] आहे.",
-      "narrative_en": "[[Maharashtra]] Is Not Merely A State Within India;|It Is An Important Foundation Of India's [[Intellectual Journey]].|And This Foundation Is [[Not Made Of Stone]] & Bricks...|It Is The Foundation Built By [[Maharashtra's Intellectual Legacy]].",
-      "impact_mr": "माणसांचा वैचारिक पाया...",
+      "narrative_en": "[[Maharashtra]] Is Not Merely A State Within India;|It Is An Important Foundation Of India's [[Intellectual Journey]].|And This Foundation Is [[Not Made Of Stone & Bricks]]...|It Is The Foundation Built By [[Maharashtra's Intellectual Legacy]].",
+      "impact_mr": "भारताच्या नागरिकांचा वैचारिक पाया...",
       "impact_en": "The Intellectual Foundation of People...",
       "background": "#184E52",
       "left_panel": "#103436",
@@ -222,7 +237,8 @@
       "keyword_effect": "join",
       "symbol": "arc",
       "right_divider": true,
-      "seconds": 4.0
+      "seconds": 4.0,
+      "text_size_en": 15.4
     },
     {
       "slide": 9,
@@ -242,7 +258,8 @@
       "symbol": "check",
       "right_divider": false,
       "box_one_line": false,
-      "seconds": 5.0
+      "seconds": 5.0,
+      "text_size_en": 15.4
     }
   ]
 }

@@ -2223,7 +2223,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 /* the symbol now sits BEFORE the title on slides 2 to 9 */
 .st .st .sh-underline{margin-top:6px;margin-bottom:1px;position:relative;z-index:0}
 .st .st-m{padding:7px 15px 5px}
-.st .sh-steps{padding:0 13px 7px}
+.st .sh-steps{padding:0 13px 6px}
 @media(min-width:560px){}
 
 /* ---------- the narrative is measured, not guessed ---------- */
@@ -2264,7 +2264,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 .sh-steps.one{gap:0}
 .sh-steps.one .sh-step{
   flex:1 1 auto;max-width:none;width:100%;
-  font-size:var(--one, 19px);padding:9px 14px;line-height:1.3;
+  font-size:var(--one, 19px);padding:8px 14px;line-height:1.28;
 }
 @media(min-width:560px){ .sh-steps.one .sh-step{font-size:calc(var(--one, 19px) * 1.5);padding:12px 18px} }
 @media(min-width:1100px){ .sh-steps.one .sh-step{font-size:calc(var(--one, 19px) * 1.85)} }
@@ -2367,7 +2367,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 /* slides 2 to 9 keep the symbol BESIDE the title, and their own spacing */
 .st:not(.st-hero) .sh-title{
   display:flex;flex-direction:row;align-items:center;justify-content:center;gap:9px;
-  padding:5px 16px 0;flex-shrink:0;
+  padding:4px 16px 0;flex-shrink:0;
 }
 .st:not(.st-hero) .sh-underline{align-self:center;margin-top:6px;margin-bottom:1px;
   position:relative;z-index:0}
@@ -2394,9 +2394,10 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
           }
 
 /* ---------- a slide whose three words ARE the point ---------- */
-.sh-steps.big{gap:8px}
+.sh-steps.big{gap:6px}
 .sh-steps.big .sh-step{
-  padding:14px 6px;font-size:19px;line-height:1.2;border-radius:12px;
+  padding:14px 5px;font-size:19px;line-height:1.2;border-radius:12px;
+  min-width:0;overflow-wrap:break-word;
   border:1.5px solid rgba(247,200,107,.62);
   background:
     radial-gradient(120% 100% at 50% 0%, rgba(247,200,107,.28), transparent 62%),
@@ -2417,12 +2418,15 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
           box-shadow:0 3px 0 rgba(150,95,12,.34), 0 0 20px 2px rgba(247,200,107,.45);color:#fff}
 }
 @media(prefers-reduced-motion:reduce){.sh-steps.big .sh-step{animation:none}}
+html[lang="en"] .sh-steps.big .sh-step{font-size:16px;letter-spacing:-.2px}
+@media(max-width:399px){ html[lang="en"] .sh-steps.big .sh-step{font-size:13.5px} }
 @media(min-width:560px){
+  html[lang="en"] .sh-steps.big .sh-step{font-size:26px}
   .sh-steps.big{gap:14px}
   .sh-steps.big .sh-step{padding:20px 10px;font-size:28px;border-radius:14px}
 }
 @media(max-width:359px){
-  .sh-steps.big .sh-step{padding:12px 4px;font-size:16.5px}
+  .sh-steps.big .sh-step{padding:12px 3px;font-size:15px}
 }
 
 
