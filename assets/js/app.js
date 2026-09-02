@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13u',
+  VERSION: 'v13x',
   lang: 'mr',
   text: {},
   locations: null,
@@ -126,8 +126,20 @@ const RUTUJA = {
     localStorage.setItem('rutuja_lang', lang);
     document.documentElement.lang = lang;
     document.getElementById('langLabel').textContent = lang === 'mr' ? 'English' : 'मराठी';
-    this.paint();
-    ENTRY.repaint();
+
+    /* The tap used to trigger twelve section re-renders in one blocking
+       pass — the books grid, the nine slides, the carousels — whether or
+       not any of it was on screen. Labels and the section in front of the
+       visitor now go first; the rest follows a frame later. */
+    this.paintLabels();
+    this.paintWinLang();
+    const now = this.visibleSections();
+    this.paintSections(now);
+
+    requestAnimationFrame(() => {
+      try { this.paintSections(null, now); } catch (e) { console.error('deferred paint', e); }
+      try { ENTRY.repaint(); } catch (e) {}
+    });
     if (!silent) window.scrollTo(0, 0);
   },
 
@@ -180,10 +192,39 @@ const RUTUJA = {
 
   /* ---- 3. RENDER ---- */
   paint() {
+    this.paintLabels();
+    this.paintSections();
+  },
+
+  /* Every label on the page, in one cheap sweep. */
+  paintLabels() {
     document.querySelectorAll('[data-t]').forEach(el => {
       const v = this.t(el.dataset.t);
       if (v) el.textContent = v;
     });
+  },
+
+  /* Which sections the visitor can actually see right now. Repainting
+     these first keeps a language tap feeling immediate; everything else
+     can catch up a frame later without anyone noticing. */
+  visibleSections() {
+    const open = id => {
+      const el = document.getElementById(id);
+      return el && !el.classList.contains('hidden');
+    };
+    if (open('order')) return ['order'];
+    if (open('modal') || open('sheet')) return [];
+    const byPage = {
+      home:    ['strip', 'standards', 'offers', 'explore', 'story', 'footer'],
+      books:   ['books'], book: ['books'],
+      cart:    ['cart'], qa: ['qa'], contact: ['contact'],
+      media:   ['media'], offers: ['offers']
+    };
+    return byPage[this.page || 'home'] || [];
+  },
+
+  /* `only` renders just those sections; `skip` renders all but those. */
+  paintSections(only, skip) {
     // Each section is isolated: if one fails, the rest of the site still renders.
     [['strip', () => this.paintStrip()],
      ['standards', () => this.paintStandards()],
@@ -193,10 +234,18 @@ const RUTUJA = {
      ['story', () => STORY.paint()],
      ['media', () => MEDIA.paint()],
      ['cart', () => CART.render()],
+     ['order', () => {
+       /* redraw the open order window too, or the picker and the whole
+          summary keep the language they were opened in */
+       const w = document.getElementById('order');
+       if (w && !w.classList.contains('hidden')) ORDER.draw();
+     }],
      ['contact', () => this.paintContact()],
      ['qa', () => QA.paint()],
      ['footer', () => this.paintFooter()]
     ].forEach(([name, fn]) => {
+      if (only && only.indexOf(name) < 0) return;
+      if (skip && skip.indexOf(name) >= 0) return;
       try { fn(); } catch (e) { console.error('Section failed:', name, e); }
     });
   },
@@ -339,14 +388,10 @@ const RUTUJA = {
         b.dataset.bound = '1';
         b.addEventListener('click', () => {
           const next = this.lang === 'mr' ? 'en' : 'mr';
-          /* answer the tap at once, then do the heavy repaint on the next
-             frame — otherwise the button appears to lag on a slow phone */
+          /* setLang now paints the visible section first and defers the
+             rest, so the tap can be answered straight away */
           b.textContent = next === 'mr' ? 'English' : 'मराठी';
-          b.classList.add('busy');
-          requestAnimationFrame(() => {
-            this.setLang(next, true);
-            b.classList.remove('busy');
-          });
+          this.setLang(next, true);
         });
       }
     });
@@ -2109,8 +2154,18 @@ const ORDER = {
     this.draw();
   },
 
+  /* Always in book-section order, never in the order quantities were
+     typed. The same rule as the cart; this builder is a separate one
+     and was missed when the cart was fixed. */
   lines() {
-    return this.picked.map(p => {
+    const all = (this.app.content.books || []).filter(b => b.status === 'LIVE');
+    const rank = id => {
+      const i = all.findIndex(x => x.book_id === id);
+      return i < 0 ? 9999 : i;
+    };
+    return this.picked.slice()
+      .sort((a, b) => rank(a.id) - rank(b.id))
+      .map(p => {
       const b = (this.app.content.books || []).find(x => x.book_id === p.id);
       if (!b) return null;
       const pr = BOOKS.priceFor(b, p.qty);

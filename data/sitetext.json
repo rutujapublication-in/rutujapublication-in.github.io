@@ -248,7 +248,7 @@
     "order_your": "आपली माहिती",
     "order_min": "किमान नाव व व्हॉट्सॲप क्रमांक द्या. बाकी माहिती ऐच्छिक आहे.",
     "order_optional": "ऐच्छिक",
-    "order_none_picked": "कृपया किमान एक पुस्तक निवडा.",
+    "order_none_picked": "चौकशी / मागणीसाठी किमान एका पुस्तकाची नगसंख्या भरा.",
     "book_enq": "या पुस्तकाची चौकशी",
     "book_order_now": "हेच पुस्तक मागवा",
     "saved_details": "आपली माहिती जतन केली आहे",
@@ -312,7 +312,7 @@
     "order_pick_s": "नग निवडा — दर व एकूण रक्कम लगेच दिसेल.",
     "order_wa_cta": "ऑर्डर व्हॉट्सॲपवर पाठवा",
     "gate_done_sub": "आता व्हॉट्सॲपवर पाठवा.",
-    "form_why_note": "नक्की काय हवं ते समजून पोहोचण्यासाठी.",
+    "form_why_note": "आपली चौकशी / मागणी नीट पोहोचण्यासाठी",
     "send_head": "तुमची गरज, आमची माहिती",
     "send_sub": "दर व सवलत थेट व्हॉट्सॲपवर"
   },
@@ -565,7 +565,7 @@
     "order_your": "Your Details",
     "order_min": "Name and WhatsApp number are enough. The rest is optional.",
     "order_optional": "optional",
-    "order_none_picked": "Please choose at least one book.",
+    "order_none_picked": "To Enquire Or Order, Enter A Quantity For One Book.",
     "book_enq": "Enquire About This Book",
     "book_order_now": "Order This Book",
     "saved_details": "Your details are saved",
@@ -629,7 +629,7 @@
     "order_pick_s": "Pick Quantities — Rate and Total Update Live.",
     "order_wa_cta": "Send Order on WhatsApp",
     "gate_done_sub": "Now Send It on WhatsApp.",
-    "form_why_note": "So We Know Exactly What You Need.",
+    "form_why_note": "So Your Enquiry Or Order Reaches Us",
     "send_head": "Your Need, Our Information",
     "send_sub": "Rates And Offers On WhatsApp"
   }
