@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v12x',
+  VERSION: 'v12y',
   lang: 'mr',
   text: {},
   locations: null,
@@ -52,6 +52,7 @@ const RUTUJA = {
     ORDERFORM.init(this);
     ORDER.init(this);
     PEEK.init(this);
+    QA.init(this);
     ENTRY.init(this);
   },
 
@@ -137,14 +138,15 @@ const RUTUJA = {
 
   /* Book, ad, experience and news images all follow one rule:
      name.webp is the 1x file, name@2x.webp is the retina file if present. */
-  img(folder, file, cls) {
+  img(folder, file, cls, alt) {
     if (!file) return '';
     const dot = file.lastIndexOf('.');
     const x2 = dot > 0 ? file.slice(0, dot) + '@2x' + file.slice(dot) : file;
+    const a = (alt || '').replace(/"/g, '&quot;');
     return `<img src="assets/img/${folder}/${file}"
       srcset="assets/img/${folder}/${file} 1x, assets/img/${folder}/${x2} 2x"
       onerror="this.removeAttribute('srcset')"
-      alt="" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
+      alt="${a}" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
   },
 
   /* ---- 3. RENDER ---- */
@@ -163,6 +165,7 @@ const RUTUJA = {
      ['media', () => MEDIA.paint()],
      ['cart', () => CART.render()],
      ['contact', () => this.paintContact()],
+     ['qa', () => QA.paint()],
      ['footer', () => this.paintFooter()]
     ].forEach(([name, fn]) => {
       try { fn(); } catch (e) { console.error('Section failed:', name, e); }
@@ -285,8 +288,23 @@ const RUTUJA = {
     if (vb) vb.textContent = this.VERSION;
     document.getElementById('footerAddr').textContent =
       this.lang === 'mr' ? this.config.address_mr : this.config.address_en;
+    this.waFloat();
+  },
+
+  /* The float used to send the same anonymous line from every page.
+     It now carries where the person actually was, so the reply can
+     start from the book they were reading. */
+  waFloat() {
     const w = document.getElementById('waFloat');
-    const link = this.wa();
+    if (!w) return;
+    let key = 'wa_general', extra = '';
+    const p = this.page || 'home';
+    if (p === 'book' && BOOKS && BOOKS.current) {
+      const b = (this.content.books || []).find(x => x.book_id === BOOKS.current);
+      if (b) { key = 'wa_book'; extra = this.lang === 'mr' ? b.name_mr : b.name_en; }
+    } else if (p === 'offers') key = 'wa_school';
+    else if (p === 'qa')      key = 'wa_qa';
+    const link = this.wa(key, extra);
     if (link) { w.href = link; w.classList.remove('hidden'); }
     else { w.classList.add('hidden'); }
   },
@@ -316,6 +334,9 @@ const RUTUJA = {
     document.querySelectorAll('.nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === page));
     document.getElementById('nav').classList.remove('open');
     if (!fromHash) location.hash = page;
+    this.page = page;
+    try { QA.onPage(page); } catch (e) { console.error('QA page', e); }
+    this.waFloat();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
@@ -897,7 +918,7 @@ const BOOKS = {
     const sub  = sl.slice(0, 2).join(' · ') + (sl.length > 2 ? ' +' + (sl.length - 2) : '');
     const num  = this.stdLabel(b);
     const cover = b.cover_image
-      ? this.app.img('books', b.cover_image)
+      ? this.app.img('books', b.cover_image, '', mr ? b.name_mr : b.name_en)
       : `<span class="book-cover-ph">${num}</span>`;
     const best = this.slabs(b.offer_id).slice(-1)[0];
     const hint = best && best.selling_rate < b.mrp
@@ -1039,7 +1060,7 @@ const BOOKS = {
     const mr = this.app.lang === 'mr';
     const num = this.stdLabel(b);
     const cover = b.cover_image
-      ? this.app.img('books', b.cover_image)
+      ? this.app.img('books', b.cover_image, '', mr ? b.name_mr : b.name_en)
       : `<span>${num}</span>`;
     const mySlabs = this.slabs(b.offer_id);
     const pct = this.bestPct(b);
@@ -1146,6 +1167,7 @@ const BOOKS = {
       }
     };
     MEDIA.bindBookVideos(this.el.detail);
+    QA.forBook(this.el.detail);
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
     document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
@@ -1535,7 +1557,7 @@ const CART = {
     box.innerHTML = `
       <div class="cart-list">${lines.map(l => `
         <div class="cart-row">
-          <div class="cart-thumb">${this.app.img('books', l.book.cover_image)}</div>
+          <div class="cart-thumb">${this.app.img('books', l.book.cover_image, '', this.app.lang === 'mr' ? l.book.name_mr : l.book.name_en)}</div>
           <div class="cart-info">
             <div class="cart-name">${mr ? l.book.name_mr : l.book.name_en}</div>
             <div class="cart-meta">&#8377;${l.each} ${t('price_each')}
@@ -1848,7 +1870,7 @@ const PEEK = {
 
   draw() {
     document.getElementById('peekFrame').innerHTML =
-      this.app.img('books', this.pages[this.i]);
+      this.app.img('books', this.pages[this.i], '', this.name);
     document.getElementById('peekName').textContent = this.name;
     // Marathi reads "8 पैकी 3", English reads "3 of 8"
     document.getElementById('peekCount').textContent = this.app.lang === 'mr'
@@ -1944,7 +1966,7 @@ const ORDER = {
           }).join('')}
         </div>` : '';
         return `<div class="opick-row${q ? ' on' : ''}">
-          <div class="opick-cover">${this.app.img('books', b.cover_image)}</div>
+          <div class="opick-cover">${this.app.img('books', b.cover_image, '', this.app.lang === 'mr' ? b.name_mr : b.name_en)}</div>
           <div class="opick-main">
             <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
             <div class="opick-money">
@@ -2275,4 +2297,156 @@ const STORY = {
     this.timer = setTimeout(() => { this.go(this.i + 1); this.start(); }, this.secs());
   },
   stop() { clearTimeout(this.timer); }
+};
+
+
+/* ===================================================================
+   Q & A — answers, and the route back into the books
+   data/qa.json is fetched only when the page is opened, so the
+   first paint of the site stays exactly as light as it was.
+   =================================================================== */
+
+const QA = {
+  app: null, data: null, loading: false, cat: '', open: '',
+
+  init(app) {
+    this.app = app;
+    const box = document.getElementById('qaBody');
+    if (box) box.addEventListener('click', e => this.tap(e));
+    const det = document.getElementById('bookDetail');
+    if (det) det.addEventListener('click', e => this.tap(e));
+    const send = document.getElementById('qaSend');
+    if (send) send.addEventListener('click', () => this.ask());
+  },
+
+  /* One delegated handler serves the page and the book block. */
+  tap(e) {
+    const c = e.target.closest('[data-qcat]');
+    if (c) { this.cat = c.dataset.qcat; this.open = ''; this.render(); return; }
+    const h = e.target.closest('[data-qid]');
+    if (h) { this.open = this.open === h.dataset.qid ? '' : h.dataset.qid; this.render(); this.paintBook(); return; }
+    const b = e.target.closest('[data-qbook]');
+    if (b) { e.preventDefault(); BOOKS.openBook(b.dataset.qbook); }
+  },
+
+  onPage(page) { if (page === 'qa') this.load(); },
+
+  async load() {
+    if (this.data) { this.render(); return this.data; }
+    if (this.loading) return null;
+    this.loading = true;
+    this.render();
+    try {
+      const r = await fetch('data/qa.json?v=' + this.app.VERSION);
+      const j = await r.json();
+      this.data = (j && j.questions) || [];
+    } catch (err) {
+      console.error('Q&A load failed', err);
+      this.data = [];
+    }
+    this.loading = false;
+    this.render();
+    this.paintBook();
+    return this.data;
+  },
+
+  live() {
+    return (this.data || [])
+      .filter(q => q.status === 'LIVE')
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  },
+
+  L() { return this.app.lang === 'mr' ? 'mr' : 'en'; },
+
+  cats() {
+    const L = this.L(), out = [];
+    this.live().forEach(q => {
+      const c = q['category_' + L];
+      if (c && out.indexOf(c) < 0) out.push(c);
+    });
+    return out;
+  },
+
+  /* Line breaks in the source are real; bullets stay readable. */
+  body(text) {
+    return String(text || '').split('\n')
+      .map(l => l.trim() ? `<p class="qa-p">${l}</p>` : '')
+      .join('');
+  },
+
+  bookLink(id) {
+    if (!id) return '';
+    const b = (this.app.content.books || []).find(x => x.book_id === id);
+    if (!b) return '';
+    const mr = this.L() === 'mr';
+    return `<a class="qa-book" href="#books" data-qbook="${id}">${mr ? b.name_mr : b.name_en} &rarr;</a>`;
+  },
+
+  item(q) {
+    const L = this.L();
+    const on = this.open === q.qa_id;
+    return `<div class="qa-item${on ? ' on' : ''}">
+      <button class="qa-q" data-qid="${q.qa_id}" aria-expanded="${on}">
+        <span class="qa-qt">${q['question_' + L]}</span><span class="qa-sign" aria-hidden="true"></span>
+      </button>
+      <div class="qa-a">${this.body(q['answer_' + L])}${this.bookLink(q.book_id)}</div>
+    </div>`;
+  },
+
+  render() {
+    const box = document.getElementById('qaBody');
+    if (!box) return;
+    const t = k => this.app.t(k);
+
+    if (this.loading && !this.data) { box.innerHTML = `<p class="qa-wait">${t('common_loading')}</p>`; return; }
+
+    const all = this.live();
+    if (!all.length) { box.innerHTML = `<p class="qa-wait">${t('qa_none')}</p>`; return; }
+
+    const cats = this.cats();
+    const chips = cats.length > 1
+      ? `<div class="qa-chips">
+          <button class="qa-chip${this.cat ? '' : ' on'}" data-qcat="">${t('qa_all')}</button>
+          ${cats.map(c => `<button class="qa-chip${this.cat === c ? ' on' : ''}" data-qcat="${c}">${c}</button>`).join('')}
+         </div>` : '';
+
+    const L = this.L();
+    const shown = this.cat ? all.filter(q => q['category_' + L] === this.cat) : all;
+    box.innerHTML = chips + `<div class="qa-list">${shown.map(q => this.item(q)).join('')}</div>`;
+  },
+
+  /* The same questions, filtered, sitting on the book's own page. */
+  paintBook() {
+    const root = document.getElementById('bookDetail');
+    if (!root || !BOOKS.current) return;
+    const host = root.querySelector('#qaForBook');
+    if (!host) return;
+    const mine = this.live().filter(q => q.book_id === BOOKS.current);
+    if (!mine.length) { host.innerHTML = ''; return; }
+    host.innerHTML = `<h3 class="qa-bh">${this.app.t('qa_for_book')}</h3>
+      <div class="qa-list qa-list-book">${mine.map(q => this.item(q)).join('')}</div>`;
+  },
+
+  forBook(root) {
+    if (!root) return;
+    const host = document.createElement('div');
+    host.id = 'qaForBook';
+    host.className = 'qa-book-block';
+    root.appendChild(host);
+    if (this.data) this.paintBook(); else this.load();
+  },
+
+  /* The question goes to WhatsApp, not to a sheet. No await before
+     the call, so the tap keeps its gesture and the window opens. */
+  ask() {
+    const el = document.getElementById('qaAsk');
+    if (!el) return;
+    const q = (el.value || '').trim().slice(0, 400);
+    if (!q) { el.focus(); return; }
+    const link = this.app.wa('wa_qa', q);
+    if (link) { window.open(link, '_blank'); el.value = ''; }
+    else this.app.go('contact');
+  },
+
+  paint() { this.render(); this.paintBook(); }
 };

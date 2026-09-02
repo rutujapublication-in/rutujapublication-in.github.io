@@ -1,0 +1,22 @@
+{
+  "nav_books": {
+    "mr": "पुस्तके पाहा",
+    "en": "See Books"
+  },
+  "btn_books_sub": {
+    "mr": "दर व विशेष सवलती",
+    "en": "Rates with Its Offers"
+  },
+  "btn_videos": {
+    "mr": "व्हिडिओ\nबघा",
+    "en": "Watch\nVideos"
+  },
+  "order_btn": {
+    "mr": "चौकशी करा /\nमागणी नोंदवा",
+    "en": "Enquire /\nPlace an Order"
+  },
+  "btn_order_sub": {
+    "mr": "थेट व्हॉट्सॲपवर बोला",
+    "en": "Talk to us on WhatsApp"
+  }
+}

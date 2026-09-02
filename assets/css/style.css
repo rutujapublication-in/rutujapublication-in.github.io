@@ -2708,3 +2708,108 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   animation-duration:3.8s;
 }
 @media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
+
+/* ===================================================================
+   Q & A — chips, accordion, ask box, and the block on a book page
+   Appended as its own named block. Touches nothing shared.
+   =================================================================== */
+
+.qa-wait{font-family:Mukta,system-ui,sans-serif;font-size:14px;color:var(--ink-soft);
+  text-align:center;padding:26px 0}
+
+/* ---------- category chips ---------- */
+.qa-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+.qa-chip{
+  font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:600;
+  color:var(--green);background:var(--white);border:1.5px solid var(--line);
+  border-radius:999px;padding:6px 13px;cursor:pointer;line-height:1.2;
+  transition:background .16s ease,border-color .16s ease,color .16s ease;
+}
+.qa-chip.on{background:var(--green);border-color:var(--green);color:var(--white)}
+@media(hover:hover){.qa-chip:hover{border-color:var(--green)}}
+.qa-chip:active{transform:scale(.97)}
+
+/* ---------- the accordion ---------- */
+.qa-list{display:flex;flex-direction:column;gap:9px}
+
+.qa-item{
+  background:var(--white);border:1.5px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+.qa-item.on{border-color:var(--gold);box-shadow:0 3px 14px rgba(0,0,0,.07)}
+
+.qa-q{
+  width:100%;display:flex;align-items:flex-start;gap:10px;
+  background:none;border:0;cursor:pointer;text-align:left;
+  padding:13px 14px;font-family:Mukta,system-ui,sans-serif;
+}
+.qa-qt{
+  flex:1;font-size:14.5px;font-weight:600;line-height:1.42;color:var(--green-dark);
+  overflow-wrap:break-word;
+}
+.qa-item.on .qa-qt{color:var(--green)}
+
+/* a plus that becomes a minus, drawn rather than lettered */
+.qa-sign{position:relative;width:16px;height:16px;flex-shrink:0;margin-top:3px}
+.qa-sign::before,.qa-sign::after{
+  content:"";position:absolute;left:50%;top:50%;background:var(--gold-dark);
+  border-radius:1px;transform-origin:center;transition:transform .2s ease,opacity .2s ease;
+}
+.qa-sign::before{width:12px;height:2px;margin:-1px 0 0 -6px}
+.qa-sign::after{width:2px;height:12px;margin:-6px 0 0 -1px}
+.qa-item.on .qa-sign::after{transform:rotate(90deg);opacity:0}
+
+.qa-a{
+  display:none;padding:0 14px 14px;
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.62;color:var(--ink);
+  border-top:1px solid var(--line);margin-top:0;padding-top:12px;
+}
+.qa-item.on .qa-a{display:block}
+.qa-p{margin:0 0 8px;overflow-wrap:break-word}
+.qa-p:last-of-type{margin-bottom:0}
+
+.qa-book{
+  display:inline-block;margin-top:11px;
+  font-family:Mukta,system-ui,sans-serif;font-size:13px;font-weight:600;
+  color:var(--green);background:var(--green-light);
+  border-radius:999px;padding:6px 13px;text-decoration:none;
+}
+@media(hover:hover){.qa-book:hover{background:var(--gold);color:var(--green-dark)}}
+.qa-book:active{transform:scale(.97)}
+
+/* ---------- ask box ---------- */
+.qa-ask{
+  margin:26px 0 8px;padding:16px 15px;background:var(--green-light);
+  border:1.5px solid var(--line);border-radius:var(--radius);
+}
+.qa-ask-h{
+  display:block;font-family:Mukta,system-ui,sans-serif;font-size:14.5px;
+  font-weight:700;color:var(--green-dark);margin:0 0 9px;
+}
+.qa-ask-in{
+  width:100%;box-sizing:border-box;resize:vertical;
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.5;color:var(--ink);
+  background:var(--white);border:1.5px solid var(--line);border-radius:9px;padding:10px 11px;
+}
+.qa-ask-in:focus{outline:none;border-color:var(--gold)}
+.qa-ask-btn{margin-top:11px;width:100%}
+
+/* ---------- the same questions, on a book's own page ---------- */
+.qa-book-block{margin-top:26px}
+.qa-bh{
+  font-family:'Baloo 2',system-ui,sans-serif;font-size:19px;font-weight:600;
+  color:var(--green-dark);margin:0 0 11px;
+}
+.qa-list-book .qa-qt{font-size:14px}
+.qa-list-book .qa-a{font-size:13.5px}
+
+/* ---------- small phones ---------- */
+@media(max-width:399px){
+  .qa-chip{font-size:12px;padding:5px 11px}
+  .qa-qt{font-size:14px}
+  .qa-a{font-size:13.5px}
+  .qa-q{padding:12px 12px}
+  .qa-a{padding-left:12px;padding-right:12px}
+  .qa-bh{font-size:17.5px}
+}
