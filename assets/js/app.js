@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v12t',
+  VERSION: 'v13c',
   lang: 'mr',
   text: {},
   locations: null,
@@ -52,6 +52,7 @@ const RUTUJA = {
     ORDERFORM.init(this);
     ORDER.init(this);
     PEEK.init(this);
+    QA.init(this);
     ENTRY.init(this);
   },
 
@@ -137,14 +138,15 @@ const RUTUJA = {
 
   /* Book, ad, experience and news images all follow one rule:
      name.webp is the 1x file, name@2x.webp is the retina file if present. */
-  img(folder, file, cls) {
+  img(folder, file, cls, alt) {
     if (!file) return '';
     const dot = file.lastIndexOf('.');
     const x2 = dot > 0 ? file.slice(0, dot) + '@2x' + file.slice(dot) : file;
+    const a = (alt || '').replace(/"/g, '&quot;');
     return `<img src="assets/img/${folder}/${file}"
       srcset="assets/img/${folder}/${file} 1x, assets/img/${folder}/${x2} 2x"
       onerror="this.removeAttribute('srcset')"
-      alt="" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
+      alt="${a}" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
   },
 
   /* ---- 3. RENDER ---- */
@@ -163,6 +165,7 @@ const RUTUJA = {
      ['media', () => MEDIA.paint()],
      ['cart', () => CART.render()],
      ['contact', () => this.paintContact()],
+     ['qa', () => QA.paint()],
      ['footer', () => this.paintFooter()]
     ].forEach(([name, fn]) => {
       try { fn(); } catch (e) { console.error('Section failed:', name, e); }
@@ -252,10 +255,19 @@ const RUTUJA = {
         <span class="offer-t">${this.t(o.t)}</span>
         <span class="offer-d">${this.t(o.d)}</span>
         <span class="offer-go">${this.t('offer_cta')} &rarr;</span>
-      </button>`).join('');
+      </button>`).join('')
+      /* Not an offer, so it sits below the four and says so. */
+      + `<button class="offer-card offer-qa" data-nav="qa">
+        <span class="offer-t">${this.t('qa_card_t')}</span>
+        <span class="offer-d">${this.t('qa_card_d')}</span>
+        <span class="offer-go">${this.t('qa_card_go')} &rarr;</span>
+      </button>`;
     ['offerGrid', 'offerGrid2'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = html;
+      if (!el) return;
+      el.innerHTML = html;
+      const q = el.querySelector('.offer-qa');
+      if (q) q.addEventListener('click', e => { e.preventDefault(); this.go('qa'); });
     });
   },
 
@@ -285,8 +297,36 @@ const RUTUJA = {
     if (vb) vb.textContent = this.VERSION;
     document.getElementById('footerAddr').textContent =
       this.lang === 'mr' ? this.config.address_mr : this.config.address_en;
+    this.waFloat();
+    this.paintWinLang();
+  },
+
+  /* Every window that covers the header carries its own language switch,
+     because the ribbon one is not reachable while a window is open. */
+  paintWinLang() {
+    document.querySelectorAll('[data-winlang]').forEach(b => {
+      b.textContent = this.t('win_lang');
+      if (!b.dataset.bound) {
+        b.dataset.bound = '1';
+        b.addEventListener('click', () => this.setLang(this.lang === 'mr' ? 'en' : 'mr'));
+      }
+    });
+  },
+
+  /* The float used to send the same anonymous line from every page.
+     It now carries where the person actually was, so the reply can
+     start from the book they were reading. */
+  waFloat() {
     const w = document.getElementById('waFloat');
-    const link = this.wa();
+    if (!w) return;
+    let key = 'wa_general', extra = '';
+    const p = this.page || 'home';
+    if (p === 'book' && BOOKS && BOOKS.current) {
+      const b = (this.content.books || []).find(x => x.book_id === BOOKS.current);
+      if (b) { key = 'wa_book'; extra = this.lang === 'mr' ? b.name_mr : b.name_en; }
+    } else if (p === 'offers') key = 'wa_school';
+    else if (p === 'qa')      key = 'wa_qa';
+    const link = this.wa(key, extra);
     if (link) { w.href = link; w.classList.remove('hidden'); }
     else { w.classList.add('hidden'); }
   },
@@ -316,6 +356,9 @@ const RUTUJA = {
     document.querySelectorAll('.nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === page));
     document.getElementById('nav').classList.remove('open');
     if (!fromHash) location.hash = page;
+    this.page = page;
+    try { QA.onPage(page); } catch (e) { console.error('QA page', e); }
+    this.waFloat();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
@@ -414,42 +457,91 @@ const ENTRY = {
     const heads = { school: 'form_head_school', bulk: 'form_head_bulk',
                     retail: 'form_head_retail', parent: 'form_head_parent' };
 
-    if (this.done()) {
-      const link = this.app.wa('wa_' + (key === 'school' ? 'school'
-                              : key === 'retail' ? 'retailer' : 'general'));
-      if (link) window.open(link, '_blank'); else this.app.go('contact');
-      return;
-    }
-
     this.where = 'modal';
     this.offerKey = key === 'default' ? '' : key;
+    const reg = this.done();
+
+    const subs = { school: 'offer_school_d', bulk: 'offer_bulk_d',
+                   retail: 'offer_retail_d', parent: 'offer_parent_d' };
     document.getElementById('modalHead').textContent = t(heads[key] || 'form_head_default');
+    const hs = document.getElementById('modalHeadSub');
+    if (hs) hs.textContent = subs[key] ? t(subs[key]) : t('form_sub_offer');
     document.getElementById('modalBody').classList.remove('hidden');
     document.getElementById('modalDone').classList.add('hidden');
     document.getElementById('modal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    FORM.moveTo('modalSlot');
-    FORM.reset();
-    FORM.preset(key);
-    FORM.repaint();
+
+    const slot  = document.getElementById('modalSlot');
+    const waBox = document.getElementById('modalWa');
+    const sub   = document.getElementById('modalSub');
+
+    if (reg) {
+      /* Already registered. Asking again wastes their time, so the
+         window carries the answers and a way to talk instead. */
+      slot.classList.add('hidden');
+      document.getElementById('modalPrefill').classList.add('hidden');
+      if (sub) sub.classList.add('hidden');
+      document.getElementById('modalFormHd').classList.add('hidden');
+      waBox.classList.remove('hidden');
+      const link = this.app.wa('wa_' + (key === 'school' ? 'school'
+                              : key === 'retail' ? 'retailer' : 'general'));
+      const b = document.getElementById('modalWaBtn');
+      if (link) { b.href = link; b.classList.remove('hidden'); }
+      else { b.classList.add('hidden'); }
+    } else {
+      waBox.classList.add('hidden');
+      slot.classList.remove('hidden');
+      if (sub) sub.classList.remove('hidden');
+      document.getElementById('modalFormHd').classList.remove('hidden');
+      FORM.moveTo('modalSlot');
+      FORM.reset();
+      FORM.preset(key);
+      FORM.repaint();
+    }
+
+    /* The questions sit below the form, matched to this button. */
+    try { QA.forAudience(key); } catch (e) { console.error('QA modal', e); }
   },
 
   closeModal() {
     document.getElementById('modal').classList.add('hidden');
     document.body.style.overflow = '';
+    try { QA.forAudience(''); } catch (e) {}
+  },
+
+  /* The details go to the sheet, and the same details are handed to
+     WhatsApp so they arrive there too. The window is no longer closed
+     on a timer, because the person needs time to press send. */
+  regMessage(regId) {
+    const t = k => this.app.t(k);
+    const p = this.lastReg || {};
+    const cat = p.category ? t('cat_' + p.category) : '';
+    const place = [p.village_city, p.taluka, p.district].filter(Boolean).join(', ');
+    const lines = [t('wa_register'), '', t('wa_reg_id') + ': ' + regId];
+    if (p.name) lines.push(t('wa_reg_name') + ': ' + p.name);
+    if (cat)    lines.push(t('wa_reg_who') + ': ' + cat);
+    if (place)  lines.push(t('wa_reg_place') + ': ' + place);
+    const num = (this.app.config.phone_number || '').replace(/\D/g, '');
+    if (!num) return '';
+    return 'https://wa.me/' + num + '?text=' + encodeURIComponent(lines.join('\n'));
   },
 
   onSubmitted(regId) {
-    if (this.where === 'modal') {
-      document.getElementById('regId2').textContent = regId;
-      document.getElementById('modalBody').classList.add('hidden');
-      document.getElementById('modalDone').classList.remove('hidden');
-      setTimeout(() => this.closeModal(), 2600);
-    } else {
-      document.getElementById('regId').textContent = regId;
-      document.getElementById('sheetBody').classList.add('hidden');
-      document.getElementById('sheetDone').classList.remove('hidden');
+    const link = this.regMessage(regId);
+    const modal = this.where === 'modal';
+
+    document.getElementById(modal ? 'regId2' : 'regId').textContent = regId;
+    document.getElementById(modal ? 'modalBody' : 'sheetBody').classList.add('hidden');
+    document.getElementById(modal ? 'modalDone' : 'sheetDone').classList.remove('hidden');
+
+    const btn = document.getElementById(modal ? 'modalWaBtn2' : 'sheetWaBtn');
+    if (btn) {
+      if (link) { btn.href = link; btn.classList.remove('hidden'); }
+      else { btn.classList.add('hidden'); }
     }
+    /* Hand off immediately if the browser allows it. If the gesture was
+       spent on the await, the button above still works. */
+    if (link) { try { window.open(link, '_blank'); } catch (e) {} }
   },
 
   /* The skip link inside the form. */
@@ -688,6 +780,7 @@ const FORM = {
     this.el.submit.textContent = this.app.t('common_loading');
 
     let regId = this.localId();
+    this.entry.lastReg = payload;
     const url = this.app.settings.backendUrl;
     const changed = BUYER.isNew(payload);
     const prev = localStorage.getItem('rutuja_reg');
@@ -897,7 +990,7 @@ const BOOKS = {
     const sub  = sl.slice(0, 2).join(' · ') + (sl.length > 2 ? ' +' + (sl.length - 2) : '');
     const num  = this.stdLabel(b);
     const cover = b.cover_image
-      ? this.app.img('books', b.cover_image)
+      ? this.app.img('books', b.cover_image, '', mr ? b.name_mr : b.name_en)
       : `<span class="book-cover-ph">${num}</span>`;
     const best = this.slabs(b.offer_id).slice(-1)[0];
     const hint = best && best.selling_rate < b.mrp
@@ -1039,7 +1132,7 @@ const BOOKS = {
     const mr = this.app.lang === 'mr';
     const num = this.stdLabel(b);
     const cover = b.cover_image
-      ? this.app.img('books', b.cover_image)
+      ? this.app.img('books', b.cover_image, '', mr ? b.name_mr : b.name_en)
       : `<span>${num}</span>`;
     const mySlabs = this.slabs(b.offer_id);
     const pct = this.bestPct(b);
@@ -1146,6 +1239,7 @@ const BOOKS = {
       }
     };
     MEDIA.bindBookVideos(this.el.detail);
+    QA.forBook(this.el.detail);
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
     document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
@@ -1535,7 +1629,7 @@ const CART = {
     box.innerHTML = `
       <div class="cart-list">${lines.map(l => `
         <div class="cart-row">
-          <div class="cart-thumb">${this.app.img('books', l.book.cover_image)}</div>
+          <div class="cart-thumb">${this.app.img('books', l.book.cover_image, '', this.app.lang === 'mr' ? l.book.name_mr : l.book.name_en)}</div>
           <div class="cart-info">
             <div class="cart-name">${mr ? l.book.name_mr : l.book.name_en}</div>
             <div class="cart-meta">&#8377;${l.each} ${t('price_each')}
@@ -1848,7 +1942,7 @@ const PEEK = {
 
   draw() {
     document.getElementById('peekFrame').innerHTML =
-      this.app.img('books', this.pages[this.i]);
+      this.app.img('books', this.pages[this.i], '', this.name);
     document.getElementById('peekName').textContent = this.name;
     // Marathi reads "8 पैकी 3", English reads "3 of 8"
     document.getElementById('peekCount').textContent = this.app.lang === 'mr'
@@ -1944,7 +2038,7 @@ const ORDER = {
           }).join('')}
         </div>` : '';
         return `<div class="opick-row${q ? ' on' : ''}">
-          <div class="opick-cover">${this.app.img('books', b.cover_image)}</div>
+          <div class="opick-cover">${this.app.img('books', b.cover_image, '', this.app.lang === 'mr' ? b.name_mr : b.name_en)}</div>
           <div class="opick-main">
             <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
             <div class="opick-money">
@@ -2275,4 +2369,205 @@ const STORY = {
     this.timer = setTimeout(() => { this.go(this.i + 1); this.start(); }, this.secs());
   },
   stop() { clearTimeout(this.timer); }
+};
+
+
+/* ===================================================================
+   Q & A — answers, and the route back into the books
+   data/qa.json is fetched only when the page is opened, so the
+   first paint of the site stays exactly as light as it was.
+   =================================================================== */
+
+const QA = {
+  app: null, data: null, meta: {}, loading: false, cat: '', open: '', aud: '',
+
+  init(app) {
+    this.app = app;
+    const box = document.getElementById('qaBody');
+    if (box) box.addEventListener('click', e => this.tap(e));
+    const det = document.getElementById('bookDetail');
+    if (det) det.addEventListener('click', e => this.tap(e));
+    const mod = document.getElementById('modalQA');
+    if (mod) mod.addEventListener('click', e => this.tap(e));
+    const send = document.getElementById('qaSend');
+    if (send) send.addEventListener('click', () => this.ask());
+  },
+
+  /* One delegated handler serves the page and the book block. */
+  tap(e) {
+    const c = e.target.closest('[data-qcat]');
+    if (c) { this.cat = c.dataset.qcat; this.open = ''; this.render(); return; }
+    const h = e.target.closest('[data-qid]');
+    if (h) { this.open = this.open === h.dataset.qid ? '' : h.dataset.qid;
+             this.render(); this.paintBook(); this.paintAudience(); return; }
+    const b = e.target.closest('[data-qbook]');
+    if (b) { e.preventDefault(); BOOKS.openBook(b.dataset.qbook); }
+  },
+
+  onPage(page) { if (page === 'qa') this.load(); },
+
+  async load() {
+    if (this.data) { this.render(); return this.data; }
+    if (this.loading) return null;
+    this.loading = true;
+    this.render();
+    try {
+      const r = await fetch('data/qa.json?v=' + this.app.VERSION);
+      const j = await r.json();
+      this.meta = j || {};
+      this.data = (j && j.questions) || [];
+    } catch (err) {
+      console.error('Q&A load failed', err);
+      this.data = [];
+    }
+    this.loading = false;
+    this.render();
+    this.paintBook();
+    this.paintAudience();
+    return this.data;
+  },
+
+  live() {
+    return (this.data || [])
+      .filter(q => q.status === 'LIVE')
+      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  },
+
+  L() { return this.app.lang === 'mr' ? 'mr' : 'en'; },
+
+  chips() { return this.meta.chips || []; },
+  groups() { return (this.meta.groups || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0)); },
+
+  /* Line breaks in the source are real; bullets stay readable. */
+  body(text) {
+    return String(text || '').split('\n')
+      .map(l => l.trim() ? `<p class="qa-p">${l}</p>` : '')
+      .join('');
+  },
+
+  bookLink(id) {
+    if (!id) return '';
+    const b = (this.app.content.books || []).find(x => x.book_id === id);
+    if (!b) return '';
+    const mr = this.L() === 'mr';
+    return `<a class="qa-book" href="#books" data-qbook="${id}">${mr ? b.name_mr : b.name_en} &rarr;</a>`;
+  },
+
+  item(q, hideBook) {
+    const L = this.L();
+    const on = this.open === q.qa_id;
+    return `<div class="qa-item${on ? ' on' : ''}">
+      <button class="qa-q" data-qid="${q.qa_id}" aria-expanded="${on}">
+        <span class="qa-qt">${q['question_' + L]}</span><span class="qa-sign" aria-hidden="true"></span>
+      </button>
+      <div class="qa-a"><div class="qa-inner">${this.body(q['answer_' + L])}${hideBook ? '' : this.bookLink(q.book_id)}</div></div>
+    </div>`;
+  },
+
+  render() {
+    const box = document.getElementById('qaBody');
+    if (!box) return;
+    const t = k => this.app.t(k);
+
+    if (this.loading && !this.data) { box.innerHTML = `<p class="qa-wait">${t('common_loading')}</p>`; return; }
+
+    const all = this.live();
+    if (!all.length) { box.innerHTML = `<p class="qa-wait">${t('qa_none')}</p>`; return; }
+
+    const L = this.L();
+    const sel = this.cat || 'all';
+
+    const chips = `<div class="qa-chips">${this.chips().map(c =>
+      `<button class="qa-chip${sel === c.id ? ' on' : ''}" data-qcat="${c.id}">${c[L]}</button>`
+    ).join('')}</div>`;
+
+    let n = 0;
+    const groups = this.groups()
+      .filter(g => sel === 'all' || g.chip === sel)
+      .map(g => {
+        const mine = all.filter(q => q.group === g.id);
+        if (!mine.length) return '';
+        n++;
+        const book = g.kind === 'book';
+        return `<section class="qa-group${book ? ' qa-group-book' : ''}${n % 2 ? ' qa-tint' : ''}">
+          <header class="qa-gh">
+            <span class="qa-gt">${g[L]}</span>
+            <span class="qa-gn">${mine.length}</span>
+          </header>
+          <div class="qa-list">${mine.map(q => this.item(q, book)).join('')}</div>
+        </section>`;
+      }).join('');
+
+    box.innerHTML = chips + `<div class="qa-groups">${groups}</div>`;
+  },
+
+  /* The same questions, filtered, sitting on the book's own page. */
+  paintBook() {
+    const root = document.getElementById('bookDetail');
+    if (!root || !BOOKS.current) return;
+    const host = root.querySelector('#qaForBook');
+    if (!host) return;
+    const mine = this.live().filter(q => q.book_id === BOOKS.current);
+    if (!mine.length) { host.innerHTML = ''; return; }
+    host.innerHTML = `<h3 class="qa-bh">${this.app.t('qa_for_book')}</h3>
+      <div class="qa-list qa-list-book">${mine.map(q => this.item(q, true)).join('')}</div>`;
+  },
+
+  /* The questions that belong to one offer button, below its form. */
+  paintAudience() {
+    const host = document.getElementById('modalQA');
+    if (!host) return;
+    if (!this.aud) { host.innerHTML = ''; return; }
+    const mine = this.live().filter(q =>
+      (q.audience || '').split(',').map(x => x.trim()).indexOf(this.aud) >= 0);
+    if (!mine.length) { host.innerHTML = ''; return; }
+    const t = k => this.app.t(k);
+    const L = this.L();
+    const head = { school: 'qa_h_school', bulk: 'qa_h_bulk',
+                   retail: 'qa_h_retail', parent: 'qa_h_parent' }[this.aud] || 'qa_h_default';
+    host.innerHTML = `
+      <div class="hd hd-sm">
+        <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${t(head)}</span></h3>
+        <p class="hd-s">${t('qa_h_sub')}</p>
+      </div>
+      ${this.groups().filter(g => mine.some(q => q.group === g.id)).map((g, i) => {
+        const rows = mine.filter(q => q.group === g.id);
+        const book = g.kind === 'book';
+        return `<section class="qa-group qa-group-modal${book ? ' qa-group-book' : ''}${i % 2 ? ' qa-tint' : ''}">
+          <header class="qa-gh">
+            <span class="qa-gt">${g[L]}</span><span class="qa-gn">${rows.length}</span>
+          </header>
+          <div class="qa-list qa-list-modal">${rows.map(q => this.item(q, book)).join('')}</div>
+        </section>`;
+      }).join('')}`;
+  },
+
+  forAudience(key) {
+    this.aud = key || '';
+    this.open = '';
+    if (this.data) this.paintAudience(); else this.load();
+  },
+
+  forBook(root) {
+    if (!root) return;
+    const host = document.createElement('div');
+    host.id = 'qaForBook';
+    host.className = 'qa-book-block';
+    root.appendChild(host);
+    if (this.data) this.paintBook(); else this.load();
+  },
+
+  /* The question goes to WhatsApp, not to a sheet. No await before
+     the call, so the tap keeps its gesture and the window opens. */
+  ask() {
+    const el = document.getElementById('qaAsk');
+    if (!el) return;
+    const q = (el.value || '').trim().slice(0, 400);
+    if (!q) { el.focus(); return; }
+    const link = this.app.wa('wa_qa', q);
+    if (link) { window.open(link, '_blank'); el.value = ''; }
+    else this.app.go('contact');
+  },
+
+  paint() { this.render(); this.paintBook(); this.paintAudience(); }
 };

@@ -275,7 +275,7 @@ a{color:inherit;text-decoration:none}
 }
 .sheet-card{
   background:var(--white);width:100%;max-width:600px;border-radius:20px 20px 0 0;
-  padding:30px 28px 36px;position:relative;margin-top:40px;
+  padding:104px 28px 36px;position:relative;margin-top:40px;
   animation:slideup .3s ease;
 }
 @keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
@@ -310,12 +310,36 @@ a{color:inherit;text-decoration:none}
 
 .btn-gold{background:var(--gold);color:#3F2A05;font-weight:600}
 .btn-gold:hover{background:var(--gold-dark);color:#fff}
-.gate-submit{width:100%;margin-top:6px}
-.gate-skip{display:block;width:100%;margin-top:12px;padding:11px;
-  font-size:14.5px;color:var(--green);text-decoration:underline}
-.gate-x{position:absolute;top:12px;right:14px;width:42px;height:42px;border-radius:9px;
-  font-size:29px;line-height:1;color:var(--ink-soft)}
-.gate-x:hover{background:var(--green-light)}
+.gate-acts{margin-top:8px}
+.gate-submit{
+  width:100%;margin-top:6px;position:relative;overflow:hidden;
+  box-shadow:0 4px 14px rgba(232,163,61,.34);
+  transition:transform .14s ease,box-shadow .18s ease;
+}
+.gate-submit::after{
+  content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-18deg);animation:gateSheen 4.2s ease-in-out infinite;
+}
+.gate-submit:active{transform:translateY(2px);box-shadow:0 2px 7px rgba(232,163,61,.3)}
+.gate-skip{
+  display:block;width:100%;margin-top:11px;padding:11px;
+  font-family:Mukta,system-ui,sans-serif;font-size:14.5px;font-weight:600;
+  color:var(--green);text-decoration:none;
+  background:var(--white);border:1.5px solid var(--line);border-radius:11px;
+  transition:border-color .18s ease,background .18s ease,transform .12s ease;
+}
+@media(hover:hover){.gate-skip:hover{border-color:var(--green);background:var(--green-light)}}
+.gate-skip:active{transform:translateY(1px)}
+/* the close mark should be findable without hunting for it */
+.gate-x{position:absolute;top:12px;right:14px;width:42px;height:42px;border-radius:50%;
+  font-size:26px;line-height:1;color:var(--green-dark);
+  background:var(--white);border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transition:background .18s ease,border-color .18s ease,transform .14s ease}
+@media(hover:hover){.gate-x:hover{background:var(--green-light);border-color:var(--green)}}
+.gate-x:active{transform:scale(.93)}
 .gate-tick{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;
   font-size:32px;display:flex;align-items:center;justify-content:center}
 .gate-done-t{font-size:20px;font-weight:600}
@@ -362,7 +386,7 @@ a{color:inherit;text-decoration:none}
 }
 .modal-card{
   background:var(--white);border-radius:16px;width:100%;max-width:580px;
-  padding:30px 28px;position:relative;margin:auto;animation:slideup .3s ease;
+  padding:104px 28px 30px;position:relative;margin:auto;animation:slideup .3s ease;
 }
 .modal-done{text-align:center;padding:20px 0}
 .modal-done .gate-tick{background:var(--green-light);color:var(--green)}
@@ -2502,7 +2526,7 @@ input, textarea{-webkit-touch-callout:default}
    THREE ACTIONS — compact keys, one visual language
    =================================================================== */
 .hero-btns{
-  display:grid;grid-template-columns:1fr 56px 1fr;gap:6px;
+  display:grid;grid-template-columns:1fr 72px 1fr;gap:6px;
   align-items:stretch;margin:0;
 }
 /* the top edge catches light, the way a physical key does */
@@ -2524,7 +2548,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta{
   position:relative;overflow:hidden;isolation:isolate;
   display:flex;align-items:center;gap:0;
-  padding:9px 6px 9px 6px;border-radius:14px;text-align:left;cursor:pointer;
+  padding:9px 5px 9px 5px;border-radius:14px;text-align:left;cursor:pointer;
   border:1px solid transparent;
   transition:transform .14s ease, box-shadow .14s ease;
   animation:ctaBreathe 3.8s ease-in-out infinite;
@@ -2535,7 +2559,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:17.5px;line-height:1.14;letter-spacing:.1px;
-  margin:0;display:flex;align-items:flex-start;gap:3px;min-width:0;
+  margin:0;display:flex;align-items:flex-start;gap:2px;min-width:0;
 }
 /* the secondary plate starts at the same edge as the text column */
 
@@ -2543,8 +2567,8 @@ input, textarea{-webkit-touch-callout:default}
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:9.3px;line-height:1.22;margin:5px 0 0 15px;
-  padding:3px 6px;border-radius:6px;align-self:flex-start;
+  font-size:9.3px;line-height:1.22;margin:5px 0 0 13px;
+  padding:3px 5px;border-radius:6px;align-self:flex-start;
   border:1px solid;white-space:nowrap;
   max-width:100%;box-sizing:border-box;
 }
@@ -2552,10 +2576,10 @@ input, textarea{-webkit-touch-callout:default}
 /* the arrow points at the first word and flashes */
 .cta-ico{
   display:flex;align-items:center;justify-content:center;
-  width:12px;height:12px;flex-shrink:0;margin:2px 0 0;
+  width:11px;height:11px;flex-shrink:0;margin:2px 0 0;
   animation:icoFlash 2.2s ease-in-out infinite;
 }
-.cta-ico svg{width:12px;height:12px}
+.cta-ico svg{width:11px;height:11px}
 @keyframes icoFlash{
   0%,  100%{transform:translateX(0)   scale(.92); opacity:.65; filter:none}
   35%      {transform:translateX(2px) scale(1.22); opacity:1;
@@ -2607,7 +2631,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta-video:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(34,16,56,.82),0 3px 8px rgba(78,44,122,.34)}
 
 .cv-orb{
-  position:relative;width:34px;height:34px;flex-shrink:0;border-radius:11px;
+  position:relative;width:42px;height:42px;flex-shrink:0;border-radius:11px;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(150deg,#FFF7E4 0%,#F3D9A0 44%,#C9A860 100%);
   box-shadow:0 2px 5px rgba(20,8,40,.5), inset 0 1px 0 rgba(255,255,255,.9);
@@ -2619,7 +2643,7 @@ input, textarea{-webkit-touch-callout:default}
     rgba(214,178,255,.95) 104deg,transparent 158deg,rgba(255,214,120,.95) 360deg);
   animation:shSpin 3.4s linear infinite;
 }
-.cv-orb svg{width:19px;height:19px;position:relative;z-index:1}
+.cv-orb svg{width:24px;height:24px;position:relative;z-index:1}
 .cv-orb svg path{fill:#3D1F6E}
 @keyframes orbPulse{
   0%,100%{transform:scale(1);   filter:drop-shadow(0 0 0 rgba(255,214,120,0))}
@@ -2632,7 +2656,7 @@ html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
 
 .cv-txt{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:11px;line-height:1.18;text-align:center;color:#F3E7FF;
+  font-size:12.5px;line-height:1.18;text-align:center;color:#F3E7FF;
   white-space:pre-line;letter-spacing:.2px;
   text-shadow:0 0 10px rgba(196,142,255,.55);
   animation:txtGlow 3.2s ease-in-out infinite;
@@ -2641,7 +2665,7 @@ html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
   0%,100%{opacity:.86;text-shadow:0 0 8px rgba(196,142,255,.4)}
   50%    {opacity:1;  text-shadow:0 0 14px rgba(226,196,255,.9)}
 }
-html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
+html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 
 @keyframes ctaBreathe{
   0%,100%{transform:translateY(0)     scale(1)}
@@ -2654,17 +2678,21 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   .cta,.cta::after,.cta-ico,.cv-orb,.cv-orb::before,.cv-txt,.cta-rim{animation:none}
 }
 @media(max-width:389px){
-  .hero-btns{grid-template-columns:1fr 50px 1fr;gap:5px}
+  .hero-btns{grid-template-columns:1fr 62px 1fr;gap:5px}
   .cta{padding:8px 6px}
-  .cta-txt b{font-size:13.5px}
+  .cta-txt b{font-size:17.5px}
   html[lang="en"] .cta-txt b{font-size:13px}
-  .cta-txt i{font-size:7.9px;padding:2px 5px}
+  .cta-txt i{font-size:9.3px;padding:3px 5px}
   html[lang="en"] .cta-txt i{font-size:7.7px}
   .cta-video{gap:8px}
   .cv-orb{width:30px;height:30px}
   .cv-orb svg{width:17px;height:17px}
   .cv-txt{font-size:10px}
   html[lang="en"] .cv-txt{font-size:10.5px}
+}
+@media(max-width:339px){
+  .cta-txt b{font-size:14px}
+  .cta-txt i{font-size:7.3px;padding:2px 5px}
 }
 @media(min-width:560px){
   .hero-btns{grid-template-columns:1fr 110px 1fr;gap:14px;max-width:720px;margin:0 auto}
@@ -2704,3 +2732,345 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
   animation-duration:3.8s;
 }
 @media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
+
+/* ===================================================================
+   Q & A — heading, chips, framed groups, accordion, ask box
+   Mukta throughout: Baloo 2 does not form the श्न conjunct.
+   =================================================================== */
+
+#page-qa .sec-title{
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:26px;line-height:1.25;margin:34px 0 6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#page-qa .sec-sub{
+  font-family:Mukta,system-ui,sans-serif;font-size:14.5px;font-weight:500;
+  color:var(--ink-soft);line-height:1.4;margin:0 0 16px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* a hairline that ties the heading to the filters below it */
+#page-qa .sec-sub::after{
+  content:"";display:block;width:46px;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold),var(--green));margin:11px 0 0;
+}
+
+.qa-wait{font-family:Mukta,system-ui,sans-serif;font-size:14px;color:var(--ink-soft);
+  text-align:center;padding:26px 0}
+
+/* ---------- filters: two tidy rows ---------- */
+.qa-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}
+.qa-chip{
+  font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:600;
+  color:var(--green);background:var(--white);border:1.5px solid var(--line);
+  border-radius:999px;padding:6px 13px;cursor:pointer;line-height:1.25;
+  white-space:nowrap;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .12s ease;
+}
+.qa-chip.on{background:var(--green);border-color:var(--green);color:var(--white);
+  box-shadow:0 2px 8px rgba(26,77,46,.25)}
+@media(hover:hover){.qa-chip:hover{border-color:var(--green)}}
+.qa-chip:active{transform:scale(.96)}
+
+/* ---------- a group is a frame with a name and a count ---------- */
+.qa-groups{display:flex;flex-direction:column;gap:16px}
+
+.qa-group{
+  border:1.5px solid var(--line);border-radius:14px;
+  padding:13px 11px 12px;background:var(--white);
+}
+/* alternate tint, only enough to separate one frame from the next */
+.qa-group.qa-tint{background:#FBFAF6}
+
+.qa-gh{display:flex;align-items:center;gap:9px;margin:0 2px 10px}
+.qa-gt{
+  font-family:Mukta,system-ui,sans-serif;font-size:14.5px;font-weight:700;
+  color:var(--green-dark);line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.qa-gn{
+  flex-shrink:0;min-width:21px;height:21px;padding:0 6px;border-radius:999px;
+  background:var(--green-light);color:var(--green);
+  font-family:Mukta,system-ui,sans-serif;font-size:11.5px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+/* the five book frames read as one family */
+.qa-group-book{border-color:#E2CFA6;background:#FDFAF3}
+.qa-group-book.qa-tint{background:#FBF6EA}
+.qa-group-book .qa-gt{color:var(--gold-dark)}
+.qa-group-book .qa-gn{background:#F3E6C9;color:var(--gold-dark)}
+
+/* ---------- the accordion ---------- */
+.qa-list{display:flex;flex-direction:column;gap:7px}
+
+.qa-item{
+  background:var(--white);border:1px solid var(--line);
+  border-left:3px solid transparent;border-radius:10px;
+  transition:border-color .2s ease,box-shadow .2s ease,border-left-color .2s ease;
+}
+.qa-item.on{border-color:var(--gold);border-left-color:var(--gold);
+  box-shadow:0 3px 13px rgba(0,0,0,.07)}
+.qa-group-book .qa-item.on{border-color:var(--gold-dark);border-left-color:var(--gold-dark)}
+
+.qa-q{
+  width:100%;display:flex;align-items:center;gap:9px;
+  background:none;border:0;cursor:pointer;text-align:left;
+  padding:11px 11px;font-family:Mukta,system-ui,sans-serif;
+}
+/* one line, never two */
+.qa-qt{
+  flex:1;min-width:0;font-size:13.5px;font-weight:600;line-height:1.35;
+  color:var(--green-dark);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.qa-item.on .qa-qt{color:var(--green)}
+
+.qa-sign{position:relative;width:15px;height:15px;flex-shrink:0}
+.qa-sign::before,.qa-sign::after{
+  content:"";position:absolute;left:50%;top:50%;background:var(--gold-dark);
+  border-radius:1px;transform-origin:center;
+  transition:transform .22s cubic-bezier(.4,0,.2,1),opacity .22s ease;
+}
+.qa-sign::before{width:11px;height:2px;margin:-1px 0 0 -5.5px}
+.qa-sign::after{width:2px;height:11px;margin:-5.5px 0 0 -1px}
+.qa-item.on .qa-sign::after{transform:rotate(90deg);opacity:0}
+
+/* the answer opens rather than appears */
+.qa-a{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .26s cubic-bezier(.4,0,.2,1);
+}
+.qa-item.on .qa-a{grid-template-rows:1fr}
+.qa-inner{overflow:hidden}
+.qa-item.on .qa-inner{
+  padding:11px 11px 12px;border-top:1px solid var(--line);
+  font-family:Mukta,system-ui,sans-serif;font-size:13.5px;line-height:1.62;color:var(--ink);
+}
+.qa-p{margin:0 0 7px;overflow-wrap:break-word}
+.qa-p:last-of-type{margin-bottom:0}
+
+.qa-book{
+  display:inline-block;margin-top:10px;
+  font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:600;
+  color:var(--green);background:var(--green-light);
+  border-radius:999px;padding:5px 12px;text-decoration:none;
+}
+@media(hover:hover){.qa-book:hover{background:var(--gold);color:var(--green-dark)}}
+.qa-book:active{transform:scale(.97)}
+
+/* ---------- ask box ---------- */
+.qa-ask{
+  margin:24px 0 8px;padding:16px 14px;background:var(--green-light);
+  border:1.5px solid var(--line);border-radius:14px;
+}
+.qa-ask-h{
+  display:block;font-family:Mukta,system-ui,sans-serif;font-size:14.5px;
+  font-weight:700;color:var(--green-dark);margin:0 0 9px;
+}
+.qa-ask-in{
+  width:100%;box-sizing:border-box;resize:vertical;
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.5;color:var(--ink);
+  background:var(--white);border:1.5px solid var(--line);border-radius:9px;padding:10px 11px;
+}
+.qa-ask-in:focus{outline:none;border-color:var(--gold)}
+.qa-ask-btn{margin-top:11px;width:100%}
+
+/* ---------- the same questions on a book's own page ---------- */
+.qa-book-block{margin-top:26px}
+.qa-bh{
+  font-family:Mukta,system-ui,sans-serif;font-size:17px;font-weight:700;
+  color:var(--green-dark);margin:0 0 11px;
+}
+
+/* ---------- inside an offer window, below the form ---------- */
+#modalQA:not(:empty){margin-top:20px;padding-top:16px;border-top:1.5px solid var(--line)}
+.qa-mh{
+  font-family:Mukta,system-ui,sans-serif;font-size:15.5px;font-weight:700;
+  color:var(--green-dark);margin:0 0 10px;
+}
+.qa-list-modal .qa-qt{font-size:13.2px}
+
+.modal-wa{text-align:center;padding:6px 0 2px}
+.modal-wa-t{
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.55;
+  color:var(--ink-soft);margin:0 0 12px;
+}
+.modal-wa-btn{display:block;width:100%;text-align:center;text-decoration:none}
+
+/* ---------- the fifth card: a route, not an offer ---------- */
+.offer-qa{
+  grid-column:1 / -1;margin-top:5px;
+  background:var(--green-light);
+  border-top-style:dashed;border-right-style:dashed;border-bottom-style:dashed;
+  border-left-color:var(--green);
+}
+.offer-qa .offer-go{color:var(--green)}
+@media(hover:hover){
+  .offer-qa:hover{border-top-style:solid;border-right-style:solid;border-bottom-style:solid}
+}
+
+/* ---------- small phones ---------- */
+@media(max-width:399px){
+  #page-qa .sec-title{font-size:23px}
+  #page-qa .sec-sub{font-size:13.5px}
+  .qa-chip{font-size:11.8px;padding:5px 11px}
+  .qa-group{padding:12px 9px 11px}
+  .qa-gt{font-size:14px}
+  .qa-qt{font-size:13px}
+  .qa-q{padding:10px 10px}
+  .qa-item.on .qa-inner{padding:10px 10px 11px;font-size:13px}
+  .qa-bh{font-size:16px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .qa-a{transition:none}
+  .qa-sign::before,.qa-sign::after{transition:none}
+}
+
+/* ===================================================================
+   HEADING PATTERN — used for every main heading and its subheading
+   Mark + heading + subheading, each with its own effect.
+   Mukta: Baloo 2 does not form the श्न conjunct.
+   =================================================================== */
+
+.hd{margin:0 0 13px}
+.hd-2{margin-top:22px;padding-top:18px;border-top:1.5px solid var(--line)}
+.hd-sm{margin-bottom:10px}
+
+.hd-t{
+  display:flex;align-items:center;gap:9px;margin:0 0 4px;
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:19px;line-height:1.3;
+}
+.hd-sm .hd-t{font-size:16.5px}
+
+/* 1 — the mark breathes */
+.hd-mark{
+  flex-shrink:0;width:10px;height:10px;border-radius:2px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  transform:rotate(45deg);transform-origin:center;
+  box-shadow:0 0 0 0 rgba(232,163,61,.55);
+  animation:hdMark 2.9s ease-in-out infinite;
+}
+
+/* 2 — a slow gold sheen crosses the heading text */
+.hd-t > span{
+  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:linear-gradient(100deg,
+    var(--green-dark) 0%,var(--green-dark) 40%,
+    var(--gold-dark) 50%,
+    var(--green-dark) 60%,var(--green-dark) 100%);
+  background-size:260% 100%;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdSheen 7s ease-in-out infinite;
+}
+
+/* 3 — the subheading draws its own rule from the left */
+.hd-s{
+  position:relative;margin:0;padding-bottom:7px;
+  font-family:Mukta,system-ui,sans-serif;font-size:13.5px;font-weight:500;
+  color:var(--gold-dark);line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hd-s::after{
+  content:"";position:absolute;left:0;bottom:0;height:2.5px;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold),var(--green));
+  width:44px;transform-origin:left center;
+  animation:hdRule 5.2s ease-in-out infinite;
+}
+
+@keyframes hdMark{
+  0%,100%{box-shadow:0 0 0 0 rgba(232,163,61,.5);transform:rotate(45deg) scale(1)}
+  50%    {box-shadow:0 0 0 5px rgba(232,163,61,0);transform:rotate(45deg) scale(1.14)}
+}
+@keyframes hdSheen{ 0%{background-position:100% 0} 55%,100%{background-position:0 0} }
+@keyframes hdRule{ 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(1.7)} }
+
+/* ---------- the language switch inside a window ---------- */
+.win-lang{
+  position:absolute;top:60px;right:14px;z-index:2;
+  font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:700;
+  color:var(--green);background:var(--green-light);
+  border:1.5px solid var(--green);border-radius:999px;
+  padding:5px 14px;line-height:1.2;white-space:nowrap;
+  box-shadow:0 2px 9px rgba(26,77,46,.16);
+  animation:winLang 3.4s ease-in-out infinite;
+  transition:background .18s ease,color .18s ease,transform .12s ease;
+}
+@media(hover:hover){.win-lang:hover{background:var(--green);color:var(--white)}}
+.win-lang:active{transform:scale(.95)}
+@keyframes winLang{
+  0%,100%{box-shadow:0 2px 9px rgba(26,77,46,.16)}
+  50%    {box-shadow:0 2px 14px rgba(26,77,46,.34)}
+}
+/* ---------- the note that sits under all the buttons, one line ---------- */
+.flow-note{
+  display:flex;align-items:center;gap:8px;
+  margin:14px 0 0;padding:9px 12px;
+  background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
+  border:1px dashed var(--gold);border-left:3px solid var(--gold-dark);
+  border-radius:10px;
+  font-family:Mukta,system-ui,sans-serif;font-size:12.6px;font-weight:600;
+  line-height:1.35;color:#7A5410;
+  animation:flowGlow 3.6s ease-in-out infinite;
+}
+.flow-note > span:last-child{
+  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+@keyframes flowGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(232,163,61,0)}
+  50%    {box-shadow:0 0 0 3px rgba(232,163,61,.16)}
+}
+.flow-note-wa{
+  background:linear-gradient(90deg,#E4F5EA,#FAFFFB);
+  border-color:#57A46A;border-left-color:#2F7A44;color:#245134;
+  animation-name:flowGlowWa;
+}
+@keyframes flowGlowWa{
+  0%,100%{box-shadow:0 0 0 0 rgba(47,122,68,0)}
+  50%    {box-shadow:0 0 0 3px rgba(47,122,68,.17)}
+}
+.flow-ico{
+  flex-shrink:0;width:15px;height:15px;margin-top:2px;border-radius:50%;
+  background:var(--gold-dark);position:relative;
+  animation:flowPing 2.6s ease-in-out infinite;
+}
+.flow-note-wa .flow-ico{background:#3E8E52}
+.flow-ico::after{
+  content:"i";position:absolute;inset:0;color:#fff;
+  font-family:Mukta,system-ui,sans-serif;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+@keyframes flowPing{
+  0%,100%{box-shadow:0 0 0 0 rgba(184,122,30,.5)}
+  50%    {box-shadow:0 0 0 5px rgba(184,122,30,0)}
+}
+
+/* ---------- the question frame inside a window ---------- */
+.qa-group-modal{padding:11px 9px 10px}
+
+@keyframes gateSheen{
+  0%{left:-60%} 55%,100%{left:130%}
+}
+
+@media(max-width:399px){
+  .hd-t{font-size:17.5px}
+  .hd-sm .hd-t{font-size:15.5px}
+  .hd-s{font-size:12.8px}
+  .win-lang{font-size:11.8px;padding:4px 12px;top:58px}
+  .flow-note{font-size:11.9px;padding:8px 10px;gap:7px}
+}
+
+/* the WhatsApp hand-off on a done screen */
+.done-wa{display:block;width:100%;text-align:center;text-decoration:none;margin-top:4px}
+.btn-line{
+  background:var(--white);color:var(--green);
+  border:1.5px solid var(--line);margin-top:10px;
+  transition:border-color .18s ease,background .18s ease;
+}
+@media(hover:hover){.btn-line:hover{border-color:var(--green);background:var(--green-light)}}
+
+@media(prefers-reduced-motion:reduce){
+  .hd-mark,.hd-t > span,.hd-s::after,.win-lang,.flow-ico,.flow-note,.gate-submit::after{animation:none}
+  .hd-t > span{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
+}
