@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=12y">
+<link rel="stylesheet" href="assets/css/style.css?v=12z">
 </head>
 <body>
 
@@ -35,7 +35,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v12y</p>
+        <p class="w-ver">v12z</p>
       </div>
 
       <aside class="w-side w-right">
@@ -144,9 +144,14 @@
     <button class="gate-x" id="modalX" aria-label="Close">&times;</button>
     <div id="modalBody">
       <h2 class="form-h" id="modalHead"></h2>
-      <p class="form-sub" data-t="form_sub_offer"></p>
+      <p class="form-sub" id="modalSub" data-t="form_sub_offer"></p>
       <div class="gate-note gate-note-ok hidden" id="modalPrefill" data-t="order_prefill"></div>
       <div id="modalSlot"></div>
+      <div class="modal-wa hidden" id="modalWa">
+        <p class="modal-wa-t" data-t="offer_wa_note"></p>
+        <a class="btn btn-gold modal-wa-btn" id="modalWaBtn" target="_blank" rel="noopener" data-t="offer_wa_cta"></a>
+      </div>
+      <div id="modalQA"></div>
     </div>
     <div class="modal-done hidden" id="modalDone">
       <div class="gate-tick">&#10003;</div>
@@ -367,6 +372,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=12y"></script>
+<script src="assets/js/app.js?v=12z"></script>
 </body>
 </html>

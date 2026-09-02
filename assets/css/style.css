@@ -2813,3 +2813,40 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   .qa-a{padding-left:12px;padding-right:12px}
   .qa-bh{font-size:17.5px}
 }
+
+/* ---------- Q & A inside an offer window, below the form ---------- */
+#modalQA:not(:empty){
+  margin-top:20px;padding-top:16px;border-top:1.5px solid var(--line);
+}
+.qa-mh{
+  font-family:'Baloo 2',system-ui,sans-serif;font-size:17px;font-weight:600;
+  color:var(--green-dark);margin:0 0 10px;
+}
+.qa-list-modal .qa-item{border-width:1px}
+.qa-list-modal .qa-qt{font-size:13.8px}
+.qa-list-modal .qa-a{font-size:13.5px}
+.qa-list-modal .qa-q{padding:11px 12px}
+.qa-list-modal .qa-a{padding-left:12px;padding-right:12px;padding-bottom:12px}
+
+/* the returning visitor is not asked to register again */
+.modal-wa{text-align:center;padding:6px 0 2px}
+.modal-wa-t{
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.55;
+  color:var(--ink-soft);margin:0 0 12px;
+}
+.modal-wa-btn{display:block;width:100%;text-align:center;text-decoration:none}
+
+/* ---------- the fifth card: a route, not an offer ---------- */
+.offer-qa{
+  grid-column:1 / -1;
+  margin-top:5px;
+  background:var(--green-light);
+  border-top-style:dashed;
+  border-right-style:dashed;
+  border-bottom-style:dashed;
+  border-left-color:var(--green);
+}
+.offer-qa .offer-go{color:var(--green)}
+@media(hover:hover){
+  .offer-qa:hover{border-top-style:solid;border-right-style:solid;border-bottom-style:solid}
+}

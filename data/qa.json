@@ -1,10 +1,7 @@
 {
-  "_HOW_TO_EDIT": "प्रश्न जोडायचा असेल तर खालील यादीत नवी ओळ कॉपी करून बदला. status LIVE असेल तरच प्रश्न वेबसाइटवर दिसेल; DRAFT असेल तर दिसणार नाही. book_id दिला तर उत्तराखाली त्या पुस्तकाची लिंक दिसते आणि तो प्रश्न त्या पुस्तकाच्या पानावरही दिसतो. sort_order लहान असेल तो आधी येतो.  ||  To add a question, copy a block below and change it. Only status LIVE appears on the site. A book_id shows a link to that book and also places the question on that book's own page. Lower sort_order comes first.",
-
+  "_HOW_TO_EDIT": "प्रश्न जोडायचा असेल तर खालील यादीत नवी ओळ कॉपी करून बदला. status LIVE असेल तरच प्रश्न वेबसाइटवर दिसेल; DRAFT असेल तर दिसणार नाही. book_id दिला तर उत्तराखाली त्या पुस्तकाची लिंक दिसते आणि तो प्रश्न त्या पुस्तकाच्या पानावरही दिसतो. sort_order लहान असेल तो आधी येतो.  ||  To add a question, copy a block below and change it. Only status LIVE appears on the site. A book_id shows a link to that book and also places the question on that book's own page. Lower sort_order comes first.  ||  audience मध्ये school, bulk, retail, parent यापैकी नावे स्वल्पविरामाने लिहिली तर तो प्रश्न 'विशेष सवलती' मधील त्या बटणाच्या खिडकीत फॉर्मखाली दिसतो. रिकामे ठेवले तर फक्त प्रश्नोत्तरे पानावर दिसतो.  ||  audience takes school, bulk, retail, parent, comma separated. The question then appears below the form in that offer button's window. Leave blank for the Q&A page only.",
   "_CAUTION": "ही उत्तरे ऋतुजा पब्लिकेशनच्या पुस्तकांना 'उपयुक्त' म्हणून मांडतात — शासनमान्य, निपुण-प्रमाणित किंवा अधिकृत शिफारसप्राप्त असा दावा कोठेही केलेला नाही आणि करू नये.  ||  These answers position the books as USEFUL FOR foundational practice. They must never claim government approval, NIPUN certification or official recommendation.",
-
   "questions": [
-
     {
       "qa_id": "RP-Q-001",
       "category_mr": "किंमत व नग",
@@ -15,7 +12,8 @@
       "answer_en": "Yes, and the difference is substantial. Every book has fixed quantity tiers.\n\nExample — English Primer with Phonics, printed price ₹75:\n• 1 to 25 copies — ₹75\n• 26 to 100 copies — ₹60 (20% off)\n• 101 and above — ₹50 (33% off)\n\nFor a class of 60, the printed price comes to ₹4,500; at the 26+ rate it is ₹3,600. A saving of ₹900 — 15 more books for the same money.",
       "book_id": "",
       "sort_order": 10,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "bulk"
     },
     {
       "qa_id": "RP-Q-002",
@@ -27,7 +25,8 @@
       "answer_en": "Tiers are per title — the discount is decided by how many copies of that one book you take, not by the total bill.\n\nSo taking one title in quantity for a whole class reaches the next tier faster than spreading the order across five different titles.\n\nFor set orders or a combined requirement, ask us directly on WhatsApp.",
       "book_id": "",
       "sort_order": 20,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "school"
     },
     {
       "qa_id": "RP-Q-003",
@@ -39,7 +38,8 @@
       "answer_en": "On most titles the lowest rate begins at 101 copies, where the discount reaches 30–33%.\n\nAksharmitra Sulekhan Pustika is the exception. It has four tiers, the discount starts from just 11 copies, and at 101 copies it reaches 40% — the deepest on our list.\n\nThe full rate table for every book is on the Quantity & Price page.",
       "book_id": "",
       "sort_order": 30,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "bulk"
     },
     {
       "qa_id": "RP-Q-004",
@@ -51,7 +51,8 @@
       "answer_en": "• Chala Vachuya Zatpat — ₹60\n• English Primer with Phonics — ₹75\n• Ganitmitra Bhag 1 — ₹50\n• Ganitmitra Bhag 2 — ₹60\n• Aksharmitra Sulekhan Pustika — ₹50\n\nThese are printed prices. Quantity rates are lower.",
       "book_id": "",
       "sort_order": 40,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "retail"
     },
     {
       "qa_id": "RP-Q-005",
@@ -63,9 +64,9 @@
       "answer_en": "[ Write your policy here ]",
       "book_id": "",
       "sort_order": 50,
-      "status": "DRAFT"
+      "status": "DRAFT",
+      "audience": "school,bulk"
     },
-
     {
       "qa_id": "RP-Q-011",
       "category_mr": "मागणी व पोहोच",
@@ -76,7 +77,8 @@
       "answer_en": "No. Transport, postal and delivery charges are charged separately, over and above the book rate.\n\nThe exact amount depends on the destination and the quantity, so please ask on WhatsApp before placing the order.",
       "book_id": "",
       "sort_order": 110,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "bulk,parent"
     },
     {
       "qa_id": "RP-Q-012",
@@ -88,7 +90,8 @@
       "answer_en": "Two ways.\n\n1. From the website — tap 'Enquire / Place an Order', pick the books and quantities. The rate and your saving update as you choose. At the end a WhatsApp message is prepared with the full detail.\n\n2. Straight on WhatsApp — use the green button at the bottom.\n\nEither way, a name and WhatsApp number are enough; the rest is optional.",
       "book_id": "",
       "sort_order": 120,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "retail"
     },
     {
       "qa_id": "RP-Q-013",
@@ -100,9 +103,9 @@
       "answer_en": "[ Write your usual timeline here ]",
       "book_id": "",
       "sort_order": 130,
-      "status": "DRAFT"
+      "status": "DRAFT",
+      "audience": "bulk,parent,retail"
     },
-
     {
       "qa_id": "RP-Q-021",
       "category_mr": "शाळा व विक्रेते",
@@ -113,7 +116,8 @@
       "answer_en": "There is no hidden school rate — pricing is transparent and set by quantity. When a school buys for a whole class it automatically lands in the second or third tier.\n\nOne class of 30: Ganitmitra Bhag 1 at ₹40 instead of ₹50 (saving ₹300).\n120 children: ₹35 (saving ₹1,800).\n\nFor sets, combined requirements or special terms, talk to us directly on WhatsApp.",
       "book_id": "",
       "sort_order": 210,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "school"
     },
     {
       "qa_id": "RP-Q-022",
@@ -125,7 +129,8 @@
       "answer_en": "Retailers and distributors can discuss distribution, margins and supply separately. The rates on the website are direct-purchase rates; trade terms are settled separately.\n\nPlease reach us on WhatsApp — mentioning your town, shop and likely volume makes the conversation quicker.",
       "book_id": "",
       "sort_order": 220,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "retail"
     },
     {
       "qa_id": "RP-Q-023",
@@ -137,7 +142,8 @@
       "answer_en": "[ Write your sample-copy terms here ]",
       "book_id": "",
       "sort_order": 230,
-      "status": "DRAFT"
+      "status": "DRAFT",
+      "audience": "school"
     },
     {
       "qa_id": "RP-Q-024",
@@ -149,9 +155,9 @@
       "answer_en": "Rutuja Publication — Padhegaon, Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra.\n\nOur books are made for schools, retailers and parents in rural and semi-urban Maharashtra — Std 1 to 5, in Marathi, Semi-English and English medium.",
       "book_id": "",
       "sort_order": 240,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
-
     {
       "qa_id": "RP-Q-031",
       "category_mr": "पुस्तकांविषयी",
@@ -162,7 +168,8 @@
       "answer_en": "• Chala Vachuya Zatpat — Std 1 to 5 (reading and writing revision)\n• English Primer with Phonics — Std 1 to 5 (English)\n• Ganitmitra Bhag 1 — Std 1 and 2 (Mathematics)\n• Ganitmitra Bhag 2 — Std 3, 4 and 5 (Mathematics)\n• Aksharmitra Sulekhan Pustika — Std 1 and 2 (Handwriting)\n\nThe two Ganitmitra parts together cover Std 1 to 5.",
       "book_id": "",
       "sort_order": 310,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "school,parent"
     },
     {
       "qa_id": "RP-Q-032",
@@ -174,7 +181,8 @@
       "answer_en": "• Marathi medium — Chala Vachuya Zatpat, Aksharmitra Sulekhan Pustika\n• Both Marathi and English — English Primer with Phonics, Ganitmitra Bhag 1, Ganitmitra Bhag 2\n\nWhere both languages appear, the explanation is given in Marathi as well — so the books also work in Semi-English and English medium schools.",
       "book_id": "",
       "sort_order": 320,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "parent"
     },
     {
       "qa_id": "RP-Q-033",
@@ -186,9 +194,9 @@
       "answer_en": "[ Write the page count of each book here ]",
       "book_id": "",
       "sort_order": 330,
-      "status": "DRAFT"
+      "status": "DRAFT",
+      "audience": "parent,retail"
     },
-
     {
       "qa_id": "RP-Q-101",
       "category_mr": "पुस्तकनिहाय",
@@ -199,7 +207,8 @@
       "answer_en": "Letter recognition, conjunct letters, fluent reading, correct spelling and general knowledge — reading and writing practised together, step by step.\n\nThese are not separate skills. Foundational literacy is framed as five components — oral language, decoding, fluency, comprehension and writing — that build sequentially, so gaps at an earlier stage compound into larger deficits later. That is why this book keeps them together and in order.\n\nMarathi medium. Std 1 to 5. Printed price ₹60.",
       "book_id": "RP-B-001",
       "sort_order": 1010,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-102",
@@ -211,7 +220,8 @@
       "answer_en": "Because it is a revision book, not a textbook.\n\nA textbook is fixed by grade; practice has to follow the child's level. Even within one class, reading levels differ widely — in 2024 only 23.4% of Std III children could read a Std II level text. The rest need practice at an earlier stage.\n\nBecause the steps in this book are sequential, each child can start where they actually are.",
       "book_id": "RP-B-001",
       "sort_order": 1020,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-103",
@@ -223,9 +233,9 @@
       "answer_en": "Printed price ₹60.\n• 1 to 25 copies — ₹60\n• 26 to 100 copies — ₹50 (17% off)\n• 101 and above — ₹40 (33% off)\n\nFor a class of 40: ₹2,000 instead of ₹2,400 — a saving of ₹400.",
       "book_id": "RP-B-001",
       "sort_order": 1030,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
-
     {
       "qa_id": "RP-Q-111",
       "category_mr": "पुस्तकनिहाय",
@@ -236,7 +246,8 @@
       "answer_en": "Teaching the link between a letter and its sound, systematically — so the child learns to decode a word rather than memorise it.\n\nThis is not opinion. The National Reading Panel's meta-analysis reviewed 66 comparisons drawn from 38 experiments and found a clear positive effect for systematic phonics — on decoding, word reading, comprehension and spelling — and the effect persisted after instruction ended.\n\nMost importantly: the effect was close to twice as large when phonics began early. Because English spelling is complex and variable, children have real difficulty working the system out unaided, which is precisely why it has to be taught.",
       "book_id": "RP-B-002",
       "sort_order": 1110,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-112",
@@ -248,7 +259,8 @@
       "answer_en": "Yes. The explanation in the book is given in both Marathi and English.\n\nUsing the child's own language to teach a new one is not a compromise — it is the starting handhold. Once the rule is understood in Marathi, reading it in English becomes easier.\n\nContents — capital and small letters, phonics words, basic grammar and general knowledge.",
       "book_id": "RP-B-002",
       "sort_order": 1120,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-113",
@@ -260,9 +272,9 @@
       "answer_en": "Printed price ₹75.\n• 1 to 25 copies — ₹75\n• 26 to 100 copies — ₹60 (20% off)\n• 101 and above — ₹50 (33% off)\n\nFor 60 children: ₹3,600 instead of ₹4,500 — a saving of ₹900.",
       "book_id": "RP-B-002",
       "sort_order": 1130,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
-
     {
       "qa_id": "RP-Q-121",
       "category_mr": "पुस्तकनिहाय",
@@ -273,7 +285,8 @@
       "answer_en": "Number sense, addition, subtraction and core concepts — with plenty of practice. Std 1 and 2.\n\nThis is exactly the stage treated as the foundational numeracy benchmark: by the end of Std 3 a child should solve two-digit addition and subtraction independently. In 2024, 33.7% of Std III children could do a subtraction problem — meaning two-thirds still need more practice at this very stage.\n\nPrinted price ₹50. Marathi and English.",
       "book_id": "RP-B-003",
       "sort_order": 1210,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-122",
@@ -285,7 +298,8 @@
       "answer_en": "Part 1 — Std 1 and 2: number sense, addition, subtraction. ₹50.\nPart 2 — Std 3, 4 and 5: multiplication, division, fractions, word problems. ₹60.\n\nTogether they cover Std 1 to 5. The multiplication and division in Part 2 stand on the addition and subtraction in Part 1, so the order matters.",
       "book_id": "RP-B-003",
       "sort_order": 1220,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-123",
@@ -297,9 +311,9 @@
       "answer_en": "Printed price ₹50.\n• 1 to 25 copies — ₹50\n• 26 to 100 copies — ₹40 (20% off)\n• 101 and above — ₹35 (30% off)\n\nFor a class of 30: ₹1,200 instead of ₹1,500 — a saving of ₹300.",
       "book_id": "RP-B-003",
       "sort_order": 1230,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
-
     {
       "qa_id": "RP-Q-131",
       "category_mr": "पुस्तकनिहाय",
@@ -310,7 +324,8 @@
       "answer_en": "Multiplication, division, fractions and word problems — practised step by step. Std 3 to 5.\n\nWord problems are there deliberately, because being able to perform an operation and being able to recognise it in an everyday situation are two different things. Foundational numeracy is framed around exactly that distinction — reasoning about quantities in real situations, not only computing.\n\nPrinted price ₹60. Marathi and English.",
       "book_id": "RP-B-004",
       "sort_order": 1310,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-132",
@@ -322,7 +337,8 @@
       "answer_en": "By grade, Part 2. But it is more useful to decide by level.\n\nIf the child cannot yet do two-digit addition and subtraction independently, give Part 1 first. Multiplication is repeated addition, so teaching it while addition is still shaky is hard going.\n\nWhere a class holds both levels, keeping both parts is the practical answer.",
       "book_id": "RP-B-004",
       "sort_order": 1320,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-133",
@@ -334,9 +350,9 @@
       "answer_en": "Printed price ₹60.\n• 1 to 25 copies — ₹60\n• 26 to 100 copies — ₹50 (17% off)\n• 101 and above — ₹40 (33% off)\n\nFor 120 children: ₹4,800 instead of ₹7,200 — a saving of ₹2,400.",
       "book_id": "RP-B-004",
       "sort_order": 1330,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
-
     {
       "qa_id": "RP-Q-141",
       "category_mr": "पुस्तकनिहाय",
@@ -347,7 +363,8 @@
       "answer_en": "Yes — and the reason is reading, not neatness.\n\nLetter knowledge and phonemic awareness are treated as the two strongest predictors of reading proficiency. And forming letters by hand is what fixes letter knowledge: in a controlled comparison of young children, those trained by handwriting showed better letter recognition than those trained by typing.\n\nThe movement of forming a letter is stored as motor memory, and that memory later supports recognising the letter and naming it quickly. So handwriting practice is as much reading work as writing work.\n\nAksharmitra gives sequential practice in correct formation, size and flow. Std 1 and 2.",
       "book_id": "RP-B-005",
       "sort_order": 1410,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-142",
@@ -359,7 +376,8 @@
       "answer_en": "Yes. It is the only title with four tiers, and the discount begins from just 11 copies — on every other book it starts at 26.\n\nPrinted price ₹50.\n• 1 to 10 copies — ₹50\n• 11 to 50 copies — ₹40 (20% off)\n• 51 to 100 copies — ₹35 (30% off)\n• 101 and above — ₹30 (40% off)\n\nSo even a single class qualifies. For 40 children: ₹1,600 instead of ₹2,000 — a saving of ₹400.",
       "book_id": "RP-B-005",
       "sort_order": 1420,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-143",
@@ -371,9 +389,9 @@
       "answer_en": "Alongside, not separately.\n\nIn Aksharmitra the child learns to form the letter; in Chala Vachuya Zatpat the same letter is used in reading and spelling. When writing and reading move together, both settle faster.\n\nFor Std 1 and 2, using the two together works best.",
       "book_id": "RP-B-005",
       "sort_order": 1430,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
-
     {
       "qa_id": "RP-Q-201",
       "category_mr": "शिक्षण व अभ्यासक्रम",
@@ -384,7 +402,8 @@
       "answer_en": "NIPUN Bharat is a mission launched in July 2021 under the National Education Policy 2020. It has a single goal — that every child attains foundational literacy and numeracy by the end of Grade 3. The deadline is 2026-27.\n\nWhich means the deadline is this academic year.\n\nWhat that means practically for a school: reading, writing and basic arithmetic in Std 1 to 3 are now the priority measure. Our books are useful for practice at exactly that stage.\n\n(Note: we make no claim that our books are government approved or NIPUN certified.)",
       "book_id": "",
       "sort_order": 2010,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-202",
@@ -396,7 +415,8 @@
       "answer_en": "The benchmarks are clear and measurable:\n• read 45 to 60 words per minute with comprehension\n• solve two-digit addition and subtraction independently\n\nThese are not aspirational targets — they are treated as the minimum expected.\n\nIn practice, in 2024, 23.4% of Std III children could read a Std II level text, and 33.7% could solve a subtraction problem. Both improved on 2022, and Maharashtra is among the states showing gains — but the distance left is large.",
       "book_id": "",
       "sort_order": 2020,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "school"
     },
     {
       "qa_id": "RP-Q-203",
@@ -408,7 +428,8 @@
       "answer_en": "Chala Vachuya Zatpat — because it moves in order from letter recognition to fluent reading, and a child can start where they actually are.\n\nFor Std 1 and 2, keep Aksharmitra alongside it. Forming letters by hand strengthens letter knowledge, and letter knowledge is among the strongest predictors of later reading.\n\nOne important point: decide by the child, not the grade. A Std 4 child may still be at an earlier stage, and that is common rather than unusual.",
       "book_id": "RP-B-001",
       "sort_order": 2030,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": "parent"
     },
     {
       "qa_id": "RP-Q-204",
@@ -420,7 +441,8 @@
       "answer_en": "A textbook teaches the concept; a practice book settles it. They do different jobs.\n\nFoundational literacy is framed as a sequence — oral language, decoding, fluency, comprehension, writing — where each layer stands on the one before, so a gap at an earlier stage makes the next stage harder. Children in one class are rarely at the same stage, so a textbook moving at a single pace cannot serve all of them.\n\nA practice book closes that gap, by giving each child as much practice as they need at their own stage.",
       "book_id": "",
       "sort_order": 2040,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-205",
@@ -432,7 +454,8 @@
       "answer_en": "For reading, the case for starting early is strong. The effect of systematic phonics has been found to be close to twice as large when it begins early rather than after first grade.\n\nBut with one condition — the start has to be explained in the child's own language. Once the rule is understood in Marathi, reading it in English follows; without that, it becomes memorisation.\n\nThat is exactly why the English Primer gives its explanation in both Marathi and English.",
       "book_id": "RP-B-002",
       "sort_order": 2050,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     },
     {
       "qa_id": "RP-Q-206",
@@ -444,8 +467,8 @@
       "answer_en": "This is not the exception — it is the ordinary situation. In 2024 only 23.4% of Std III children could read a Std II level text, so two or three levels in one class is the norm.\n\nThree things that help in practice:\n• give practice by level, not by grade\n• do not skip stages — a shaky stage costs more later\n• if one book holds all the stages in order, different children can work on different pages in the same class\n\nOur revision book is built that way.",
       "book_id": "RP-B-001",
       "sort_order": 2060,
-      "status": "LIVE"
+      "status": "LIVE",
+      "audience": ""
     }
-
   ]
 }

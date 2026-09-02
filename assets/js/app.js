@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v12y',
+  VERSION: 'v12z',
   lang: 'mr',
   text: {},
   locations: null,
@@ -255,10 +255,19 @@ const RUTUJA = {
         <span class="offer-t">${this.t(o.t)}</span>
         <span class="offer-d">${this.t(o.d)}</span>
         <span class="offer-go">${this.t('offer_cta')} &rarr;</span>
-      </button>`).join('');
+      </button>`).join('')
+      /* Not an offer, so it sits below the four and says so. */
+      + `<button class="offer-card offer-qa" data-nav="qa">
+        <span class="offer-t">${this.t('qa_card_t')}</span>
+        <span class="offer-d">${this.t('qa_card_d')}</span>
+        <span class="offer-go">${this.t('qa_card_go')} &rarr;</span>
+      </button>`;
     ['offerGrid', 'offerGrid2'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = html;
+      if (!el) return;
+      el.innerHTML = html;
+      const q = el.querySelector('.offer-qa');
+      if (q) q.addEventListener('click', e => { e.preventDefault(); this.go('qa'); });
     });
   },
 
@@ -435,29 +444,50 @@ const ENTRY = {
     const heads = { school: 'form_head_school', bulk: 'form_head_bulk',
                     retail: 'form_head_retail', parent: 'form_head_parent' };
 
-    if (this.done()) {
-      const link = this.app.wa('wa_' + (key === 'school' ? 'school'
-                              : key === 'retail' ? 'retailer' : 'general'));
-      if (link) window.open(link, '_blank'); else this.app.go('contact');
-      return;
-    }
-
     this.where = 'modal';
     this.offerKey = key === 'default' ? '' : key;
+    const reg = this.done();
+
     document.getElementById('modalHead').textContent = t(heads[key] || 'form_head_default');
     document.getElementById('modalBody').classList.remove('hidden');
     document.getElementById('modalDone').classList.add('hidden');
     document.getElementById('modal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    FORM.moveTo('modalSlot');
-    FORM.reset();
-    FORM.preset(key);
-    FORM.repaint();
+
+    const slot  = document.getElementById('modalSlot');
+    const waBox = document.getElementById('modalWa');
+    const sub   = document.getElementById('modalSub');
+
+    if (reg) {
+      /* Already registered. Asking again wastes their time, so the
+         window carries the answers and a way to talk instead. */
+      slot.classList.add('hidden');
+      document.getElementById('modalPrefill').classList.add('hidden');
+      if (sub) sub.classList.add('hidden');
+      waBox.classList.remove('hidden');
+      const link = this.app.wa('wa_' + (key === 'school' ? 'school'
+                              : key === 'retail' ? 'retailer' : 'general'));
+      const b = document.getElementById('modalWaBtn');
+      if (link) { b.href = link; b.classList.remove('hidden'); }
+      else { b.classList.add('hidden'); }
+    } else {
+      waBox.classList.add('hidden');
+      slot.classList.remove('hidden');
+      if (sub) sub.classList.remove('hidden');
+      FORM.moveTo('modalSlot');
+      FORM.reset();
+      FORM.preset(key);
+      FORM.repaint();
+    }
+
+    /* The questions sit below the form, matched to this button. */
+    try { QA.forAudience(key); } catch (e) { console.error('QA modal', e); }
   },
 
   closeModal() {
     document.getElementById('modal').classList.add('hidden');
     document.body.style.overflow = '';
+    try { QA.forAudience(''); } catch (e) {}
   },
 
   onSubmitted(regId) {
@@ -2307,7 +2337,7 @@ const STORY = {
    =================================================================== */
 
 const QA = {
-  app: null, data: null, loading: false, cat: '', open: '',
+  app: null, data: null, loading: false, cat: '', open: '', aud: '',
 
   init(app) {
     this.app = app;
@@ -2315,6 +2345,8 @@ const QA = {
     if (box) box.addEventListener('click', e => this.tap(e));
     const det = document.getElementById('bookDetail');
     if (det) det.addEventListener('click', e => this.tap(e));
+    const mod = document.getElementById('modalQA');
+    if (mod) mod.addEventListener('click', e => this.tap(e));
     const send = document.getElementById('qaSend');
     if (send) send.addEventListener('click', () => this.ask());
   },
@@ -2324,7 +2356,8 @@ const QA = {
     const c = e.target.closest('[data-qcat]');
     if (c) { this.cat = c.dataset.qcat; this.open = ''; this.render(); return; }
     const h = e.target.closest('[data-qid]');
-    if (h) { this.open = this.open === h.dataset.qid ? '' : h.dataset.qid; this.render(); this.paintBook(); return; }
+    if (h) { this.open = this.open === h.dataset.qid ? '' : h.dataset.qid;
+             this.render(); this.paintBook(); this.paintAudience(); return; }
     const b = e.target.closest('[data-qbook]');
     if (b) { e.preventDefault(); BOOKS.openBook(b.dataset.qbook); }
   },
@@ -2347,6 +2380,7 @@ const QA = {
     this.loading = false;
     this.render();
     this.paintBook();
+    this.paintAudience();
     return this.data;
   },
 
@@ -2427,6 +2461,24 @@ const QA = {
       <div class="qa-list qa-list-book">${mine.map(q => this.item(q)).join('')}</div>`;
   },
 
+  /* The questions that belong to one offer button, below its form. */
+  paintAudience() {
+    const host = document.getElementById('modalQA');
+    if (!host) return;
+    if (!this.aud) { host.innerHTML = ''; return; }
+    const mine = this.live().filter(q =>
+      (q.audience || '').split(',').map(x => x.trim()).indexOf(this.aud) >= 0);
+    if (!mine.length) { host.innerHTML = ''; return; }
+    host.innerHTML = `<h3 class="qa-mh">${this.app.t('qa_for_offer')}</h3>
+      <div class="qa-list qa-list-modal">${mine.map(q => this.item(q)).join('')}</div>`;
+  },
+
+  forAudience(key) {
+    this.aud = key || '';
+    this.open = '';
+    if (this.data) this.paintAudience(); else this.load();
+  },
+
   forBook(root) {
     if (!root) return;
     const host = document.createElement('div');
@@ -2448,5 +2500,5 @@ const QA = {
     else this.app.go('contact');
   },
 
-  paint() { this.render(); this.paintBook(); }
+  paint() { this.render(); this.paintBook(); this.paintAudience(); }
 };

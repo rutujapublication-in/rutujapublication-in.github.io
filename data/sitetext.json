@@ -285,7 +285,13 @@
     "wa_qa": "नमस्कार, ऋतुजा पब्लिकेशन. माझा प्रश्न:",
     "qa_none": "लवकरच प्रश्न व उत्तरे इथे दिसतील.",
     "qa_for_book": "या पुस्तकाविषयी प्रश्न",
-    "qa_intro": "शाळा, विक्रेते आणि पालक विचारतात ते प्रश्न — दर, पुस्तके आणि शिकवण्याविषयी."
+    "qa_intro": "शाळा, विक्रेते आणि पालक विचारतात ते प्रश्न — दर, पुस्तके आणि शिकवण्याविषयी.",
+    "qa_for_offer": "आपल्या प्रश्नांची उत्तरे",
+    "qa_card_t": "प्रश्न व उत्तरे",
+    "qa_card_d": "दर, पुस्तके आणि शिकवण्याविषयी — सर्व प्रश्न एकत्र",
+    "qa_card_go": "सर्व प्रश्न पाहा",
+    "offer_wa_cta": "थेट व्हॉट्सॲपवर बोला",
+    "offer_wa_note": "आपली माहिती आमच्याकडे आहे. थेट बोलूया."
   },
   "en": {
     "nav_home": "Home",
@@ -573,6 +579,12 @@
     "wa_qa": "Hello, Rutuja Publication. My question:",
     "qa_none": "Questions and answers will appear here soon.",
     "qa_for_book": "Questions about this book",
-    "qa_intro": "What schools, retailers and parents ask — about rates, the books and teaching."
+    "qa_intro": "What schools, retailers and parents ask — about rates, the books and teaching.",
+    "qa_for_offer": "Answers to your questions",
+    "qa_card_t": "Questions & Answers",
+    "qa_card_d": "On rates, books and teaching — every question in one place",
+    "qa_card_go": "See all questions",
+    "offer_wa_cta": "Talk to us on WhatsApp",
+    "offer_wa_note": "We already have your details. Let us talk directly."
   }
 }
