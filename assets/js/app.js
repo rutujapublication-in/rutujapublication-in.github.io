@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13s',
+  VERSION: 'v13u',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1270,7 +1270,7 @@ const BOOKS = {
 
     const qv = document.getElementById('qVal');
     const draw = () => {
-      let q = Math.max(1, Math.min(9999, parseInt(qv.value, 10) || 1));
+      let q = Math.max(1, Math.min(10000, parseInt(qv.value, 10) || 1));
       qv.value = q;
       const p = this.priceFor(b, q);
 
@@ -1637,7 +1637,7 @@ const CART = {
   setQty(bookId, qty) {
     const f = this.items.find(x => x.id === bookId);
     if (!f) return;
-    f.qty = Math.max(1, Math.min(9999, qty));
+    f.qty = Math.max(1, Math.min(10000, qty));
     this.save(); this.sync(); this.render();
   },
 
@@ -1750,7 +1750,7 @@ const CART = {
     box.querySelectorAll('[data-ci]').forEach(i => {
       i.oninput = () => {
         const id = i.dataset.ci;
-        const raw = (i.value || '').replace(/\D/g, '').slice(0, 4);
+        const raw = (i.value || '').replace(/\D/g, '').slice(0, 5);
         this.setQty(id, parseInt(raw, 10) || 1);
         const again = document.querySelector(`[data-ci="${id}"]`);
         if (again) {
@@ -2101,7 +2101,7 @@ const ORDER = {
   qtyOf(id) { const f = this.picked.find(x => x.id === id); return f ? f.qty : 0; },
 
   setQty(id, q) {
-    q = Math.max(0, Math.min(9999, q));
+    q = Math.max(0, Math.min(10000, q));
     const i = this.picked.findIndex(x => x.id === id);
     if (q === 0) { if (i >= 0) this.picked.splice(i, 1); }
     else if (i >= 0) this.picked[i].qty = q;
@@ -2211,7 +2211,7 @@ const ORDER = {
     box.querySelectorAll('[data-oi]').forEach(i => {
       i.oninput = () => {
         const id = i.dataset.oi;
-        const raw = (i.value || '').replace(/\D/g, '').slice(0, 4);
+        const raw = (i.value || '').replace(/\D/g, '').slice(0, 5);
         this.setQty(id, parseInt(raw, 10) || 0);
         const again = document.querySelector(`[data-oi="${id}"]`);
         if (again) {

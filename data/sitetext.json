@@ -313,7 +313,7 @@
     "order_wa_cta": "ऑर्डर व्हॉट्सॲपवर पाठवा",
     "gate_done_sub": "आता व्हॉट्सॲपवर पाठवा.",
     "form_why_note": "नक्की काय हवं ते समजून पोहोचण्यासाठी.",
-    "send_head": "पुढे काय होईल",
+    "send_head": "तुमची गरज, आमची माहिती",
     "send_sub": "दर व सवलत थेट व्हॉट्सॲपवर"
   },
   "en": {
@@ -630,7 +630,7 @@
     "order_wa_cta": "Send Order on WhatsApp",
     "gate_done_sub": "Now Send It on WhatsApp.",
     "form_why_note": "So We Know Exactly What You Need.",
-    "send_head": "What Happens Next",
+    "send_head": "Your Need, Our Information",
     "send_sub": "Rates And Offers On WhatsApp"
   }
 }
