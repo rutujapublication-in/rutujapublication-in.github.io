@@ -2502,7 +2502,7 @@ input, textarea{-webkit-touch-callout:default}
    THREE ACTIONS — compact keys, one visual language
    =================================================================== */
 .hero-btns{
-  display:grid;grid-template-columns:1fr 72px 1fr;gap:6px;
+  display:grid;grid-template-columns:1fr 56px 1fr;gap:6px;
   align-items:stretch;margin:0;
 }
 /* the top edge catches light, the way a physical key does */
@@ -2524,7 +2524,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta{
   position:relative;overflow:hidden;isolation:isolate;
   display:flex;align-items:center;gap:0;
-  padding:9px 5px 9px 5px;border-radius:14px;text-align:left;cursor:pointer;
+  padding:9px 6px 9px 6px;border-radius:14px;text-align:left;cursor:pointer;
   border:1px solid transparent;
   transition:transform .14s ease, box-shadow .14s ease;
   animation:ctaBreathe 3.8s ease-in-out infinite;
@@ -2535,7 +2535,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta-txt b{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:17.5px;line-height:1.14;letter-spacing:.1px;
-  margin:0;display:flex;align-items:flex-start;gap:2px;min-width:0;
+  margin:0;display:flex;align-items:flex-start;gap:3px;min-width:0;
 }
 /* the secondary plate starts at the same edge as the text column */
 
@@ -2543,8 +2543,8 @@ input, textarea{-webkit-touch-callout:default}
 /* secondary — one line, on its own plate, a quieter colour */
 .cta-txt i{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:9.3px;line-height:1.22;margin:5px 0 0 13px;
-  padding:3px 5px;border-radius:6px;align-self:flex-start;
+  font-size:9.3px;line-height:1.22;margin:5px 0 0 15px;
+  padding:3px 6px;border-radius:6px;align-self:flex-start;
   border:1px solid;white-space:nowrap;
   max-width:100%;box-sizing:border-box;
 }
@@ -2552,10 +2552,10 @@ input, textarea{-webkit-touch-callout:default}
 /* the arrow points at the first word and flashes */
 .cta-ico{
   display:flex;align-items:center;justify-content:center;
-  width:11px;height:11px;flex-shrink:0;margin:2px 0 0;
+  width:12px;height:12px;flex-shrink:0;margin:2px 0 0;
   animation:icoFlash 2.2s ease-in-out infinite;
 }
-.cta-ico svg{width:11px;height:11px}
+.cta-ico svg{width:12px;height:12px}
 @keyframes icoFlash{
   0%,  100%{transform:translateX(0)   scale(.92); opacity:.65; filter:none}
   35%      {transform:translateX(2px) scale(1.22); opacity:1;
@@ -2607,7 +2607,7 @@ input, textarea{-webkit-touch-callout:default}
 .cta-video:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(34,16,56,.82),0 3px 8px rgba(78,44,122,.34)}
 
 .cv-orb{
-  position:relative;width:42px;height:42px;flex-shrink:0;border-radius:11px;
+  position:relative;width:34px;height:34px;flex-shrink:0;border-radius:11px;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(150deg,#FFF7E4 0%,#F3D9A0 44%,#C9A860 100%);
   box-shadow:0 2px 5px rgba(20,8,40,.5), inset 0 1px 0 rgba(255,255,255,.9);
@@ -2619,7 +2619,7 @@ input, textarea{-webkit-touch-callout:default}
     rgba(214,178,255,.95) 104deg,transparent 158deg,rgba(255,214,120,.95) 360deg);
   animation:shSpin 3.4s linear infinite;
 }
-.cv-orb svg{width:24px;height:24px;position:relative;z-index:1}
+.cv-orb svg{width:19px;height:19px;position:relative;z-index:1}
 .cv-orb svg path{fill:#3D1F6E}
 @keyframes orbPulse{
   0%,100%{transform:scale(1);   filter:drop-shadow(0 0 0 rgba(255,214,120,0))}
@@ -2632,7 +2632,7 @@ html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
 
 .cv-txt{
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:12.5px;line-height:1.18;text-align:center;color:#F3E7FF;
+  font-size:11px;line-height:1.18;text-align:center;color:#F3E7FF;
   white-space:pre-line;letter-spacing:.2px;
   text-shadow:0 0 10px rgba(196,142,255,.55);
   animation:txtGlow 3.2s ease-in-out infinite;
@@ -2641,7 +2641,7 @@ html[lang="en"] .cv-txt{font-size:12px;font-weight:700}
   0%,100%{opacity:.86;text-shadow:0 0 8px rgba(196,142,255,.4)}
   50%    {opacity:1;  text-shadow:0 0 14px rgba(226,196,255,.9)}
 }
-html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
+html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:10.5px}
 
 @keyframes ctaBreathe{
   0%,100%{transform:translateY(0)     scale(1)}
@@ -2654,21 +2654,17 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   .cta,.cta::after,.cta-ico,.cv-orb,.cv-orb::before,.cv-txt,.cta-rim{animation:none}
 }
 @media(max-width:389px){
-  .hero-btns{grid-template-columns:1fr 62px 1fr;gap:5px}
+  .hero-btns{grid-template-columns:1fr 50px 1fr;gap:5px}
   .cta{padding:8px 6px}
-  .cta-txt b{font-size:17.5px}
+  .cta-txt b{font-size:13.5px}
   html[lang="en"] .cta-txt b{font-size:13px}
-  .cta-txt i{font-size:9.3px;padding:3px 5px}
+  .cta-txt i{font-size:7.9px;padding:2px 5px}
   html[lang="en"] .cta-txt i{font-size:7.7px}
   .cta-video{gap:8px}
   .cv-orb{width:30px;height:30px}
   .cv-orb svg{width:17px;height:17px}
   .cv-txt{font-size:10px}
   html[lang="en"] .cv-txt{font-size:10.5px}
-}
-@media(max-width:339px){
-  .cta-txt b{font-size:14px}
-  .cta-txt i{font-size:7.3px;padding:2px 5px}
 }
 @media(min-width:560px){
   .hero-btns{grid-template-columns:1fr 110px 1fr;gap:14px;max-width:720px;margin:0 auto}
@@ -2708,145 +2704,3 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   animation-duration:3.8s;
 }
 @media(prefers-reduced-motion:reduce){.cta-rim{animation:none;opacity:.5}}
-
-/* ===================================================================
-   Q & A — chips, accordion, ask box, and the block on a book page
-   Appended as its own named block. Touches nothing shared.
-   =================================================================== */
-
-.qa-wait{font-family:Mukta,system-ui,sans-serif;font-size:14px;color:var(--ink-soft);
-  text-align:center;padding:26px 0}
-
-/* ---------- category chips ---------- */
-.qa-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
-.qa-chip{
-  font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:600;
-  color:var(--green);background:var(--white);border:1.5px solid var(--line);
-  border-radius:999px;padding:6px 13px;cursor:pointer;line-height:1.2;
-  transition:background .16s ease,border-color .16s ease,color .16s ease;
-}
-.qa-chip.on{background:var(--green);border-color:var(--green);color:var(--white)}
-@media(hover:hover){.qa-chip:hover{border-color:var(--green)}}
-.qa-chip:active{transform:scale(.97)}
-
-/* ---------- the accordion ---------- */
-.qa-list{display:flex;flex-direction:column;gap:9px}
-
-.qa-item{
-  background:var(--white);border:1.5px solid var(--line);
-  border-radius:var(--radius);overflow:hidden;
-  transition:border-color .18s ease,box-shadow .18s ease;
-}
-.qa-item.on{border-color:var(--gold);box-shadow:0 3px 14px rgba(0,0,0,.07)}
-
-.qa-q{
-  width:100%;display:flex;align-items:flex-start;gap:10px;
-  background:none;border:0;cursor:pointer;text-align:left;
-  padding:13px 14px;font-family:Mukta,system-ui,sans-serif;
-}
-.qa-qt{
-  flex:1;font-size:14.5px;font-weight:600;line-height:1.42;color:var(--green-dark);
-  overflow-wrap:break-word;
-}
-.qa-item.on .qa-qt{color:var(--green)}
-
-/* a plus that becomes a minus, drawn rather than lettered */
-.qa-sign{position:relative;width:16px;height:16px;flex-shrink:0;margin-top:3px}
-.qa-sign::before,.qa-sign::after{
-  content:"";position:absolute;left:50%;top:50%;background:var(--gold-dark);
-  border-radius:1px;transform-origin:center;transition:transform .2s ease,opacity .2s ease;
-}
-.qa-sign::before{width:12px;height:2px;margin:-1px 0 0 -6px}
-.qa-sign::after{width:2px;height:12px;margin:-6px 0 0 -1px}
-.qa-item.on .qa-sign::after{transform:rotate(90deg);opacity:0}
-
-.qa-a{
-  display:none;padding:0 14px 14px;
-  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.62;color:var(--ink);
-  border-top:1px solid var(--line);margin-top:0;padding-top:12px;
-}
-.qa-item.on .qa-a{display:block}
-.qa-p{margin:0 0 8px;overflow-wrap:break-word}
-.qa-p:last-of-type{margin-bottom:0}
-
-.qa-book{
-  display:inline-block;margin-top:11px;
-  font-family:Mukta,system-ui,sans-serif;font-size:13px;font-weight:600;
-  color:var(--green);background:var(--green-light);
-  border-radius:999px;padding:6px 13px;text-decoration:none;
-}
-@media(hover:hover){.qa-book:hover{background:var(--gold);color:var(--green-dark)}}
-.qa-book:active{transform:scale(.97)}
-
-/* ---------- ask box ---------- */
-.qa-ask{
-  margin:26px 0 8px;padding:16px 15px;background:var(--green-light);
-  border:1.5px solid var(--line);border-radius:var(--radius);
-}
-.qa-ask-h{
-  display:block;font-family:Mukta,system-ui,sans-serif;font-size:14.5px;
-  font-weight:700;color:var(--green-dark);margin:0 0 9px;
-}
-.qa-ask-in{
-  width:100%;box-sizing:border-box;resize:vertical;
-  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.5;color:var(--ink);
-  background:var(--white);border:1.5px solid var(--line);border-radius:9px;padding:10px 11px;
-}
-.qa-ask-in:focus{outline:none;border-color:var(--gold)}
-.qa-ask-btn{margin-top:11px;width:100%}
-
-/* ---------- the same questions, on a book's own page ---------- */
-.qa-book-block{margin-top:26px}
-.qa-bh{
-  font-family:'Baloo 2',system-ui,sans-serif;font-size:19px;font-weight:600;
-  color:var(--green-dark);margin:0 0 11px;
-}
-.qa-list-book .qa-qt{font-size:14px}
-.qa-list-book .qa-a{font-size:13.5px}
-
-/* ---------- small phones ---------- */
-@media(max-width:399px){
-  .qa-chip{font-size:12px;padding:5px 11px}
-  .qa-qt{font-size:14px}
-  .qa-a{font-size:13.5px}
-  .qa-q{padding:12px 12px}
-  .qa-a{padding-left:12px;padding-right:12px}
-  .qa-bh{font-size:17.5px}
-}
-
-/* ---------- Q & A inside an offer window, below the form ---------- */
-#modalQA:not(:empty){
-  margin-top:20px;padding-top:16px;border-top:1.5px solid var(--line);
-}
-.qa-mh{
-  font-family:'Baloo 2',system-ui,sans-serif;font-size:17px;font-weight:600;
-  color:var(--green-dark);margin:0 0 10px;
-}
-.qa-list-modal .qa-item{border-width:1px}
-.qa-list-modal .qa-qt{font-size:13.8px}
-.qa-list-modal .qa-a{font-size:13.5px}
-.qa-list-modal .qa-q{padding:11px 12px}
-.qa-list-modal .qa-a{padding-left:12px;padding-right:12px;padding-bottom:12px}
-
-/* the returning visitor is not asked to register again */
-.modal-wa{text-align:center;padding:6px 0 2px}
-.modal-wa-t{
-  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.55;
-  color:var(--ink-soft);margin:0 0 12px;
-}
-.modal-wa-btn{display:block;width:100%;text-align:center;text-decoration:none}
-
-/* ---------- the fifth card: a route, not an offer ---------- */
-.offer-qa{
-  grid-column:1 / -1;
-  margin-top:5px;
-  background:var(--green-light);
-  border-top-style:dashed;
-  border-right-style:dashed;
-  border-bottom-style:dashed;
-  border-left-color:var(--green);
-}
-.offer-qa .offer-go{color:var(--green)}
-@media(hover:hover){
-  .offer-qa:hover{border-top-style:solid;border-right-style:solid;border-bottom-style:solid}
-}
