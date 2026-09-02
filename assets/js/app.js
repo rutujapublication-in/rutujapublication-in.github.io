@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13c',
+  VERSION: 'v13e',
   lang: 'mr',
   text: {},
   locations: null,
@@ -346,6 +346,29 @@ const RUTUJA = {
       el.addEventListener('click', e => { e.preventDefault(); this.go(el.dataset.nav); });
     });
     window.addEventListener('hashchange', () => this.go(location.hash.slice(1) || 'home', true));
+
+    /* Back used to leave the site while a window was open, because only
+       the hash was tracked. Each window now adds a history entry, and
+       Back closes that window instead of navigating away. */
+    window.addEventListener('popstate', () => {
+      if (!this.winStack.length) return;
+      const w = this.winStack.pop();
+      try { w.close(); } catch (e) { console.error('close win', e); }
+    });
+  },
+
+  winStack: [],
+
+  /* Called by every window that covers the page. */
+  pushWin(closeFn) {
+    this.winStack.push({ close: closeFn });
+    try { history.pushState({ win: this.winStack.length }, ''); } catch (e) {}
+  },
+  /* Called when a window is closed by its own X, so the stack stays true. */
+  popWin() {
+    if (!this.winStack.length) return;
+    this.winStack.pop();
+    try { history.back(); } catch (e) {}
   },
 
   go(page, fromHash) {
@@ -439,6 +462,7 @@ const ENTRY = {
 
   /* ---- SHEET (welcome screen) ---- */
   openSheet() {
+    this.app.pushWin(() => this.closeSheet(true));
     this.where = 'sheet';
     this.offerKey = '';
     document.getElementById('sheetBody').classList.remove('hidden');
@@ -449,7 +473,10 @@ const ENTRY = {
     FORM.repaint();
   },
 
-  closeSheet() { document.getElementById('sheet').classList.add('hidden'); },
+  closeSheet(fromBack) {
+    document.getElementById('sheet').classList.add('hidden');
+    if (!fromBack) this.app.popWin();
+  },
 
   /* ---- MODAL (inside the site) ---- */
   openModal(key) {
@@ -460,6 +487,7 @@ const ENTRY = {
     this.where = 'modal';
     this.offerKey = key === 'default' ? '' : key;
     const reg = this.done();
+    this.app.pushWin(() => this.closeModal(true));
 
     const subs = { school: 'offer_school_d', bulk: 'offer_bulk_d',
                    retail: 'offer_retail_d', parent: 'offer_parent_d' };
@@ -503,10 +531,11 @@ const ENTRY = {
     try { QA.forAudience(key); } catch (e) { console.error('QA modal', e); }
   },
 
-  closeModal() {
+  closeModal(fromBack) {
     document.getElementById('modal').classList.add('hidden');
     document.body.style.overflow = '';
     try { QA.forAudience(''); } catch (e) {}
+    if (!fromBack) this.app.popWin();
   },
 
   /* The details go to the sheet, and the same details are handed to
@@ -1913,6 +1942,7 @@ const PEEK = {
   },
 
   open(bookId) {
+    this.app.pushWin(() => this.close(true));
     const b = (this.app.content.books || []).find(x => x.book_id === bookId);
     if (!b) return;
     this.pages = String(b.gallery_images || '').split(',').map(x => x.trim()).filter(Boolean);
@@ -1924,7 +1954,8 @@ const PEEK = {
     this.draw();
   },
 
-  close() {
+  close(fromBack) {
+    if (!fromBack) this.app.popWin();
     document.getElementById('peek').classList.add('hidden');
     document.body.style.overflow = '';
   },
@@ -1976,6 +2007,7 @@ const ORDER = {
   /* preset = books to start with. null means start from the list,
      or from nothing if the list is empty. */
   open(preset) {
+    this.app.pushWin(() => this.close(true));
     const fromCart = CART.items.map(x => ({ id: x.id, qty: x.qty }));
     this.picked = preset && preset.length ? preset
                 : (fromCart.length ? fromCart : []);
@@ -2100,7 +2132,8 @@ const ORDER = {
       b.onclick = () => this.setQty(b.dataset.jump, +b.dataset.q));
   },
 
-  close() {
+  close(fromBack) {
+    if (!fromBack) this.app.popWin();
     document.getElementById('orderWin').classList.add('hidden');
     document.body.style.overflow = '';
   }
@@ -2458,6 +2491,7 @@ const QA = {
     const on = this.open === q.qa_id;
     return `<div class="qa-item${on ? ' on' : ''}">
       <button class="qa-q" data-qid="${q.qa_id}" aria-expanded="${on}">
+        <i class="qa-qmark" aria-hidden="true"></i>
         <span class="qa-qt">${q['question_' + L]}</span><span class="qa-sign" aria-hidden="true"></span>
       </button>
       <div class="qa-a"><div class="qa-inner">${this.body(q['answer_' + L])}${hideBook ? '' : this.bookLink(q.book_id)}</div></div>
@@ -2491,8 +2525,8 @@ const QA = {
         const book = g.kind === 'book';
         return `<section class="qa-group${book ? ' qa-group-book' : ''}${n % 2 ? ' qa-tint' : ''}">
           <header class="qa-gh">
+            <i class="qa-gmark" aria-hidden="true"></i>
             <span class="qa-gt">${g[L]}</span>
-            <span class="qa-gn">${mine.length}</span>
           </header>
           <div class="qa-list">${mine.map(q => this.item(q, book)).join('')}</div>
         </section>`;
@@ -2535,7 +2569,8 @@ const QA = {
         const book = g.kind === 'book';
         return `<section class="qa-group qa-group-modal${book ? ' qa-group-book' : ''}${i % 2 ? ' qa-tint' : ''}">
           <header class="qa-gh">
-            <span class="qa-gt">${g[L]}</span><span class="qa-gn">${rows.length}</span>
+            <i class="qa-gmark" aria-hidden="true"></i>
+            <span class="qa-gt">${g[L]}</span>
           </header>
           <div class="qa-list qa-list-modal">${rows.map(q => this.item(q, book)).join('')}</div>
         </section>`;

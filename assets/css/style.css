@@ -292,10 +292,10 @@ a{color:inherit;text-decoration:none}
 .gate-note{background:var(--green-light);border-radius:9px;padding:11px 14px;
   font-size:13.5px;color:#2C5A3D;margin-bottom:18px}
 .gate-note-warn{background:#FDF1DC;color:#7A5410}
-.f{margin-bottom:15px;display:flex;flex-direction:column}
-.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.f label{font-size:14px;font-weight:600;margin-bottom:5px;color:var(--ink)}
-.f input,.f select{height:48px;border:1.5px solid var(--line);border-radius:9px;padding:0 13px;
+.f{margin-bottom:10px;display:flex;flex-direction:column}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.f label{font-size:13.5px;font-weight:600;margin-bottom:3px;color:var(--ink)}
+.f input,.f select{height:44px;border:1.5px solid var(--line);border-radius:9px;padding:0 13px;
   font-family:inherit;font-size:16px;color:var(--ink);background:var(--white);width:100%;
   transition:border-color .15s}
 .f input:focus,.f select:focus{outline:none;border-color:var(--green)}
@@ -2787,17 +2787,32 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   color:var(--green-dark);line-height:1.25;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.qa-gn{
-  flex-shrink:0;min-width:21px;height:21px;padding:0 6px;border-radius:999px;
-  background:var(--green-light);color:var(--green);
-  font-family:Mukta,system-ui,sans-serif;font-size:11.5px;font-weight:700;
-  display:inline-flex;align-items:center;justify-content:center;
+/* a group is marked by a stack of three bars that rise in turn */
+.qa-gmark{
+  flex-shrink:0;width:13px;height:11px;position:relative;
 }
+.qa-gmark::before,.qa-gmark::after{
+  content:"";position:absolute;left:0;height:2.5px;border-radius:2px;
+  background:var(--green);
+}
+.qa-gmark::before{top:0;width:13px;animation:gmarkA 3.2s ease-in-out infinite}
+.qa-gmark::after{bottom:0;width:8px;animation:gmarkB 3.2s ease-in-out infinite}
+@keyframes gmarkA{0%,100%{width:13px;opacity:1}50%{width:8px;opacity:.6}}
+@keyframes gmarkB{0%,100%{width:8px;opacity:.6}50%{width:13px;opacity:1}}
+
+/* a question is marked by a chevron that leans in when it opens */
+.qa-qmark{
+  flex-shrink:0;width:7px;height:7px;margin-right:1px;
+  border-right:2px solid var(--gold-dark);border-bottom:2px solid var(--gold-dark);
+  transform:rotate(-45deg);opacity:.75;
+  transition:transform .24s cubic-bezier(.4,0,.2,1),opacity .2s ease;
+}
+.qa-item.on .qa-qmark{transform:rotate(45deg);opacity:1}
 /* the five book frames read as one family */
 .qa-group-book{border-color:#E2CFA6;background:#FDFAF3}
 .qa-group-book.qa-tint{background:#FBF6EA}
 .qa-group-book .qa-gt{color:var(--gold-dark)}
-.qa-group-book .qa-gn{background:#F3E6C9;color:var(--gold-dark)}
+.qa-group-book .qa-gmark::before,.qa-group-book .qa-gmark::after{background:var(--gold-dark)}
 
 /* ---------- the accordion ---------- */
 .qa-list{display:flex;flex-direction:column;gap:7px}
@@ -2935,6 +2950,9 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .hd{margin:0 0 13px}
 .hd-2{margin-top:22px;padding-top:18px;border-top:1.5px solid var(--line)}
 .hd-sm{margin-bottom:10px}
+.hd-page{margin:34px 0 16px}
+.hd-page .hd-t{font-size:25px}
+.hd-page .hd-mark{width:12px;height:12px}
 
 .hd-t{
   display:flex;align-items:center;gap:9px;margin:0 0 4px;
@@ -2988,7 +3006,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 
 /* ---------- the language switch inside a window ---------- */
 .win-lang{
-  position:absolute;top:60px;right:14px;z-index:2;
+  position:absolute;top:70px;right:14px;z-index:2;
   font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:700;
   color:var(--green);background:var(--green-light);
   border:1.5px solid var(--green);border-radius:999px;
@@ -3005,8 +3023,8 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 }
 /* ---------- the note that sits under all the buttons, one line ---------- */
 .flow-note{
-  display:flex;align-items:center;gap:8px;
-  margin:14px 0 0;padding:9px 12px;
+  display:flex;align-items:flex-start;gap:9px;
+  margin:14px 0 0;padding:10px 12px;
   background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-left:3px solid var(--gold-dark);
   border-radius:10px;
@@ -3014,9 +3032,13 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   line-height:1.35;color:#7A5410;
   animation:flowGlow 3.6s ease-in-out infinite;
 }
+/* this note is allowed to breathe: the line break in the text is kept,
+   and it may run to a third line rather than truncate. It appears once,
+   at the moment that decides whether the message reaches us at all. */
 .flow-note > span:last-child{
-  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;white-space:pre-line;
 }
+.flow-note > span:last-child::first-line{font-weight:700}
 @keyframes flowGlow{
   0%,100%{box-shadow:0 0 0 0 rgba(232,163,61,0)}
   50%    {box-shadow:0 0 0 3px rgba(232,163,61,.16)}
@@ -3031,7 +3053,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   50%    {box-shadow:0 0 0 3px rgba(47,122,68,.17)}
 }
 .flow-ico{
-  flex-shrink:0;width:15px;height:15px;margin-top:2px;border-radius:50%;
+  flex-shrink:0;width:15px;height:15px;margin-top:3px;border-radius:50%;
   background:var(--gold-dark);position:relative;
   animation:flowPing 2.6s ease-in-out infinite;
 }
@@ -3046,6 +3068,30 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   50%    {box-shadow:0 0 0 5px rgba(184,122,30,0)}
 }
 
+/* ===================================================================
+   DEVANAGARI CONJUNCTS
+   Baloo 2 is a display face and does not form every Marathi conjunct —
+   श् + न renders with a visible halant instead of the half-letter, so
+   प्रश्न comes out wrong. Mukta forms it. In Marathi, headings and any
+   pressable label therefore use Mukta. The brand name keeps Baloo 2,
+   because it carries no conjunct and is part of the mark.
+   =================================================================== */
+html[lang="mr"] h1,
+html[lang="mr"] h2,
+html[lang="mr"] h3,
+html[lang="mr"] .sec-title,
+html[lang="mr"] .sec-sub,
+html[lang="mr"] .offer-t,
+html[lang="mr"] .form-h,
+html[lang="mr"] .nav a,
+html[lang="mr"] .qa-gt,
+html[lang="mr"] .hd-t > span,
+html[lang="mr"] .std-title,
+html[lang="mr"] .book-t{
+  font-family:Mukta,system-ui,sans-serif;
+  font-weight:700;
+}
+
 /* ---------- the question frame inside a window ---------- */
 .qa-group-modal{padding:11px 9px 10px}
 
@@ -3057,7 +3103,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   .hd-t{font-size:17.5px}
   .hd-sm .hd-t{font-size:15.5px}
   .hd-s{font-size:12.8px}
-  .win-lang{font-size:11.8px;padding:4px 12px;top:58px}
+  .win-lang{font-size:11.8px;padding:4px 12px;top:66px}
   .flow-note{font-size:11.9px;padding:8px 10px;gap:7px}
 }
 
