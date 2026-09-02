@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13h',
+  VERSION: 'v13p',
   lang: 'mr',
   text: {},
   locations: null,
@@ -507,7 +507,8 @@ const ENTRY = {
       /* Already registered. Asking again wastes their time, so the
          window carries the answers and a way to talk instead. */
       slot.classList.add('hidden');
-      document.getElementById('modalPrefill').classList.add('hidden');
+      const mp = document.getElementById('modalPrefill');
+      if (mp) mp.classList.add('hidden');
       if (sub) sub.classList.add('hidden');
       document.getElementById('modalFormHd').classList.add('hidden');
       waBox.classList.remove('hidden');
@@ -2077,8 +2078,8 @@ const ORDER = {
     const books = (this.app.content.books || []).filter(b => b.status === 'LIVE');
 
     document.getElementById('orderPick').innerHTML = `
-      <div class="opick-h">${t('order_pick')}</div>
-      <div class="opick-list">${books.map(b => {
+      
+      <div class="opick-list">${books.map((b, i) => {
         const q = this.qtyOf(b.book_id);
         const pr = BOOKS.priceFor(b, q || 1);
         const sl = BOOKS.slabs(b.offer_id);
@@ -2092,7 +2093,7 @@ const ORDER = {
               <b>${BOOKS.slabLabel(o)}</b><i>&#8377;${o.selling_rate}</i></button>`;
           }).join('')}
         </div>` : '';
-        return `<div class="opick-row${q ? ' on' : ''}">
+        return `<div class="opick-row bk-${(i % 5) + 1}${q ? ' on' : ''}">
           <div class="opick-cover">${this.app.img('books', b.cover_image, '', this.app.lang === 'mr' ? b.name_mr : b.name_en)}</div>
           <div class="opick-main">
             <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
@@ -2111,7 +2112,7 @@ const ORDER = {
                 <button data-oq="${b.book_id}" data-d="1">+</button>
               </div>
               ${q ? `<span class="opick-line">${q} &times; &#8377;${pr.each} =
-                <b>&#8377;${pr.total}</b></span>` : ''}
+                <b>&#8377;${pr.total}</b>${pr.saved ? `<span class="om-saved">&#8377;${pr.saved} ${t('saved_amt')}</span>` : ''}</span>` : ''}
             </div>
             ${strip}
           </div>

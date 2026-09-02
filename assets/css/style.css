@@ -275,7 +275,7 @@ a{color:inherit;text-decoration:none}
 }
 .sheet-card{
   background:var(--white);width:100%;max-width:600px;border-radius:20px 20px 0 0;
-  padding:104px 28px 36px;position:relative;margin-top:40px;
+  padding:68px 28px 36px;position:relative;margin-top:40px;
   animation:slideup .3s ease;
 }
 @keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
@@ -292,13 +292,29 @@ a{color:inherit;text-decoration:none}
 .gate-note{background:var(--green-light);border-radius:9px;padding:11px 14px;
   font-size:13.5px;color:#2C5A3D;margin-bottom:18px}
 .gate-note-warn{background:#FDF1DC;color:#7A5410}
-.f{margin-bottom:10px;display:flex;flex-direction:column}
-.f-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.f label{font-size:13.5px;font-weight:600;margin-bottom:3px;color:var(--ink)}
-.f input,.f select{height:44px;border:1.5px solid var(--line);border-radius:9px;padding:0 13px;
+.f{margin-bottom:7px;display:flex;flex-direction:column}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.f label{
+  display:flex;align-items:center;gap:7px;
+  font-family:Mukta,system-ui,sans-serif;font-size:13.5px;font-weight:700;
+  margin-bottom:2px;color:var(--green-dark);letter-spacing:.1px;
+}
+/* a small mark before every field label, breathing like the headings */
+.f label::before{
+  content:"";flex-shrink:0;width:7px;height:7px;border-radius:2px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  transform:rotate(45deg);animation:hdMark 3.4s ease-in-out infinite;
+}
+.f:focus-within label{color:var(--green)}
+.f:focus-within label::before{background:linear-gradient(135deg,#3E8E52,var(--green))}
+.f input,.f select{height:42px;border:1.5px solid var(--line);border-radius:9px;padding:0 13px;
   font-family:inherit;font-size:16px;color:var(--ink);background:var(--white);width:100%;
   transition:border-color .15s}
-.f input:focus,.f select:focus{outline:none;border-color:var(--green)}
+.f input:focus,.f select:focus{
+  outline:none;border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(26,77,46,.12);
+  background:#FCFEFC;
+}
 .f input.bad,.f select.bad{border-color:#D14343;background:#FEF6F6}
 .f select:disabled{background:#F4F1EA;color:#9B958A}
 .err{font-size:12.5px;color:#C33;min-height:16px;margin-top:3px}
@@ -313,7 +329,9 @@ a{color:inherit;text-decoration:none}
 .gate-acts{margin-top:8px}
 .gate-submit{
   width:100%;margin-top:6px;position:relative;overflow:hidden;
+  letter-spacing:.3px;
   box-shadow:0 4px 14px rgba(232,163,61,.34);
+  animation:submitFlash 2.8s ease-in-out infinite;
   transition:transform .14s ease,box-shadow .18s ease;
 }
 .gate-submit::after{
@@ -386,7 +404,7 @@ a{color:inherit;text-decoration:none}
 }
 .modal-card{
   background:var(--white);border-radius:16px;width:100%;max-width:580px;
-  padding:104px 28px 30px;position:relative;margin:auto;animation:slideup .3s ease;
+  padding:68px 28px 30px;position:relative;margin:auto;animation:slideup .3s ease;
 }
 .modal-done{text-align:center;padding:20px 0}
 .modal-done .gate-tick{background:var(--green-light);color:var(--green)}
@@ -1099,8 +1117,9 @@ a{color:inherit;text-decoration:none}
 /* ---- order window ---- */
 .order-card{max-width:620px}
 .order-sum{background:var(--green-light);border-radius:12px;padding:15px 17px;margin-bottom:16px}
-.osum-h{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;
-  color:var(--green-dark);margin-bottom:9px}
+.osum-h{font-family:Mukta,system-ui,sans-serif;font-size:16px;font-weight:700;
+  color:var(--green-dark);margin-bottom:9px;
+  display:flex;align-items:center;gap:8px}
 
 .osum-row b{color:var(--green);min-width:66px;text-align:right}
 
@@ -1226,13 +1245,28 @@ html[lang="en"] body{line-height:1.65}
   max-height:290px;overflow-y:auto;padding-right:4px}
 .opick-row{
   display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;
-  border:1px solid var(--line);border-radius:13px;padding:9px 11px;background:var(--white);
+  border:1px solid var(--line);border-radius:13px;padding:7px 10px;background:var(--white);
   position:relative;overflow:hidden;
   transition:border-color .2s ease,box-shadow .22s ease,background .22s ease;
 }
 .opick-row.on{border-color:var(--green);background:var(--green-light)}
-.opick-cover{width:42px;aspect-ratio:1/1.4142;border-radius:4px;overflow:hidden;
-  box-shadow:0 1px 5px rgba(0,0,0,.22)}
+.opick-cover{width:42px;aspect-ratio:1/1.4142;border-radius:5px;overflow:hidden;
+  position:relative;box-shadow:0 2px 7px rgba(0,0,0,.24);
+  transition:transform .26s cubic-bezier(.34,1.4,.64,1),box-shadow .26s ease}
+/* a spine, so the cover reads as a book rather than a picture */
+.opick-cover::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;z-index:2;
+  background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0));
+}
+/* and a shine that crosses it when the book is chosen */
+.opick-cover::after{
+  content:"";position:absolute;top:0;left:-70%;width:55%;height:100%;z-index:3;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);
+  transform:skewX(-18deg);opacity:0;
+}
+.opick-row.on .opick-cover{transform:translateY(-2px) scale(1.06);
+  box-shadow:0 6px 15px rgba(0,0,0,.3)}
+.opick-row.on .opick-cover::after{opacity:1;animation:gateSheen 3.2s ease-in-out infinite}
 .opick-cover img{width:100%;height:100%;object-fit:cover}
 .opick-name{font-size:14px;font-weight:600;color:var(--green-dark);line-height:1.35}
 
@@ -1263,11 +1297,11 @@ html[lang="en"] body{line-height:1.65}
    =================================================================== */
 
 /* ---- the money line inside a picker row ---- */
-.opick-row{grid-template-columns:42px 1fr auto;grid-template-areas:"c i q" "s s s";row-gap:9px}
+.opick-row{grid-template-columns:42px 1fr auto;grid-template-areas:"c i q" "s s s";row-gap:6px}
 .opick-cover{grid-area:c}.opick-info{grid-area:i}.opick-row .cart-qty{grid-area:q}
 .oslab{grid-area:s}
 
-.opick-money{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+.opick-money{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:1px}
 .opick-money em{font-style:normal;font-size:10.5px;letter-spacing:.4px;
   text-transform:uppercase;color:#9B958A;display:block;line-height:1.4}
 .om-mrp s{font-size:14px;color:#A79C88}
@@ -1322,13 +1356,17 @@ html[lang="en"] body{line-height:1.65}
 .oline-name{grid-column:1;font-family:'Baloo 2',sans-serif;font-size:15.5px;
   font-weight:600;color:var(--green-dark);line-height:1.35}
 .oline-facts{grid-column:1;display:flex;gap:7px;flex-wrap:wrap;margin-top:3px}
-.of{font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 9px;line-height:1.5}
-.of-pct{background:var(--gold);color:#2E1E02}
+.of{font-family:Mukta,system-ui,sans-serif;font-size:11.5px;font-weight:700;
+  border-radius:999px;padding:3px 9px;line-height:1.5;letter-spacing:.2px}
+.of-pct{background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#2E1E02;
+  box-shadow:0 2px 6px rgba(184,122,30,.32)}
 .of-rate{background:#E6EFE8;color:#2C5A3D}
-.of-save{background:#DFF3E4;color:#1D6B33}
+.of-save{background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+  box-shadow:0 2px 6px rgba(37,97,56,.3)}
 .oline-amt{grid-column:2;grid-row:1/span 2;text-align:right;white-space:nowrap}
 .oline-amt span{display:block;font-size:12.5px;color:var(--ink-soft)}
-.oline-amt b{font-family:'Baloo 2',sans-serif;font-size:18px;color:var(--green)}
+.oline-amt b{font-family:Mukta,system-ui,sans-serif;font-size:18px;font-weight:800;
+  color:var(--green);letter-spacing:.2px}
 
 /* ---- totals block ---- */
 .osum-foot{margin-top:12px;padding-top:12px;border-top:2px solid rgba(26,77,46,.22)}
@@ -1451,9 +1489,25 @@ html[lang="en"] body{line-height:1.65}
 .opick-main{min-width:0;display:flex;flex-direction:column;gap:9px}
 
 .opick-name{
-  font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;color:var(--green-dark);
+  font-family:Mukta,system-ui,sans-serif;font-size:15px;font-weight:700;
   line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;max-width:100%;padding-right:2px;
+  color:var(--bk,var(--green-dark));
+  position:relative;transition:color .2s ease;
 }
+/* each title takes its own colour, so five books read as five things */
+.bk-1{--bk:#B5442F}
+.bk-2{--bk:#B87A1E}
+.bk-3{--bk:#2F7A44}
+.bk-4{--bk:#2C6E93}
+.bk-5{--bk:#6E52A0}
+/* and the title underlines itself once the book is chosen */
+.opick-name::after{
+  content:"";position:absolute;left:0;bottom:-2px;height:2px;width:0;
+  background:currentColor;border-radius:2px;opacity:.55;
+  transition:width .32s cubic-bezier(.4,0,.2,1);
+}
+.opick-row.on .opick-name::after{width:34px}
 .opick-money{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0}
 .opick-money em{font-style:normal;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;
   color:#9B958A;display:block;line-height:1.4}
@@ -1462,9 +1516,24 @@ html[lang="en"] body{line-height:1.65}
 .om-now b{font-family:'Baloo 2',sans-serif;font-size:21px;font-weight:700;color:var(--green)}
 .om-off{align-self:flex-end;margin-bottom:1px}
 
-.opick-qty{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.opick-qty{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:2px}
 .opick-qlbl{font-size:12.5px;color:var(--ink-soft);font-weight:600}
-.opick-line{font-size:13.5px;color:var(--ink-soft)}
+.opick-line{
+  font-size:13.5px;color:var(--ink-soft);
+  display:flex;align-items:center;gap:12px;flex-wrap:nowrap;
+  min-width:0;white-space:nowrap;
+}
+/* what this quantity saves, beside what it costs. Same entrance as the
+   percentage badge so the two read as one moment, in green not gold. */
+.om-saved{
+  display:inline-flex;align-items:center;
+  background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+  border-radius:7px;padding:3px 9px;
+  font-family:Mukta,system-ui,sans-serif;font-size:11.5px;font-weight:800;
+  letter-spacing:.2px;box-shadow:0 2px 7px rgba(37,97,56,.34);
+  animation:ratepulse 1.8s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){.om-saved{animation:none}}
 .opick-line b{font-family:'Baloo 2',sans-serif;font-size:16px;color:var(--green)}
 .opick-row .cart-qty button{width:36px;height:38px;font-size:18px}
 .opick-row .cart-qty input{width:52px;height:38px;font-size:15px}
@@ -1569,7 +1638,7 @@ html[lang="en"] body{line-height:1.65}
   .cart-x{width:40px;height:40px}
 
   /* ---------- ORDER WINDOW ---------- */
-  .order-card{padding:100px 16px 30px}
+  .order-card{padding:64px 16px 30px}
   .order-pick{margin-bottom:14px}
   .opick-list{gap:9px}
   .opick-row{padding:10px}
@@ -1627,7 +1696,7 @@ html[lang="en"] body{line-height:1.65}
   .nudge{margin:0 0 11px}
   .ph{margin-bottom:13px}
   .sheet{align-items:flex-end}
-.opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q" "s s"}
+.opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q" "s s";row-gap:6px}
   .opick-row .cart-qty{width:fit-content}
   .opick-money{gap:12px}
   .om-now b{font-size:19px}
@@ -1692,7 +1761,7 @@ html[lang="en"] body{line-height:1.65}
   .site{padding-bottom:64px}
 .calc-actions{flex-direction:column}
   .opick-list{max-height:none}
-  .opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q";row-gap:9px}
+  .opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q";row-gap:6px}
   .opick-cover{grid-area:c}.opick-info{grid-area:i}.opick-row .cart-qty{grid-area:q;width:fit-content}
 }
 
@@ -1712,7 +1781,7 @@ html[lang="en"] body{line-height:1.65}
   .form-h{font-size:20px}
     .reg-banner{flex-direction:column;align-items:flex-start}
 .modal{padding:0}
-  .modal-card{border-radius:0;min-height:100vh;padding:100px 18px 40px}
+  .modal-card{border-radius:0;min-height:100vh;padding:64px 18px 40px}
 .fsel{flex:1;min-width:calc(50% - 5px)}
 
 .ex-grid{grid-template-columns:1fr}
@@ -2956,8 +3025,8 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
    Mukta: Baloo 2 does not form the श्न conjunct.
    =================================================================== */
 
-.hd{margin:0 0 13px}
-.hd-2{margin-top:22px;padding-top:18px;border-top:1.5px solid var(--line)}
+.hd{margin:0 0 10px}
+.hd-2{margin-top:15px;padding-top:12px;border-top:1.5px solid var(--line)}
 .hd-sm{margin-bottom:10px}
 .hd-page{margin:34px 0 16px}
 .hd-page .hd-t{font-size:25px}
@@ -3015,7 +3084,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 
 /* ---------- the language switch inside a window ---------- */
 .win-lang{
-  position:absolute;top:70px;right:14px;z-index:2;
+  position:absolute;top:19px;right:66px;z-index:2;
   font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:700;
   color:var(--green);background:var(--green-light);
   border:1.5px solid var(--green);border-radius:999px;
@@ -3032,8 +3101,8 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 }
 /* ---------- the note that sits under all the buttons, one line ---------- */
 .flow-note{
-  display:flex;align-items:flex-start;gap:9px;
-  margin:14px 0 0;padding:10px 12px;
+  display:flex;align-items:flex-start;gap:8px;
+  margin:14px 0 0;padding:9px 11px 9px 12px;
   position:relative;overflow:hidden;
   background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-left:0;
@@ -3125,7 +3194,7 @@ html[lang="mr"] .book-t{
   .hd-t{font-size:17.5px}
   .hd-sm .hd-t{font-size:15.5px}
   .hd-s{font-size:12.8px}
-  .win-lang{font-size:11.8px;padding:4px 12px;top:66px}
+  .win-lang{font-size:11.8px;padding:4px 11px;top:20px;right:62px}
   .flow-note{font-size:12.1px;padding:9px 11px 9px 13px;gap:8px}
   .done-wa,.modal-wa-btn,.qa-ask-btn{font-size:15.5px;min-height:50px}
 }
@@ -3191,8 +3260,13 @@ html[lang="mr"] .book-t{
    =================================================================== */
 
 /* a note that carries one line only, for mid-window guidance */
-.flow-note-tight > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.flow-note-tight{margin:12px 0 14px}
+/* the pair above the form carries complete sentences: they wrap to a
+   second line rather than lose a clause. Ellipsis would cut meaning. */
+.flow-note-tight > span:last-child{white-space:normal;overflow:visible}
+.flow-note-tight{margin:10px 0 12px}
+/* the two notes read as one block: what to do, then why */
+.flow-note-tight + .flow-note-ok{margin-top:-8px;border-top-left-radius:4px;border-top-right-radius:4px}
+.flow-note-tight:has(+ .flow-note-ok){margin-bottom:0;border-bottom-left-radius:4px;border-bottom-right-radius:4px}
 
 /* ---------- the book cards ---------- */
 /* alternating tint, only enough to separate one book from the next */
@@ -3206,7 +3280,8 @@ html[lang="mr"] .book-t{
   background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold));
   background-size:100% 220%;animation:flowBar 4.4s ease-in-out infinite;
 }
-.opick-row.on .opick-name{color:var(--green-dark)}
+/* the title keeps its own colour when chosen; it gains weight instead */
+.opick-row.on .opick-name{font-weight:800}
 
 @keyframes rateLift{0%{transform:translateY(4px) scale(.94);opacity:.4}100%{transform:none;opacity:1}}
 @keyframes offPop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -3260,4 +3335,44 @@ html[lang="mr"] .book-t{
 }
 @media(prefers-reduced-motion:reduce){
   .opick-row.on::before,.om-now.live b,.om-off{animation:none}
+}
+
+/* ===================================================================
+   ORDER SUMMARY + SUBMIT — the numbers should be noticed
+   =================================================================== */
+
+/* 5 — a mark before the totals heading, matching the page pattern */
+.osum-h::before{
+  content:"";flex-shrink:0;width:9px;height:9px;border-radius:2px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  transform:rotate(45deg);animation:hdMark 3.1s ease-in-out infinite;
+}
+.gate-submit:disabled{animation:none;opacity:.75}
+@keyframes submitFlash{
+  0%,100%{box-shadow:0 4px 14px rgba(232,163,61,.34)}
+  50%    {box-shadow:0 6px 22px rgba(232,163,61,.66),0 0 0 3px rgba(232,163,61,.16)}
+}
+
+/* the notes: the green one belongs to the form, not to the page */
+.flow-note-ok{
+  background:linear-gradient(90deg,#E6F5EC,#FBFFFC);
+  border-color:#57A46A;color:#20492E;animation-name:flowGlowWa;
+  border-style:solid;
+}
+/* a tick rather than an "i": this note reports something already done */
+.flow-note-ok .flow-ico::after{content:"\2713";font-size:10px}
+.flow-note-ok > span:last-child{white-space:normal;overflow:visible}
+.flow-note-ok::before{
+  background:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A);background-size:100% 220%;
+}
+.flow-note-ok .flow-ico{background:#3E8E52}
+
+@media(max-width:399px){
+  .opick-line{font-size:12.8px;gap:9px}
+  .om-saved{font-size:11px;padding:3px 7px}
+  .opick-name{font-size:14.2px}
+}
+@media(prefers-reduced-motion:reduce){
+  .osum-h::before,.gate-submit,.f label::before,
+  .opick-row.on .opick-cover::after{animation:none}
 }
