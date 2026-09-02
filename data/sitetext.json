@@ -270,7 +270,7 @@
     "you_save_now": "आपली बचत",
     "submit_continue": "नोंद करा व पुढे जा",
     "see_books_again": "पुन्हा पुस्तके पाहा",
-    "form_all_req": "दर व सवलत व्हॉट्सॲपवर मिळवण्यासाठी पुढील माहिती भरा.",
+    "form_all_req": "दर व सवलत व्हॉट्सॲपवर हवी? माहिती भरा.",
     "err_select": "कृपया यादीतून निवडा",
     "err_district": "जिल्ह्याच्या नावात फक्त अक्षरे वापरा",
     "err_taluka": "तालुक्याच्या नावात फक्त अक्षरे वापरा",
@@ -312,7 +312,9 @@
     "order_pick_s": "नग निवडा — दर व एकूण रक्कम लगेच दिसेल.",
     "order_wa_cta": "ऑर्डर व्हॉट्सॲपवर पाठवा",
     "gate_done_sub": "आता व्हॉट्सॲपवर पाठवा.",
-    "form_why_note": "नक्की काय हवं ते समजून आपल्यापर्यंत पोहोचण्यासाठी."
+    "form_why_note": "नक्की काय हवं ते समजून पोहोचण्यासाठी.",
+    "send_head": "पुढे काय होईल",
+    "send_sub": "दर व सवलत थेट व्हॉट्सॲपवर"
   },
   "en": {
     "nav_home": "Home",
@@ -585,7 +587,7 @@
     "you_save_now": "You Save",
     "submit_continue": "Submit & Continue",
     "see_books_again": "See Books Again",
-    "form_all_req": "To Get Rates And Offers On WhatsApp, Fill In The Details Below.",
+    "form_all_req": "Rates And Offers On WhatsApp? Fill Below.",
     "err_select": "Please choose from the list",
     "err_district": "Use letters only in the district name",
     "err_taluka": "Use letters only in the taluka name",
@@ -627,6 +629,8 @@
     "order_pick_s": "Pick Quantities — Rate and Total Update Live.",
     "order_wa_cta": "Send Order on WhatsApp",
     "gate_done_sub": "Now Send It on WhatsApp.",
-    "form_why_note": "So We Know Exactly What You Need And Can Reach You."
+    "form_why_note": "So We Know Exactly What You Need.",
+    "send_head": "What Happens Next",
+    "send_sub": "Rates And Offers On WhatsApp"
   }
 }

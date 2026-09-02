@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13p',
+  VERSION: 'v13s',
   lang: 'mr',
   text: {},
   locations: null,
@@ -90,6 +90,35 @@ const RUTUJA = {
     document.getElementById('langToggle').addEventListener('click', () => {
       this.setLang(this.lang === 'mr' ? 'en' : 'mr');
     });
+  },
+
+  /* Labels in a named language, whatever the site is currently showing.
+     The sheet must always read English; WhatsApp must always read Marathi. */
+  tIn(lang, key) {
+    const d = this.text && this.text[lang];
+    return (d && d[key]) || this.t(key);
+  },
+
+  /* Option values are stored as name_en everywhere, so English needs no
+     lookup. This turns those stored values into Marathi for WhatsApp. */
+  placeIn(lang, stateEn, distEn, talEn) {
+    const L = this.locations || {};
+    if (lang !== 'mr') return { state: stateEn || '', district: distEn || '', taluka: talEn || '' };
+    const mh = L.maharashtra || {};
+    let st = stateEn, di = distEn, ta = talEn;
+    if (stateEn === 'Maharashtra') {
+      st = mh.name_mr || stateEn;
+      const d = (mh.districts || []).find(x => x.name_en === distEn);
+      if (d) {
+        di = d.name_mr || distEn;
+        const t = (d.talukas || []).find(x => x.name_en === talEn);
+        if (t) ta = t.name_mr || talEn;
+      }
+    } else {
+      const o = (L.other_states || []).find(x => x.name_en === stateEn);
+      if (o) st = o.name_mr || stateEn;
+    }
+    return { state: st || '', district: di || '', taluka: ta || '' };
   },
 
   setLang(lang, silent) {
@@ -308,7 +337,17 @@ const RUTUJA = {
       b.textContent = this.t('win_lang');
       if (!b.dataset.bound) {
         b.dataset.bound = '1';
-        b.addEventListener('click', () => this.setLang(this.lang === 'mr' ? 'en' : 'mr'));
+        b.addEventListener('click', () => {
+          const next = this.lang === 'mr' ? 'en' : 'mr';
+          /* answer the tap at once, then do the heavy repaint on the next
+             frame — otherwise the button appears to lag on a slow phone */
+          b.textContent = next === 'mr' ? 'English' : 'मराठी';
+          b.classList.add('busy');
+          requestAnimationFrame(() => {
+            this.setLang(next, true);
+            b.classList.remove('busy');
+          });
+        });
       }
     });
   },
@@ -326,16 +365,16 @@ const RUTUJA = {
       if (b) { key = 'wa_book'; extra = this.lang === 'mr' ? b.name_mr : b.name_en; }
     } else if (p === 'offers') key = 'wa_school';
     else if (p === 'qa')      key = 'wa_qa';
-    const link = this.wa(key, extra);
+    const link = this.wa(key, extra, 'mr');
     if (link) { w.href = link; w.classList.remove('hidden'); }
     else { w.classList.add('hidden'); }
   },
 
   /* Builds a WhatsApp deep link with a pre-filled message (Phase 11 extends this). */
-  wa(msgKey, extra) {
+  wa(msgKey, extra, lang) {
     const n = this.config.whatsapp_number;
     if (!n) return '';
-    let m = this.t(msgKey || 'wa_general');
+    let m = lang ? this.tIn(lang, msgKey || 'wa_general') : this.t(msgKey || 'wa_general');
     if (extra) m += ' ' + extra;
     return 'https://wa.me/' + n + '?text=' + encodeURIComponent(m);
   },
@@ -513,7 +552,7 @@ const ENTRY = {
       document.getElementById('modalFormHd').classList.add('hidden');
       waBox.classList.remove('hidden');
       const link = this.app.wa('wa_' + (key === 'school' ? 'school'
-                              : key === 'retail' ? 'retailer' : 'general'));
+                              : key === 'retail' ? 'retailer' : 'general'), '', 'mr');
       const b = document.getElementById('modalWaBtn');
       if (link) { b.href = link; b.classList.remove('hidden'); }
       else { b.classList.add('hidden'); }
@@ -543,10 +582,12 @@ const ENTRY = {
      WhatsApp so they arrive there too. The window is no longer closed
      on a timer, because the person needs time to press send. */
   regMessage(regId) {
-    const t = k => this.app.t(k);
+    /* Always Marathi on WhatsApp, whatever language the form was in. */
+    const t = k => this.app.tIn('mr', k);
     const p = this.lastReg || {};
     const cat = p.category ? t('cat_' + p.category) : '';
-    const place = [p.village_city, p.taluka, p.district].filter(Boolean).join(', ');
+    const L = this.app.placeIn('mr', p.state, p.district, p.taluka);
+    const place = [p.village_city, L.taluka, L.district].filter(Boolean).join(', ');
     const lines = [t('wa_register'), '', t('wa_reg_id') + ': ' + regId];
     if (p.name) lines.push(t('wa_reg_name') + ': ' + p.name);
     if (cat)    lines.push(t('wa_reg_who') + ': ' + cat);
@@ -1285,8 +1326,8 @@ const BOOKS = {
     };
     document.getElementById('calcAsk').onclick = () => {
       const q = +qv.value || 1;
-      const detail = `${mr ? b.name_mr : b.name_en} (${this.medLabel(b)}) × ${q}`;
-      const link = this.app.wa(q > 1 ? 'wa_quantity' : 'wa_book', detail);
+      const detail = `${b.name_mr || b.name_en} (${this.medLabel(b)}) × ${q}`;
+      const link = this.app.wa(q > 1 ? 'wa_quantity' : 'wa_book', detail, 'mr');
       if (link) window.open(link, '_blank'); else this.app.go('contact');
     };
     draw();
@@ -1608,14 +1649,22 @@ const CART = {
   clear() { this.items = []; this.save(); this.sync(); this.render(); },
 
   /* Every line priced through the same slab logic the book page uses. */
+  /* The summary lists books in the same order as the picker above it,
+     not in the order they happened to be added. */
   lines() {
+    const all = (this.app.content.books || []).filter(b => b.status === 'LIVE');
+    const rank = id => {
+      const i = all.findIndex(x => x.book_id === id);
+      return i < 0 ? 9999 : i;
+    };
     return this.items.map(it => {
       const b = (this.app.content.books || []).find(x => x.book_id === it.id);
       if (!b) return null;
       const p = BOOKS.priceFor(b, it.qty);
       return { book: b, qty: it.qty, each: p.each, total: p.total,
                saved: p.saved, pct: p.pct };
-    }).filter(Boolean);
+    }).filter(Boolean)
+      .sort((a, b) => rank(a.book.book_id) - rank(b.book.book_id));
   },
 
   totals() {
@@ -1749,8 +1798,11 @@ const CART = {
 
   /* The message the publication receives, complete and ready to act on. */
   message(buyer, orderNo, lines, T) {
-    const mr = this.app.lang === 'mr';
-    const t = k => this.app.t(k);
+    /* Always Marathi on WhatsApp — book names, labels and place names —
+       even when the visitor filled the form in English. */
+    const mr = true;
+    const t = k => this.app.tIn('mr', k);
+    const P = this.app.placeIn('mr', buyer.state, buyer.district, buyer.taluka);
     lines = lines || this.lines();
     T = T || this.totals();
     const num = mr ? ['१','२','३','४','५','६','७','८','९','१०'] : null;
@@ -1766,7 +1818,7 @@ const CART = {
       `${t('gate_name')}: ${buyer.name}`,
       `${t('gate_whatsapp')}: ${buyer.whatsapp}`,
       buyer.category ? `${t('gate_category')}: ${t('cat_' + buyer.category)}` : '',
-      [buyer.village_city, buyer.taluka, buyer.district].filter(Boolean).join(', ')
+      [buyer.village_city, P.taluka, P.district].filter(Boolean).join(', ')
         + (buyer.pin ? ' — ' + buyer.pin : ''),
       '',
       L,
@@ -1823,8 +1875,11 @@ const ORDERFORM = {
                 parentNote:o('parentNote'),
                 distT:o('gDistT'), talT:o('gTalT'), wDist:o('wDist'), wTal:o('wTal') };
 
-    this.el.skip.classList.add('hidden');
     this.el.submit.classList.add('btn-gold');
+    /* the second button belongs here too — it goes back to the books */
+    this.el.skip.classList.remove('hidden');
+    this.el.skip.textContent = this.app.t('see_books_again');
+    this.el.skip.onclick = () => { ORDER.close(); this.app.go('books'); };
 
     this.node.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
     this.el.state.addEventListener('change', () => FORM.onState.call(this));
@@ -2131,7 +2186,7 @@ const ORDER = {
         <div class="oline-facts">
           ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
           <span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>
-          ${l.saved ? `<span class="of of-save">${t('saved_amt')} &#8377;${l.saved}</span>` : ''}
+          ${l.saved ? `<span class="of of-save">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}
         </div>
         <div class="oline-amt"><span>${l.qty} &times; &#8377;${l.each}</span>
           <b>&#8377;${l.total}</b></div>
@@ -2638,7 +2693,7 @@ const QA = {
     if (!el) return;
     const q = (el.value || '').trim().slice(0, 400);
     if (!q) { el.focus(); return; }
-    const link = this.app.wa('wa_qa', q);
+    const link = this.app.wa('wa_qa', q, 'mr');
     if (link) { window.open(link, '_blank'); el.value = ''; }
     else this.app.go('contact');
   },
