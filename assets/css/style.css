@@ -2887,7 +2887,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   background:var(--white);border:1.5px solid var(--line);border-radius:9px;padding:10px 11px;
 }
 .qa-ask-in:focus{outline:none;border-color:var(--gold)}
-.qa-ask-btn{margin-top:11px;width:100%}
+.qa-ask-btn{margin-top:12px}
 
 /* ---------- the same questions on a book's own page ---------- */
 .qa-book-block{margin-top:26px}
@@ -2909,7 +2909,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.55;
   color:var(--ink-soft);margin:0 0 12px;
 }
-.modal-wa-btn{display:block;width:100%;text-align:center;text-decoration:none}
+
 
 /* ---------- the fifth card: a route, not an offer ---------- */
 .offer-qa{
@@ -3025,29 +3025,42 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .flow-note{
   display:flex;align-items:flex-start;gap:9px;
   margin:14px 0 0;padding:10px 12px;
+  position:relative;overflow:hidden;
   background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
-  border:1px dashed var(--gold);border-left:3px solid var(--gold-dark);
-  border-radius:10px;
-  font-family:Mukta,system-ui,sans-serif;font-size:12.6px;font-weight:600;
-  line-height:1.35;color:#7A5410;
+  border:1px dashed var(--gold);border-left:0;
+  border-radius:11px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 2px 10px rgba(0,0,0,.05);
+  font-family:Mukta,system-ui,sans-serif;font-size:12.7px;font-weight:600;
+  line-height:1.5;color:#6F4B0C;
   animation:flowGlow 3.6s ease-in-out infinite;
 }
+/* the accent bar travels rather than sitting still */
+.flow-note::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold));
+  background-size:100% 220%;animation:flowBar 4.4s ease-in-out infinite;
+}
+@keyframes flowBar{0%,100%{background-position:0 0}50%{background-position:0 100%}}
 /* this note is allowed to breathe: the line break in the text is kept,
    and it may run to a third line rather than truncate. It appears once,
    at the moment that decides whether the message reaches us at all. */
 .flow-note > span:last-child{
   min-width:0;white-space:pre-line;
 }
-.flow-note > span:last-child::first-line{font-weight:700}
+.flow-note > span:last-child::first-line{
+  font-weight:700;font-size:13.2px;color:#5A3B06;letter-spacing:.1px;
+}
+.flow-note-wa > span:last-child::first-line{color:#15381F}
 @keyframes flowGlow{
   0%,100%{box-shadow:0 0 0 0 rgba(232,163,61,0)}
   50%    {box-shadow:0 0 0 3px rgba(232,163,61,.16)}
 }
 .flow-note-wa{
   background:linear-gradient(90deg,#E4F5EA,#FAFFFB);
-  border-color:#57A46A;border-left-color:#2F7A44;color:#245134;
+  border-color:#57A46A;color:#20492E;
   animation-name:flowGlowWa;
 }
+.flow-note-wa::before{background:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A);background-size:100% 220%}
 @keyframes flowGlowWa{
   0%,100%{box-shadow:0 0 0 0 rgba(47,122,68,0)}
   50%    {box-shadow:0 0 0 3px rgba(47,122,68,.17)}
@@ -3104,11 +3117,52 @@ html[lang="mr"] .book-t{
   .hd-sm .hd-t{font-size:15.5px}
   .hd-s{font-size:12.8px}
   .win-lang{font-size:11.8px;padding:4px 12px;top:66px}
-  .flow-note{font-size:11.9px;padding:8px 10px;gap:7px}
+  .flow-note{font-size:12.1px;padding:9px 11px 9px 13px;gap:8px}
+  .done-wa,.modal-wa-btn,.qa-ask-btn{font-size:15.5px;min-height:50px}
 }
 
-/* the WhatsApp hand-off on a done screen */
-.done-wa{display:block;width:100%;text-align:center;text-decoration:none;margin-top:4px}
+/* ---------- the WhatsApp hand-off button ----------
+   display:block was overriding .btn's inline-flex, which is why the
+   label sat at the top of the box instead of centred. flex restores it. */
+.done-wa,.modal-wa-btn,.qa-ask-btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;text-decoration:none;margin-top:6px;
+  position:relative;overflow:hidden;isolation:isolate;
+  min-height:52px;border-radius:12px;
+  background:linear-gradient(135deg,#F2B24C 0%,var(--gold) 45%,var(--gold-dark) 100%);
+  color:#3A2503;font-weight:700;font-size:16.5px;letter-spacing:.2px;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 5px 16px rgba(232,163,61,.42),inset 0 1px 0 rgba(255,255,255,.5);
+  animation:waPulse 3.4s ease-in-out infinite;
+  transition:transform .14s ease,box-shadow .2s ease;
+}
+/* a paper plane that nudges forward, so the button reads as "send" */
+.done-wa::before,.modal-wa-btn::before,.qa-ask-btn::before{
+  content:"";flex-shrink:0;width:0;height:0;
+  border-left:13px solid #3A2503;
+  border-top:7px solid transparent;border-bottom:7px solid transparent;
+  opacity:.85;animation:waSend 2.4s ease-in-out infinite;
+}
+/* and a sheen that crosses it */
+.done-wa::after,.modal-wa-btn::after,.qa-ask-btn::after{
+  content:"";position:absolute;top:0;left:-55%;width:42%;height:100%;z-index:-1;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-18deg);animation:gateSheen 4.6s ease-in-out infinite;
+}
+.done-wa:active,.modal-wa-btn:active,.qa-ask-btn:active{
+  transform:translateY(2px);box-shadow:0 2px 8px rgba(232,163,61,.36);
+}
+@media(hover:hover){
+  .done-wa:hover,.modal-wa-btn:hover,.qa-ask-btn:hover{box-shadow:0 7px 22px rgba(232,163,61,.5)}
+}
+@keyframes waPulse{
+  0%,100%{box-shadow:0 5px 16px rgba(232,163,61,.42),inset 0 1px 0 rgba(255,255,255,.5)}
+  50%    {box-shadow:0 5px 22px rgba(232,163,61,.62),inset 0 1px 0 rgba(255,255,255,.5)}
+}
+@keyframes waSend{
+  0%,100%{transform:translateX(0);opacity:.85}
+  50%    {transform:translateX(4px);opacity:1}
+}
 .btn-line{
   background:var(--white);color:var(--green);
   border:1.5px solid var(--line);margin-top:10px;
@@ -3117,6 +3171,8 @@ html[lang="mr"] .book-t{
 @media(hover:hover){.btn-line:hover{border-color:var(--green);background:var(--green-light)}}
 
 @media(prefers-reduced-motion:reduce){
-  .hd-mark,.hd-t > span,.hd-s::after,.win-lang,.flow-ico,.flow-note,.gate-submit::after{animation:none}
+  .hd-mark,.hd-t > span,.hd-s::after,.win-lang,.flow-ico,.flow-note,
+  .flow-note::before,.gate-submit::after,.done-wa,.modal-wa-btn,.qa-ask-btn,
+  .done-wa::before,.done-wa::after,.qa-gmark::before,.qa-gmark::after{animation:none}
   .hd-t > span{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
 }
