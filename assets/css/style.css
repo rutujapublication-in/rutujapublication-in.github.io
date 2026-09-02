@@ -1226,8 +1226,9 @@ html[lang="en"] body{line-height:1.65}
   max-height:290px;overflow-y:auto;padding-right:4px}
 .opick-row{
   display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;
-  border:1px solid var(--line);border-radius:11px;padding:9px 11px;background:var(--white);
-  transition:.16s;
+  border:1px solid var(--line);border-radius:13px;padding:9px 11px;background:var(--white);
+  position:relative;overflow:hidden;
+  transition:border-color .2s ease,box-shadow .22s ease,background .22s ease;
 }
 .opick-row.on{border-color:var(--green);background:var(--green-light)}
 .opick-cover{width:42px;aspect-ratio:1/1.4142;border-radius:4px;overflow:hidden;
@@ -1288,20 +1289,27 @@ html[lang="en"] body{line-height:1.65}
 @media(prefers-reduced-motion:reduce){.om-now.live b{animation:none}}
 
 /* ---- the slab strip, tap one to jump straight to that quantity ---- */
-.oslab{display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+.oslab{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
   padding-top:9px;border-top:1px dashed var(--line)}
-.oslab-h{font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;
-  color:#9B958A;margin-right:2px}
+/* on its own line, aligned with the book's left edge, so the rate chips
+   below it get the full width of the row and never wrap to a second line */
+.oslab-h{
+  flex:0 0 100%;display:block;margin:0 0 5px;
+  font-family:Mukta,system-ui,sans-serif;font-size:10.5px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;color:#9B958A;
+}
 .oslab-c{
-  display:flex;flex-direction:column;align-items:center;gap:1px;
-  border:1px solid var(--line);border-radius:8px;padding:5px 11px;background:var(--white);
+  display:flex;flex-direction:column;align-items:center;gap:1px;position:relative;
+  flex:1 1 0;min-width:0;
+  border:1px solid var(--line);border-radius:8px;padding:5px 6px;background:var(--white);
   transition:.15s;line-height:1.25;
 }
 .oslab-c b{font-size:11px;font-weight:600;color:var(--ink-soft)}
 .oslab-c i{font-style:normal;font-family:'Baloo 2',sans-serif;font-size:14px;
   font-weight:700;color:var(--green)}
 .oslab-c:hover{border-color:var(--green);transform:translateY(-2px)}
-.oslab-c.on{background:var(--green);border-color:var(--green)}
+.oslab-c.on{background:var(--green);border-color:var(--green);
+  box-shadow:0 3px 10px rgba(26,77,46,.28)}
 .oslab-c.on b{color:rgba(255,255,255,.85)}
 .oslab-c.on i{color:#fff}
 
@@ -1434,7 +1442,8 @@ html[lang="en"] body{line-height:1.65}
   border:1.5px solid var(--line);border-radius:14px;padding:14px;background:var(--white);
   transition:.18s;
 }
-.opick-row.on{border-color:var(--green);background:#F5FAF6;
+.opick-row.on{border-color:var(--gold);background:#FFFDF7;
+  box-shadow:0 4px 16px rgba(232,163,61,.18);
   box-shadow:0 3px 12px rgba(26,77,46,.12)}
 .opick-cover{width:74px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
   box-shadow:0 3px 10px rgba(0,0,0,.26)}
@@ -1460,7 +1469,7 @@ html[lang="en"] body{line-height:1.65}
 .opick-row .cart-qty button{width:36px;height:38px;font-size:18px}
 .opick-row .cart-qty input{width:52px;height:38px;font-size:15px}
 
-.oslab{display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+.oslab{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
   padding-top:10px;border-top:1px dashed var(--line);margin:0}
 
 /* the order totals block, sized for a phone */
@@ -1560,7 +1569,7 @@ html[lang="en"] body{line-height:1.65}
   .cart-x{width:40px;height:40px}
 
   /* ---------- ORDER WINDOW ---------- */
-  .order-card{padding:22px 16px 30px}
+  .order-card{padding:100px 16px 30px}
   .order-pick{margin-bottom:14px}
   .opick-list{gap:9px}
   .opick-row{padding:10px}
@@ -1703,7 +1712,7 @@ html[lang="en"] body{line-height:1.65}
   .form-h{font-size:20px}
     .reg-banner{flex-direction:column;align-items:flex-start}
 .modal{padding:0}
-  .modal-card{border-radius:0;min-height:100vh;padding:26px 18px 40px}
+  .modal-card{border-radius:0;min-height:100vh;padding:100px 18px 40px}
 .fsel{flex:1;min-width:calc(50% - 5px)}
 
 .ex-grid{grid-template-columns:1fr}
@@ -3175,4 +3184,80 @@ html[lang="mr"] .book-t{
   .flow-note::before,.gate-submit::after,.done-wa,.modal-wa-btn,.qa-ask-btn,
   .done-wa::before,.done-wa::after,.qa-gmark::before,.qa-gmark::after{animation:none}
   .hd-t > span{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
+}
+
+/* ===================================================================
+   ORDER WINDOW — book cards, live rate, hand-off
+   =================================================================== */
+
+/* a note that carries one line only, for mid-window guidance */
+.flow-note-tight > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flow-note-tight{margin:12px 0 14px}
+
+/* ---------- the book cards ---------- */
+/* alternating tint, only enough to separate one book from the next */
+.opick-list > .opick-row:nth-child(even){background:#FBFAF6}
+/* a quiet gold edge that lights up once a book is actually chosen */
+.opick-row::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--line);transition:background .22s ease;
+}
+.opick-row.on::before{
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold));
+  background-size:100% 220%;animation:flowBar 4.4s ease-in-out infinite;
+}
+.opick-row.on .opick-name{color:var(--green-dark)}
+
+@keyframes rateLift{0%{transform:translateY(4px) scale(.94);opacity:.4}100%{transform:none;opacity:1}}
+@keyframes offPop{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* the chosen rate band reads as chosen */
+.oslab-c.on::after{
+  content:"";position:absolute;left:50%;bottom:-1px;width:16px;height:2px;
+  margin-left:-8px;border-radius:2px;background:rgba(255,255,255,.7);
+}
+
+/* ---------- the done screen ---------- */
+.done-sub{
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;color:var(--ink-soft);
+  text-align:center;margin:6px 0 16px;
+}
+.order-done .btn-line,.sheet-done .btn-line{
+  width:100%;position:relative;overflow:hidden;min-height:48px;
+  border:1.5px solid var(--green);color:var(--green);
+  background:linear-gradient(180deg,#FFFFFF,#F4F9F5);
+  border-radius:11px;font-weight:600;
+  box-shadow:0 2px 8px rgba(26,77,46,.1);
+  transition:transform .14s ease,box-shadow .2s ease,background .2s ease;
+}
+.order-done .btn-line::after,.sheet-done .btn-line::after{
+  content:"";position:absolute;top:0;left:-55%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(26,77,46,.12),transparent);
+  transform:skewX(-18deg);animation:gateSheen 5.4s ease-in-out infinite;
+}
+.order-done .btn-line:active,.sheet-done .btn-line:active{
+  transform:translateY(2px);box-shadow:0 1px 4px rgba(26,77,46,.12);
+}
+
+/* ---------- centred heading, for the success screens ---------- */
+.hd-c{text-align:center;margin:2px 0 12px}
+.hd-c .hd-t{justify-content:center;font-size:21px}
+.hd-c .hd-t > span{white-space:normal;overflow:visible}
+.hd-c .hd-s{padding-bottom:9px}
+.hd-c .hd-s::after{
+  left:50%;transform:translateX(-50%);transform-origin:center;
+  animation-name:hdRuleC;
+}
+@keyframes hdRuleC{
+  0%,100%{transform:translateX(-50%) scaleX(1)}
+  50%    {transform:translateX(-50%) scaleX(1.7)}
+}
+
+@media(max-width:399px){
+  .oslab-c{padding:5px 4px}
+  .oslab-c b{font-size:10.5px}
+  .oslab-c i{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .opick-row.on::before,.om-now.live b,.om-off{animation:none}
 }

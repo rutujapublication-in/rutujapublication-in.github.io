@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=13f">
+<link rel="stylesheet" href="assets/css/style.css?v=13h">
 </head>
 <body>
 
@@ -35,7 +35,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v13f</p>
+        <p class="w-ver">v13h</p>
       </div>
 
       <aside class="w-side w-right">
@@ -88,7 +88,10 @@
       </div>
       <div class="sheet-done hidden" id="sheetDone">
         <div class="gate-tick">&#10003;</div>
-        <p class="gate-done-t" data-t="gate_success"></p>
+        <div class="hd hd-c">
+          <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="gate_success"></span></h2>
+          <p class="hd-s" data-t="gate_done_sub"></p>
+        </div>
         <p class="gate-done-id"><span data-t="gate_reg_id"></span>: <strong id="regId"></strong></p>
         <a class="btn btn-gold done-wa" id="sheetWaBtn" target="_blank" rel="noopener" data-t="gate_wa_cta"></a>
         <button class="btn btn-line" id="doneEnter" data-t="nav_books"></button>
@@ -169,7 +172,10 @@
     </div>
     <div class="modal-done hidden" id="modalDone">
       <div class="gate-tick">&#10003;</div>
-      <p class="gate-done-t" data-t="gate_success"></p>
+      <div class="hd hd-c">
+        <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="gate_success"></span></h2>
+        <p class="hd-s" data-t="gate_done_sub"></p>
+      </div>
       <p class="gate-done-id"><span data-t="gate_reg_id"></span>: <strong id="regId2"></strong></p>
       <a class="btn btn-gold done-wa" id="modalWaBtn2" target="_blank" rel="noopener" data-t="gate_wa_cta"></a>
       <p class="flow-note flow-note-wa"><span class="flow-ico" aria-hidden="true"></span><span data-t="wa_note"></span></p>
@@ -183,20 +189,30 @@
     <button class="gate-x" id="orderX" aria-label="Close">&times;</button>
     <button class="win-lang" id="orderLang" data-winlang></button>
     <div id="orderBody">
-      <h2 class="form-h" data-t="order_title"></h2>
-      <p class="form-sub" data-t="order_sub"></p>
+      <div class="hd">
+        <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="order_title"></span></h2>
+        <p class="hd-s" data-t="order_sub"></p>
+      </div>
+      <div class="hd hd-sm hd-2">
+        <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="order_pick_h"></span></h3>
+        <p class="hd-s" data-t="order_pick_s"></p>
+      </div>
       <div class="order-pick" id="orderPick"></div>
       <div class="order-sum" id="orderSum"></div>
-      <div class="gate-note" data-t="form_all_req"></div>
+      <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
       <div class="gate-note gate-note-ok hidden" id="orderPrefill" data-t="order_prefill"></div>
       <div id="orderSlot"></div>
     </div>
     <div class="order-done hidden" id="orderDone">
       <div class="gate-tick">&#10003;</div>
-      <p class="gate-done-t" data-t="order_done"></p>
+      <div class="hd hd-c">
+        <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="order_done"></span></h2>
+        <p class="hd-s" data-t="order_note"></p>
+      </div>
       <p class="gate-done-id"><span data-t="order_no"></span>: <strong id="orderNo"></strong></p>
-      <p class="form-sub" data-t="order_note"></p>
-      <button class="btn btn-ghost" id="orderBooksAgain" data-t="see_books_again"></button>
+      <a class="btn btn-gold done-wa" id="orderWaBtn" target="_blank" rel="noopener" data-t="order_wa_cta"></a>
+      <button class="btn btn-line" id="orderBooksAgain" data-t="see_books_again"></button>
+      <p class="flow-note flow-note-wa"><span class="flow-ico" aria-hidden="true"></span><span data-t="wa_note"></span></p>
     </div>
   </div>
 </div>
@@ -391,6 +407,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=13f"></script>
+<script src="assets/js/app.js?v=13h"></script>
 </body>
 </html>

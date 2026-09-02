@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13f',
+  VERSION: 'v13h',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1695,8 +1695,22 @@ const CART = {
       const it = this.items.find(x => x.id === b.dataset.cq);
       this.setQty(b.dataset.cq, it.qty + (+b.dataset.d));
     });
-    box.querySelectorAll('[data-ci]').forEach(i => i.onchange = () =>
-      this.setQty(i.dataset.ci, parseInt(i.value, 10) || 1));
+    /* same lag as the order window had: onchange only fired after tapping
+       outside. oninput updates live, with focus and caret restored. */
+    box.querySelectorAll('[data-ci]').forEach(i => {
+      i.oninput = () => {
+        const id = i.dataset.ci;
+        const raw = (i.value || '').replace(/\D/g, '').slice(0, 4);
+        this.setQty(id, parseInt(raw, 10) || 1);
+        const again = document.querySelector(`[data-ci="${id}"]`);
+        if (again) {
+          again.value = raw;
+          again.focus();
+          const n = again.value.length;
+          try { again.setSelectionRange(n, n); } catch (e) {}
+        }
+      };
+    });
     document.getElementById('cartOrder').onclick = () => ORDER.open(null);
     document.getElementById('cartMore').onclick = () => this.app.go('books');
   },
@@ -1903,9 +1917,18 @@ const ORDERFORM = {
     BUYER.markSent(buyer);
     localStorage.setItem('rutuja_reg', JSON.stringify({ id: orderNo, cat: buyer.category }));
 
+    /* Recorded on the sheet above; now the same order is handed to
+       WhatsApp. The button on the done screen is the fallback for when
+       the browser blocks a window opened after an await. */
     const n = this.app.config.whatsapp_number;
-    if (n) window.open('https://wa.me/' + n + '?text=' +
-      encodeURIComponent(CART.message(buyer, orderNo, lines, T)), '_blank');
+    const link = n ? 'https://wa.me/' + n + '?text=' +
+      encodeURIComponent(CART.message(buyer, orderNo, lines, T)) : '';
+    const wb = document.getElementById('orderWaBtn');
+    if (wb) {
+      if (link) { wb.href = link; wb.classList.remove('hidden'); }
+      else { wb.classList.add('hidden'); }
+    }
+    if (link) { try { window.open(link, '_blank'); } catch (e) {} }
 
     this.el.submit.disabled = false;
     this.el.submit.textContent = t('submit_continue');
@@ -2126,8 +2149,23 @@ const ORDER = {
     const box = document.getElementById('orderPick');
     box.querySelectorAll('[data-oq]').forEach(b =>
       b.onclick = () => this.setQty(b.dataset.oq, this.qtyOf(b.dataset.oq) + (+b.dataset.d)));
-    box.querySelectorAll('[data-oi]').forEach(i =>
-      i.onchange = () => this.setQty(i.dataset.oi, parseInt(i.value, 10) || 0));
+    /* was onchange, which only fired after tapping outside the box, so the
+       new rate and the discount appeared late. oninput updates as it is
+       typed; the row is redrawn, so focus and caret are put back. */
+    box.querySelectorAll('[data-oi]').forEach(i => {
+      i.oninput = () => {
+        const id = i.dataset.oi;
+        const raw = (i.value || '').replace(/\D/g, '').slice(0, 4);
+        this.setQty(id, parseInt(raw, 10) || 0);
+        const again = document.querySelector(`[data-oi="${id}"]`);
+        if (again) {
+          again.value = raw;
+          again.focus();
+          const n = again.value.length;
+          try { again.setSelectionRange(n, n); } catch (e) {}
+        }
+      };
+    });
     box.querySelectorAll('[data-jump]').forEach(b =>
       b.onclick = () => this.setQty(b.dataset.jump, +b.dataset.q));
   },
