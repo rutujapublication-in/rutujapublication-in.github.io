@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14k',
+  VERSION: 'v14l',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1519,12 +1519,12 @@ const MEDIA = {
   /* The same card is used in the carousel, on the Videos page and on a
      book page, so a visitor always sees the video presented identically.
      Order below the video: book name, then tagline, then the description. */
-  /* A title like "चला वाचूया झटपट (एक परिपूर्ण उजळणी)" should break
-     before the bracket, not wherever the box runs out of room. */
-  splitTitle(t) {
-    const s = String(t || '');
-    const i = s.indexOf('(');
-    return i > 0 ? s.slice(0, i).trim() + '<br>' + s.slice(i) : s;
+  /* How wide this title wants to be, in units of font-size. CSS divides
+     the space available by this, so each title lands at the largest size
+     that fits on one line rather than every title sharing the smallest. */
+  titleWidth(t, mr) {
+    const n = String(t || '').length || 1;
+    return (n * (mr ? 0.52 : 0.50)).toFixed(1);
   },
 
   card(v, mr, eager) {
@@ -1541,7 +1541,7 @@ const MEDIA = {
         </div>
       </div>
       <div class="vcard-body">
-        <h3 class="vcard-title">${MEDIA.splitTitle(mr ? v.title_mr : v.title_en)}</h3>
+        <h3 class="vcard-title" style="--chw:${MEDIA.titleWidth(mr ? v.title_mr : v.title_en, mr)}"><i class="vcard-mark" aria-hidden="true"></i><span>${mr ? v.title_mr : v.title_en}</span></h3>
         <span class="vcard-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
         <p class="vcard-cap">${mr ? v.caption_mr : v.caption_en}</p>
         ${book ? `<button class="vcard-btn" data-book="${book.book_id}">${t('video_see_book')} &rarr;</button>` : ''}

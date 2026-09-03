@@ -727,8 +727,8 @@ a{color:inherit;text-decoration:none}
 /* ---- Text block ---- */
 .vcard-body{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
 .vcard-title{
-  font-family:'Baloo 2',sans-serif;font-size:27px;font-weight:600;
-  color:var(--green-dark);line-height:1.28;margin-bottom:11px;
+  font-family:Mukta,system-ui,sans-serif;
+  color:var(--green-dark);margin-bottom:11px;
 }
 .vcard-tag{
   display:inline-flex;align-items:center;gap:6px;
@@ -3903,9 +3903,16 @@ html[lang="mr"] .book-t{
 .slab-wrap .slab td strong,.slab-wrap .slab .pct{
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
 }
-.slab-wrap .slab tr{transition:background .2s ease}
-.slab-wrap .slab tr:nth-child(even){background:rgba(255,255,255,.55)}
-@media(hover:hover){.slab-wrap .slab tr:hover{background:#fff}}
+.slab-wrap .slab td{transition:background .2s ease}
+@media(hover:hover){.slab-wrap .slab tr:hover td{background:#fff}}
+/* D13 — figures sit under their headers: label left, numbers right */
+.slab-wrap .slab th:nth-child(1),.slab-wrap .slab td:nth-child(1){text-align:left}
+.slab-wrap .slab th:nth-child(2),.slab-wrap .slab td:nth-child(2),
+.slab-wrap .slab th:nth-child(3),.slab-wrap .slab td:nth-child(3){text-align:right}
+/* D14 — the table spans the section's inner width, no gap at the edge */
+.slab-wrap .slab th,.slab-wrap .slab td{
+  padding:calc(var(--u) * .62) calc(var(--u) * .5);
+}
 
 @media(max-width:399px){
   .bsec{padding:12px 10px 11px;margin-top:14px}
@@ -4052,7 +4059,10 @@ html[lang="mr"] .book-t{
 .bd img,.bsec img{max-width:100%;height:auto}
 
 /* long words and figures wrap rather than widen their container */
-.bd-desc,.qa-a,.qa-inner,.slab td,.slab th,.rung-q{overflow-wrap:anywhere}
+.bd-desc,.qa-a,.qa-inner,.slab td,.slab th,.rung-q{overflow-wrap:break-word}
+/* no browser hyphenates Marathi, so the setting only adds breaks */
+html[lang="mr"] .bd-desc,html[lang="mr"] .qa-p,html[lang="mr"] .vcard-cap,
+html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 
 /* the "you are here" marker is a 4px bar; its label was rendering
    inside those four pixels and spilling across the rows below */
@@ -4138,4 +4148,71 @@ html[lang="mr"] .book-t{
   .bd-videos .car-media,.bd-videos .vcard-title,
   .vcard-tag,.vcard-cap::before,.vcard-btn::after{animation:none}
   .bd-videos .vcard-title{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
+}
+
+/* ===================================================================
+   VIDEO CARDS — one appearance on all three surfaces
+   .bd-videos  book page          static
+   .vid-grid   below the carousel  static
+   .car-slide  the carousel        keeps its own width, or the swipe
+                                   track would measure the wrong thing
+   =================================================================== */
+.bd-videos .vcard,.vid-grid .vcard,.car-slide .vcard{
+  padding:0;background:none;border:0;box-shadow:none;
+  gap:calc(var(--u) * .7);
+}
+.bd-videos .vcard-stage,.vid-grid .vcard-stage,.car-slide .vcard-stage{
+  padding:0;margin:0;display:flex;justify-content:center;
+}
+.bd-videos .car-media,.vid-grid .car-media,.car-slide .car-media{
+  border:1.5px solid var(--gold);border-radius:calc(var(--u) * .95);
+  box-shadow:0 3px 14px rgba(232,163,61,.22);
+  animation:vidGlow 4.2s ease-in-out infinite;
+  overflow:hidden;
+}
+/* the two static surfaces size from the container; the carousel does not */
+.bd-videos .car-media.vertical,.vid-grid .car-media.vertical{
+  width:100%;max-width:min(320px, 78vw);aspect-ratio:9/16;max-height:none;
+}
+.bd-videos .car-media.horizontal,.vid-grid .car-media.horizontal{
+  width:100%;max-width:100%;aspect-ratio:16/9;
+}
+.bd-videos .car-media img,.vid-grid .car-media img,.car-slide .car-media img{
+  width:100%;height:100%;object-fit:cover;
+}
+.bd-videos .vcard-body,.vid-grid .vcard-body,.car-slide .vcard-body{
+  text-align:left;gap:calc(var(--u) * .45);
+}
+
+/* ---------- A2/A3/A4 — the title, one line, largest size that fits ---------- */
+.vcard-title.vcard-title{
+  display:flex;align-items:center;gap:calc(var(--u) * .55);
+  min-width:0;
+  /* --chw is the title's own width in units of font-size, set per card,
+     so a short name reaches the ceiling and a long one shrinks only as
+     far as it must. */
+  font-size:clamp(12px, calc((100vw - 58px) / var(--chw, 20)), 22px);
+  font-weight:800;line-height:1.3;
+}
+.vcard-title > span{
+  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background-image:linear-gradient(100deg,
+    var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
+    var(--green-dark) 62%,var(--green-dark) 100%);
+  background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdSheen 6.5s ease-in-out infinite;
+}
+.vcard-mark{
+  flex-shrink:0;width:.62em;height:.62em;border-radius:2px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  transform:rotate(45deg);
+  box-shadow:0 0 0 0 rgba(232,163,61,.55);
+  animation:hdMark 2.9s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  .vcard-title > span,.vcard-mark,
+  .bd-videos .car-media,.vid-grid .car-media,.car-slide .car-media{animation:none}
+  .vcard-title > span{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
 }
