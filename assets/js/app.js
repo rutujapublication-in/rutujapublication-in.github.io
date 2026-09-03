@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14i',
+  VERSION: 'v14k',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1315,9 +1315,9 @@ const BOOKS = {
             <button class="calc-enq" id="calcAsk">${t('book_enq')}</button>
           </section>
 
-          ${MEDIA.forBook(b.book_id)}
+          ${MEDIA.forBook(b.book_id, 'b')}
 
-          <section class="bsec bsec-b slab-wrap">
+          <section class="bsec bsec-a slab-wrap">
             ${this.bhd('bd_rate_h', 'bd_rate_s')}
             <table class="slab">
               <tr><th>${t('price_qty')}</th><th>${t('price_rate')}</th><th>${t('price_discount')}</th></tr>
@@ -1519,6 +1519,14 @@ const MEDIA = {
   /* The same card is used in the carousel, on the Videos page and on a
      book page, so a visitor always sees the video presented identically.
      Order below the video: book name, then tagline, then the description. */
+  /* A title like "चला वाचूया झटपट (एक परिपूर्ण उजळणी)" should break
+     before the bracket, not wherever the box runs out of room. */
+  splitTitle(t) {
+    const s = String(t || '');
+    const i = s.indexOf('(');
+    return i > 0 ? s.slice(0, i).trim() + '<br>' + s.slice(i) : s;
+  },
+
   card(v, mr, eager) {
     const t = k => this.app.t(k);
     const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
@@ -1533,7 +1541,7 @@ const MEDIA = {
         </div>
       </div>
       <div class="vcard-body">
-        <h3 class="vcard-title">${mr ? v.title_mr : v.title_en}</h3>
+        <h3 class="vcard-title">${MEDIA.splitTitle(mr ? v.title_mr : v.title_en)}</h3>
         <span class="vcard-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
         <p class="vcard-cap">${mr ? v.caption_mr : v.caption_en}</p>
         ${book ? `<button class="vcard-btn" data-book="${book.book_id}">${t('video_see_book')} &rarr;</button>` : ''}
@@ -1586,14 +1594,13 @@ const MEDIA = {
   },
 
   /* ---- VIDEOS BELONGING TO ONE BOOK ---- */
-  forBook(bookId) {
+  forBook(bookId, tone) {
     const vids = this.live('videos', false).filter(v => v.book_id === bookId);
     if (!vids.length) return '';
     const mr = this.app.lang === 'mr';
-    return `<section class="bsec bsec-a bd-videos">
-      <div class="hd hd-sm bsec-hd">
+    return `<section class="bsec bsec-${tone || 'a'} bd-videos">
+      <div class="hd hd-sm bsec-hd bsec-hd-solo">
         <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${this.app.t('book_videos')}</span></h3>
-        <p class="hd-s">${this.app.t('bd_video_s')}</p>
       </div>
       <div class="vid-list">${vids.map(v => this.card(v, mr, false)).join('')}</div>
     </section>`;
