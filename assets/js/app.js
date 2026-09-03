@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14l',
+  VERSION: 'v14m',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1219,6 +1219,27 @@ const BOOKS = {
     }).join('')}</div>`;
   },
 
+  /* Three explicit columns. A <table> was leaving roughly a quarter of
+     the width unused on the right and the figures sat away from their
+     headers; a grid puts the columns under our own control. */
+  rateGrid(sl, b, head) {
+    const t = k => this.app.t(k);
+    const mr = this.app.lang === 'mr';
+    return `<div class="rate">
+      ${head ? `<div class="rate-cap">${mr ? b.name_mr : b.name_en} &middot; MRP &#8377;${b.mrp}</div>` : ''}
+      <div class="rate-grid">
+        <span class="rate-h">${t('price_qty')}</span>
+        <span class="rate-h rate-num">${t('price_rate')}</span>
+        <span class="rate-h rate-num">${t('price_discount')}</span>
+        ${sl.map((o, i) => `
+          <span class="rate-c rate-q${i % 2 ? ' alt' : ''}">${this.slabLabel(o)}</span>
+          <span class="rate-c rate-num rate-r${i % 2 ? ' alt' : ''}">&#8377;${o.selling_rate}</span>
+          <span class="rate-c rate-num rate-p${i % 2 ? ' alt' : ''}">${o.discount_percent ? Math.round(o.discount_percent) + '%' : '&mdash;'}</span>
+        `).join('')}
+      </div>
+    </div>`;
+  },
+
   renderSlabs() {
     if (!this.el.slab) return;
     const t = k => this.app.t(k);
@@ -1226,15 +1247,7 @@ const BOOKS = {
     const blocks = this.live().map(b => {
       const sl = this.slabs(b.offer_id);
       if (!sl.length) return '';
-      return `<table class="slab">
-        <tr><th colspan="3">${mr ? b.name_mr : b.name_en} &nbsp;·&nbsp; MRP &#8377;${b.mrp}</th></tr>
-        <tr><td class="sh">${t('price_qty')}</td><td class="sh">${t('price_rate')}</td><td class="sh">${t('price_discount')}</td></tr>
-        ${sl.map(o => `<tr>
-          <td>${this.slabLabel(o)}</td>
-          <td><strong>&#8377;${o.selling_rate}</strong></td>
-          <td class="pct">${o.discount_percent ? Math.round(o.discount_percent) + '%' : '—'}</td>
-        </tr>`).join('')}
-      </table>`;
+      return this.rateGrid(sl, b, true);
     }).join('');
     this.el.slab.innerHTML = blocks + `<div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>`;
   },
@@ -1319,14 +1332,7 @@ const BOOKS = {
 
           <section class="bsec bsec-a slab-wrap">
             ${this.bhd('bd_rate_h', 'bd_rate_s')}
-            <table class="slab">
-              <tr><th>${t('price_qty')}</th><th>${t('price_rate')}</th><th>${t('price_discount')}</th></tr>
-              ${mySlabs.map(o => `<tr>
-                <td>${this.slabLabel(o)}</td>
-                <td>&#8377;${o.selling_rate}</td>
-                <td class="pct">${o.discount_percent ? Math.round(o.discount_percent) + '%' : '—'}</td>
-              </tr>`).join('')}
-            </table>
+            ${this.rateGrid(mySlabs, b, false)}
           </section>
         </div>
       </div>`;
@@ -1527,11 +1533,14 @@ const MEDIA = {
     return (n * (mr ? 0.52 : 0.50)).toFixed(1);
   },
 
-  card(v, mr, eager) {
+  card(v, mr, eager, idx) {
     const t = k => this.app.t(k);
     const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
     const book = (this.app.content.books || []).find(b => b.book_id === v.book_id);
-    return `<article class="vcard">
+    /* the tone alternates by position, so any book added later is framed
+       correctly without anyone editing this file again */
+    const tone = ((idx || 0) % 2) ? 'vt-b' : 'vt-a';
+    return `<article class="vcard ${tone}">
       <div class="vcard-stage">
         <div class="car-media ${o}" data-yt="${v.youtube_id}">
           <a class="car-full" href="https://www.youtube.com/watch?v=${v.youtube_id}"
@@ -1550,7 +1559,7 @@ const MEDIA = {
   },
 
   videoSlide(v, mr, i) {
-    return `<div class="car-slide">${this.card(v, mr, i === 0)}</div>`;
+    return `<div class="car-slide">${this.card(v, mr, i === 0, i)}</div>`;
   },
 
   adSlide(a, mr) {
@@ -1574,7 +1583,7 @@ const MEDIA = {
     const box = document.getElementById(elId);
     if (!box) return;
     const mr = this.app.lang === 'mr';
-    box.innerHTML = items.map(v => this.card(v, mr, false)).join('');
+    box.innerHTML = items.map((v, i) => this.card(v, mr, false, i)).join('');
     this.bindPlay(box);
   },
 
@@ -1602,7 +1611,7 @@ const MEDIA = {
       <div class="hd hd-sm bsec-hd bsec-hd-solo">
         <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${this.app.t('book_videos')}</span></h3>
       </div>
-      <div class="vid-list">${vids.map(v => this.card(v, mr, false)).join('')}</div>
+      <div class="vid-list">${vids.map((v, i) => this.card(v, mr, false, i)).join('')}</div>
     </section>`;
   },
 

@@ -728,13 +728,13 @@ a{color:inherit;text-decoration:none}
 .vcard-body{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
 .vcard-title{
   font-family:Mukta,system-ui,sans-serif;
-  color:var(--green-dark);margin-bottom:11px;
+  color:var(--green-dark);margin-bottom:calc(var(--u) * .3);
 }
 .vcard-tag{
   display:inline-flex;align-items:center;gap:6px;
   background:linear-gradient(180deg,#FCF2DC,#F5E1B8);color:#7A5410;
   border:1px solid #EAD3A4;border-radius:999px;padding:7px 16px;
-  font-size:14px;font-weight:700;margin-bottom:14px;
+  font-size:14px;font-weight:700;margin-bottom:calc(var(--u) * .34);
   animation:flowGlow 4s ease-in-out infinite;
 }
 /* the bar beside a caption travels, and the text sets evenly between
@@ -753,7 +753,7 @@ a{color:inherit;text-decoration:none}
 }
 .vcard-btn{
   position:relative;overflow:hidden;
-  margin-top:18px;background:var(--green);color:#fff;border-radius:11px;
+  margin-top:calc(var(--u) * .48);background:var(--green);color:#fff;border-radius:11px;
   padding:13px 26px;font-size:15px;font-weight:600;transition:.16s;
   box-shadow:0 3px 12px rgba(26,77,46,.24);
 }
@@ -4157,12 +4157,8 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
    .car-slide  the carousel        keeps its own width, or the swipe
                                    track would measure the wrong thing
    =================================================================== */
-.bd-videos .vcard,.vid-grid .vcard,.car-slide .vcard{
-  padding:0;background:none;border:0;box-shadow:none;
-  gap:calc(var(--u) * .7);
-}
 .bd-videos .vcard-stage,.vid-grid .vcard-stage,.car-slide .vcard-stage{
-  padding:0;margin:0;display:flex;justify-content:center;
+  padding:0;margin:0 0 calc(var(--u) * .1);display:flex;justify-content:center;
 }
 .bd-videos .car-media,.vid-grid .car-media,.car-slide .car-media{
   border:1.5px solid var(--gold);border-radius:calc(var(--u) * .95);
@@ -4181,7 +4177,9 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   width:100%;height:100%;object-fit:cover;
 }
 .bd-videos .vcard-body,.vid-grid .vcard-body,.car-slide .vcard-body{
-  text-align:left;gap:calc(var(--u) * .45);
+  gap:calc(var(--u) * .22);
+  align-items:center;text-align:center;
+  padding:0 calc(var(--u) * .3);
 }
 
 /* ---------- A2/A3/A4 — the title, one line, largest size that fits ---------- */
@@ -4216,3 +4214,100 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   .bd-videos .car-media,.vid-grid .car-media,.car-slide .car-media{animation:none}
   .vcard-title > span{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
 }
+
+/* ===================================================================
+   VIDEO CARDS — one frame, everything inside it clear of the edge
+   The card is the frame. Its contents are centred and padded, so no
+   title, pill, paragraph or button can touch the boundary.
+   =================================================================== */
+@property --vang{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+.bd-videos .vcard,.vid-grid .vcard,.car-slide .vcard{
+  position:relative;isolation:isolate;
+  gap:calc(var(--u) * .42);
+  padding:calc(var(--u) * .62);
+  border-radius:calc(var(--u) * 1.15);
+  background:var(--white);
+  border:1.5px solid var(--vc, var(--gold));
+  box-shadow:0 3px 14px rgba(0,0,0,.07);
+}
+/* 4 — a light that travels clockwise while the whole frame breathes */
+.bd-videos .vcard::before,.vid-grid .vcard::before,.car-slide .vcard::before{
+  content:"";position:absolute;inset:-2px;z-index:-1;
+  border-radius:inherit;
+  background:conic-gradient(from var(--vang),
+    transparent 0deg, var(--vc, var(--gold)) 70deg,
+    transparent 150deg, transparent 360deg);
+  animation:vangSpin 5.5s linear infinite, vangBreathe 3.6s ease-in-out infinite;
+  opacity:.75;
+}
+@keyframes vangSpin{to{--vang:360deg}}
+@keyframes vangBreathe{0%,100%{opacity:.5}50%{opacity:.95}}
+
+/* 5 — the two tones, alternating book by book on every surface */
+.vt-a{--vc:var(--gold);--vcs:rgba(232,163,61,.3)}
+.vt-b{--vc:#3E8E52;--vcs:rgba(62,142,82,.3)}
+.vt-b .vcard-mark{background:linear-gradient(135deg,#57A46A,#2F7A44)}
+.vt-b .vcard-cap::before{background:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A);background-size:100% 220%}
+
+/* 1,2,3,6,8 — everything below the video centred and clear of the frame */
+.bd-videos .vcard-title,.vid-grid .vcard-title,.car-slide .vcard-title{
+  justify-content:center;max-width:100%;
+}
+.bd-videos .vcard-tag,.vid-grid .vcard-tag,.car-slide .vcard-tag{
+  align-self:center;
+}
+.bd-videos .vcard-cap,.vid-grid .vcard-cap,.car-slide .vcard-cap{
+  text-align:justify;text-align-last:left;
+  padding-left:calc(var(--u) * .62);
+  width:100%;
+}
+.bd-videos .vcard-btn,.vid-grid .vcard-btn,.car-slide .vcard-btn{
+  width:100%;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bd-videos .vcard::before,.vid-grid .vcard::before,.car-slide .vcard::before{
+    animation:none;opacity:.6;
+  }
+}
+
+/* ===================================================================
+   RATE GRID — three explicit columns, replacing the <table>
+   =================================================================== */
+.rate{
+  border:1px solid var(--line);border-radius:calc(var(--u) * .9);
+  background:var(--white);overflow:hidden;width:100%;
+}
+.rate + .rate{margin-top:calc(var(--u) * .7)}
+.rate-cap{
+  background:var(--green);color:#fff;
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .95);
+  padding:calc(var(--u) * .55) calc(var(--u) * .62);
+}
+.rate-grid{
+  display:grid;grid-template-columns:1fr auto auto;
+  column-gap:calc(var(--u) * .55);
+}
+.rate-h{
+  background:var(--green);color:#fff;
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .92);letter-spacing:.2px;
+  padding:calc(var(--u) * .58) calc(var(--u) * .5);
+}
+.rate-c{
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .98);
+  padding:calc(var(--u) * .55) calc(var(--u) * .5);
+  border-top:1px solid var(--line);
+  display:flex;align-items:center;
+}
+.rate-num{justify-content:flex-end;text-align:right;white-space:nowrap}
+/* the tint is set per cell, so a row can never paint past its last column */
+.rate-c.alt{background:#FBF8F2}
+.rate-r{font-weight:700;color:var(--ink)}
+.rate-p{
+  font-weight:800;color:var(--gold-dark);
+  animation:ratepulse 3.2s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){.rate-p{animation:none}}
