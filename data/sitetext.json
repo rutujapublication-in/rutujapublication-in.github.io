@@ -317,7 +317,15 @@
     "send_sub": "दर व सवलत थेट व्हॉट्सॲपवर",
     "qa_learn_head": "प्रश्न व उत्तरे — शिक्षण आणि धोरण",
     "qa_learn_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल",
-    "qa_book_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल"
+    "qa_book_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल",
+    "bd_about_h": "हे पुस्तक काय आहे",
+    "bd_about_s": "थोडक्यात ओळख",
+    "bd_facts_h": "पुस्तकाची माहिती",
+    "bd_facts_s": "इयत्ता, किंमत व पाने",
+    "bd_calc_s": "नग टाका — दर लगेच दिसेल",
+    "bd_video_s": "पुस्तक हातात घेतल्यासारखं",
+    "bd_rate_h": "नगांनुसार दरतक्ता",
+    "bd_rate_s": "जास्त नग — कमी दर"
   },
   "en": {
     "nav_home": "Home",
@@ -637,6 +645,14 @@
     "send_sub": "Rates And Offers On WhatsApp",
     "qa_learn_head": "Q And A — Learning And Policy",
     "qa_learn_sub": "Tap A Question — The Answer Opens",
-    "qa_book_sub": "Tap A Question — The Answer Opens"
+    "qa_book_sub": "Tap A Question — The Answer Opens",
+    "bd_about_h": "What This Book Is",
+    "bd_about_s": "A Short Introduction",
+    "bd_facts_h": "Book Details",
+    "bd_facts_s": "Standard, Price And Pages",
+    "bd_calc_s": "Enter A Quantity — The Rate Updates",
+    "bd_video_s": "As Close As Holding It",
+    "bd_rate_h": "Rates By Quantity",
+    "bd_rate_s": "More Copies — A Lower Rate"
   }
 }

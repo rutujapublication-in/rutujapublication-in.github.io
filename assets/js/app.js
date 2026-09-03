@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14c',
+  VERSION: 'v14g',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1240,6 +1240,16 @@ const BOOKS = {
   },
 
   /* ---- DETAIL PAGE ---- */
+  /* One heading for every section on a book page: mark, title, subtitle.
+     Built here so the pattern cannot drift between sections. */
+  bhd(head, sub) {
+    const t = k => this.app.t(k);
+    return `<div class="hd hd-sm bsec-hd">
+      <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${t(head)}</span></h3>
+      <p class="hd-s">${t(sub)}</p>
+    </div>`;
+  },
+
   openBook(id, silent) {
     const b = this.live().find(x => x.book_id === id);
     if (!b) return;
@@ -1265,20 +1275,27 @@ const BOOKS = {
           <h1 class="bd-title">${mr ? b.name_mr : b.name_en}</h1>
           ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
           <p class="bd-sub">${this.subs(b).join(' · ')} &nbsp;|&nbsp; ${this.medLabel(b)}</p>
-          <div class="bd-facts">
-            <div class="bd-fact"><div class="bd-fact-k">${t('books_standard')}</div>
-              <div class="bd-fact-v">${num}</div></div>
-            <div class="bd-fact"><div class="bd-fact-k">${t('book_mrp')}</div>
-              <div class="bd-fact-v">₹${b.mrp}</div></div>
-            ${b.pages ? `<div class="bd-fact"><div class="bd-fact-k">${t('book_pages')}</div>
-              <div class="bd-fact-v">${b.pages}</div></div>` : ''}
-          </div>
-          <p class="bd-desc">${mr ? b.description_mr : b.description_en}</p>
+          <section class="bsec bsec-a">
+            ${this.bhd('bd_facts_h', 'bd_facts_s')}
+            <div class="bd-facts">
+              <div class="bd-fact"><div class="bd-fact-k">${t('books_standard')}</div>
+                <div class="bd-fact-v">${num}</div></div>
+              <div class="bd-fact"><div class="bd-fact-k">${t('book_mrp')}</div>
+                <div class="bd-fact-v">₹${b.mrp}</div></div>
+              ${b.pages ? `<div class="bd-fact"><div class="bd-fact-k">${t('book_pages')}</div>
+                <div class="bd-fact-v">${b.pages}</div></div>` : ''}
+            </div>
+          </section>
+
+          <section class="bsec bsec-b">
+            ${this.bhd('bd_about_h', 'bd_about_s')}
+            <p class="bd-desc">${mr ? b.description_mr : b.description_en}</p>
+          </section>
 
           ${pct ? `<div class="disc-head"><b>${pct}% ${t('disc_upto')}</b> &nbsp;&middot;&nbsp; ${t('disc_head')}</div>` : ''}
 
-          <div class="calc">
-            <div class="calc-h">${t('price_title')}</div>
+          <section class="bsec bsec-a calc">
+            ${this.bhd('price_title', 'bd_calc_s')}
             <div class="calc-row">
               <span class="calc-lbl">${t('price_qty')}</span>
               <div class="qty">
@@ -1296,11 +1313,12 @@ const BOOKS = {
               <button class="btn btn-primary" id="calcCart">${t('cart_add')}</button>
             </div>
             <button class="calc-enq" id="calcAsk">${t('book_enq')}</button>
-          </div>
+          </section>
 
           ${MEDIA.forBook(b.book_id)}
 
-          <div class="slab-wrap" style="margin-top:18px">
+          <section class="bsec bsec-b slab-wrap">
+            ${this.bhd('bd_rate_h', 'bd_rate_s')}
             <table class="slab">
               <tr><th>${t('price_qty')}</th><th>${t('price_rate')}</th><th>${t('price_discount')}</th></tr>
               ${mySlabs.map(o => `<tr>
@@ -1309,7 +1327,7 @@ const BOOKS = {
                 <td class="pct">${o.discount_percent ? Math.round(o.discount_percent) + '%' : '—'}</td>
               </tr>`).join('')}
             </table>
-          </div>
+          </section>
         </div>
       </div>`;
 
@@ -1572,10 +1590,13 @@ const MEDIA = {
     const vids = this.live('videos', false).filter(v => v.book_id === bookId);
     if (!vids.length) return '';
     const mr = this.app.lang === 'mr';
-    return `<div class="bd-videos">
-      <div class="calc-h">${this.app.t('book_videos')}</div>
+    return `<section class="bsec bsec-a bd-videos">
+      <div class="hd hd-sm bsec-hd">
+        <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${this.app.t('book_videos')}</span></h3>
+        <p class="hd-s">${this.app.t('bd_video_s')}</p>
+      </div>
       <div class="vid-list">${vids.map(v => this.card(v, mr, false)).join('')}</div>
-    </div>`;
+    </section>`;
   },
 
   bindBookVideos(root) { this.bindPlay(root); }
