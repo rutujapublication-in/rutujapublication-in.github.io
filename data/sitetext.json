@@ -284,7 +284,7 @@
     "videos_book_only": "पुस्तकांचे व्हिडिओ",
     "wa_qa": "नमस्कार, ऋतुजा पब्लिकेशन. माझा प्रश्न:",
     "qa_none": "लवकरच प्रश्न व उत्तरे इथे दिसतील.",
-    "qa_for_book": "या पुस्तकाविषयी प्रश्न",
+    "qa_for_book": "प्रश्न व उत्तरे — या पुस्तकाविषयी",
     "qa_intro": "खरेदीपूर्वी मनात येणारे प्रश्न",
     "qa_for_offer": "आपल्या प्रश्नांची उत्तरे",
     "qa_card_t": "प्रश्न व उत्तरे",
@@ -314,7 +314,10 @@
     "gate_done_sub": "आता व्हॉट्सॲपवर पाठवा.",
     "form_why_note": "आपली चौकशी / मागणी नीट पोहोचण्यासाठी",
     "send_head": "तुमची गरज, आमची माहिती",
-    "send_sub": "दर व सवलत थेट व्हॉट्सॲपवर"
+    "send_sub": "दर व सवलत थेट व्हॉट्सॲपवर",
+    "qa_learn_head": "प्रश्न व उत्तरे — शिक्षण आणि धोरण",
+    "qa_learn_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल",
+    "qa_book_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल"
   },
   "en": {
     "nav_home": "Home",
@@ -601,7 +604,7 @@
     "videos_book_only": "Book Videos",
     "wa_qa": "Hello, Rutuja Publication. My question:",
     "qa_none": "Questions and answers will appear here soon.",
-    "qa_for_book": "Questions about this book",
+    "qa_for_book": "Q And A — About This Book",
     "qa_intro": "The Questions Buyers Ask Before Ordering",
     "qa_for_offer": "Answers to Your Questions",
     "qa_card_t": "Questions & Answers",
@@ -631,6 +634,9 @@
     "gate_done_sub": "Now Send It on WhatsApp.",
     "form_why_note": "So Your Enquiry Or Order Reaches Us",
     "send_head": "Your Need, Our Information",
-    "send_sub": "Rates And Offers On WhatsApp"
+    "send_sub": "Rates And Offers On WhatsApp",
+    "qa_learn_head": "Q And A — Learning And Policy",
+    "qa_learn_sub": "Tap A Question — The Answer Opens",
+    "qa_book_sub": "Tap A Question — The Answer Opens"
   }
 }

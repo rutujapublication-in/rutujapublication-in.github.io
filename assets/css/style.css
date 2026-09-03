@@ -2894,18 +2894,56 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   text-align:center;padding:26px 0}
 
 /* ---------- filters: two tidy rows ---------- */
-.qa-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}
-.qa-chip{
-  font-family:Mukta,system-ui,sans-serif;font-size:12.5px;font-weight:600;
-  color:var(--green);background:var(--white);border:1.5px solid var(--line);
-  border-radius:999px;padding:6px 13px;cursor:pointer;line-height:1.25;
-  white-space:nowrap;
-  transition:background .18s ease,border-color .18s ease,color .18s ease,transform .12s ease;
+/* One tall chip on the left holding both rows, six in a 3x2 grid beside
+   it. Fixed columns, so the rows can never become four and two. */
+.qa-chips{display:flex;align-items:stretch;gap:8px;margin:0 0 14px}
+.qa-chip-grid{
+  flex:1;min-width:0;display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
 }
+.qa-chip{
+  font-family:Mukta,system-ui,sans-serif;font-size:11px;font-weight:700;
+  color:var(--green);background:var(--white);border:1.5px solid var(--line);
+  border-radius:11px;padding:6px 8px;cursor:pointer;line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .18s ease,border-color .18s ease,color .18s ease,
+             transform .12s ease,box-shadow .2s ease;
+}
+/* the six arrive one after another rather than all at once */
+.qa-chip-grid .qa-chip{animation:chipIn .34s cubic-bezier(.34,1.4,.64,1) both}
+.qa-chip-n1{animation-delay:.02s} .qa-chip-n2{animation-delay:.06s}
+.qa-chip-n3{animation-delay:.10s} .qa-chip-n4{animation-delay:.14s}
+.qa-chip-n5{animation-delay:.18s} .qa-chip-n6{animation-delay:.22s}
+@keyframes chipIn{from{opacity:0;transform:translateY(5px) scale(.96)}to{opacity:1;transform:none}}
+
+/* the second row sits a shade deeper, so the two read as two bands */
+.qa-chip-n4,.qa-chip-n5,.qa-chip-n6{background:#FBFAF6;border-color:#E4DED2}
+
+/* the primary control: taller, gold, and quietly breathing */
+.qa-chip-all{
+  flex:0 0 58px;white-space:pre-line;text-align:center;line-height:1.2;
+  font-size:11.5px;font-weight:800;border-radius:13px;padding:6px 4px;
+  color:var(--gold-dark);background:linear-gradient(160deg,#FFFBF0,#FFF6E2);
+  border:1.5px solid var(--gold);
+  animation:chipAll 3.6s ease-in-out infinite;
+}
+@keyframes chipAll{
+  0%,100%{box-shadow:0 1px 5px rgba(184,122,30,.18)}
+  50%    {box-shadow:0 2px 12px rgba(184,122,30,.4)}
+}
+
 .qa-chip.on{background:var(--green);border-color:var(--green);color:var(--white);
-  box-shadow:0 2px 8px rgba(26,77,46,.25)}
+  box-shadow:0 2px 9px rgba(26,77,46,.3)}
 @media(hover:hover){.qa-chip:hover{border-color:var(--green)}}
-.qa-chip:active{transform:scale(.96)}
+.qa-chip:active{transform:scale(.94)}
+/* after the generic .on rule, so the gold wins on the primary chip */
+.qa-chip-all.on{
+  background:linear-gradient(160deg,var(--gold),var(--gold-dark));
+  border-color:var(--gold-dark);color:#3A2503;animation:none;
+  box-shadow:0 3px 12px rgba(184,122,30,.45);
+}
 
 /* ---------- a group is a frame with a name and a count ---------- */
 .qa-groups{display:flex;flex-direction:column;gap:16px}
@@ -2975,14 +3013,32 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 }
 .qa-item.on .qa-qt{color:var(--green)}
 
-.qa-sign{position:relative;width:15px;height:15px;flex-shrink:0}
+/* A question has to look pressable. The plus now sits in a ring that
+   breathes gently, which reads as a control rather than a decoration. */
+.qa-sign{
+  position:relative;width:23px;height:23px;flex-shrink:0;border-radius:50%;
+  background:var(--white);border:1.5px solid var(--gold);
+  box-shadow:0 1px 4px rgba(184,122,30,.2);
+  animation:qaTap 3.2s ease-in-out infinite;
+  transition:background .2s ease,border-color .2s ease,transform .18s ease;
+}
+@keyframes qaTap{
+  0%,100%{box-shadow:0 1px 4px rgba(184,122,30,.2),0 0 0 0 rgba(232,163,61,.42)}
+  55%    {box-shadow:0 1px 4px rgba(184,122,30,.2),0 0 0 5px rgba(232,163,61,0)}
+}
+.qa-q:active .qa-sign{transform:scale(.9)}
+/* once open it fills in, so the state is unmistakable */
+.qa-item.on .qa-sign{
+  background:var(--gold-dark);border-color:var(--gold-dark);animation:none;
+}
+.qa-item.on .qa-sign::before{background:#fff}
 .qa-sign::before,.qa-sign::after{
   content:"";position:absolute;left:50%;top:50%;background:var(--gold-dark);
   border-radius:1px;transform-origin:center;
   transition:transform .22s cubic-bezier(.4,0,.2,1),opacity .22s ease;
 }
-.qa-sign::before{width:11px;height:2px;margin:-1px 0 0 -5.5px}
-.qa-sign::after{width:2px;height:11px;margin:-5.5px 0 0 -1px}
+.qa-sign::before{width:10px;height:2px;margin:-1px 0 0 -5px}
+.qa-sign::after{width:2px;height:10px;margin:-5px 0 0 -1px}
 .qa-item.on .qa-sign::after{transform:rotate(90deg);opacity:0}
 
 /* the answer opens rather than appears */
@@ -3026,7 +3082,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .qa-ask-btn{margin-top:12px}
 
 /* ---------- the same questions on a book's own page ---------- */
-.qa-book-block{margin-top:26px}
+.qa-book-block{margin-top:26px;display:flex;flex-direction:column;gap:16px}
 .qa-bh{
   font-family:Mukta,system-ui,sans-serif;font-size:17px;font-weight:700;
   color:var(--green-dark);margin:0 0 11px;
@@ -3063,7 +3119,9 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 @media(max-width:399px){
   #page-qa .sec-title{font-size:23px}
   #page-qa .sec-sub{font-size:13.5px}
-  .qa-chip{font-size:11.8px;padding:5px 11px}
+  .qa-chip{font-size:10.5px;padding:6px 6px}
+  .qa-chip-all{flex-basis:54px;font-size:11px}
+  .qa-chip-grid{gap:5px}
   .qa-group{padding:12px 9px 11px}
   .qa-gt{font-size:14px}
   .qa-qt{font-size:13px}
@@ -3086,7 +3144,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .hd{margin:0 0 10px}
 .hd-2{margin-top:15px;padding-top:12px;border-top:1.5px solid var(--line)}
 .hd-sm{margin-bottom:10px}
-.hd-page{margin:34px 0 16px}
+.hd-page{margin:14px 0 12px}
 .hd-page .hd-t{font-size:25px}
 .hd-page .hd-mark{width:12px;height:12px}
 
@@ -3669,4 +3727,58 @@ html[lang="mr"] .book-t{
   #orderSum .oline-amt b,#orderSum .osf span,#orderSum .osf s,
   #orderSum .osf-save b,.osum-empty,.osum-empty::before{animation:none}
   #orderSum .osf span{-webkit-text-fill-color:var(--ink);color:var(--ink)}
+}
+
+/* ===================================================================
+   THE TWO Q&A BLOCKS ON A BOOK PAGE
+   One about the book, one about where the book sits in policy.
+   They are told apart by colour, not by size.
+   =================================================================== */
+
+.qa-bsec{
+  position:relative;overflow:hidden;
+  border:1.5px solid var(--line);border-radius:16px;
+  padding:14px 12px 13px;
+}
+/* a bar down the left edge, travelling, in each block's own colour */
+.qa-bsec::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background-size:100% 220%;animation:flowBar 4.6s ease-in-out infinite;
+}
+.qa-bsec .qa-bhd{margin-bottom:11px}
+.qa-bsec .hd-t{font-size:16.5px}
+
+/* about the book — the warm one */
+.qa-bsec-book{
+  background:linear-gradient(160deg,#FDFAF3,#FFFDF8);
+  border-color:#E2CFA6;
+}
+.qa-bsec-book::before{background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold))}
+
+/* where it fits — the green one, so the two never blur together */
+.qa-bsec-learn{
+  background:linear-gradient(160deg,#F2F8F3,#FBFEFC);
+  border-color:#CFE0D5;
+}
+.qa-bsec-learn::before{background:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A)}
+.qa-bsec-learn .hd-mark{background:linear-gradient(135deg,#57A46A,#2F7A44)}
+.qa-bsec-learn .hd-s{color:#2F7A44}
+.qa-bsec-learn .hd-s::after{background:linear-gradient(90deg,#57A46A,var(--gold))}
+.qa-bsec-learn .qa-item.on{border-color:#3E8E52;border-left-color:#3E8E52}
+.qa-bsec-learn .qa-qmark{border-right-color:#2F7A44;border-bottom-color:#2F7A44}
+.qa-bsec-learn .qa-sign{border-color:#57A46A;animation-name:qaTapGreen}
+.qa-bsec-learn .qa-sign::before,.qa-bsec-learn .qa-sign::after{background:#2F7A44}
+.qa-bsec-learn .qa-item.on .qa-sign{background:#2F7A44;border-color:#2F7A44}
+.qa-bsec-learn .qa-item.on .qa-sign::before{background:#fff}
+@keyframes qaTapGreen{
+  0%,100%{box-shadow:0 1px 4px rgba(47,122,68,.2),0 0 0 0 rgba(62,142,82,.4)}
+  55%    {box-shadow:0 1px 4px rgba(47,122,68,.2),0 0 0 5px rgba(62,142,82,0)}
+}
+
+@media(max-width:399px){
+  .qa-bsec{padding:12px 10px 11px}
+  .qa-bsec .hd-t{font-size:15.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .qa-bsec::before,.qa-sign,.qa-chip-all,.qa-chip-grid .qa-chip{animation:none}
 }

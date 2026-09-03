@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v13x',
+  VERSION: 'v14c',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2660,9 +2660,17 @@ const QA = {
     const L = this.L();
     const sel = this.cat || 'all';
 
-    const chips = `<div class="qa-chips">${this.chips().map(c =>
-      `<button class="qa-chip${sel === c.id ? ' on' : ''}" data-qcat="${c.id}">${c[L]}</button>`
-    ).join('')}</div>`;
+    /* The first chip stands alone on the left, spanning both rows; the
+       other six sit in a fixed three-by-two grid beside it. */
+    const chipAll = this.chips()[0] || { id: 'all', mr: 'सर्व', en: 'All' };
+    const six = this.chips().slice(1);
+    const chips = `
+      <div class="qa-chips">
+        <button class="qa-chip qa-chip-all${sel === chipAll.id ? ' on' : ''}" data-qcat="${chipAll.id}">${chipAll[L]}</button>
+        <div class="qa-chip-grid">${six.map((c, i) =>
+          `<button class="qa-chip qa-chip-n${i + 1}${sel === c.id ? ' on' : ''}" data-qcat="${c.id}">${c[L]}</button>`
+        ).join('')}</div>
+      </div>`;
 
     let n = 0;
     const groups = this.groups()
@@ -2685,15 +2693,31 @@ const QA = {
   },
 
   /* The same questions, filtered, sitting on the book's own page. */
+  /* A book page carries two blocks: the questions about that book, and
+     the whole Learning and Curriculum set, which explains where the book
+     sits inside Pragat Maharashtra, the NEP and NIPUN Bharat. */
   paintBook() {
     const root = document.getElementById('bookDetail');
     if (!root || !BOOKS.current) return;
     const host = root.querySelector('#qaForBook');
     if (!host) return;
-    const mine = this.live().filter(q => q.book_id === BOOKS.current);
-    if (!mine.length) { host.innerHTML = ''; return; }
-    host.innerHTML = `<h3 class="qa-bh">${this.app.t('qa_for_book')}</h3>
-      <div class="qa-list qa-list-book">${mine.map(q => this.item(q, true)).join('')}</div>`;
+    const t = k => this.app.t(k);
+    const mine  = this.live().filter(q => q.book_id === BOOKS.current);
+    const learn = this.live().filter(q => q.group === 'g_learn');
+    if (!mine.length && !learn.length) { host.innerHTML = ''; return; }
+
+    const block = (cls, head, sub, rows) => rows.length ? `
+      <section class="qa-bsec ${cls}">
+        <div class="hd hd-sm qa-bhd">
+          <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${t(head)}</span></h3>
+          <p class="hd-s">${t(sub)}</p>
+        </div>
+        <div class="qa-list qa-list-book">${rows.map(q => this.item(q, true)).join('')}</div>
+      </section>` : '';
+
+    host.innerHTML =
+      block('qa-bsec-learn', 'qa_learn_head', 'qa_learn_sub', learn) +
+      block('qa-bsec-book',  'qa_for_book',   'qa_book_sub',  mine);
   },
 
   /* The questions that belong to one offer button, below its form. */

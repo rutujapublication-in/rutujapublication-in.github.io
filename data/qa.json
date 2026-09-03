@@ -4,8 +4,13 @@
   "chips": [
     {
       "id": "all",
-      "mr": "सर्व",
-      "en": "All"
+      "mr": "सर्व\nप्रश्न",
+      "en": "All\nQuestions"
+    },
+    {
+      "id": "learn",
+      "mr": "शिक्षण",
+      "en": "Learning"
     },
     {
       "id": "school",
@@ -31,11 +36,6 @@
       "id": "books",
       "mr": "पुस्तकनिहाय",
       "en": "Books"
-    },
-    {
-      "id": "learn",
-      "mr": "शिक्षण",
-      "en": "Learning"
     }
   ],
   "groups": [
@@ -82,7 +82,7 @@
     {
       "id": "g_learn",
       "chip": "learn",
-      "order": 60,
+      "order": 5,
       "kind": "general",
       "mr": "शिक्षण व अभ्यासक्रम",
       "en": "Learning & Curriculum"
@@ -318,10 +318,10 @@
       "qa_id": "RP-Q-201",
       "group": "g_learn",
       "sort_order": 10,
-      "question_mr": "निपुण भारत म्हणजे काय?",
-      "question_en": "What is NIPUN Bharat?",
-      "answer_mr": "निपुण भारत हे राष्ट्रीय शिक्षण धोरण २०२० अंतर्गत जुलै २०२१ मध्ये सुरू झालेले अभियान आहे. त्याचे ध्येय एकच — प्रत्येक मुलाने इयत्ता ३ रीच्या अखेरीस पायाभूत साक्षरता आणि संख्याज्ञान मिळवावे. मुदत — २०२६-२७.\n\nम्हणजे ही मुदत चालू शैक्षणिक वर्षाचीच आहे.\n\nशाळेसाठी याचा व्यवहारिक अर्थ: इयत्ता १ ते ३ मधील वाचन, लेखन आणि बेरीज-वजाबाकी हे आता प्राधान्याचे मोजमाप आहे. आमची पुस्तके याच टप्प्यावरील सरावासाठी उपयुक्त आहेत.\n\n(टीप: आमची पुस्तके शासनमान्य किंवा निपुण-प्रमाणित असल्याचा दावा आम्ही करत नाही.)",
-      "answer_en": "NIPUN Bharat is a mission launched in July 2021 under the National Education Policy 2020. It has a single goal — that every child attains foundational literacy and numeracy by the end of Grade 3. The deadline is 2026-27.\n\nWhich means the deadline is this academic year.\n\nWhat that means practically for a school: reading, writing and basic arithmetic in Std 1 to 3 are now the priority measure. Our books are useful for practice at exactly that stage.\n\n(Note: we make no claim that our books are government approved or NIPUN certified.)",
+      "question_mr": "निपुण, प्रगत महाराष्ट्र, धोरण?",
+      "question_en": "NIPUN, Pragat Maharashtra, NEP?",
+      "answer_mr": "तीन वेगवेगळी नावं, पण ध्येय एकच — मूल इयत्ता ३ रीअखेर स्वतःहून वाचायला, लिहायला आणि मोजायला शिकावं. हे जमलं तर पुढचा प्रत्येक वर्ग सोपा होत जातो; नाही जमलं तर तीच अडचण पुढे वाढत जाते. म्हणूनच तिन्ही धोरणं पहिल्या पाच वर्षांवर एवढा भर देतात.\n\nप्रगत शैक्षणिक महाराष्ट्र (२०१५) — राज्याने ही मांडणी आधी केली. मूल कोणत्या इयत्तेत आहे यापेक्षा ते कोणत्या टप्प्यावर आहे हे पाहायचं, आणि तिथूनच सराव द्यायचा. पायाभूत चाचणी, वाचन टप्पे आणि मागे राहिलेल्या मुलांसाठी वेगळा सराव — ही रचना यातूनच आली.\n\nराष्ट्रीय शिक्षण धोरण २०२० — याच विचाराला देशव्यापी आकार मिळाला. इयत्ता १ ते ५ हा 'पायाभूत टप्पा' म्हणून वेगळा ओळखला गेला, आणि पाठांतरापेक्षा समज व वापर यावर भर आला.\n\nनिपुण भारत — यातून पायाभूत साक्षरता व संख्याज्ञान हे राष्ट्रीय ध्येय बनलं. वाचनाचे घटक ठरले — ऐकणे, अक्षरओळख, सलगता, आकलन, लेखन; आणि गणिताचे — संख्याज्ञान, क्रिया, तर्क.\n\nतिन्हींत एक सूत्र समान आहे — टप्पे वगळता येत नाहीत. आधीचा टप्पा कच्चा राहिला तर पुढचा अधिकच अवघड होतो. म्हणून सराव इयत्तेनुसार नव्हे, मुलाच्या पातळीनुसार द्यावा लागतो. एका वर्गात तीन पातळ्या असणं ही अडचण नाही, ती सर्वसामान्य स्थिती आहे.\n\nपाठ्यपुस्तक संकल्पना शिकवतं; ती पक्की करण्याचं काम सरावाचं. आमची पाचही पुस्तके नेमकी त्यासाठी बांधलेली आहेत:\n\nचला वाचूया झटपट — अक्षरओळख, जोडाक्षरे, सलग वाचन, शुद्धलेखन आणि सामान्यज्ञान. वाचनाचे टप्पे क्रमाने येतात, म्हणून मूल आपल्या पातळीपासून सुरू करू शकतं; आणि सामान्यज्ञानामुळे वाचलेल्याचा अर्थ लागतो, नुसते शब्द उरत नाहीत.\n\nअक्षरमित्र सुलेखन पुस्तिका — अक्षरांची ठेवण व सलगता. हाताने अक्षर गिरवल्याने अक्षरओळख पक्की होते, आणि अक्षरओळख हा वाचनाचा पहिला आधार आहे.\n\nइंग्लिश प्रायमर विथ फोनिक्स — मूल इंग्रजी शब्द पाठ न करता फोडून वाचायला शिकतं. सोबत मूलभूत व्याकरण आणि सामान्यज्ञानही येतं, म्हणून वाचन, रचना आणि अर्थ एकत्र वाढतात. समजावणी मराठीतून, म्हणून सुरुवात अडत नाही.\n\nगणितमित्र भाग १ — संख्याज्ञान, बेरीज, वजाबाकी. दोन अंकी क्रिया स्वतःहून जमणं हा पायाभूत संख्याज्ञानाचा निकष आहे.\n\nगणितमित्र भाग २ — गुणाकार, भागाकार, अपूर्णांक, शाब्दिक उदाहरणे. क्रिया जमणं आणि ती रोजच्या परिस्थितीत ओळखणं — दोन्ही.\n\nपायाभूत व संकलित चाचण्यांपूर्वीचा सराव म्हणून, आणि मागे राहिलेल्या मुलाला पुन्हा त्याच्या टप्प्यावर आणण्यासाठी ही पुस्तके वापरता येतात.",
+      "answer_en": "Three different names, one aim — that by the end of Std 3 a child reads, writes and counts on their own. Get that right and every year after it becomes easier; miss it and the same gap widens as the child moves up. That is why all three policies put so much weight on the first five years.\n\nPragat Shaikshanik Maharashtra (2015) — the state framed it first. Look at what stage a child is at, not which grade they sit in, and give practice from there. The baseline test, reading stages and separate work for children who had fallen behind all came from this.\n\nNational Education Policy 2020 — the same thinking took national shape. Std 1 to 5 was named a distinct foundational stage, and understanding and use were placed above memorisation.\n\nNIPUN Bharat — foundational literacy and numeracy became a national goal. Reading was broken into components — oral language, decoding, fluency, comprehension, writing; and numeracy into number sense, operations and reasoning.\n\nOne rule runs through all three — stages cannot be skipped. A shaky earlier stage makes the next one harder. So practice has to follow the child's level, not the grade. Three levels in one class is not a problem; it is the ordinary situation.\n\nA textbook teaches the concept; practice is what settles it. All five of our books are built for that:\n\nChala Vachuya Zatpat — letters, conjuncts, fluent reading, correct spelling and general knowledge. The stages come in order, so a child can start where they actually are; and the general knowledge means what is read carries meaning rather than staying as words.\n\nAksharmitra Sulekhan Pustika — letter formation and flow. Forming letters by hand fixes letter knowledge, and letter knowledge is reading's first support.\n\nEnglish Primer with Phonics — the child decodes English words instead of memorising them. Basic grammar and general knowledge come with it, so reading, structure and meaning grow together. Explained in Marathi, so the start does not stall.\n\nGanitmitra Bhag 1 — number sense, addition, subtraction. Two-digit operations done independently is the foundational numeracy benchmark.\n\nGanitmitra Bhag 2 — multiplication, division, fractions, word problems. Performing an operation and recognising it in a real situation — both.\n\nThey can be used as practice before the baseline and summative tests, and to bring a child who has fallen behind back to their own stage.",
       "book_id": "",
       "audience": "",
       "status": "LIVE"
