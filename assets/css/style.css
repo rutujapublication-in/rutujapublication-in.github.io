@@ -22,6 +22,12 @@
   --std4:#4A90C4;
   --std5:#9B7BC4;
 
+  /* One measure the whole layout is derived from. At 360px it resolves
+     to 13.3px, at 412px to 15.2px — so every phone shows the same
+     arrangement, simply rendered a little larger or smaller. Nothing
+     reflows and nothing changes position between models. */
+  --u:clamp(13px, 3.7vw, 16px);
+
   --radius:12px;
   --wrap:1180px;
   --head-h:66px;
@@ -1064,8 +1070,13 @@ a{color:inherit;text-decoration:none}
 .rung-p{color:var(--gold-dark);font-weight:600;min-width:70px;text-align:right}
 .rung.on{background:var(--green-light)}
 .rung.on .rung-r{color:var(--green);font-size:16px}
+/* a 4px marker down the left edge. Its label was rendering inside those
+   four pixels and spilling across the rows below, so it is hidden from
+   view while staying available to a screen reader. */
 .rung-here{
   position:absolute;left:-1px;top:-1px;bottom:-1px;width:4px;background:var(--green);
+  overflow:hidden;text-indent:-999px;white-space:nowrap;
+  font-size:0;line-height:0;color:transparent;
 }
 
 /* ---- nudge ---- */
@@ -3015,7 +3026,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 }
 /* one line, never two */
 .qa-qt{
-  flex:1;min-width:0;font-size:13.5px;font-weight:600;line-height:1.35;
+  flex:1;min-width:0;font-size:calc(var(--u) * .96);font-weight:600;line-height:1.35;
   color:var(--green-dark);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
@@ -3058,7 +3069,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .qa-inner{overflow:hidden}
 .qa-item.on .qa-inner{
   padding:11px 11px 12px;border-top:1px solid var(--line);
-  font-family:Mukta,system-ui,sans-serif;font-size:13.5px;line-height:1.62;color:var(--ink);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .96);line-height:1.62;color:var(--ink);
 }
 .qa-p{margin:0 0 7px;overflow-wrap:break-word}
 .qa-p:last-of-type{margin-bottom:0}
@@ -3090,7 +3101,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .qa-ask-btn{margin-top:12px}
 
 /* ---------- the same questions on a book's own page ---------- */
-.qa-book-block{margin-top:26px;display:flex;flex-direction:column;gap:16px}
+.qa-book-block{margin-top:calc(var(--u) * 1.4);display:flex;flex-direction:column;gap:calc(var(--u) * .9)}
 .qa-bh{
   font-family:Mukta,system-ui,sans-serif;font-size:17px;font-weight:700;
   color:var(--green-dark);margin:0 0 11px;
@@ -3226,13 +3237,13 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 /* ---------- the note that sits under all the buttons, one line ---------- */
 .flow-note{
   display:flex;align-items:flex-start;gap:8px;
-  margin:14px 0 0;padding:9px 11px 9px 12px;
+  margin:14px 0 0;padding:calc(var(--u) * .62) calc(var(--u) * .72);
   position:relative;overflow:hidden;
   background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-left:0;
   border-radius:11px;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 2px 10px rgba(0,0,0,.05);
-  font-family:Mukta,system-ui,sans-serif;font-size:12.7px;font-weight:600;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .9);font-weight:600;
   line-height:1.5;color:#6F4B0C;
   animation:flowGlow 3.6s ease-in-out infinite;
 }
@@ -3505,9 +3516,10 @@ html[lang="mr"] .book-t{
    THE FORM SECTION — one frame around notes, fields, buttons and note
    =================================================================== */
 .need-box{
-  display:block;margin:14px 0 6px;padding:15px 12px 14px;
+  display:block;margin:calc(var(--u) * .8) 0 6px;
+  padding:calc(var(--u) * .9) calc(var(--u) * .72);
   background:linear-gradient(160deg,#FFFDF6,#F6FAF7);
-  border:1.5px solid var(--gold);border-radius:16px;
+  border:1.5px solid var(--gold);border-radius:calc(var(--u) * 1.1);
   box-shadow:0 3px 16px rgba(232,163,61,.16);
   animation:needGlow 4.4s ease-in-out infinite;
 }
@@ -3519,9 +3531,9 @@ html[lang="mr"] .book-t{
 /* C13/C14 — the title: bold, one line, its own pointer and its own effect */
 .need-t{
   display:flex;align-items:center;gap:9px;
-  margin:0 0 15px;padding:0 0 9px;position:relative;
+  margin:0 0 calc(var(--u) * .9);padding:0 0 9px;position:relative;
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
-  font-size:17.5px;line-height:1.3;
+  font-size:calc(var(--u) * 1.26);line-height:1.3;
 }
 .need-t > span{
   min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -3600,14 +3612,22 @@ html[lang="mr"] .book-t{
 #orderSum .osum-h::before{-webkit-text-fill-color:initial}
 
 /* each book row: its own quiet frame that answers a touch */
+/* Each book is its own small card, matching the picker cards in the
+   same window. The border was already transparent here, so the rows had
+   no separator at all — they read as one continuous list. A card gives
+   the boundary without a second device doing the same job, and costs no
+   height: the border box was already reserved. */
 #orderSum .oline{
   display:grid;grid-template-columns:1fr auto;
   grid-template-areas:"n a" "f a";
   align-items:center;column-gap:10px;row-gap:4px;
-  border:1px solid transparent;border-radius:11px;
-  padding:8px 6px;margin:0 -2px;
+  background:var(--white);
+  border:1px solid #DDE8E0;border-radius:calc(var(--u) * .8);
+  padding:calc(var(--u) * .55) calc(var(--u) * .5);
+  margin:0 0 calc(var(--u) * .38);
   transition:background .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
+#orderSum .oline:last-of-type{margin-bottom:0}
 .oline:nth-child(even){background:rgba(255,255,255,.55)}
 @media(hover:hover){
   .oline:hover{background:#fff;border-color:#D8E6DC;box-shadow:0 3px 12px rgba(26,77,46,.08)}
@@ -3800,8 +3820,9 @@ html[lang="mr"] .book-t{
 
 .bsec{
   position:relative;overflow:hidden;
-  margin:16px auto 0;padding:14px 12px 13px;
-  border:1.5px solid var(--line);border-radius:16px;
+  margin:calc(var(--u) * .85) auto 0;
+  padding:calc(var(--u) * .82) calc(var(--u) * .72);
+  border:1.5px solid var(--line);border-radius:calc(var(--u) * 1.05);
   box-shadow:0 2px 12px rgba(0,0,0,.05);
   transition:box-shadow .24s ease,border-color .24s ease;
 }
@@ -3825,11 +3846,11 @@ html[lang="mr"] .book-t{
 .bsec .hd-t{font-size:16.5px}
 
 /* ---------- the facts row: three plates, evenly centred ---------- */
-.bd .bd-facts{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.bd .bd-facts{display:flex;justify-content:center;gap:calc(var(--u) * .55);flex-wrap:wrap}
 .bd .bd-fact{
   flex:1 1 0;min-width:86px;text-align:center;
   background:var(--white);border:1px solid var(--line);border-radius:11px;
-  padding:9px 6px;box-shadow:0 1px 5px rgba(0,0,0,.05);
+  padding:calc(var(--u) * .58) calc(var(--u) * .35);box-shadow:0 1px 5px rgba(0,0,0,.05);
   transition:transform .2s ease,box-shadow .2s ease;
 }
 @media(hover:hover){.bd .bd-fact:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.1)}}
@@ -3839,7 +3860,7 @@ html[lang="mr"] .book-t{
 }
 /* the figures are the point of this row, so they carry the movement */
 .bd .bd-fact-v{
-  font-family:Mukta,system-ui,sans-serif;font-size:19px;font-weight:800;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * 1.35);font-weight:800;
   color:var(--green);letter-spacing:.3px;display:inline-block;
   animation:factPulse 3.6s ease-in-out infinite;
 }
@@ -3852,8 +3873,8 @@ html[lang="mr"] .book-t{
 
 /* ---------- the description ---------- */
 .bd .bd-desc{
-  font-family:Mukta,system-ui,sans-serif;font-size:14px;line-height:1.65;
-  color:var(--ink);margin:0;text-align:center;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .98);line-height:1.65;
+  color:var(--ink);margin:0;
   animation:descIn .5s ease both;
 }
 
@@ -3953,7 +3974,7 @@ html[lang="mr"] .book-t{
 }
 .bd .calc-line:nth-child(even){background:rgba(255,255,255,.55)}
 .bd .calc-total{
-  font-family:Mukta,system-ui,sans-serif;font-weight:800;font-size:19px;
+  font-family:Mukta,system-ui,sans-serif;font-weight:800;font-size:calc(var(--u) * 1.32);
   color:var(--green);letter-spacing:.3px;display:inline-block;
   animation:totalPulse 3.4s ease-in-out infinite;
 }
@@ -4002,3 +4023,49 @@ html[lang="mr"] .book-t{
   .bd .nudge-text b,.bd .btn-gold,.bd .btn-gold::after,.bd .pct{animation:none}
   .bd .bd-title{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
 }
+
+/* ===================================================================
+   FIT — nothing may push past the edge, on any handset
+   Grid and flex children default to min-width:auto, which means they
+   refuse to shrink below their content. One wide table then drags the
+   whole page off-screen. No breakpoint fixes that; this does.
+   =================================================================== */
+.bd,.bd > *,
+.bsec,.qa-bsec,.need-box,
+.opick-row,.opick-main,
+#orderSum,#orderSum .oline,
+.calc,.calc-row,.calc-line,.oline-facts,
+.qa-item,.qa-q,.qa-list,.qa-group{min-width:0}
+
+.bd,.bsec,.qa-bsec,.need-box,.osum,.calc{max-width:100%}
+.bd table,.bsec table,.slab{max-width:100%;table-layout:fixed}
+.bd img,.bsec img{max-width:100%;height:auto}
+
+/* long words and figures wrap rather than widen their container */
+.bd-desc,.qa-a,.qa-inner,.slab td,.slab th,.rung-q{overflow-wrap:anywhere}
+
+/* the "you are here" marker is a 4px bar; its label was rendering
+   inside those four pixels and spilling across the rows below */
+
+/* ===================================================================
+   PROPORTIONS — sizes derived from --u, so they scale with the screen
+   instead of stepping at a breakpoint
+   =================================================================== */
+.bsec-hd,.qa-bsec .qa-bhd{margin-bottom:calc(var(--u) * .62)}
+.bsec .hd-t,.qa-bsec .hd-t{font-size:calc(var(--u) * 1.2)}
+.bsec .hd-s,.qa-bsec .hd-s{font-size:calc(var(--u) * .95)}
+
+
+.bd .calc-out{padding:calc(var(--u) * .75) calc(var(--u) * .8)}
+
+
+/* ===================================================================
+   READING TEXT — left aligned and justified between the margins,
+   as in a Word document. Headings are never justified.
+   =================================================================== */
+.bd-desc,.qa-inner .qa-p,.ex-d,.about-p,.bd .bd-desc{
+  text-align:justify;text-align-last:left;
+  hyphens:auto;-webkit-hyphens:auto;
+  text-wrap:pretty;
+}
+.hd-t,.hd-s,.need-t,.bsec .hd-t,.bsec .hd-s,.sec-title,.sec-sub{text-align:left}
