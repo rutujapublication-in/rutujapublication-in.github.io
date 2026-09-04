@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14m',
+  VERSION: 'v14o',
   lang: 'mr',
   text: {},
   locations: null,
@@ -53,6 +53,7 @@ const RUTUJA = {
     ORDER.init(this);
     PEEK.init(this);
     QA.init(this);
+    PATH.init(this);
     ENTRY.init(this);
   },
 
@@ -614,6 +615,8 @@ const ENTRY = {
 
     /* The questions sit below the form, matched to this button. */
     try { QA.forAudience(key); } catch (e) { console.error('QA modal', e); }
+    const ptone = { school: 'green', bulk: 'gold', retail: 'blue', parent: 'violet' }[key] || 'gold';
+    try { PATH.draw('modalBody', 'modalPath', ptone); } catch (e) { console.error('path', e); }
   },
 
   closeModal(fromBack) {
@@ -1285,10 +1288,11 @@ const BOOKS = {
           </div>
         </div>
         <div>
-          <h1 class="bd-title">${mr ? b.name_mr : b.name_en}</h1>
+          <h1 class="bd-title"><i class="hd-mark" aria-hidden="true"></i><span>${mr ? b.name_mr : b.name_en}</span></h1>
           ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
           <p class="bd-sub">${this.subs(b).join(' · ')} &nbsp;|&nbsp; ${this.medLabel(b)}</p>
-          <section class="bsec bsec-a">
+          <div id="bdPath" class="wpath"></div>
+          <section class="bsec bsec-a" data-step="st_b_facts">
             ${this.bhd('bd_facts_h', 'bd_facts_s')}
             <div class="bd-facts">
               <div class="bd-fact"><div class="bd-fact-k">${t('books_standard')}</div>
@@ -1300,14 +1304,14 @@ const BOOKS = {
             </div>
           </section>
 
-          <section class="bsec bsec-b">
+          <section class="bsec bsec-b" data-step="st_b_about">
             ${this.bhd('bd_about_h', 'bd_about_s')}
             <p class="bd-desc">${mr ? b.description_mr : b.description_en}</p>
           </section>
 
           ${pct ? `<div class="disc-head"><b>${pct}% ${t('disc_upto')}</b> &nbsp;&middot;&nbsp; ${t('disc_head')}</div>` : ''}
 
-          <section class="bsec bsec-a calc">
+          <section class="bsec bsec-a calc" data-step="st_b_calc">
             ${this.bhd('price_title', 'bd_calc_s')}
             <div class="calc-row">
               <span class="calc-lbl">${t('price_qty')}</span>
@@ -1330,7 +1334,7 @@ const BOOKS = {
 
           ${MEDIA.forBook(b.book_id, 'b')}
 
-          <section class="bsec bsec-a slab-wrap">
+          <section class="bsec bsec-a slab-wrap" data-step="st_b_rate">
             ${this.bhd('bd_rate_h', 'bd_rate_s')}
             ${this.rateGrid(mySlabs, b, false)}
           </section>
@@ -1380,6 +1384,7 @@ const BOOKS = {
     };
     MEDIA.bindBookVideos(this.el.detail);
     QA.forBook(this.el.detail);
+    try { PATH.draw('bookDetail', 'bdPath', 'cream'); } catch (e) { console.error('path', e); }
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
     document.getElementById('qPlus').onclick  = () => { qv.value = (+qv.value || 1) + 1; draw(); };
@@ -1430,6 +1435,7 @@ const MEDIA = {
 
   paint() {
     if (!this.app) return;
+    try { PATH.draw('page-videos', 'vidPath', 'violet'); } catch (e) { console.error('path', e); }
     this.rails.forEach(r => clearInterval(r.timer));
     this.rails = [];
     /* Only book videos appear here. Advertisement and experience
@@ -1607,7 +1613,7 @@ const MEDIA = {
     const vids = this.live('videos', false).filter(v => v.book_id === bookId);
     if (!vids.length) return '';
     const mr = this.app.lang === 'mr';
-    return `<section class="bsec bsec-${tone || 'a'} bd-videos">
+    return `<section class="bsec bsec-${tone || 'a'} bd-videos" data-step="st_b_video">
       <div class="hd hd-sm bsec-hd bsec-hd-solo">
         <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${this.app.t('book_videos')}</span></h3>
       </div>
@@ -2267,6 +2273,7 @@ const ORDER = {
       }).join('')}</div>`;
 
     const T = this.totals();
+    try { PATH.draw('orderBody', 'orderPath', 'gold'); } catch (e) { console.error('path', e); }
     const L = this.lines();
     const mrpTotal = L.reduce((a, l) => a + l.book.mrp * l.qty, 0);
     const avgPct = mrpTotal ? Math.round(T.saved / mrpTotal * 100) : 0;
@@ -2592,6 +2599,43 @@ const STORY = {
 
 
 /* ===================================================================
+   PATH — the strip under a window's title
+   Built by reading every [data-step] inside the window, in DOM order.
+   Nothing is hard-coded, so adding, removing or reordering a section
+   updates the route with no further work. A section with no data-step
+   simply does not appear, rather than showing something stale.
+   =================================================================== */
+
+const PATH = {
+  app: null,
+  init(app) { this.app = app; },
+
+  /* `root` is the window; `host` is where the strip is written. */
+  draw(rootId, hostId, tone) {
+    const root = document.getElementById(rootId);
+    const host = document.getElementById(hostId);
+    if (!root || !host) return;
+
+    const steps = [];
+    root.querySelectorAll('[data-step]').forEach(el => {
+      /* a hidden section is not part of the route */
+      if (el.closest('.hidden')) return;
+      const k = el.dataset.step;
+      if (k && steps.indexOf(k) < 0) steps.push(k);
+    });
+
+    if (steps.length < 2) { host.innerHTML = ''; host.className = 'wpath empty'; return; }
+
+    host.className = 'wpath wp-' + (tone || 'gold');
+    host.innerHTML = steps.map((k, i) => `
+      <span class="wp-s">${this.app.t(k)}</span>
+      ${i < steps.length - 1 ? `<i class="wp-a" style="--d:${(i + 1) * 0.12}s" aria-hidden="true"></i>` : ''}
+    `).join('');
+  }
+};
+
+
+/* ===================================================================
    Q & A — answers, and the route back into the books
    data/qa.json is fetched only when the page is opened, so the
    first paint of the site stays exactly as light as it was.
@@ -2727,6 +2771,7 @@ const QA = {
       }).join('');
 
     box.innerHTML = chips + `<div class="qa-groups">${groups}</div>`;
+    try { PATH.draw('page-qa', 'qaPath', 'green'); } catch (e) { console.error('path', e); }
   },
 
   /* The same questions, filtered, sitting on the book's own page. */
@@ -2744,7 +2789,7 @@ const QA = {
     if (!mine.length && !learn.length) { host.innerHTML = ''; return; }
 
     const block = (cls, head, sub, rows) => rows.length ? `
-      <section class="qa-bsec ${cls}">
+      <section class="qa-bsec ${cls}" data-step="st_b_qa">
         <div class="hd hd-sm qa-bhd">
           <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${t(head)}</span></h3>
           <p class="hd-s">${t(sub)}</p>

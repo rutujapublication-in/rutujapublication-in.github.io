@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=14m">
+<link rel="stylesheet" href="assets/css/style.css?v=14o">
 </head>
 <body>
 
@@ -35,7 +35,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v14m</p>
+        <p class="w-ver">v14o</p>
       </div>
 
       <aside class="w-side w-right">
@@ -80,9 +80,8 @@
       <button class="gate-x" id="sheetX" aria-label="Close">&times;</button>
     <button class="win-lang" id="sheetLang" data-winlang></button>
       <div id="sheetBody">
-        <h2 class="form-h" id="formHead"></h2>
-        <p class="form-sub" data-t="gate_subtitle"></p>
-        <section class="need-box">
+        <div class="hd hd-win"><h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span id="formHead"></span></h2><p class="hd-s" data-t="gate_subtitle"></p></div>
+        <section class="need-box" data-step="st_w_form">
           <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
           <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
           <p class="flow-note flow-note-ok flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_why_note"></span></p>
@@ -160,18 +159,19 @@
         <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span id="modalHead"></span></h2>
         <p class="hd-s" id="modalHeadSub"></p>
       </div>
-      <div id="modalQA"></div>
+      <div id="modalPath" class="wpath"></div>
+      <div id="modalQA" data-step="st_m_q"></div>
       <div class="hd hd-2" id="modalFormHd">
         <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="form_h_details"></span></h2>
         <p class="hd-s" id="modalSub" data-t="form_sub_offer"></p>
       </div>
-      <section class="need-box">
+      <section class="need-box" data-step="st_m_form">
         <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
         <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
         <p class="flow-note flow-note-ok flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_why_note"></span></p>
         <div id="modalSlot"></div>
       </section>
-      <div class="modal-wa hidden" id="modalWa">
+      <div class="modal-wa hidden" id="modalWa" data-step="st_m_wa">
         <p class="modal-wa-t" data-t="offer_wa_note"></p>
         <a class="btn btn-gold modal-wa-btn" id="modalWaBtn" target="_blank" rel="noopener" data-t="offer_wa_cta"></a>
         <p class="flow-note flow-note-wa"><span class="flow-ico" aria-hidden="true"></span><span data-t="wa_note"></span></p>
@@ -200,13 +200,14 @@
         <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="order_title"></span></h2>
         <p class="hd-s" data-t="order_sub"></p>
       </div>
+      <div id="orderPath" class="wpath"></div>
       <div class="hd hd-sm hd-2">
         <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="order_pick_h"></span></h3>
         <p class="hd-s" data-t="order_pick_s"></p>
       </div>
-      <div class="order-pick" id="orderPick"></div>
-      <div class="order-sum" id="orderSum"></div>
-      <section class="need-box">
+      <div class="order-pick" id="orderPick" data-step="st_o_pick"></div>
+      <div class="order-sum" id="orderSum" data-step="st_o_sum"></div>
+      <section class="need-box" data-step="st_o_form">
         <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
         <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
         <p class="flow-note flow-note-ok flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_why_note"></span></p>
@@ -347,7 +348,7 @@
     </section>
 
     <section class="page" id="page-books"><div class="wrap">
-      <h1 class="sec-title" data-t="books_title"></h1>
+      <div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="books_title"></span></h1><p class="hd-s" data-t="books_sub"></p></div>
       <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
 
       <div class="filters">
@@ -371,35 +372,36 @@
       <div id="bookDetail"></div>
     </div></section>
     <section class="page" id="page-videos"><div class="media-wide">
-      <h1 class="sec-title" data-t="videos_title"></h1>
-      <div class="carousel" id="vidCar2"></div>
-      <div class="vid-grid" id="vidGrid"></div>
+      <div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="videos_title"></span></h1><p class="hd-s" data-t="videos_sub"></p></div>
+      <div id="vidPath" class="wpath"></div>
+      <div class="carousel" id="vidCar2" data-step="st_v_car"></div>
+      <div class="vid-grid" id="vidGrid" data-step="st_v_one"></div>
     </div></section>
-    <section class="page" id="page-experiences"><div class="wrap"><h1 class="sec-title" data-t="exp_title"></h1><div class="placeholder" data-phase="9">Phase 9</div></div></section>
-    <section class="page" id="page-offers"><div class="wrap"><h1 class="sec-title" data-t="offers_title"></h1>
-      <p class="sec-sub" data-t="offer_hook_sub"></p><div class="offer-grid" id="offerGrid2"></div>
-      <h2 class="sec-title" data-t="price_title"></h2>
+    <section class="page" id="page-experiences"><div class="wrap"><div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="exp_title"></span></h1><p class="hd-s" data-t="exp_sub"></p></div><div class="placeholder" data-phase="9">Phase 9</div></div></section>
+    <section class="page" id="page-offers"><div class="wrap"><div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="offers_title"></span></h1><p class="hd-s" data-t="offer_hook_sub"></p></div><div class="offer-grid" id="offerGrid2"></div>
+      <div class="hd hd-page"><h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="price_title"></span></h2><p class="hd-s" data-t="offers_sub2"></p></div>
       <div class="slab-wrap" id="slabTable"></div></div></section>
     <section class="page" id="page-qa"><div class="wrap">
       <div class="hd hd-page">
         <h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="qa_title"></span></h1>
         <p class="hd-s" data-t="qa_intro"></p>
       </div>
+      <div id="qaPath" class="wpath"></div>
       <div id="qaBody"></div>
-      <div class="qa-ask">
+      <div class="qa-ask" data-step="st_q_ask">
         <label class="qa-ask-h" data-t="qa_ask"></label>
         <textarea id="qaAsk" class="qa-ask-in" rows="3" maxlength="400"></textarea>
         <button class="btn btn-gold qa-ask-btn" id="qaSend" data-t="qa_submit"></button>
       </div>
     </div></section>
-    <section class="page" id="page-authors"><div class="wrap"><h1 class="sec-title" data-t="author_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
-    <section class="page" id="page-about"><div class="wrap"><h1 class="sec-title" data-t="pub_title"></h1><div class="placeholder" data-phase="10">Phase 10</div></div></section>
+    <section class="page" id="page-authors"><div class="wrap"><div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="author_title"></span></h1><p class="hd-s" data-t="author_sub"></p></div><div class="placeholder" data-phase="10">Phase 10</div></div></section>
+    <section class="page" id="page-about"><div class="wrap"><div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="pub_title"></span></h1><p class="hd-s" data-t="pub_sub"></p></div><div class="placeholder" data-phase="10">Phase 10</div></div></section>
     <section class="page" id="page-cart"><div class="wrap">
-      <h1 class="sec-title" data-t="cart_title"></h1>
+      <div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="cart_title"></span></h1><p class="hd-s" data-t="cart_sub"></p></div>
       <div id="cartBody"></div>
     </div></section>
 
-    <section class="page" id="page-contact"><div class="wrap"><h1 class="sec-title" data-t="contact_title"></h1><div class="contact-grid" id="contactGrid"></div></div></section>
+    <section class="page" id="page-contact"><div class="wrap"><div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="contact_title"></span></h1><p class="hd-s" data-t="contact_sub"></p></div><div class="contact-grid" id="contactGrid"></div></div></section>
   </main>
 
   <footer class="footer"><div class="wrap footer-inner">
@@ -417,6 +419,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=14m"></script>
+<script src="assets/js/app.js?v=14o"></script>
 </body>
 </html>

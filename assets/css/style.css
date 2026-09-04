@@ -504,7 +504,9 @@ a{color:inherit;text-decoration:none}
 .back-link{margin:6px 0 16px;font-size:15px;color:var(--green);text-decoration:underline;
   text-underline-offset:3px}
 
-.bd-title{font-size:29px;color:var(--green-dark);line-height:1.3}
+.bd-title{font-size:29px;color:var(--green-dark);line-height:1.3;
+  display:flex;align-items:center;gap:calc(var(--u) * .55);min-width:0}
+.bd-title > span{min-width:0}
 .bd-sub{font-size:15px;color:var(--ink-soft);margin:4px 0 16px}
 .bd-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;
   margin-bottom:20px}
@@ -3173,9 +3175,11 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .hd{margin:0 0 10px}
 .hd-2{margin-top:15px;padding-top:12px;border-top:1.5px solid var(--line)}
 .hd-sm{margin-bottom:10px}
-.hd-page{margin:14px 0 12px}
-.hd-page .hd-t{font-size:25px}
-.hd-page .hd-mark{width:12px;height:12px}
+.hd-page{margin:calc(var(--u) * .85) 0 calc(var(--u) * .42)}
+.hd-page + .wpath{margin-top:0}
+.hd-page .hd-t{font-size:calc(var(--u) * 1.62)}
+.hd-page .hd-s{font-size:calc(var(--u) * 1.02)}
+.hd-page .hd-mark{width:calc(var(--u) * .72);height:calc(var(--u) * .72)}
 
 .hd-t{
   display:flex;align-items:center;gap:9px;margin:0 0 4px;
@@ -4311,3 +4315,97 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   animation:ratepulse 3.2s ease-in-out infinite;
 }
 @media(prefers-reduced-motion:reduce){.rate-p{animation:none}}
+
+/* ===================================================================
+   WINDOW PATH — the route strip under a window's title
+   Built from [data-step] in DOM order, so it follows the sections
+   rather than being told what they are. Each window carries its own
+   colour, so a returning visitor knows where they are before reading.
+   =================================================================== */
+@property --pang{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+.wpath{
+  position:relative;isolation:isolate;
+  display:flex;flex-wrap:wrap;align-items:center;
+  gap:calc(var(--u) * .3) calc(var(--u) * .42);
+  margin:calc(var(--u) * .45) 0 calc(var(--u) * .75);
+  padding:calc(var(--u) * .5) calc(var(--u) * .62);
+  border:1.5px solid var(--pc);border-radius:calc(var(--u) * .85);
+  background:linear-gradient(150deg, var(--pbg1), var(--pbg2));
+  animation:wpIn .45s cubic-bezier(.34,1.4,.64,1) both;
+}
+.wpath.empty{display:none}
+@keyframes wpIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+/* the border light travels clockwise and breathes, thinner and quicker
+   than the video frames so the two never read as the same device */
+.wpath::before{
+  content:"";position:absolute;inset:-1.5px;z-index:-1;border-radius:inherit;
+  background:conic-gradient(from var(--pang),
+    transparent 0deg, var(--pc) 55deg, transparent 115deg, transparent 360deg);
+  animation:pangSpin 4.2s linear infinite, pangBreathe 2.8s ease-in-out infinite;
+}
+@keyframes pangSpin{to{--pang:360deg}}
+@keyframes pangBreathe{0%,100%{opacity:.45}50%{opacity:.9}}
+
+/* each step, in the window's own colour, with a sheen crossing in the
+   reading direction so the eye is pulled along the route */
+.wp-s{
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .82);line-height:1.35;letter-spacing:.1px;
+  background-image:linear-gradient(100deg,
+    var(--ptx) 0%, var(--ptx) 38%, var(--pc) 50%, var(--ptx) 62%, var(--ptx) 100%);
+  background-size:280% 100%;background-position:100% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdSheen 7s ease-in-out infinite;
+}
+
+/* the arrows are a different colour and step forward in sequence, once,
+   when the window opens — so they read as movement, not decoration */
+.wp-a{
+  flex-shrink:0;width:0;height:0;
+  border-left:calc(var(--u) * .45) solid var(--pa);
+  border-top:calc(var(--u) * .28) solid transparent;
+  border-bottom:calc(var(--u) * .28) solid transparent;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));
+  animation:wpArrow 1.6s cubic-bezier(.4,0,.2,1) var(--d, 0s) 3;
+}
+@keyframes wpArrow{
+  0%,100%{transform:translateX(0);opacity:.7}
+  35%    {transform:translateX(4px);opacity:1}
+}
+
+/* ---------- one tone per window ---------- */
+.wp-gold  {--pc:#E8A33D;--pa:#8C5A12;--ptx:#5A3B06;--pbg1:#FFFAEF;--pbg2:#FFFDF8}
+.wp-cream {--pc:#C9A15A;--pa:#8C5A12;--ptx:#4A3A1A;--pbg1:#FDFAF3;--pbg2:#FFFDF8}
+.wp-green {--pc:#3E8E52;--pa:#1F5C33;--ptx:#16401F;--pbg1:#F1F8F3;--pbg2:#FBFEFC}
+.wp-violet{--pc:#7E63B8;--pa:#4B3580;--ptx:#33235C;--pbg1:#F5F2FC;--pbg2:#FCFBFF}
+.wp-blue  {--pc:#3A7FA8;--pa:#1F5273;--ptx:#173B54;--pbg1:#F0F6FA;--pbg2:#FAFDFF}
+.wp-terra {--pc:#C0603F;--pa:#8A3A1E;--ptx:#5E2712;--pbg1:#FDF4F1;--pbg2:#FFFBFA}
+
+@media(prefers-reduced-motion:reduce){
+  .wpath,.wpath::before,.wp-s,.wp-a{animation:none}
+  .wp-s{-webkit-text-fill-color:var(--ptx);color:var(--ptx)}
+  .wpath::before{opacity:.6}
+}
+
+/* ===================================================================
+   WINDOW HEADINGS — pointer, title, subtitle, on every window
+   Deliberately slower than the path strip below them, so the heading
+   reads as settled and the strip as the thing inviting movement.
+   =================================================================== */
+.hd-win{margin:0 0 calc(var(--u) * .5)}
+.hd-win .hd-t{font-size:calc(var(--u) * 1.5)}
+
+
+.bd .bd-title > span{min-width:0}
+.bd .bd-title .hd-mark{
+  flex-shrink:0;width:calc(var(--u) * .66);height:calc(var(--u) * .66);
+  border-radius:2px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  transform:rotate(45deg);-webkit-text-fill-color:initial;
+  box-shadow:0 0 0 0 rgba(232,163,61,.55);
+  animation:hdMark 2.9s ease-in-out infinite;
+}
+
+/* an empty placeholder page should not look finished */
