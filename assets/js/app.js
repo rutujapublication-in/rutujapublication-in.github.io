@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14q',
+  VERSION: 'v14r',
   lang: 'mr',
   text: {},
   locations: null,
@@ -517,7 +517,10 @@ const ENTRY = {
     });
 
     document.getElementById('openForm').addEventListener('click', () => this.openSheet());
-    document.getElementById('welcomeSkip').addEventListener('click', () => app.enterSite('books'));
+    /* The welcome screen leads to the home page, not straight to the book
+       list. Home carries the story band, the standards, the offers and the
+       videos; jumping past all of it loses the shop window. */
+    document.getElementById('welcomeSkip').addEventListener('click', () => app.enterSite());
     document.getElementById('sheetX').addEventListener('click', () => this.closeSheet());
     document.getElementById('doneEnter').addEventListener('click', () => app.enterSite('books'));
     document.getElementById('modalX').addEventListener('click', () => this.closeModal());
