@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=14o">
+<link rel="stylesheet" href="assets/css/style.css?v=14q">
 </head>
 <body>
 
@@ -35,7 +35,7 @@
         <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
         <p class="w-name-en">Rutuja Publication</p>
         <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v14o</p>
+        <p class="w-ver">v14q</p>
       </div>
 
       <aside class="w-side w-right">
@@ -81,6 +81,7 @@
     <button class="win-lang" id="sheetLang" data-winlang></button>
       <div id="sheetBody">
         <div class="hd hd-win"><h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span id="formHead"></span></h2><p class="hd-s" data-t="gate_subtitle"></p></div>
+        <div id="sheetPath" class="wpath"></div>
         <section class="need-box" data-step="st_w_form">
           <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
           <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
@@ -141,7 +142,7 @@
     <div class="f"><label data-t="gate_pin"></label>
       <input type="text" id="gPin" inputmode="numeric" maxlength="6"><span class="err" id="ePin"></span></div>
 
-    <div class="gate-acts">
+    <div class="gate-acts" data-step="st_o_send">
       <button type="submit" class="btn btn-gold gate-submit" id="gateSubmit" data-t="gate_submit"></button>
       <button type="button" class="gate-skip" id="gateSkip" data-t="gate_skip"></button>
       <p class="flow-note"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_note"></span></p>
@@ -160,7 +161,7 @@
         <p class="hd-s" id="modalHeadSub"></p>
       </div>
       <div id="modalPath" class="wpath"></div>
-      <div id="modalQA" data-step="st_m_q"></div>
+      <div id="modalQA" data-step="st_m_q,st_m_ans"></div>
       <div class="hd hd-2" id="modalFormHd">
         <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="form_h_details"></span></h2>
         <p class="hd-s" id="modalSub" data-t="form_sub_offer"></p>
@@ -206,7 +207,7 @@
         <p class="hd-s" data-t="order_pick_s"></p>
       </div>
       <div class="order-pick" id="orderPick" data-step="st_o_pick"></div>
-      <div class="order-sum" id="orderSum" data-step="st_o_sum"></div>
+      <div class="order-sum" id="orderSum" data-step="st_o_rate,st_o_sum"></div>
       <section class="need-box" data-step="st_o_form">
         <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
         <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
@@ -349,9 +350,10 @@
 
     <section class="page" id="page-books"><div class="wrap">
       <div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="books_title"></span></h1><p class="hd-s" data-t="books_sub"></p></div>
+        <div id="booksPath" class="wpath"></div>
       <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
 
-      <div class="filters">
+      <div class="filters" data-step="st_k_filter">
         <div class="fbar">
           <input type="search" id="bSearch" class="fsearch" placeholder="">
           <select id="fStd" class="fsel"></select>
@@ -363,7 +365,7 @@
         <p class="fcount"><strong id="bCount">0</strong> <span data-t="books_count"></span></p>
       </div>
 
-      <div class="book-grid" id="bookGrid"></div>
+      <div class="book-grid" id="bookGrid" data-step="st_k_list"></div>
       <p class="book-none hidden" id="bookNone" data-t="books_none"></p>
     </div></section>
 
@@ -419,6 +421,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=14o"></script>
+<script src="assets/js/app.js?v=14q"></script>
 </body>
 </html>

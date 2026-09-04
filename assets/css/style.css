@@ -1581,7 +1581,7 @@ html[lang="en"] body{line-height:1.65}
   min-width:0;max-width:100%;padding-right:2px;
   color:var(--bk,var(--green-dark));
   position:relative;transition:color .2s ease;
-  animation:titleGlow 4.6s ease-in-out infinite;
+  animation:titleGlow 2.8s ease-in-out infinite;
 }
 /* each title takes its own colour, so five books read as five things */
 .bk-1{--bk:#B5442F}
@@ -3193,8 +3193,11 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   flex-shrink:0;width:10px;height:10px;border-radius:2px;
   background:linear-gradient(135deg,var(--gold),var(--gold-dark));
   transform:rotate(45deg);transform-origin:center;
-  box-shadow:0 0 0 0 rgba(232,163,61,.55);
-  animation:hdMark 2.9s ease-in-out infinite;
+  animation:hdGlow 2.4s ease-in-out infinite;
+}
+@keyframes hdGlow{
+  0%,100%{filter:drop-shadow(0 0 1px rgba(232,163,61,.5))}
+  50%    {filter:drop-shadow(0 0 7px rgba(232,163,61,1))}
 }
 
 /* 2 — a slow gold sheen crosses the heading text */
@@ -3592,7 +3595,13 @@ html[lang="mr"] .book-t{
 
 /* 4 — the summary: every figure and frame given something to do */
 @keyframes sumLift{0%{transform:translateY(3px);opacity:.5}100%{transform:none;opacity:1}}
-@keyframes titleGlow{0%,100%{text-shadow:none}50%{text-shadow:0 0 10px currentColor}}
+@keyframes titleGlow{
+  0%,100%{transform:scale(1);text-shadow:none}
+  12%    {transform:scale(1.03);text-shadow:0 0 12px currentColor}
+  26%    {transform:scale(1)}
+  38%    {transform:scale(1.02);text-shadow:0 0 8px currentColor}
+  52%,100%{transform:scale(1);text-shadow:none}
+}
 @keyframes totalPulse{
   0%,100%{transform:scale(1);text-shadow:none}
   50%    {transform:scale(1.04);text-shadow:0 0 16px rgba(26,77,46,.35)}
@@ -4128,8 +4137,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 /* ---------- the words under the video ---------- */
 .bd-videos .vcard-body{text-align:left;gap:calc(var(--u) * .45)}
 .bd-videos .vcard-title{
-  font-family:Mukta,system-ui,sans-serif;font-weight:800;
-  font-size:calc(var(--u) * 1.25);line-height:1.32;
+  font-family:Mukta,system-ui,sans-serif;font-weight:800;line-height:1.32;
   background-image:linear-gradient(100deg,
     var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
     var(--green-dark) 62%,var(--green-dark) 100%);
@@ -4322,11 +4330,9 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
    rather than being told what they are. Each window carries its own
    colour, so a returning visitor knows where they are before reading.
    =================================================================== */
-@property --pang{syntax:'<angle>';inherits:false;initial-value:0deg}
-
 .wpath{
   position:relative;isolation:isolate;
-  display:flex;flex-wrap:wrap;align-items:center;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
   gap:calc(var(--u) * .3) calc(var(--u) * .42);
   margin:calc(var(--u) * .45) 0 calc(var(--u) * .75);
   padding:calc(var(--u) * .5) calc(var(--u) * .62);
@@ -4337,43 +4343,51 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 .wpath.empty{display:none}
 @keyframes wpIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
 
-/* the border light travels clockwise and breathes, thinner and quicker
-   than the video frames so the two never read as the same device */
+/* a light sweeping left to right along the border, continuously */
 .wpath::before{
   content:"";position:absolute;inset:-1.5px;z-index:-1;border-radius:inherit;
-  background:conic-gradient(from var(--pang),
-    transparent 0deg, var(--pc) 55deg, transparent 115deg, transparent 360deg);
-  animation:pangSpin 4.2s linear infinite, pangBreathe 2.8s ease-in-out infinite;
+  background:linear-gradient(100deg,
+    transparent 0%, transparent 32%, var(--pc) 48%, var(--pc) 52%, transparent 68%, transparent 100%);
+  background-size:260% 100%;background-repeat:no-repeat;
+  animation:wpSweep 2.6s linear infinite;
 }
-@keyframes pangSpin{to{--pang:360deg}}
-@keyframes pangBreathe{0%,100%{opacity:.45}50%{opacity:.9}}
+@keyframes wpSweep{0%{background-position:130% 0}100%{background-position:-30% 0}}
 
-/* each step, in the window's own colour, with a sheen crossing in the
-   reading direction so the eye is pulled along the route */
+/* the lead-in names what the strip is; it is not a stop on the route */
+.wp-lead{
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .74);letter-spacing:.3px;
+  color:var(--pa);opacity:.72;flex-shrink:0;
+}
+/* each step beats gently, in turn */
 .wp-s{
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
   font-size:calc(var(--u) * .82);line-height:1.35;letter-spacing:.1px;
-  background-image:linear-gradient(100deg,
-    var(--ptx) 0%, var(--ptx) 38%, var(--pc) 50%, var(--ptx) 62%, var(--ptx) 100%);
-  background-size:280% 100%;background-position:100% 0;background-repeat:no-repeat;
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 7s ease-in-out infinite;
+  color:var(--ptx);display:inline-block;transform-origin:center;
+  animation:wpBeat 2.6s ease-in-out infinite;
+}
+@keyframes wpBeat{
+  0%,100%{transform:scale(1)}
+  14%    {transform:scale(1.09)}
+  28%    {transform:scale(1)}
+  42%    {transform:scale(1.05)}
+  56%    {transform:scale(1)}
 }
 
-/* the arrows are a different colour and step forward in sequence, once,
-   when the window opens — so they read as movement, not decoration */
+/* each arrow punches toward its own tip — sharp out, slow back — one
+   after another, so the eye is carried along the route */
 .wp-a{
   flex-shrink:0;width:0;height:0;
   border-left:calc(var(--u) * .45) solid var(--pa);
   border-top:calc(var(--u) * .28) solid transparent;
   border-bottom:calc(var(--u) * .28) solid transparent;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));
-  animation:wpArrow 1.6s cubic-bezier(.4,0,.2,1) var(--d, 0s) 3;
+  filter:drop-shadow(0 0 3px var(--pa));
+  animation:wpPunch 2.6s cubic-bezier(.2,0,.1,1) var(--d, 0s) infinite;
 }
-@keyframes wpArrow{
-  0%,100%{transform:translateX(0);opacity:.7}
-  35%    {transform:translateX(4px);opacity:1}
+@keyframes wpPunch{
+  0%      {transform:translateX(0) scaleX(1);opacity:.65}
+  10%     {transform:translateX(6px) scaleX(1.35);opacity:1}
+  38%,100%{transform:translateX(0) scaleX(1);opacity:.65}
 }
 
 /* ---------- one tone per window ---------- */
@@ -4386,7 +4400,6 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 
 @media(prefers-reduced-motion:reduce){
   .wpath,.wpath::before,.wp-s,.wp-a{animation:none}
-  .wp-s{-webkit-text-fill-color:var(--ptx);color:var(--ptx)}
   .wpath::before{opacity:.6}
 }
 
@@ -4409,3 +4422,17 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 }
 
 /* an empty placeholder page should not look finished */
+
+/* the fifth card is a route, not an offer — its own mark, green, glowing */
+.offer-qa .offer-t{display:flex;align-items:center;gap:calc(var(--u) * .45)}
+.offer-mark{
+  flex-shrink:0;width:calc(var(--u) * .6);height:calc(var(--u) * .6);
+  border-radius:2px;transform:rotate(45deg);
+  background:linear-gradient(135deg,#57A46A,#2F7A44);
+  animation:offerGlow 2.4s ease-in-out infinite;
+}
+@keyframes offerGlow{
+  0%,100%{filter:drop-shadow(0 0 1px rgba(47,122,68,.5))}
+  50%    {filter:drop-shadow(0 0 7px rgba(47,122,68,1))}
+}
+@media(prefers-reduced-motion:reduce){.offer-mark{animation:none}}

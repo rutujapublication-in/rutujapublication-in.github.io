@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14o',
+  VERSION: 'v14q',
   lang: 'mr',
   text: {},
   locations: null,
@@ -145,11 +145,13 @@ const RUTUJA = {
   },
 
   /* Leaves the entry screen and reveals the website. */
-  enterSite() {
+  /* `to` names where the visitor should land. Buttons labelled See Books
+     were revealing the site and leaving the person on the home page. */
+  enterSite(to) {
     document.getElementById('entry').classList.add('hidden');
     document.getElementById('site').classList.remove('hidden');
     document.body.style.overflow = '';
-    window.scrollTo(0, 0);
+    if (to) this.go(to); else window.scrollTo(0, 0);
   },
 
   t(key) {
@@ -337,7 +339,7 @@ const RUTUJA = {
       </button>`).join('')
       /* Not an offer, so it sits below the four and says so. */
       + `<button class="offer-card offer-qa" data-nav="qa">
-        <span class="offer-t">${this.t('qa_card_t')}</span>
+        <span class="offer-t"><i class="offer-mark" aria-hidden="true"></i>${this.t('qa_card_t')}</span>
         <span class="offer-d">${this.t('qa_card_d')}</span>
         <span class="offer-go">${this.t('qa_card_go')} &rarr;</span>
       </button>`;
@@ -515,9 +517,9 @@ const ENTRY = {
     });
 
     document.getElementById('openForm').addEventListener('click', () => this.openSheet());
-    document.getElementById('welcomeSkip').addEventListener('click', () => app.enterSite());
+    document.getElementById('welcomeSkip').addEventListener('click', () => app.enterSite('books'));
     document.getElementById('sheetX').addEventListener('click', () => this.closeSheet());
-    document.getElementById('doneEnter').addEventListener('click', () => app.enterSite());
+    document.getElementById('doneEnter').addEventListener('click', () => app.enterSite('books'));
     document.getElementById('modalX').addEventListener('click', () => this.closeModal());
 
     // Anything with data-offer reopens the form, framed for that audience.
@@ -554,6 +556,7 @@ const ENTRY = {
     document.getElementById('sheetDone').classList.add('hidden');
     document.getElementById('sheet').classList.remove('hidden');
     FORM.moveTo('formSlot');
+    try { PATH.draw('sheetBody', 'sheetPath', 'green'); } catch (e) { console.error('path', e); }
     FORM.reset();
     FORM.repaint();
   },
@@ -616,7 +619,9 @@ const ENTRY = {
     /* The questions sit below the form, matched to this button. */
     try { QA.forAudience(key); } catch (e) { console.error('QA modal', e); }
     const ptone = { school: 'green', bulk: 'gold', retail: 'blue', parent: 'violet' }[key] || 'gold';
-    try { PATH.draw('modalBody', 'modalPath', ptone); } catch (e) { console.error('path', e); }
+    const pk = ['school', 'bulk', 'retail', 'parent'].indexOf(key) >= 0 ? key : '';
+    const pswap = pk ? { st_m_q: 'st_m_q_' + pk, st_m_wa: 'st_m_wa_' + pk } : null;
+    try { PATH.draw('modalBody', 'modalPath', ptone, pswap); } catch (e) { console.error('path', e); }
   },
 
   closeModal(fromBack) {
@@ -1148,6 +1153,7 @@ const BOOKS = {
   renderGrid() {
     const list = this.match();
     this.el.grid.innerHTML = list.map(b => this.card(b)).join('');
+    try { PATH.draw('page-books', 'booksPath', 'terra'); } catch (e) { console.error('path', e); }
     this.el.count.textContent = list.length;
     this.el.none.classList.toggle('hidden', list.length > 0);
     this.bind(this.el.grid);
@@ -2610,27 +2616,32 @@ const PATH = {
   app: null,
   init(app) { this.app = app; },
 
-  /* `root` is the window; `host` is where the strip is written. */
-  draw(rootId, hostId, tone) {
+  /* `root` is the window, `host` where the strip goes, `tone` its colour.
+     `swap` renames steps for a window that serves several audiences —
+     the four offer windows share one DOM but need four routes. */
+  draw(rootId, hostId, tone, swap) {
     const root = document.getElementById(rootId);
     const host = document.getElementById(hostId);
     if (!root || !host) return;
 
     const steps = [];
     root.querySelectorAll('[data-step]').forEach(el => {
-      /* a hidden section is not part of the route */
       if (el.closest('.hidden')) return;
-      const k = el.dataset.step;
-      if (k && steps.indexOf(k) < 0) steps.push(k);
+      String(el.dataset.step || '').split(',').forEach(raw => {
+        const k = (swap && swap[raw.trim()]) || raw.trim();
+        if (k && steps.indexOf(k) < 0) steps.push(k);
+      });
     });
 
-    if (steps.length < 2) { host.innerHTML = ''; host.className = 'wpath empty'; return; }
+    if (!steps.length) { host.innerHTML = ''; host.className = 'wpath empty'; return; }
 
     host.className = 'wpath wp-' + (tone || 'gold');
-    host.innerHTML = steps.map((k, i) => `
-      <span class="wp-s">${this.app.t(k)}</span>
-      ${i < steps.length - 1 ? `<i class="wp-a" style="--d:${(i + 1) * 0.12}s" aria-hidden="true"></i>` : ''}
-    `).join('');
+    /* the lead-in says what the strip is before listing the route */
+    host.innerHTML = `<span class="wp-lead">${this.app.t('path_lead')}</span>` +
+      steps.map((k, i) => `
+        <span class="wp-s">${this.app.t(k)}</span>
+        ${i < steps.length - 1 ? `<i class="wp-a" style="--d:${(i + 1) * 0.1}s" aria-hidden="true"></i>` : ''}
+      `).join('');
   }
 };
 
@@ -2761,7 +2772,7 @@ const QA = {
         if (!mine.length) return '';
         n++;
         const book = g.kind === 'book';
-        return `<section class="qa-group${book ? ' qa-group-book' : ''}${n % 2 ? ' qa-tint' : ''}">
+        return `<section class="qa-group${book ? ' qa-group-book' : ''}${n % 2 ? ' qa-tint' : ''}" data-step="qg_${g.id}">
           <header class="qa-gh">
             <i class="qa-gmark" aria-hidden="true"></i>
             <span class="qa-gt">${g[L]}</span>
