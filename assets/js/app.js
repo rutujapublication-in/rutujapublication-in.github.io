@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15f',
+  VERSION: 'v15j',
   lang: 'mr',
   text: {},
   locations: null,
@@ -568,30 +568,17 @@ const ENTRY = {
     const waBox = document.getElementById('modalWa');
     const sub   = document.getElementById('modalSub');
 
-    if (reg) {
-      /* Already registered. Asking again wastes their time, so the
-         window carries the answers and a way to talk instead. */
-      slot.classList.add('hidden');
-      const mp = document.getElementById('modalPrefill');
-      if (mp) mp.classList.add('hidden');
-      if (sub) sub.classList.add('hidden');
-      document.getElementById('modalFormHd').classList.add('hidden');
-      waBox.classList.remove('hidden');
-      const link = this.app.wa('wa_' + (key === 'school' ? 'school'
-                              : key === 'retail' ? 'retailer' : 'general'), '', 'mr');
-      const b = document.getElementById('modalWaBtn');
-      if (link) { b.href = link; b.classList.remove('hidden'); }
-      else { b.classList.add('hidden'); }
-    } else {
-      waBox.classList.add('hidden');
-      slot.classList.remove('hidden');
-      if (sub) sub.classList.remove('hidden');
-      document.getElementById('modalFormHd').classList.remove('hidden');
-      FORM.moveTo('modalSlot');
-      FORM.reset();
-      FORM.preset(key);
-      FORM.repaint();
-    }
+    /* The form is shown to everyone. A returning visitor sees their
+       details as a summary they can check and change, rather than the
+       form being hidden and replaced by a WhatsApp button. */
+    waBox.classList.add('hidden');
+    slot.classList.remove('hidden');
+    if (sub) sub.classList.remove('hidden');
+    document.getElementById('modalFormHd').classList.remove('hidden');
+    FORM.moveTo('modalSlot');
+    FORM.reset();
+    FORM.preset(key);
+    FORM.repaint();
 
     /* The questions sit below the form, matched to this button. */
     try { QA.forAudience(key); } catch (e) { console.error('QA modal', e); }
@@ -740,13 +727,58 @@ const FORM = {
     });
   },
 
+  /* A returning visitor sees what they gave us as a short summary rather
+     than eight filled boxes. Everything is still there and still editable
+     — बदल करा opens the fields. */
+  summary() {
+    const b = BUYER.get() || {};
+    /* two clones of this template are in the document at once, so a
+       document-wide lookup would find the other window's card */
+    const card = this.node.querySelector('#sumCard');
+    const lines = this.node.querySelector('#sumLines');
+    const has = !!(b.name && b.whatsapp);
+    const show = has && !this.opened;
+    const amber = document.querySelectorAll('.fn-amber');
+    const ready = document.querySelectorAll('.fn-ready');
+    /* the amber note tells them to fill the form; with no fields on
+       screen it becomes a statement instead */
+    amber.forEach(n => n.classList.toggle('hidden', show));
+    ready.forEach(n => n.classList.toggle('hidden', !show));
+    if (!card || !lines) return has;
+    if (!show) { card.classList.add('hidden'); this.node.classList.remove('collapsed'); return has; }
+
+    const mr = this.app.lang === 'mr';
+    const L = this.app.placeIn(mr ? 'mr' : 'en', b.state, b.district, b.taluka);
+    const place = [b.village_city, L.taluka, L.district].filter(Boolean).join(', ');
+    lines.innerHTML =
+      `<span class="sum-name">${b.name}</span>` +
+      `<span class="sum-ph">${(b.whatsapp || '').replace(/^91/, '')}</span>` +
+      (place ? `<span class="sum-place">${place}</span>` : '');
+    card.classList.remove('hidden');
+    this.node.classList.add('collapsed');
+    return has;
+  },
+
+  openFields() { this.opened = true; FORM.summary.call(this); },
+
+  bindSummary() {
+    const e = this.node.querySelector('#sumEdit');
+    if (e && !e.dataset.bound) {
+      e.dataset.bound = '1';
+      e.addEventListener('click', () => FORM.openFields.call(this));
+    }
+  },
+
   reset() {
+    this.opened = false;
     this.el.form.classList.remove('hidden');
     this.el.submit.disabled = false;
     this.node.querySelectorAll('.err').forEach(e => e.textContent = '');
     this.node.querySelectorAll('.bad').forEach(e => e.classList.remove('bad'));
     this.prefill('prefillNote', true);
     this.markEdits();
+    this.bindSummary();
+    this.summary();
   },
 
   /* Whatever the visitor has told us anywhere is already here.
@@ -757,9 +789,9 @@ const FORM = {
      field from what was saved, so each window opens on the same truth. */
   prefill(note, force) {
     const b = BUYER.get();
-    const el = document.getElementById(note || 'prefillNote');
-    const nw = document.getElementById('flowNoteNew');
-    const bk = document.getElementById('flowNoteBack');
+    const el = this.node.querySelector('#' + (note || 'prefillNote'));
+    const nw = this.node.querySelector('#flowNoteNew');
+    const bk = this.node.querySelector('#flowNoteBack');
     const seen = !!(b && b.name);
     /* the closing note reads differently for someone who has been here */
     if (nw) nw.classList.toggle('hidden', seen);
@@ -1287,6 +1319,7 @@ const BOOKS = {
   openBook(id, silent) {
     const b = this.live().find(x => x.book_id === id);
     if (!b) return;
+    SEC.reset();
     this.current = id;
     const t = k => this.app.t(k);
     const mr = this.app.lang === 'mr';
@@ -1311,7 +1344,7 @@ const BOOKS = {
           ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
           <p class="bd-sub">${this.subs(b).join(' · ')} &nbsp;|&nbsp; ${this.medLabel(b)}</p>
           <div id="bdPath" class="wpath"></div>
-          <section class="bsec bsec-a" data-step="st_b_facts">
+          <section class="bsec ${SEC.tone()}" data-step="st_b_facts">
             ${this.bhd('bd_facts_h', 'bd_facts_s')}
             <div class="bd-facts">
               <div class="bd-fact"><div class="bd-fact-k">${t('books_standard')}</div>
@@ -1323,14 +1356,16 @@ const BOOKS = {
             </div>
           </section>
 
-          <section class="bsec bsec-b" data-step="st_b_about">
+          <section class="bsec ${SEC.tone()}" data-step="st_b_about">
             ${this.bhd('bd_about_h', 'bd_about_s')}
             <p class="bd-desc">${mr ? b.description_mr : b.description_en}</p>
           </section>
 
           ${pct ? `<div class="disc-head"><b>${pct}% ${t('disc_upto')}</b> &nbsp;&middot;&nbsp; ${t('disc_head')}</div>` : ''}
 
-          <section class="bsec bsec-a calc" data-step="st_b_calc">
+          ${MEDIA.forBook(b.book_id, SEC.toneOnly())}
+
+          <section class="bsec ${SEC.tone()} calc" data-step="st_b_calc">
             ${this.bhd('price_title', 'bd_calc_s')}
             <div class="calc-row">
               <span class="calc-lbl">${t('price_qty')}</span>
@@ -1351,9 +1386,7 @@ const BOOKS = {
             <button class="calc-enq" id="calcAsk">${t('book_enq')}</button>
           </section>
 
-          ${MEDIA.forBook(b.book_id, 'b')}
-
-          <section class="bsec bsec-a slab-wrap" data-step="st_b_rate">
+          <section class="bsec ${SEC.tone()} slab-wrap" data-step="st_b_rate">
             ${this.bhd('bd_rate_h', 'bd_rate_s')}
             ${this.rateGrid(mySlabs, b, false)}
           </section>
@@ -1962,11 +1995,37 @@ const CART = {
     ].filter(Boolean).join('\n');
   },
 
+  /* Indian date, whatever the phone's clock is set to. Intl with an
+     explicit timeZone ignores the device zone entirely, so a handset
+     set to another country still stamps the Indian day. */
+  istParts() {
+    try {
+      const f = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Kolkata', weekday: 'short',
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      }).formatToParts(new Date());
+      const g = t => (f.find(x => x.type === t) || {}).value || '';
+      return { wd: g('weekday').toUpperCase(), d: g('day'), m: g('month'), y: g('year') };
+    } catch (e) {
+      const n = new Date();
+      const wd = ['SUN','MON','TUE','WED','THU','FRI','SAT'][n.getDay()];
+      return { wd, d: String(n.getDate()).padStart(2, '0'),
+               m: String(n.getMonth() + 1).padStart(2, '0'), y: String(n.getFullYear()) };
+    }
+  },
+
+  /* RP-O-SAT-05092026-001. The daily sequence is assigned by the sheet;
+     until it answers, a short random suffix stands in so the screen is
+     never blank, and it is replaced the moment the real number arrives. */
   orderNo() {
-    const d = new Date();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    return 'RP-O-' + String(d.getFullYear()).slice(2) + mm + '-' +
-           String(Math.floor(1000 + Math.random() * 9000));
+    const p = this.istParts();
+    return 'RP-O-' + p.wd + '-' + p.d + p.m + p.y + '-' +
+           String(Math.floor(100 + Math.random() * 900));
+  },
+
+  orderDateKey() {
+    const p = this.istParts();
+    return p.d + p.m + p.y;
   }
 };
 
@@ -2044,7 +2103,15 @@ const ORDERFORM = {
     this.el.phone.placeholder = this.app.t('gate_whatsapp_ph');
   },
 
-  prefill() { FORM.prefill.call(this, 'prefillNote', true); },
+  /* the same collapsed summary as the offer windows; `this` is
+     ORDERFORM, so each method reads ORDERFORM's own clone */
+  prefill() {
+    this.opened = false;
+    FORM.prefill.call(this, 'prefillNote', true);
+    FORM.markEdits.call(this);
+    FORM.bindSummary.call(this);
+    FORM.summary.call(this);
+  },
 
   validate() { return FORM.validate.call(this); },
 
@@ -2063,7 +2130,8 @@ const ORDERFORM = {
       pin: this.el.pin.value,
       language: this.app.lang
     };
-    const orderNo = CART.orderNo();
+    /* provisional until the sheet answers with the day's real sequence */
+    let orderNo = CART.orderNo();
     const lines = ORDER.lines();
     const T = ORDER.totals();
     if (!lines.length) { alert(t('order_none_picked')); return; }
@@ -2087,15 +2155,22 @@ const ORDERFORM = {
         amount: l.total,
         saved: l.saved
       })),
-      total: T.total, saved: T.saved, website: this.el.hp.value
+      total: T.total, saved: T.saved, website: this.el.hp.value,
+      /* the sheet counts the day's orders against this key, in IST */
+      date_key: CART.orderDateKey()
     };
 
     const url = this.app.settings.backendUrl;
     if (url) {
       try {
-        await fetch(url, { method: 'POST',
+        const r = await fetch(url, { method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload) });
+        /* the sheet is the only place that can count, so its number wins */
+        try {
+          const j = await r.json();
+          if (j && j.order_no) orderNo = j.order_no;
+        } catch (e) {}
       } catch (err) {
         try { await fetch(url, { method: 'POST', mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -2670,6 +2745,17 @@ const STORY = {
 /* The form section speaks to whoever opened the window. Each title is
    sized to the largest that still holds one row, the same way a video
    title is, so nothing has to be shortened to fit. */
+/* Section tones alternate by position, not by a class written into each
+   one. Reordering, adding or removing a section can then never leave two
+   of the same colour side by side. */
+const SEC = {
+  n: 0,
+  reset() { this.n = 0; },
+  toneOnly() { return (this.n++ % 2) ? 'b' : 'a'; },
+  tone() { return 'bsec-' + this.toneOnly(); }
+};
+
+
 const NEEDHD = {
   app: null,
   init(app) { this.app = app; },

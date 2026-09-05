@@ -379,7 +379,9 @@
     "nh_parent": "पुस्तक एक असो वा अनेक — घरपोच देणं आमचं काम",
     "ns_parent": "कुठे राहता ते सांगा, पोहोच कळवू",
     "nh_order": "पुस्तकं निवडली, आता शेवटचं पाऊल",
-    "ns_order": "माहिती भरा आणि मागणी थेट आमच्यापर्यंत पाठवा"
+    "ns_order": "माहिती भरा आणि मागणी थेट आमच्यापर्यंत पाठवा",
+    "form_all_ready": "दर व सवलत व्हॉट्सॲपवर — माहिती तयार आहे.",
+    "sum_edit": "बदल करा"
   },
   "en": {
     "nav_home": "Home",
@@ -761,6 +763,8 @@
     "nh_parent": "One Book Or Many — Delivery Is Our Job",
     "ns_parent": "Where You Live — We'll Arrange It",
     "nh_order": "Books Chosen, One Step Left",
-    "ns_order": "Fill In Your Details And Send The Order To Us"
+    "ns_order": "Fill In Your Details And Send The Order To Us",
+    "form_all_ready": "Rates And Offers On WhatsApp — Your Details Are Ready.",
+    "sum_edit": "Change"
   }
 }

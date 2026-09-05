@@ -4088,6 +4088,8 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   text-wrap:pretty;
 }
 .hd-t,.hd-s,.need-t,.bsec .hd-t,.bsec .hd-s,.sec-title,.sec-sub{text-align:left}
+/* a confirmation screen centres everything, including its heading */
+.hd-c .hd-t,.hd-c .hd-s{text-align:center}
 
 /* ===================================================================
    BOOK VIDEOS — one frame, not three, and both ratios fitting any phone
@@ -4549,3 +4551,50 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 
 /* the widths the new surfaces give a title */
 .peek-name.bt  {--btw:220px;justify-content:center}
+
+/* ===================================================================
+   SUMMARY CARD — what a returning visitor gave us, shown rather than
+   asked for again. The fields are still there; बदल करा opens them.
+   =================================================================== */
+.sumcard{
+  display:flex;align-items:flex-start;gap:calc(var(--u) * .6);
+  margin:calc(var(--u) * .5) 0 calc(var(--u) * .3);
+  padding:calc(var(--u) * .68) calc(var(--u) * .72);
+  background:linear-gradient(160deg,#F2F8F3,#FBFEFC);
+  border:1.5px solid #CFE0D5;border-radius:calc(var(--u) * .9);
+  box-shadow:0 2px 10px rgba(26,77,46,.07);
+}
+.sumcard-lines{
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;
+  font-family:Mukta,system-ui,sans-serif;
+}
+.sum-name{font-size:calc(var(--u) * 1.05);font-weight:800;color:var(--green-dark)}
+.sum-ph{font-size:calc(var(--u) * .95);font-weight:700;color:var(--green);letter-spacing:.3px}
+.sum-place{
+  font-size:calc(var(--u) * .88);color:var(--ink-soft);
+  text-align:justify;text-align-last:left;
+  overflow-wrap:break-word;hyphens:none;-webkit-hyphens:none;
+}
+.sumcard-edit{
+  flex-shrink:0;align-self:center;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .86);font-weight:800;
+  color:var(--gold-dark);background:var(--white);
+  border:1.5px solid var(--gold);border-radius:999px;
+  padding:calc(var(--u) * .3) calc(var(--u) * .62);
+  cursor:pointer;
+  box-shadow:0 1px 5px rgba(184,122,30,.2);
+  animation:sumEditPulse 3.2s ease-in-out infinite;
+  transition:transform .14s ease;
+}
+.sumcard-edit::after{content:" \2192"}
+.sumcard-edit:active{transform:scale(.94)}
+@keyframes sumEditPulse{
+  0%,100%{box-shadow:0 1px 5px rgba(184,122,30,.2)}
+  50%    {box-shadow:0 1px 5px rgba(184,122,30,.2),0 0 0 4px rgba(232,163,61,.16)}
+}
+/* with the summary showing, the fields stand down. The form is cloned
+   from a template, so the class lands on the <form> itself. */
+form.collapsed .f,
+form.collapsed .f-row,
+form.collapsed .cond{display:none}
+@media(prefers-reduced-motion:reduce){.sumcard-edit{animation:none}}
