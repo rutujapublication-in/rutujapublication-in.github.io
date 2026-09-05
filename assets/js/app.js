@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14r',
+  VERSION: 'v14z',
   lang: 'mr',
   text: {},
   locations: null,
@@ -54,6 +54,7 @@ const RUTUJA = {
     PEEK.init(this);
     QA.init(this);
     PATH.init(this);
+    NEEDHD.init(this);
     ENTRY.init(this);
   },
 
@@ -145,10 +146,9 @@ const RUTUJA = {
   },
 
   /* Leaves the entry screen and reveals the website. */
-  /* `to` names where the visitor should land. Buttons labelled See Books
-     were revealing the site and leaving the person on the home page. */
+  /* There is no welcome screen any more — the site is what a visitor
+     lands on. Kept as a helper for anything that still asks to enter. */
   enterSite(to) {
-    document.getElementById('entry').classList.add('hidden');
     document.getElementById('site').classList.remove('hidden');
     document.body.style.overflow = '';
     if (to) this.go(to); else window.scrollTo(0, 0);
@@ -410,7 +410,8 @@ const RUTUJA = {
     const p = this.page || 'home';
     if (p === 'book' && BOOKS && BOOKS.current) {
       const b = (this.content.books || []).find(x => x.book_id === BOOKS.current);
-      if (b) { key = 'wa_book'; extra = this.lang === 'mr' ? b.name_mr : b.name_en; }
+      /* the message itself is always Marathi, so the book name in it is too */
+      if (b) { key = 'wa_book'; extra = b.name_mr || b.name_en; }
     } else if (p === 'offers') key = 'wa_school';
     else if (p === 'qa')      key = 'wa_qa';
     const link = this.wa(key, extra, 'mr');
@@ -492,7 +493,7 @@ console.log('%cRutuja site ' + RUTUJA.VERSION + ' loaded', 'color:#1A4D2E;font-w
 document.addEventListener('DOMContentLoaded', () => {
   RUTUJA.init().catch(e => {
     console.error('Boot failed', e);
-    document.getElementById('entry')?.classList.add('hidden');
+
     document.getElementById('site')?.classList.remove('hidden');
   });
 });
@@ -512,17 +513,6 @@ const ENTRY = {
   init(app) {
     this.app = app;
 
-    document.querySelectorAll('.pill').forEach(b => {
-      b.addEventListener('click', () => app.setLang(b.dataset.lang));
-    });
-
-    document.getElementById('openForm').addEventListener('click', () => this.openSheet());
-    /* The welcome screen leads to the home page, not straight to the book
-       list. Home carries the story band, the standards, the offers and the
-       videos; jumping past all of it loses the shop window. */
-    document.getElementById('welcomeSkip').addEventListener('click', () => app.enterSite());
-    document.getElementById('sheetX').addEventListener('click', () => this.closeSheet());
-    document.getElementById('doneEnter').addEventListener('click', () => app.enterSite('books'));
     document.getElementById('modalX').addEventListener('click', () => this.closeModal());
 
     // Anything with data-offer reopens the form, framed for that audience.
@@ -535,8 +525,10 @@ const ENTRY = {
 
     app.setLang(localStorage.getItem('rutuja_lang') || 'mr', true);
 
-    if (this.done()) app.enterSite();
-    else document.body.style.overflow = 'hidden';
+    /* No welcome screen and no gate — every visitor lands on the site.
+       This previously hid #site and locked scrolling until the gate was
+       passed, which with the gate removed would leave a blank page. */
+    app.enterSite();
 
   },
 
@@ -551,24 +543,6 @@ const ENTRY = {
   },
 
   /* ---- SHEET (welcome screen) ---- */
-  openSheet() {
-    this.app.pushWin(() => this.closeSheet(true));
-    this.where = 'sheet';
-    this.offerKey = '';
-    document.getElementById('sheetBody').classList.remove('hidden');
-    document.getElementById('sheetDone').classList.add('hidden');
-    document.getElementById('sheet').classList.remove('hidden');
-    FORM.moveTo('formSlot');
-    try { PATH.draw('sheetBody', 'sheetPath', 'green'); } catch (e) { console.error('path', e); }
-    FORM.reset();
-    FORM.repaint();
-  },
-
-  closeSheet(fromBack) {
-    document.getElementById('sheet').classList.add('hidden');
-    if (!fromBack) this.app.popWin();
-  },
-
   /* ---- MODAL (inside the site) ---- */
   openModal(key) {
     const t = k => this.app.t(k);
@@ -624,6 +598,7 @@ const ENTRY = {
     const ptone = { school: 'green', bulk: 'gold', retail: 'blue', parent: 'violet' }[key] || 'gold';
     const pk = ['school', 'bulk', 'retail', 'parent'].indexOf(key) >= 0 ? key : '';
     const pswap = pk ? { st_m_q: 'st_m_q_' + pk, st_m_wa: 'st_m_wa_' + pk } : null;
+    try { NEEDHD.set(key); } catch (e) { console.error('needhd', e); }
     try { PATH.draw('modalBody', 'modalPath', ptone, pswap); } catch (e) { console.error('path', e); }
   },
 
@@ -655,13 +630,12 @@ const ENTRY = {
 
   onSubmitted(regId) {
     const link = this.regMessage(regId);
-    const modal = this.where === 'modal';
 
-    document.getElementById(modal ? 'regId2' : 'regId').textContent = regId;
-    document.getElementById(modal ? 'modalBody' : 'sheetBody').classList.add('hidden');
-    document.getElementById(modal ? 'modalDone' : 'sheetDone').classList.remove('hidden');
+    document.getElementById('regId2').textContent = regId;
+    document.getElementById('modalBody').classList.add('hidden');
+    document.getElementById('modalDone').classList.remove('hidden');
 
-    const btn = document.getElementById(modal ? 'modalWaBtn2' : 'sheetWaBtn');
+    const btn = document.getElementById('modalWaBtn2');
     if (btn) {
       if (link) { btn.href = link; btn.classList.remove('hidden'); }
       else { btn.classList.add('hidden'); }
@@ -673,8 +647,7 @@ const ENTRY = {
 
   /* The skip link inside the form. */
   onSkipped() {
-    if (this.where === 'modal') this.closeModal();
-    else this.app.enterSite();
+    this.closeModal();
   }
 };
 
@@ -747,7 +720,24 @@ const FORM = {
     const slot = document.getElementById(slotId);
     if (slot && this.node.parentElement !== slot) slot.appendChild(this.node);
     // The skip link says different things depending on where the form sits.
-    this.el.skip.dataset.t = (slotId === 'formSlot') ? 'welcome_skip' : 'gate_skip';
+    this.el.skip.dataset.t = 'gate_skip';
+  },
+
+  /* mark any prefilled field the visitor edits, so a change is visible
+     before they send */
+  markEdits() {
+    this.node.querySelectorAll('input, select').forEach(f => {
+      /* the baseline is reset every time a window opens; the listener is
+         bound only once, or each open would add another */
+      f.dataset.filled = f.value || '';
+      f.classList.remove('edited');
+      if (f.dataset.editBound) return;
+      f.dataset.editBound = '1';
+      const flag = () => f.classList.toggle('edited',
+        !!f.dataset.filled && f.value !== f.dataset.filled);
+      f.addEventListener('input', flag);
+      f.addEventListener('change', flag);
+    });
   },
 
   reset() {
@@ -755,21 +745,31 @@ const FORM = {
     this.el.submit.disabled = false;
     this.node.querySelectorAll('.err').forEach(e => e.textContent = '');
     this.node.querySelectorAll('.bad').forEach(e => e.classList.remove('bad'));
-    this.prefill('gatePrefill');
+    this.prefill('prefillNote', true);
+    this.markEdits();
   },
 
   /* Whatever the visitor has told us anywhere is already here.
      One routine serves the welcome form, the offer forms and the
      order form, so no field is ever typed twice. */
-  prefill(note) {
+  /* One shared form travels between windows, so a half-typed value from
+     the last window can survive into the next. `force` rewrites every
+     field from what was saved, so each window opens on the same truth. */
+  prefill(note, force) {
     const b = BUYER.get();
-    const el = document.getElementById(note || 'gatePrefill');
-    if (!b || !b.name) { if (el) el.classList.add('hidden'); return false; }
+    const el = document.getElementById(note || 'prefillNote');
+    const nw = document.getElementById('flowNoteNew');
+    const bk = document.getElementById('flowNoteBack');
+    const seen = !!(b && b.name);
+    /* the closing note reads differently for someone who has been here */
+    if (nw) nw.classList.toggle('hidden', seen);
+    if (bk) bk.classList.toggle('hidden', !seen);
+    if (!seen) { if (el) el.classList.add('hidden'); return false; }
 
-    if (!this.el.name.value) this.el.name.value = b.name || '';
-    if (!this.el.phone.value) this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
-    if (!this.el.cat.value) this.el.cat.value = b.category || '';
-    if (!this.el.state.value && b.state) {
+    if (force || !this.el.name.value) this.el.name.value = b.name || '';
+    if (force || !this.el.phone.value) this.el.phone.value = (b.whatsapp || '').replace(/^91/, '');
+    if (force || !this.el.cat.value) this.el.cat.value = b.category || '';
+    if ((force || !this.el.state.value) && b.state) {
       this.el.state.value = b.state;
       this.onState();
       if (b.state === 'Maharashtra') {
@@ -780,8 +780,8 @@ const FORM = {
         if (this.el.talT) this.el.talT.value = b.taluka || '';
       }
     }
-    if (!this.el.village.value) this.el.village.value = b.village_city || '';
-    if (!this.el.pin.value) this.el.pin.value = b.pin || '';
+    if (force || !this.el.village.value) this.el.village.value = b.village_city || '';
+    if (force || !this.el.pin.value) this.el.pin.value = b.pin || '';
     if (el) el.classList.remove('hidden');
     return true;
   },
@@ -988,6 +988,13 @@ const BOOKS = {
     document.addEventListener('click', e => {
       const b = e.target.closest('.vcard-btn[data-book]');
       if (b) this.openBook(b.dataset.book);
+    });
+
+    /* the same button on a book's own page opens the order window with
+       that book already picked */
+    document.addEventListener('click', e => {
+      const o = e.target.closest('.vcard-btn[data-order-book]');
+      if (o) ORDER.open([{ id: o.dataset.orderBook, qty: 1 }]);
     });
 
     // A standard card on the home page pre-filters the books page.
@@ -1297,7 +1304,7 @@ const BOOKS = {
           </div>
         </div>
         <div>
-          <h1 class="bd-title"><i class="hd-mark" aria-hidden="true"></i><span>${mr ? b.name_mr : b.name_en}</span></h1>
+          ${(() => { const T = MEDIA.bookTitle(b, mr); return `<h1 class="bd-title bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></h1>`; })()}
           ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
           <p class="bd-sub">${this.subs(b).join(' · ')} &nbsp;|&nbsp; ${this.medLabel(b)}</p>
           <div id="bdPath" class="wpath"></div>
@@ -1540,6 +1547,27 @@ const MEDIA = {
   /* The same card is used in the carousel, on the Videos page and on a
      book page, so a visitor always sees the video presented identically.
      Order below the video: book name, then tagline, then the description. */
+  /* A book title, everywhere it appears. The name carries the weight;
+     the bracketed qualifier follows it lighter and smaller, on the same
+     line. --tw is the whole thing measured in units of font-size, so
+     CSS can pick the largest size that still holds one row. */
+  bookTitle(b, mr) {
+    const t = (mr ? b.name_mr : b.name_en) || '';
+    const adv = mr ? 0.394 : 0.371;
+    const i = t.indexOf('(');
+    const esc = x => x.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    let inner, w;
+    if (i > 0) {
+      const a = t.slice(0, i).trim(), br = t.slice(i);
+      inner = `<b>${esc(a)}</b><i class="bt-q">${esc(br)}</i>`;
+      w = a.length * adv + br.length * adv * 0.72 + adv;
+    } else {
+      inner = `<b>${esc(t)}</b>`;
+      w = t.length * adv;
+    }
+    return { html: inner, w: w.toFixed(2), c: b.title_colour || '' };
+  },
+
   /* How wide this title wants to be, in units of font-size. CSS divides
      the space available by this, so each title lands at the largest size
      that fits on one line rather than every title sharing the smallest. */
@@ -1548,7 +1576,12 @@ const MEDIA = {
     return (n * (mr ? 0.52 : 0.50)).toFixed(1);
   },
 
-  card(v, mr, eager, idx) {
+  /* `own` is true when the card sits on the book's own page. There the
+     browse button would only re-open the page you are already on — a
+     rebuild, a scroll to top and every animation replayed, for nothing.
+     So it becomes the order action instead, which is what someone who
+     has just watched the video actually wants next. */
+  card(v, mr, eager, idx, own) {
     const t = k => this.app.t(k);
     const o = v.orientation === 'horizontal' ? 'horizontal' : 'vertical';
     const book = (this.app.content.books || []).find(b => b.book_id === v.book_id);
@@ -1568,7 +1601,7 @@ const MEDIA = {
         <h3 class="vcard-title" style="--chw:${MEDIA.titleWidth(mr ? v.title_mr : v.title_en, mr)}"><i class="vcard-mark" aria-hidden="true"></i><span>${mr ? v.title_mr : v.title_en}</span></h3>
         <span class="vcard-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
         <p class="vcard-cap">${mr ? v.caption_mr : v.caption_en}</p>
-        ${book ? `<button class="vcard-btn" data-book="${book.book_id}">${t('video_see_book')} &rarr;</button>` : ''}
+        ${book ? `<button class="vcard-btn" ${own ? `data-order-book="${book.book_id}"` : `data-book="${book.book_id}"`}>${t(own ? 'book_order_now' : 'video_see_book')} &rarr;</button>` : ''}
       </div>
     </article>`;
   },
@@ -1626,7 +1659,7 @@ const MEDIA = {
       <div class="hd hd-sm bsec-hd bsec-hd-solo">
         <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${this.app.t('book_videos')}</span></h3>
       </div>
-      <div class="vid-list">${vids.map((v, i) => this.card(v, mr, false, i)).join('')}</div>
+      <div class="vid-list">${vids.map((v, i) => this.card(v, mr, false, i, true)).join('')}</div>
     </section>`;
   },
 
@@ -1807,7 +1840,7 @@ const CART = {
         <div class="cart-row">
           <div class="cart-thumb">${this.app.img('books', l.book.cover_image, '', this.app.lang === 'mr' ? l.book.name_mr : l.book.name_en)}</div>
           <div class="cart-info">
-            <div class="cart-name">${mr ? l.book.name_mr : l.book.name_en}</div>
+            ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="cart-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
             <div class="cart-meta">&#8377;${l.each} ${t('price_each')}
               ${l.pct ? `<span class="cart-pct">${l.pct}% ${t('cart_saving')}</span>` : ''}</div>
           </div>
@@ -1975,7 +2008,9 @@ const ORDERFORM = {
     this.el.submit.classList.add('btn-gold');
     /* the second button belongs here too — it goes back to the books */
     this.el.skip.classList.remove('hidden');
-    this.el.skip.textContent = this.app.t('see_books_again');
+    /* the label comes from the form template — gate_skip, "आधी पुस्तके पाहा".
+       It used to be overwritten here with "पुन्हा", which reads wrongly
+       before an order has been placed. */
     this.el.skip.onclick = () => { ORDER.close(); this.app.go('books'); };
 
     this.node.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
@@ -2006,7 +2041,7 @@ const ORDERFORM = {
     this.el.phone.placeholder = this.app.t('gate_whatsapp_ph');
   },
 
-  prefill() { FORM.prefill.call(this, 'orderPrefill'); },
+  prefill() { FORM.prefill.call(this, 'prefillNote', true); },
 
   validate() { return FORM.validate.call(this); },
 
@@ -2258,7 +2293,7 @@ const ORDER = {
         return `<div class="opick-row bk-${(i % 5) + 1}${q ? ' on' : ''}">
           <div class="opick-cover">${this.app.img('books', b.cover_image, '', this.app.lang === 'mr' ? b.name_mr : b.name_en)}</div>
           <div class="opick-main">
-            <div class="opick-name">${mr ? b.name_mr : b.name_en}</div>
+            ${(() => { const T = MEDIA.bookTitle(b, mr); return `<div class="opick-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
             <div class="opick-money">
               <span class="om-mrp"><em>${t('mrp_short')}</em><s>&#8377;${b.mrp}</s></span>
               <span class="om-arrow">&rarr;</span>
@@ -2282,6 +2317,7 @@ const ORDER = {
       }).join('')}</div>`;
 
     const T = this.totals();
+    try { NEEDHD.set('order'); } catch (e) { console.error('needhd', e); }
     try { PATH.draw('orderBody', 'orderPath', 'gold'); } catch (e) { console.error('path', e); }
     const L = this.lines();
     const mrpTotal = L.reduce((a, l) => a + l.book.mrp * l.qty, 0);
@@ -2290,7 +2326,7 @@ const ORDER = {
     document.getElementById('orderSum').innerHTML = T.n ? `
       <div class="osum-h">${t('order_lines')}</div>
       ${L.map(l => `<div class="oline">
-        <div class="oline-name">${mr ? l.book.name_mr : l.book.name_en}</div>
+        ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
         <div class="oline-facts">
           ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
           <span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>
@@ -2614,6 +2650,28 @@ const STORY = {
    updates the route with no further work. A section with no data-step
    simply does not appear, rather than showing something stale.
    =================================================================== */
+
+/* The form section speaks to whoever opened the window. Each title is
+   sized to the largest that still holds one row, the same way a video
+   title is, so nothing has to be shortened to fit. */
+const NEEDHD = {
+  app: null,
+  init(app) { this.app = app; },
+
+  set(key) {
+    const k = ['school', 'bulk', 'retail', 'parent'].indexOf(key) >= 0 ? key : 'order';
+    const t = this.app.t('nh_' + k);
+    const sub = this.app.t('ns_' + k);
+    const mr = this.app.lang === 'mr';
+    document.querySelectorAll('.need-t').forEach(h => {
+      const sp = h.querySelector('span');
+      if (sp) sp.textContent = t;
+      h.style.setProperty('--chw', (t.length * (mr ? 0.394 : 0.371)).toFixed(2));
+    });
+    document.querySelectorAll('.need-s').forEach(p => { p.textContent = sub; });
+  }
+};
+
 
 const PATH = {
   app: null,

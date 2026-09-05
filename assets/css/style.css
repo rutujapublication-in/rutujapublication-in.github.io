@@ -249,17 +249,8 @@ a{color:inherit;text-decoration:none}
   max-width:1240px;width:100%;margin:0 auto;padding:20px 26px;
 }
 .w-centre{text-align:center}
-.w-logo{
-  width:92px;height:92px;margin:0 auto 20px;border-radius:50%;background:var(--gold);
-  color:var(--green-dark);font-family:'Baloo 2',sans-serif;font-size:46px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 26px rgba(0,0,0,.26);
-}
 .w-name-mr{font-size:44px;color:var(--white);line-height:1.2}
 .w-name-en{font-family:'Baloo 2',sans-serif;font-size:27px;font-weight:500;color:var(--gold);margin-top:2px}
-.w-tag{font-size:14.5px;color:#A9C4B2;margin-top:14px;letter-spacing:.3px}
-
-.w-side{color:#C8DACE}
 .w-side-h{font-size:16px;color:var(--gold);margin-bottom:10px}
 .w-side-p{font-size:14.5px;line-height:1.75}
 .w-quote{
@@ -269,8 +260,6 @@ a{color:inherit;text-decoration:none}
 .w-list{list-style:none;margin-top:14px;font-size:14px}
 .w-list li{padding:7px 0;border-top:1px solid rgba(255,255,255,.14)}
 .w-list strong{color:var(--gold);font-size:16px;margin-right:6px}
-
-.arrow-up{font-size:23px;line-height:1;animation:rise 1.7s ease-in-out infinite}
 @keyframes rise{0%,100%{transform:translateY(3px);opacity:.6}50%{transform:translateY(-3px);opacity:1}}
 @media(prefers-reduced-motion:reduce){.arrow-up{animation:none}}
 
@@ -278,11 +267,6 @@ a{color:inherit;text-decoration:none}
 .sheet{
   position:fixed;inset:0;z-index:210;background:rgba(9,32,18,.66);
   display:flex;align-items:flex-end;justify-content:center;overflow-y:auto;
-}
-.sheet-card{
-  background:var(--white);width:100%;max-width:600px;border-radius:20px 20px 0 0;
-  padding:68px 28px 36px;position:relative;margin-top:40px;
-  animation:slideup .3s ease;
 }
 @keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){.sheet-card{animation:none}}
@@ -415,7 +399,6 @@ a{color:inherit;text-decoration:none}
 
 /* Version marker — confirms which build is live */
 .ver{opacity:.5;font-size:12px}
-.w-ver{margin-top:10px;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
 
 /* ---- OFFER MODAL (opens from inside the site) ---- */
 .modal{
@@ -434,26 +417,8 @@ a{color:inherit;text-decoration:none}
 
 /* ---- WELCOME FOOTER: two buttons ---- */
 .welcome-foot{padding:6px 20px 40px;text-align:center}
-.arrow-up{display:block;font-size:26px;color:var(--gold);margin-bottom:8px;
-  animation:rise 1.7s ease-in-out infinite}
 @keyframes rise{0%,100%{transform:translateY(4px);opacity:.55}50%{transform:translateY(-4px);opacity:1}}
 @media(prefers-reduced-motion:reduce){.arrow-up{animation:none}}
-
-.w-actions{display:inline-flex;gap:14px;flex-wrap:wrap;justify-content:center}
-.w-btn{border-radius:13px;padding:14px 30px 16px;min-width:210px;
-  display:flex;flex-direction:column;align-items:center;gap:2px;transition:.15s}
-.w-btn-t{font-family:'Baloo 2',sans-serif;font-size:17.5px;font-weight:600}
-.w-btn-s{font-size:12.5px;opacity:.8}
-.w-btn:active{transform:scale(.98)}
-.w-btn-gold{background:var(--gold);color:#3F2A05;box-shadow:0 6px 22px rgba(0,0,0,.26)}
-.w-btn-gold:hover{background:#F2B255;transform:translateY(-3px)}
-.w-btn-line{background:rgba(255,255,255,.07);color:#E4EFE8;border:1.5px solid rgba(255,255,255,.4)}
-.w-btn-line:hover{background:rgba(255,255,255,.16);transform:translateY(-3px)}
-
-/* ---- LANGUAGE CONTROLS ---- */
-
-.lang-pills{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);
-  padding:5px 6px;border-radius:11px}
 
 /* ---- REGISTER AS A NAV ITEM ---- */
 
@@ -475,8 +440,6 @@ a{color:inherit;text-decoration:none}
 /* ---- WELCOME FOOTER: language, then the two options ---- */
 .welcome-foot{padding:4px 20px 40px;text-align:center}
 .foot-lang{display:flex;flex-direction:column;align-items:center;gap:7px;margin-bottom:20px}
-.lang-lbl{font-size:12px;color:#9FBCA9;letter-spacing:.4px}
-.lang-pills{display:inline-flex;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:11px}
 .w-left{text-align:left}
 
 /* ===================================================================
@@ -2144,11 +2107,6 @@ img.brand-logo{
   box-shadow:0 4px 18px rgba(18,56,33,.14);
 }
 @media(max-width:479px){.w-logo-img{width:84px;height:84px;padding:6px}}
-img.w-logo{
-  width:132px;height:132px;object-fit:contain;background:#fff;border-radius:22px;
-  padding:10px;margin:0 auto 13px;display:block;
-  box-shadow:0 8px 26px rgba(18,56,33,.15);
-}
 @media(max-width:479px){img.w-logo{width:108px;height:108px;padding:8px;margin-bottom:10px}}
 @media(max-height:520px) and (orientation:landscape){img.w-logo{width:96px;height:96px;padding:7px}}
 
@@ -2989,8 +2947,15 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 .qa-gh{display:flex;align-items:center;gap:9px;margin:0 2px 10px}
 .qa-gt{
   font-family:Mukta,system-ui,sans-serif;font-size:14.5px;font-weight:700;
-  color:var(--green-dark);line-height:1.25;
+  line-height:1.25;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background-image:linear-gradient(100deg,
+    var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
+    var(--green-dark) 62%,var(--green-dark) 100%);
+  background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdFlash 2.6s linear .12s infinite;
 }
 /* a group is marked by a stack of three bars that rise in turn */
 .qa-gmark{
@@ -3210,7 +3175,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   background-size:260% 100%;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 7s ease-in-out infinite;
+  animation:hdFlash 2.6s linear infinite;
 }
 
 /* 3 — the subheading draws its own rule from the left */
@@ -3232,6 +3197,13 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   50%    {box-shadow:0 0 0 5px rgba(232,163,61,0);transform:rotate(45deg) scale(1.14)}
 }
 @keyframes hdSheen{ 0%{background-position:100% 0} 55%,100%{background-position:0 0} }
+/* the quick left-to-right flash, moved here from the path strip's border
+   because it reads better on a heading than on a frame */
+@keyframes hdFlash{
+  0%     {background-position:135% 0}
+  46%    {background-position:-35% 0}
+  46.01%,100%{background-position:135% 0}
+}
 @keyframes hdRule{ 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(1.7)} }
 
 /* ---------- the language switch inside a window ---------- */
@@ -3276,6 +3248,12 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
    at the moment that decides whether the message reaches us at all. */
 .flow-note > span:last-child{
   min-width:0;white-space:pre-line;
+  /* set like the book description: justified between the margins, an
+     even right edge, breaking whole words only. Nothing is cut. */
+  text-align:justify;text-align-last:left;
+  overflow-wrap:break-word;
+  hyphens:none;-webkit-hyphens:none;
+  text-wrap:pretty;
 }
 .flow-note > span:last-child::first-line{
   font-weight:700;font-size:13.2px;color:#5A3B06;letter-spacing:.1px;
@@ -3412,9 +3390,12 @@ html[lang="mr"] .book-t{
    =================================================================== */
 
 /* a note that carries one line only, for mid-window guidance */
-/* the pair above the form carries complete sentences: they wrap to a
-   second line rather than lose a clause. Ellipsis would cut meaning. */
+/* Complete sentences, set the way the book description is: justified
+   between the margins, an even right edge, breaking whole words only.
+   Nothing is cut and nothing is shrunk. */
 .flow-note-tight > span:last-child{white-space:normal;overflow:visible}
+/* the first sentence carries the weight, the second explains */
+.flow-note-ok > span:last-child::first-line{color:#20492E}
 .flow-note-tight{margin:10px 0 12px}
 /* the two notes read as one block: what to do, then why */
 .flow-note-tight + .flow-note-ok{margin-top:-8px;border-top-left-radius:4px;border-top-right-radius:4px}
@@ -3548,9 +3529,11 @@ html[lang="mr"] .book-t{
 /* C13/C14 — the title: bold, one line, its own pointer and its own effect */
 .need-t{
   display:flex;align-items:center;gap:9px;
-  margin:0 0 calc(var(--u) * .9);padding:0 0 9px;position:relative;
+  margin:0 0 5px;padding:0;position:relative;
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
-  font-size:calc(var(--u) * 1.26);line-height:1.3;
+  /* the largest size that still holds one row, ceiling 17.5px */
+  font-size:clamp(14px, calc((100vw - 76px) / var(--chw, 20)), 17.5px);
+  line-height:1.3;
 }
 .need-t > span{
   min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -3563,7 +3546,7 @@ html[lang="mr"] .book-t{
   background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 4.6s ease-in-out infinite;
+  animation:hdFlash 2.6s linear .18s infinite;
 }
 /* C12 — the pointer sits before the first letter and steps forward */
 .need-mark{
@@ -3578,7 +3561,7 @@ html[lang="mr"] .book-t{
   45%    {transform:translateX(5px);opacity:1}
 }
 /* the rule under the title, sweeping rather than static */
-.need-t::after{
+.need-s::after{
   content:"";position:absolute;left:0;bottom:0;height:2.5px;
   width:100%;max-width:150px;border-radius:2px;
   background:linear-gradient(90deg,var(--gold),var(--green),var(--gold));
@@ -3609,7 +3592,7 @@ html[lang="mr"] .book-t{
 .osum-save b{animation:totalPulse 3.4s ease-in-out infinite;display:inline-block}
 
 @media(prefers-reduced-motion:reduce){
-  .need-box,.need-mark,.need-t > span,.need-t::after,
+  .need-box,.need-mark,.need-t > span,.need-s::after,
   .opick-name,.opick-cover::after,.oline-amt b,
   .osum-total b,.osum-save b{animation:none}
   .need-t > span{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
@@ -3630,7 +3613,7 @@ html[lang="mr"] .book-t{
   background-size:260% 100%;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 7s ease-in-out infinite;
+  animation:hdFlash 2.6s linear .36s infinite;
 }
 #orderSum .osum-h::before{-webkit-text-fill-color:initial}
 
@@ -3951,7 +3934,7 @@ html[lang="mr"] .book-t{
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 6.5s ease-in-out infinite;
+  animation:hdFlash 2.6s linear infinite;
 }
 .bd .bd-subtitle{
   position:relative;padding-bottom:8px;color:var(--gold-dark);font-weight:600;
@@ -4144,7 +4127,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 6.5s ease-in-out infinite;
+  animation:hdFlash 2.6s linear .24s infinite;
 }
 
 /* book page only: sizes from the scale, and the button spans the card */
@@ -4212,7 +4195,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 6.5s ease-in-out infinite;
+  animation:hdFlash 2.6s linear .24s infinite;
 }
 .vcard-mark{
   flex-shrink:0;width:.62em;height:.62em;border-radius:2px;
@@ -4293,10 +4276,20 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 }
 .rate + .rate{margin-top:calc(var(--u) * .7)}
 .rate-cap{
+  position:relative;overflow:hidden;
   background:var(--green);color:#fff;
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
   font-size:calc(var(--u) * .95);
   padding:calc(var(--u) * .55) calc(var(--u) * .62);
+}
+/* white on green cannot carry a clipped gradient, so the light crosses
+   the band instead of the letters */
+.rate-cap::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,
+    transparent 0%,transparent 36%,rgba(255,255,255,.28) 50%,transparent 64%,transparent 100%);
+  background-size:280% 100%;background-repeat:no-repeat;
+  animation:hdFlash 2.6s linear .3s infinite;
 }
 .rate-grid{
   display:grid;grid-template-columns:1fr auto auto;
@@ -4349,7 +4342,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   background:linear-gradient(100deg,
     transparent 0%, transparent 32%, var(--pc) 48%, var(--pc) 52%, transparent 68%, transparent 100%);
   background-size:260% 100%;background-repeat:no-repeat;
-  animation:wpSweep 2.6s linear infinite;
+  animation:wpSweep 7s ease-in-out infinite;
 }
 @keyframes wpSweep{0%{background-position:130% 0}100%{background-position:-30% 0}}
 
@@ -4399,7 +4392,10 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 .wp-terra {--pc:#C0603F;--pa:#8A3A1E;--ptx:#5E2712;--pbg1:#FDF4F1;--pbg2:#FFFBFA}
 
 @media(prefers-reduced-motion:reduce){
-  .wpath,.wpath::before,.wp-s,.wp-a{animation:none}
+  .wpath,.wpath::before,.wp-s,.wp-a,
+  .hd-t > span,.need-t > span,#orderSum .osum-h,
+  .bd .bd-title,.vcard-title > span,.qa-gt,.rate-cap::after{animation:none}
+  .qa-gt{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
   .wpath::before{opacity:.6}
 }
 
@@ -4436,3 +4432,85 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   50%    {filter:drop-shadow(0 0 7px rgba(47,122,68,1))}
 }
 @media(prefers-reduced-motion:reduce){.offer-mark{animation:none}}
+
+/* a prefilled field the visitor has changed, so an edit is visible
+   before they send */
+.f input.edited,.f select.edited{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(232,163,61,.14);
+  background:#FFFDF6;
+}
+.f:has(.edited) label{color:var(--gold-dark)}
+.f:has(.edited) label::before{background:linear-gradient(135deg,var(--gold),var(--gold-dark))}
+
+/* the form section's heading — title and subtitle, one row each */
+.need-hd{margin:0 0 calc(var(--u) * .8)}
+.need-s{
+  position:relative;padding:0 0 9px;
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:calc(var(--u) * .95);line-height:1.35;
+  color:var(--gold-dark);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ===================================================================
+   BOOK TITLES — one line everywhere, the name bold, the qualifier
+   lighter beside it, each book in its own colour taken from its cover
+   =================================================================== */
+.bt{
+  display:flex;align-items:baseline;gap:.34em;
+  min-width:0;color:var(--bc, var(--green-dark));
+  /* --tw is the whole title measured in units of font-size, so the
+     largest size that still holds one row can be picked directly */
+  font-size:clamp(12px, calc(var(--btw, 252px) / var(--tw, 20)), 24px);
+  line-height:1.28;
+}
+.bt > span{
+  min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-family:Mukta,system-ui,sans-serif;
+}
+
+/* the bracketed part is a description, not the name */
+.bt .bt-q{
+  font-style:normal;font-weight:500;font-size:.72em;opacity:.78;
+  margin-left:.22em;
+}
+/* an open book, glowing rather than flashing, so a book title is never
+   mistaken for a section heading */
+.bt-mark{
+  flex-shrink:0;align-self:center;
+  width:.62em;height:.46em;border-radius:1px;
+  background:
+    linear-gradient(180deg, currentColor, currentColor) center/1.5px 100% no-repeat,
+    linear-gradient(180deg, currentColor, currentColor) left/45% 1.5px no-repeat,
+    linear-gradient(180deg, currentColor, currentColor) right/45% 1.5px no-repeat;
+  border:1.5px solid currentColor;border-top-width:0;border-bottom-width:0;
+  animation:btGlow 2.8s ease-in-out infinite;
+}
+@keyframes btGlow{
+  0%,100%{filter:drop-shadow(0 0 0 currentColor);opacity:.75}
+  50%    {filter:drop-shadow(0 0 5px currentColor);opacity:1}
+}
+/* the same flash the window titles carry */
+.bt b{
+  font-weight:800;letter-spacing:.1px;
+  background-image:linear-gradient(100deg,
+    var(--bc, var(--green-dark)) 0%, var(--bc, var(--green-dark)) 38%,
+    var(--gold-dark) 50%,
+    var(--bc, var(--green-dark)) 62%, var(--bc, var(--green-dark)) 100%);
+  background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdFlash 2.6s linear infinite;
+}
+
+/* the width each surface gives a title */
+.bd-title.bt   {--btw:252px}
+.opick-name.bt {--btw:256px}
+.oline-name.bt {--btw:200px}
+.cart-name.bt  {--btw:210px}
+
+@media(prefers-reduced-motion:reduce){
+  .bt-mark,.bt b{animation:none}
+  .bt b{-webkit-text-fill-color:var(--bc, var(--green-dark));color:var(--bc, var(--green-dark))}
+}

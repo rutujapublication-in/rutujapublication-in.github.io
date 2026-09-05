@@ -10,99 +10,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=14r">
+<link rel="stylesheet" href="assets/css/style.css?v=14z">
 </head>
 <body>
 
 <!-- ================= SCREEN 1 — WELCOME ================= -->
-<div id="entry" class="entry">
-  <div class="welcome">
-
-    <div class="welcome-grid">
-
-      <aside class="w-side w-left">
-        <img src="assets/img/rutuja-logo.png" alt="ऋतुजा पब्लिकेशन" class="w-logo-img" id="phPubLogo">
-        <h3 class="w-side-h" data-t="entry_pub_head"></h3>
-        <p class="w-side-p" data-t="entry_pub_text"></p>
-        <ul class="w-list">
-          <li><strong>1 – 5</strong> <span data-t="books_standard"></span></li>
-          <li>मराठी · Semi-English · English</li>
-        </ul>
-      </aside>
-
-      <div class="w-centre">
-        <img src="assets/img/rutuja-logo.png" alt="ऋतुजा पब्लिकेशन" class="w-logo">
-        <h1 class="w-name-mr">ऋतुजा पब्लिकेशन</h1>
-        <p class="w-name-en">Rutuja Publication</p>
-        <p class="w-tag" data-t="welcome_tag"></p>
-        <p class="w-ver">v14r</p>
-      </div>
-
-      <aside class="w-side w-right">
-        <div class="ph ph-face" id="phAuthor">
-          <span class="ph-mark">&#128100;</span>
-          <span class="ph-cap">photo</span>
-        </div>
-        <h3 class="w-side-h" data-t="entry_author_head"></h3>
-        <blockquote class="w-quote" data-t="entry_author_quote"></blockquote>
-        <p class="w-side-p" data-t="entry_author_text"></p>
-      </aside>
-
-    </div>
-
-    <div class="welcome-foot">
-      <div class="foot-lang">
-        <span class="lang-lbl">भाषा / Language</span>
-        <div class="lang-pills">
-          <button class="pill" data-lang="mr">मराठी</button>
-          <button class="pill" data-lang="en">English</button>
-        </div>
-      </div>
-
-      <span class="arrow-up">&#8593;</span>
-
-      <div class="w-actions">
-        <button class="w-btn w-btn-gold" id="openForm">
-          <span class="w-btn-t" data-t="welcome_cta"></span>
-          <span class="w-btn-s" data-t="welcome_cta_s"></span>
-        </button>
-        <button class="w-btn w-btn-line" id="welcomeSkip">
-          <span class="w-btn-t" data-t="welcome_browse"></span>
-          <span class="w-btn-s" data-t="welcome_browse_s"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Form sheet, slides up over the welcome screen -->
-  <div class="sheet hidden" id="sheet">
-    <div class="sheet-card">
-      <button class="gate-x" id="sheetX" aria-label="Close">&times;</button>
-    <button class="win-lang" id="sheetLang" data-winlang></button>
-      <div id="sheetBody">
-        <div class="hd hd-win"><h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span id="formHead"></span></h2><p class="hd-s" data-t="gate_subtitle"></p></div>
-        <div id="sheetPath" class="wpath"></div>
-        <section class="need-box" data-step="st_w_form">
-          <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
-          <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
-          <p class="flow-note flow-note-ok flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_why_note"></span></p>
-          <div id="formSlot"></div>
-        </section>
-      </div>
-      <div class="sheet-done hidden" id="sheetDone">
-        <div class="gate-tick">&#10003;</div>
-        <div class="hd hd-c">
-          <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="gate_success"></span></h2>
-          <p class="hd-s" data-t="gate_done_sub"></p>
-        </div>
-        <p class="gate-done-id"><span data-t="gate_reg_id"></span>: <strong id="regId"></strong></p>
-        <a class="btn btn-gold done-wa" id="sheetWaBtn" target="_blank" rel="noopener" data-t="gate_wa_cta"></a>
-        <button class="btn btn-line" id="doneEnter" data-t="nav_books"></button>
-        <p class="flow-note flow-note-wa"><span class="flow-ico" aria-hidden="true"></span><span data-t="wa_note"></span></p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ================= THE FORM ================= -->
 <template id="formTemplate">
@@ -142,10 +54,12 @@
     <div class="f"><label data-t="gate_pin"></label>
       <input type="text" id="gPin" inputmode="numeric" maxlength="6"><span class="err" id="ePin"></span></div>
 
+    <p class="flow-note flow-note-ok flow-note-tight hidden" id="prefillNote"><span class="flow-ico" aria-hidden="true"></span><span data-t="prefill_check"></span></p>
     <div class="gate-acts" data-step="st_o_send">
       <button type="submit" class="btn btn-gold gate-submit" id="gateSubmit" data-t="gate_submit"></button>
       <button type="button" class="gate-skip" id="gateSkip" data-t="gate_skip"></button>
-      <p class="flow-note"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_note"></span></p>
+      <p class="flow-note" id="flowNoteNew"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_note"></span></p>
+      <p class="flow-note hidden" id="flowNoteBack"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_note_back"></span></p>
     </div>
   </form>
 </template>
@@ -167,7 +81,7 @@
         <p class="hd-s" id="modalSub" data-t="form_sub_offer"></p>
       </div>
       <section class="need-box" data-step="st_m_form">
-        <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
+        <div class="need-hd"><h3 class="need-t" id="needHead"><i class="need-mark" aria-hidden="true"></i><span></span></h3><p class="need-s" id="needSub"></p></div>
         <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
         <p class="flow-note flow-note-ok flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_why_note"></span></p>
         <div id="modalSlot"></div>
@@ -209,7 +123,7 @@
       <div class="order-pick" id="orderPick" data-step="st_o_pick"></div>
       <div class="order-sum" id="orderSum" data-step="st_o_rate,st_o_sum"></div>
       <section class="need-box" data-step="st_o_form">
-        <h3 class="need-t"><i class="need-mark" aria-hidden="true"></i><span data-t="send_head"></span></h3>
+        <div class="need-hd"><h3 class="need-t" id="needHead"><i class="need-mark" aria-hidden="true"></i><span></span></h3><p class="need-s" id="needSub"></p></div>
         <p class="flow-note flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_all_req"></span></p>
         <p class="flow-note flow-note-ok flow-note-tight"><span class="flow-ico" aria-hidden="true"></span><span data-t="form_why_note"></span></p>
         <div id="orderSlot"></div>
@@ -244,7 +158,7 @@
 </div>
 
 <!-- ================= MAIN SITE ================= -->
-<div id="site" class="site hidden">
+<div id="site" class="site">
 
   <div class="topbar">
   <div class="strip" id="strip"><div class="strip-track" id="stripTrack"></div></div>
@@ -413,7 +327,7 @@
 
   <div class="cart-bar hidden" id="cartBar">
     <span class="cart-bar-info"><b id="cartBarN">0</b> <span data-t="cart_books"></span> &nbsp;·&nbsp; <b id="cartBarT">₹0</b></span>
-    <button class="cart-bar-btn" data-nav="cart" data-t="cart_order"></button>
+    <button class="cart-bar-btn" data-nav="cart" data-t="cart_see_list"></button>
   </div>
 
   <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -421,6 +335,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=14r"></script>
+<script src="assets/js/app.js?v=14z"></script>
 </body>
 </html>
