@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v14z',
+  VERSION: 'v15a',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1116,7 +1116,9 @@ const BOOKS = {
     return out;
   },
 
-  card(b) {
+  /* `plain` renders the home page's featured row unchanged — the book
+     title treatment applies everywhere except there. */
+  card(b, plain) {
     const t = k => this.app.t(k);
     const mr = this.app.lang === 'mr';
     const name = mr ? b.name_mr : b.name_en;
@@ -1147,7 +1149,7 @@ const BOOKS = {
           <span class="chip chip-std" style="background:${this.stdColor(b)}">${t('chip_std')} ${num}</span>
           ${pct ? `<span class="chip chip-off">${pct}% ${t('disc_upto')}</span>` : ''}
         </span>
-        <span class="book-name">${name}</span>
+        ${(() => { const T = MEDIA.bookTitle(b, mr); return `<span class="book-name${plain ? '' : ' bt'}" style="--tw:${T.w};--bc:${T.c}">${plain ? name : `<i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span>`}</span>`; })()}
         <span class="book-meta">${sub} · ${this.medLabel(b)}</span>
         ${b.subtitle_mr || b.subtitle_en ? `<span class="book-sub">${mr ? b.subtitle_mr : b.subtitle_en}</span>` : ''}
         <span class="book-price">&#8377;${b.mrp}${hint}</span>
@@ -1173,7 +1175,7 @@ const BOOKS = {
     if (!this.el.feat) return;
     this.el.feat.classList.add('shelf');
     const f = this.live().filter(b => b.featured === 'YES').slice(0, 4);
-    this.el.feat.innerHTML = f.map(b => this.card(b)).join('');
+    this.el.feat.innerHTML = f.map(b => this.card(b, true)).join('');
     this.bind(this.el.feat);
   },
 
@@ -1598,7 +1600,7 @@ const MEDIA = {
         </div>
       </div>
       <div class="vcard-body">
-        <h3 class="vcard-title" style="--chw:${MEDIA.titleWidth(mr ? v.title_mr : v.title_en, mr)}"><i class="vcard-mark" aria-hidden="true"></i><span>${mr ? v.title_mr : v.title_en}</span></h3>
+        ${(() => { const T = book ? MEDIA.bookTitle(book, mr) : { html: `<b>${mr ? v.title_mr : v.title_en}</b>`, w: 20, c: '' }; return `<h3 class="vcard-title bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></h3>`; })()}
         <span class="vcard-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
         <p class="vcard-cap">${mr ? v.caption_mr : v.caption_en}</p>
         ${book ? `<button class="vcard-btn" ${own ? `data-order-book="${book.book_id}"` : `data-book="${book.book_id}"`}>${t(own ? 'book_order_now' : 'video_see_book')} &rarr;</button>` : ''}
@@ -2159,6 +2161,7 @@ const PEEK = {
     this.pages = String(b.gallery_images || '').split(',').map(x => x.trim()).filter(Boolean);
     if (!this.pages.length) return;
     this.name = this.app.lang === 'mr' ? b.name_mr : b.name_en;
+    this.book = b;
     this.i = 0;
     document.getElementById('peek').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -2185,7 +2188,19 @@ const PEEK = {
   draw() {
     document.getElementById('peekFrame').innerHTML =
       this.app.img('books', this.pages[this.i], '', this.name);
-    document.getElementById('peekName').textContent = this.name;
+    /* the same treatment as every other book title */
+    const pb = this.book;
+    const pn = document.getElementById('peekName');
+    if (pb) {
+      const T = MEDIA.bookTitle(pb, this.app.lang === 'mr');
+      pn.className = 'peek-name bt';
+      pn.style.setProperty('--tw', T.w);
+      pn.style.setProperty('--bc', T.c);
+      pn.innerHTML = `<i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span>`;
+    } else {
+      pn.className = 'peek-name';
+      pn.textContent = this.name;
+    }
     // Marathi reads "8 पैकी 3", English reads "3 of 8"
     document.getElementById('peekCount').textContent = this.app.lang === 'mr'
       ? `${this.pages.length} ${this.app.t('inside_of')} ${this.i + 1}`

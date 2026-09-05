@@ -2955,7 +2955,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear .12s infinite;
+  animation:hdSheen 7s ease-in-out infinite;
 }
 /* a group is marked by a stack of three bars that rise in turn */
 .qa-gmark{
@@ -3175,7 +3175,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   background-size:260% 100%;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear infinite;
+  animation:hdSheen 7s ease-in-out infinite;
 }
 
 /* 3 — the subheading draws its own rule from the left */
@@ -3546,7 +3546,7 @@ html[lang="mr"] .book-t{
   background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear .18s infinite;
+  animation:hdSheen 4.6s ease-in-out infinite;
 }
 /* C12 — the pointer sits before the first letter and steps forward */
 .need-mark{
@@ -3613,7 +3613,7 @@ html[lang="mr"] .book-t{
   background-size:260% 100%;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear .36s infinite;
+  animation:hdSheen 7s ease-in-out infinite;
 }
 #orderSum .osum-h::before{-webkit-text-fill-color:initial}
 
@@ -3927,24 +3927,18 @@ html[lang="mr"] .book-t{
    =================================================================== */
 
 /* the title carries the same gold sheen as every heading on the site */
-.bd .bd-title{
-  background-image:linear-gradient(100deg,
-    var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
-    var(--green-dark) 62%,var(--green-dark) 100%);
-  background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear infinite;
-}
+
 .bd .bd-subtitle{
-  position:relative;padding-bottom:8px;color:var(--gold-dark);font-weight:600;
+  position:relative;padding-bottom:11px;color:var(--gold-dark);font-weight:600;
+  text-align:center;
 }
 .bd .bd-subtitle::after{
-  content:"";position:absolute;left:0;bottom:0;height:2.5px;width:52px;border-radius:2px;
+  content:"";position:absolute;left:50%;transform:translateX(-50%);
+  bottom:0;height:2.5px;width:120px;border-radius:2px;
   background:linear-gradient(90deg,var(--gold),var(--green));
   animation:hdRule 5s ease-in-out infinite;
 }
-.bd .bd-sub{transition:color .2s ease}
+.bd .bd-sub{transition:color .2s ease;text-align:center}
 
 /* the cover: a shine crossing it, and a lift when touched */
 .bd .bd-cover{position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.34,1.4,.64,1)}
@@ -4127,7 +4121,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear .24s infinite;
+  animation:hdSheen 6.5s ease-in-out infinite;
 }
 
 /* book page only: sizes from the scale, and the button spans the card */
@@ -4195,7 +4189,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear .24s infinite;
+  animation:hdSheen 6.5s ease-in-out infinite;
 }
 .vcard-mark{
   flex-shrink:0;width:.62em;height:.62em;border-radius:2px;
@@ -4289,7 +4283,7 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
   background:linear-gradient(100deg,
     transparent 0%,transparent 36%,rgba(255,255,255,.28) 50%,transparent 64%,transparent 100%);
   background-size:280% 100%;background-repeat:no-repeat;
-  animation:hdFlash 2.6s linear .3s infinite;
+  animation:hdSheen 7s ease-in-out infinite;
 }
 .rate-grid{
   display:grid;grid-template-columns:1fr auto auto;
@@ -4485,23 +4479,38 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
     linear-gradient(180deg, currentColor, currentColor) left/45% 1.5px no-repeat,
     linear-gradient(180deg, currentColor, currentColor) right/45% 1.5px no-repeat;
   border:1.5px solid currentColor;border-top-width:0;border-bottom-width:0;
-  animation:btGlow 2.8s ease-in-out infinite;
+  transform-origin:center;
+  animation:btGlow 1.9s cubic-bezier(.3,0,.2,1) infinite;
 }
 @keyframes btGlow{
-  0%,100%{filter:drop-shadow(0 0 0 currentColor);opacity:.75}
-  50%    {filter:drop-shadow(0 0 5px currentColor);opacity:1}
+  0%     {transform:scale(1);opacity:.7}
+  12%    {transform:scale(1.35);opacity:1}
+  30%    {transform:scale(1)}
+  100%   {transform:scale(1);opacity:.7}
 }
 /* the same flash the window titles carry */
+/* The letters stay solid at all times. A light travels across them as an
+   overlay — a gradient clipped to the text made parts of the word
+   disappear as it passed, which is the fault this replaces. */
 .bt b{
   font-weight:800;letter-spacing:.1px;
-  background-image:linear-gradient(100deg,
-    var(--bc, var(--green-dark)) 0%, var(--bc, var(--green-dark)) 38%,
-    var(--gold-dark) 50%,
-    var(--bc, var(--green-dark)) 62%, var(--bc, var(--green-dark)) 100%);
-  background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdFlash 2.6s linear infinite;
+  position:relative;display:inline-block;
+  color:var(--bc, var(--green-dark));
+}
+.bt b::after{
+  content:"";position:absolute;inset:-2px -6px;pointer-events:none;
+  background:linear-gradient(105deg,
+    transparent 0%, transparent 40%,
+    rgba(255,255,255,.85) 50%,
+    transparent 60%, transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;
+  mix-blend-mode:overlay;
+  animation:btFlash 1.9s linear infinite;
+}
+@keyframes btFlash{
+  0%     {background-position:130% 0}
+  55%    {background-position:-30% 0}
+  55.01%,100%{background-position:130% 0}
 }
 
 /* the width each surface gives a title */
@@ -4511,6 +4520,17 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 .cart-name.bt  {--btw:210px}
 
 @media(prefers-reduced-motion:reduce){
-  .bt-mark,.bt b{animation:none}
-  .bt b{-webkit-text-fill-color:var(--bc, var(--green-dark));color:var(--bc, var(--green-dark))}
+  .bt-mark,.bt b::after{animation:none}
+  .bt b::after{opacity:0}
 }
+
+
+/* ===================================================================
+   BOOK PAGE — the title and what follows it sit under the cover,
+   centred, with the rule between them centred too
+   =================================================================== */
+
+/* the widths the new surfaces give a title */
+.vcard-title.bt{--btw:287px;justify-content:center}
+.book-name.bt  {--btw:230px}
+.peek-name.bt  {--btw:220px;justify-content:center}
