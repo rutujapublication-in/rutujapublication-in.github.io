@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15e',
+  VERSION: 'v15f',
   lang: 'mr',
   text: {},
   locations: null,

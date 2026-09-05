@@ -3853,9 +3853,9 @@ html[lang="mr"] .book-t{
 .bsec .hd-t{font-size:16.5px}
 
 /* ---------- the facts row: three plates, evenly centred ---------- */
-.bd .bd-facts{display:flex;justify-content:center;gap:calc(var(--u) * .55);flex-wrap:wrap}
+.bd .bd-facts{display:flex;justify-content:center;gap:calc(var(--u) * .45);flex-wrap:nowrap}
 .bd .bd-fact{
-  flex:1 1 0;min-width:86px;text-align:center;
+  flex:1 1 0;min-width:0;text-align:center;
   background:var(--white);border:1px solid var(--line);border-radius:11px;
   padding:calc(var(--u) * .58) calc(var(--u) * .35);box-shadow:0 1px 5px rgba(0,0,0,.05);
   transition:transform .2s ease,box-shadow .2s ease;
@@ -3871,11 +3871,18 @@ html[lang="mr"] .book-t{
   color:var(--green);letter-spacing:.3px;display:inline-block;
   animation:factPulse 3.6s ease-in-out infinite;
 }
-.bd .bd .bd-fact:nth-child(2) .bd-fact-v{animation-delay:.5s;color:var(--gold-dark)}
-.bd .bd .bd-fact:nth-child(3) .bd-fact-v{animation-delay:1s}
+/* the three figures pulse in turn, each in the colour of what it means */
+.bd .bd-fact:nth-child(2) .bd-fact-v{
+  animation-delay:.5s;animation-name:factPulseGold;color:var(--gold-dark);
+}
+.bd .bd-fact:nth-child(3) .bd-fact-v{animation-delay:1s}
+@keyframes factPulseGold{
+  0%,100%{transform:scale(1);text-shadow:none}
+  50%    {transform:scale(1.06);text-shadow:0 0 14px rgba(184,122,30,.55)}
+}
 @keyframes factPulse{
   0%,100%{transform:scale(1);text-shadow:none}
-  50%    {transform:scale(1.05);text-shadow:0 0 14px rgba(26,77,46,.28)}
+  50%    {transform:scale(1.06);text-shadow:0 0 14px rgba(26,77,46,.45)}
 }
 
 /* ---------- the description ---------- */
