@@ -1068,13 +1068,13 @@ a{color:inherit;text-decoration:none}
 /* ---- cart page ---- */
 .cart-empty{text-align:center;padding:50px 20px}
 .cart-empty p{font-size:16px;color:var(--ink-soft);margin-bottom:18px}
-.cart-list{display:flex;flex-direction:column;gap:12px}
+.cart-list{display:flex;flex-direction:column;gap:9px}
 .cart-row{
   display:grid;
   grid-template-columns:64px 1fr auto 34px;
   grid-template-areas:"t i i x" "t n n n" "t l l l" "t q a a";
-  gap:10px 14px;align-items:center;
-  background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 15px;
+  gap:7px 14px;align-items:center;
+  background:var(--white);border:1px solid var(--line);border-radius:14px;padding:10px 12px;
 }
 .cart-thumb{width:64px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
   box-shadow:0 2px 7px rgba(0,0,0,.2)}
@@ -1611,7 +1611,7 @@ html[lang="en"] body{line-height:1.65}
 /* ---------- 480 to 819 : large phone and small tablet ---------- */
 @media(max-width:819px){
 .cart-row{grid-template-columns:56px 1fr auto;grid-template-areas:
-    "t i x" "t n n" "t l l" "t q a";row-gap:9px}
+    "t i x" "t n n" "t l l" "t q a";row-gap:7px}
   .cart-thumb{grid-area:t;width:56px}
   .cart-info{grid-area:i}
   .cart-qty{grid-area:q}
@@ -1870,7 +1870,7 @@ html[lang="en"] body{line-height:1.65}
   /* the stepper spans both columns here: in one column it inherits the
      48px cover width and the + button is clipped */
   .cart-row{grid-template-columns:48px 1fr;
-    grid-template-areas:"t i" "n n" "l l" "q q" "a x";gap:8px}
+    grid-template-areas:"t i" "n n" "l l" "q q" "a x";gap:6px 8px}
   .cart-thumb{width:48px}
   .cart-x{grid-area:x;justify-self:end;margin-top:-6px}
   .cart-amt{text-align:right}
@@ -4003,6 +4003,7 @@ html[lang="mr"] .book-t{
   color:var(--green);letter-spacing:.3px;display:inline-block;
   animation:totalPulse 3.4s ease-in-out infinite;
 }
+.bd .calc-line span.calc-save,
 .bd .calc-save{
   display:inline-flex;align-items:center;
   background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
@@ -4673,7 +4674,7 @@ form.collapsed .cond{display:none}
 /* standard and medium, so four books are told apart at a glance */
 #page-cart .cart-sub{
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);
-  font-weight:600;color:var(--ink-soft);margin:1px 0 3px;
+  font-weight:600;color:var(--ink-soft);margin:0 0 2px;
   animation:descIn .5s ease-out .06s both;
 }
 #page-cart .cart-meta{
@@ -4702,7 +4703,7 @@ form.collapsed .cond{display:none}
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);font-weight:600;
   color:#7A5410;background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-radius:calc(var(--u) * .7);
-  padding:calc(var(--u) * .4) calc(var(--u) * .55);
+  padding:calc(var(--u) * .3) calc(var(--u) * .5);
   animation:flowGlow 4.2s ease-in-out infinite;
 }
 #page-cart .cart-next b{color:var(--gold-dark);font-weight:800}
@@ -4914,7 +4915,7 @@ form.collapsed .cond{display:none}
    auto-placed into a column it cannot fit. That is what clipped the
    + button and squashed the slab hint beside the cover.
    =================================================================== */
-#page-cart .cart-qlab{grid-area:l;display:flex;flex-direction:column;gap:2px;min-width:0}
+#page-cart .cart-qlab{grid-area:l;display:flex;flex-direction:column;gap:1px;min-width:0}
 #page-cart .cart-qlab-t{
   display:flex;align-items:center;gap:calc(var(--u) * .4);
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .88);
