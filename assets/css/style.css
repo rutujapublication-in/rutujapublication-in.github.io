@@ -3929,11 +3929,10 @@ html[lang="mr"] .book-t{
 
 /* the title carries the same gold sheen as every heading on the site */
 
-.bd .bd-subtitle{
-  position:relative;padding-bottom:11px;color:var(--gold-dark);font-weight:600;
-  text-align:center;
-}
-.bd .bd-subtitle::after{
+.bd .bd-subtitle{color:var(--gold-dark);font-weight:600;text-align:center}
+/* the line sits directly under the title, above the two lines below it */
+.bd .bd-title{position:relative;padding-bottom:12px;margin-bottom:6px}
+.bd .bd-title::after{
   content:"";position:absolute;left:50%;transform:translateX(-50%);
   bottom:0;height:2.5px;width:120px;border-radius:2px;
   background:linear-gradient(90deg,var(--gold),var(--green));
@@ -4026,7 +4025,7 @@ html[lang="mr"] .book-t{
 }
 
 @media(prefers-reduced-motion:reduce){
-  .bd .bd-title,.bd .bd-subtitle::after,.bd .bd-cover::after,.bd .bd-desc,
+  .bd .bd-title::after,.bd .bd-cover::after,.bd .bd-desc,
   .bd .disc-head,.bd .disc-head b,.bd .calc-total,.bd .calc-save,
   .bd .nudge-text b,.bd .btn-gold,.bd .btn-gold::after,.bd .pct{animation:none}
   .bd .bd-title{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
@@ -4529,5 +4528,11 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 
 /* the widths the new surfaces give a title */
 .vcard-title.bt{--btw:287px;justify-content:center}
-.book-name.bt  {--btw:230px}
+/* a grid card is about 155px on a phone, far too narrow for one line at
+   a readable size, so here the title keeps its original size and wraps —
+   only the colour, the weight split and the mark are applied */
+.book-name.bt{
+  font-size:16.5px;flex-wrap:wrap;align-items:center;
+}
+.book-name.bt > span{white-space:normal;overflow:visible;text-overflow:clip}
 .peek-name.bt  {--btw:220px;justify-content:center}
