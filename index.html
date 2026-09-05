@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=15p">
+<link rel="stylesheet" href="assets/css/style.css?v=15r">
 </head>
 <body>
 
@@ -289,8 +289,11 @@
           <label class="ffield"><span class="flab" data-t="f_sort"></span>
             <select id="fSort" class="fsel"></select></label>
         </div>
-        <button class="fclear" id="fClear" data-t="books_clear"></button>
-        <p class="fcount"><strong id="bCount">0</strong> <span id="bCountW"></span> <span data-t="books_found"></span></p>
+        <div class="frow-end">
+          <p class="fcount"><strong id="bCount">0</strong> <span id="bCountW"></span> <span data-t="books_found"></span></p>
+          <button class="fclear" id="fClear" data-t="books_clear"></button>
+        </div>
+        <div class="fchips" id="fChips"></div>
       </div>
 
       <div class="book-grid" id="bookGrid" data-step="st_k_list"></div>
@@ -349,6 +352,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=15p"></script>
+<script src="assets/js/app.js?v=15r"></script>
 </body>
 </html>

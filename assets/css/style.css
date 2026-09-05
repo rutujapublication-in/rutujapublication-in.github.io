@@ -1405,7 +1405,7 @@ html[lang="en"] body{line-height:1.65}
 .of-pct{background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#2E1E02;
   box-shadow:0 2px 6px rgba(184,122,30,.32)}
 .of-rate{background:#E6EFE8;color:#2C5A3D}
-.of-save{background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+.of-save{background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
   box-shadow:0 2px 6px rgba(37,97,56,.3)}
 .oline-amt{grid-column:2;grid-row:1/span 2;text-align:right;white-space:nowrap}
 .oline-amt span{display:block;font-size:12.5px;color:var(--ink-soft)}
@@ -1574,7 +1574,7 @@ html[lang="en"] body{line-height:1.65}
    percentage badge so the two read as one moment, in green not gold. */
 .om-saved{
   display:inline-flex;align-items:center;
-  background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+  background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
   border-radius:7px;padding:3px 9px;
   font-family:Mukta,system-ui,sans-serif;font-size:11.5px;font-weight:800;
   letter-spacing:.2px;box-shadow:0 2px 7px rgba(37,97,56,.34);
@@ -3970,6 +3970,7 @@ html[lang="mr"] .book-t{
 /* ---------- the calculator, where the figures live ---------- */
 .bd .calc-row{
   border-radius:11px;padding:8px 9px;margin:0 -2px;align-items:center;
+  justify-content:flex-start;
   background:rgba(255,255,255,.6);transition:background .2s ease;
 }
 .bd .calc-lbl{font-family:Mukta,system-ui,sans-serif;font-weight:700;color:var(--green-dark);
@@ -3992,7 +3993,7 @@ html[lang="mr"] .book-t{
 }
 .bd .calc-save{
   display:inline-flex;align-items:center;
-  background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+  background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
   border-radius:999px;padding:2px 9px;
   font-family:Mukta,system-ui,sans-serif;font-size:11.5px;font-weight:800;
   box-shadow:0 2px 7px rgba(37,97,56,.32);
@@ -4676,7 +4677,7 @@ form.collapsed .cond{display:none}
 #page-cart .cart-row .cart-saved{
   display:inline-flex;font-family:Mukta,system-ui,sans-serif;font-weight:800;
   font-size:calc(var(--u) * .78);
-  background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+  background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
   border-radius:999px;padding:2px 8px;
   animation:ofPop .42s cubic-bezier(.34,1.5,.64,1),ofGreen 3.6s ease-in-out infinite .6s;
 }
@@ -4753,7 +4754,7 @@ form.collapsed .cond{display:none}
    Scoped to the page so nothing here can reach another window.
    =================================================================== */
 #page-books .books-hint{
-  position:relative;margin:0 0 calc(var(--u) * .7);padding-left:calc(var(--u) * .62);
+  position:relative;margin:0 0 calc(var(--u) * .32);padding-left:calc(var(--u) * .62);
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .83);
   font-weight:600;line-height:1.35;color:var(--ink-soft);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -4763,16 +4764,23 @@ form.collapsed .cond{display:none}
   background:linear-gradient(180deg,var(--gold),var(--gold-dark));
 }
 
-#page-books .filters{display:flex;flex-direction:column;gap:calc(var(--u) * .55)}
-#page-books .ffield,#page-books .fpick{display:flex;flex-direction:column;gap:3px;min-width:0}
+#page-books .filters{display:flex;flex-direction:column;gap:calc(var(--u) * .22)}
+#page-books .ffield,#page-books .fpick{display:flex;flex-direction:column;gap:2px;min-width:0}
 #page-books .flab{
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .78);font-weight:700;
-  color:var(--green-dark);letter-spacing:.2px;padding-left:2px;
+  letter-spacing:.2px;padding-left:2px;
+  background-image:linear-gradient(100deg,
+    var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
+    var(--green-dark) 62%,var(--green-dark) 100%);
+  background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdSheen 8s ease-in-out infinite;
 }
 /* two even columns, equal heights, aligned labels */
 #page-books .fgrid{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:calc(var(--u) * .5) calc(var(--u) * .55);
+  gap:calc(var(--u) * .24) calc(var(--u) * .45);
 }
 #page-books .fsel{
   width:100%;min-width:0;height:calc(var(--u) * 2.9);
@@ -4784,11 +4792,13 @@ form.collapsed .cond{display:none}
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 9l6 6 6-6' fill='none' stroke='%23B87A1E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat:no-repeat;background-position:right calc(var(--u) * .55) center;
   background-size:calc(var(--u) * .85);
-  transition:border-color .18s ease,box-shadow .2s ease;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.05);
+  transition:border-color .18s ease,box-shadow .2s ease,background-position .18s ease;
 }
 #page-books .fsel:focus{
   outline:none;border-color:var(--green);
   box-shadow:0 0 0 3px rgba(26,77,46,.14);
+  background-position:right calc(var(--u) * .45) center;
 }
 /* the book dropdown is the way in, so it is the loudest thing here */
 #page-books .fsel-pick{
@@ -4804,7 +4814,11 @@ form.collapsed .cond{display:none}
   0%,100%{box-shadow:0 2px 10px rgba(232,163,61,.22)}
   50%    {box-shadow:0 2px 10px rgba(232,163,61,.22),0 0 0 5px rgba(232,163,61,.16)}
 }
-#page-books .fpick .flab{color:var(--gold-dark)}
+#page-books .fpick .flab{
+  background-image:linear-gradient(100deg,
+    var(--gold-dark) 0%,var(--gold-dark) 38%,var(--green) 50%,
+    var(--gold-dark) 62%,var(--gold-dark) 100%);
+}
 
 #page-books .fclear{
   align-self:flex-start;
@@ -4812,13 +4826,14 @@ form.collapsed .cond{display:none}
   color:var(--green-dark);background:var(--white);
   border:1.5px solid var(--line);border-radius:999px;
   padding:calc(var(--u) * .34) calc(var(--u) * .8);
-  transition:transform .14s ease,border-color .18s ease,color .18s ease;
+  align-self:auto;opacity:.55;
+  transition:transform .14s ease,border-color .18s ease,color .18s ease,opacity .18s ease;
 }
 #page-books .fclear:active{transform:scale(.95);border-color:#C33;color:#C33}
 
 #page-books .fcount{
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .88);
-  font-weight:700;color:var(--ink-soft);margin:calc(var(--u) * .2) 0 0;
+  font-weight:700;color:var(--ink-soft);margin:0;
 }
 #page-books .fcount strong{
   color:var(--green);font-weight:800;display:inline-block;
@@ -4830,3 +4845,49 @@ form.collapsed .cond{display:none}
 @media(prefers-reduced-motion:reduce){
   #page-books .fsel-pick,#page-books .fcount strong{animation:none}
 }
+
+
+/* the hint is read before the stepper is touched, so it sits with the
+   label rather than under the box */
+.bd .calc-head{display:flex;flex-direction:column;gap:3px;margin-bottom:calc(var(--u) * .45)}
+.bd .calc-head .calc-hint{margin:0}
+
+
+/* count and clear share one row, and the chips explain a small result */
+#page-books .frow-end{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:calc(var(--u) * .5);margin-top:0;
+}
+/* the clear button only looks live when there is something to clear */
+#page-books .fclear.live{
+  opacity:1;color:var(--gold-dark);border-color:var(--gold);
+  box-shadow:0 2px 9px rgba(232,163,61,.26);
+  animation:pickHalo 3s ease-in-out infinite;
+}
+#page-books .fchips{display:none;flex-wrap:wrap;gap:calc(var(--u) * .34)}
+#page-books .fchips.on{display:flex;margin-top:calc(var(--u) * .1)}
+#page-books .fchip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);font-weight:700;
+  color:var(--green-dark);background:var(--green-light);
+  border:1.5px solid #CFE0D5;border-radius:999px;
+  padding:calc(var(--u) * .22) calc(var(--u) * .55);
+  animation:ofPop .4s cubic-bezier(.34,1.5,.64,1);
+  transition:transform .14s ease,border-color .16s ease,color .16s ease;
+}
+#page-books .fchip i{font-style:normal;font-weight:800;opacity:.65}
+#page-books .fchip:active{transform:scale(.94);border-color:#C33;color:#C33}
+
+/* the labels carry the sheen the other labels do, and the arrow nudges */
+@media(prefers-reduced-motion:reduce){
+  #page-books .flab{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark);animation:none}
+  #page-books .fchip,#page-books .fclear.live{animation:none}
+}
+
+
+/* Space only — nothing removed, resized or reworded. Every gap above the
+   first book tightened so the books begin sooner. */
+#page-books.page{padding-top:10px}
+#page-books .hd-page{margin:calc(var(--u) * .35) 0 calc(var(--u) * .28)}
+#page-books .wpath{margin-bottom:calc(var(--u) * .42)}
+#page-books .book-grid{margin-top:12px}

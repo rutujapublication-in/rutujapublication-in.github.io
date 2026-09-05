@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15p',
+  VERSION: 'v15r',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1006,6 +1006,14 @@ const BOOKS = {
       const v = this.el.pick.value;
       if (v) { this.openBook(v); this.el.pick.value = ''; }
     });
+    /* a chip removes just its own filter */
+    document.addEventListener('click', e => {
+      const c = e.target.closest('.fchip[data-fx]');
+      if (!c) return;
+      const k = c.dataset.fx;
+      this.filters[k] = ''; this.el[k].value = ''; this.renderGrid();
+    });
+
     ['std','med','sub','sort'].forEach(k => {
       this.el[k].addEventListener('change', () => {
         this.filters[k] = this.el[k].value; this.renderGrid();
@@ -1206,6 +1214,20 @@ const BOOKS = {
     try { PATH.draw('page-books', 'booksPath', 'terra'); } catch (e) { console.error('path', e); }
     this.el.count.textContent = list.length;
     if (this.el.countW) this.el.countW.textContent = CART.bookWord(list.length);
+
+    /* which filters are on, so a small result count is never a mystery */
+    const chips = document.getElementById('fChips');
+    if (chips) {
+      const on = ['std', 'med', 'sub'].filter(k => this.filters[k]);
+      chips.innerHTML = on.map(k => {
+        const sel = this.el[k];
+        const lab = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '';
+        return `<button class="fchip" data-fx="${k}">${lab} <i aria-hidden="true">&times;</i></button>`;
+      }).join('');
+      chips.classList.toggle('on', on.length > 0);
+      const cl = this.el.clear;
+      if (cl) cl.classList.toggle('live', on.length > 0);
+    }
     this.el.none.classList.toggle('hidden', list.length > 0);
     this.bind(this.el.grid);
   },
@@ -1374,15 +1396,17 @@ const BOOKS = {
 
           <section class="bsec ${SEC.tone()} calc" data-step="st_b_calc">
             ${this.bhd('price_title', 'bd_calc_s')}
-            <div class="calc-row">
+            <div class="calc-head">
               <span class="calc-lbl">${t('price_qty')}</span>
+              <p class="calc-hint">${t('calc_qty_hint')}</p>
+            </div>
+            <div class="calc-row">
               <div class="qty">
                 <button type="button" id="qMinus">&minus;</button>
                 <input type="text" id="qVal" inputmode="numeric" value="1">
                 <button type="button" id="qPlus">+</button>
               </div>
             </div>
-            <p class="calc-hint">${t('calc_qty_hint')}</p>
             <div class="nudge" id="nudge"></div>
             <div class="calc-out" id="calcOut"></div>
             <div id="ladderBox"></div>
