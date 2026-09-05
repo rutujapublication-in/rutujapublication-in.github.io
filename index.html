@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=15j">
+<link rel="stylesheet" href="assets/css/style.css?v=15p">
 </head>
 <body>
 
@@ -273,16 +273,24 @@
         <div id="booksPath" class="wpath"></div>
       <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
 
+      <p class="books-hint" data-t="books_hint"></p>
       <div class="filters" data-step="st_k_filter">
-        <div class="fbar">
-          <input type="search" id="bSearch" class="fsearch" placeholder="">
-          <select id="fStd" class="fsel"></select>
-          <select id="fMed" class="fsel"></select>
-          <select id="fSub" class="fsel"></select>
-          <select id="fSort" class="fsel"></select>
-          <button class="fclear" id="fClear" data-t="books_clear"></button>
+        <label class="fpick">
+          <span class="flab" data-t="books_pick"></span>
+          <select id="bPick" class="fsel fsel-pick"></select>
+        </label>
+        <div class="fgrid">
+          <label class="ffield"><span class="flab" data-t="f_std"></span>
+            <select id="fStd" class="fsel"></select></label>
+          <label class="ffield"><span class="flab" data-t="f_med"></span>
+            <select id="fMed" class="fsel"></select></label>
+          <label class="ffield"><span class="flab" data-t="f_sub"></span>
+            <select id="fSub" class="fsel"></select></label>
+          <label class="ffield"><span class="flab" data-t="f_sort"></span>
+            <select id="fSort" class="fsel"></select></label>
         </div>
-        <p class="fcount"><strong id="bCount">0</strong> <span data-t="books_count"></span></p>
+        <button class="fclear" id="fClear" data-t="books_clear"></button>
+        <p class="fcount"><strong id="bCount">0</strong> <span id="bCountW"></span> <span data-t="books_found"></span></p>
       </div>
 
       <div class="book-grid" id="bookGrid" data-step="st_k_list"></div>
@@ -332,7 +340,7 @@
   </div></footer>
 
   <div class="cart-bar hidden" id="cartBar">
-    <span class="cart-bar-info"><b id="cartBarN">0</b> <span data-t="cart_books"></span> &nbsp;·&nbsp; <b id="cartBarT">₹0</b></span>
+    <span class="cart-bar-info"><b id="cartBarN">0</b> <span id="cartBarW"></span> &nbsp;·&nbsp; <span id="cartBarQ"></span> &nbsp;·&nbsp; <b id="cartBarT">₹0</b></span>
     <button class="cart-bar-btn" data-nav="cart" data-t="cart_see_list"></button>
   </div>
 
@@ -341,6 +349,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=15j"></script>
+<script src="assets/js/app.js?v=15p"></script>
 </body>
 </html>

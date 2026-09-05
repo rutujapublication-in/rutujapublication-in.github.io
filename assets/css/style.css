@@ -261,7 +261,6 @@ a{color:inherit;text-decoration:none}
 .w-list li{padding:7px 0;border-top:1px solid rgba(255,255,255,.14)}
 .w-list strong{color:var(--gold);font-size:16px;margin-right:6px}
 @keyframes rise{0%,100%{transform:translateY(3px);opacity:.6}50%{transform:translateY(-3px);opacity:1}}
-@media(prefers-reduced-motion:reduce){.arrow-up{animation:none}}
 
 /* ---- FORM SHEET ---- */
 .sheet{
@@ -269,12 +268,6 @@ a{color:inherit;text-decoration:none}
   display:flex;align-items:flex-end;justify-content:center;overflow-y:auto;
 }
 @keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){.sheet-card{animation:none}}
-.sheet-done{text-align:center;padding:20px 0}
-.sheet-done .gate-tick{background:var(--green-light);color:var(--green)}
-.sheet-done .gate-done-t{color:var(--green-dark)}
-.sheet-done .gate-done-id{color:var(--ink-soft)}
-.sheet-done .gate-done-id strong{color:var(--green)}
 
 /* ---- FORM FIELDS ---- */
 .form-h{font-size:23px;color:var(--green-dark);margin-bottom:4px}
@@ -418,7 +411,6 @@ a{color:inherit;text-decoration:none}
 /* ---- WELCOME FOOTER: two buttons ---- */
 .welcome-foot{padding:6px 20px 40px;text-align:center}
 @keyframes rise{0%,100%{transform:translateY(4px);opacity:.55}50%{transform:translateY(-4px);opacity:1}}
-@media(prefers-reduced-motion:reduce){.arrow-up{animation:none}}
 
 /* ---- REGISTER AS A NAV ITEM ---- */
 
@@ -1092,7 +1084,9 @@ a{color:inherit;text-decoration:none}
   background:var(--white)}
 .cart-qty button{width:36px;height:40px;font-size:19px;color:var(--green)}
 .cart-qty button:hover{background:var(--green-light)}
-.cart-qty input{width:58px;text-align:center;border:0;font-family:inherit;
+/* the picker needs room for 10000; the cart card does not, and the wider
+   input pushed its stepper past the column and cut off the + button */
+.cart-qty input{width:52px;text-align:center;border:0;font-family:inherit;
   font-size:15px;font-weight:800;letter-spacing:.4px}
 .cart-qty input:focus{outline:none}
 .cart-amt{text-align:right;min-width:88px}
@@ -1714,7 +1708,6 @@ html[lang="en"] body{line-height:1.65}
   .ph-logo,.ph-face{width:76px;height:76px}
   .w-actions{width:100%;flex-direction:column;gap:11px}
   .w-btn{width:100%;min-width:0;padding:14px 20px 15px}
-  .sheet-card{padding:24px 16px 32px}
   .gate-x,.peek-x{width:46px;height:46px}
   .f input,.f select{height:52px;font-size:16px}
   .phone-cc{font-size:16px;padding:0 14px}
@@ -1829,7 +1822,6 @@ html[lang="en"] body{line-height:1.65}
   .footer-copy{align-self:flex-start}
 .w-logo{width:74px;height:74px;font-size:38px}
   .w-name-mr{font-size:29px}
-  .sheet-card{border-radius:16px 16px 0 0;padding:26px 18px 34px;margin-top:20px}
   .f-row{grid-template-columns:1fr;gap:0}
   .form-h{font-size:20px}
     .reg-banner{flex-direction:column;align-items:flex-start}
@@ -3226,14 +3218,17 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 }
 /* ---------- the note that sits under all the buttons, one line ---------- */
 .flow-note{
-  display:flex;align-items:flex-start;gap:8px;
-  margin:14px 0 0;padding:calc(var(--u) * .62) calc(var(--u) * .72);
+  display:flex;align-items:flex-start;gap:5px;
+  margin:14px 0 0;padding:calc(var(--u) * .55) calc(var(--u) * .52);
   position:relative;overflow:hidden;
   background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-left:0;
   border-radius:11px;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 2px 10px rgba(0,0,0,.05);
-  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .9);font-weight:600;
+  /* 11px, so every sentence of the closing note holds a single row.
+     Smaller than the notes above the fields, deliberately — this one is
+     read once, at the moment of sending. */
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .83);font-weight:600;
   line-height:1.5;color:#6F4B0C;
   animation:flowGlow 3.6s ease-in-out infinite;
 }
@@ -3431,7 +3426,7 @@ html[lang="mr"] .book-t{
   font-family:Mukta,system-ui,sans-serif;font-size:14px;color:var(--ink-soft);
   text-align:center;margin:6px 0 16px;
 }
-.order-done .btn-line,.sheet-done .btn-line{
+.order-done .btn-line{
   width:100%;position:relative;overflow:hidden;min-height:48px;
   border:1.5px solid var(--green);color:var(--green);
   background:linear-gradient(180deg,#FFFFFF,#F4F9F5);
@@ -3439,12 +3434,12 @@ html[lang="mr"] .book-t{
   box-shadow:0 2px 8px rgba(26,77,46,.1);
   transition:transform .14s ease,box-shadow .2s ease,background .2s ease;
 }
-.order-done .btn-line::after,.sheet-done .btn-line::after{
+.order-done .btn-line::after{
   content:"";position:absolute;top:0;left:-55%;width:40%;height:100%;
   background:linear-gradient(100deg,transparent,rgba(26,77,46,.12),transparent);
   transform:skewX(-18deg);animation:gateSheen 5.4s ease-in-out infinite;
 }
-.order-done .btn-line:active,.sheet-done .btn-line:active{
+.order-done .btn-line:active{
   transform:translateY(2px);box-shadow:0 1px 4px rgba(26,77,46,.12);
 }
 
@@ -3974,10 +3969,11 @@ html[lang="mr"] .book-t{
 
 /* ---------- the calculator, where the figures live ---------- */
 .bd .calc-row{
-  border-radius:11px;padding:8px 9px;margin:0 -2px;
+  border-radius:11px;padding:8px 9px;margin:0 -2px;align-items:center;
   background:rgba(255,255,255,.6);transition:background .2s ease;
 }
-.bd .calc-lbl{font-family:Mukta,system-ui,sans-serif;font-weight:700;color:var(--green-dark)}
+.bd .calc-lbl{font-family:Mukta,system-ui,sans-serif;font-weight:700;color:var(--green-dark);
+  display:flex;flex-direction:column;gap:2px;min-width:0}
 .bd .qty{
   border-radius:11px;overflow:hidden;
   box-shadow:0 1px 6px rgba(0,0,0,.08);
@@ -4598,3 +4594,239 @@ form.collapsed .f,
 form.collapsed .f-row,
 form.collapsed .cond{display:none}
 @media(prefers-reduced-motion:reduce){.sumcard-edit{animation:none}}
+
+/* the line under नगसंख्या that says how to change it — one row, quiet,
+   sitting with its label rather than floating beside the stepper */
+/* Its own full-width row under the stepper — the label column is far
+   too narrow for a sentence. One row at every phone width. */
+.bd .calc-hint{
+  display:block;margin:calc(var(--u) * .28) 0 calc(var(--u) * .5);
+  padding-left:calc(var(--u) * .62);position:relative;
+  font-family:Mukta,system-ui,sans-serif;font-style:normal;
+  font-size:calc(var(--u) * .8);font-weight:600;line-height:1.35;
+  color:var(--ink-soft);letter-spacing:.1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* a small gold bar, so it reads as guidance rather than stray text */
+.bd .calc-hint::before{
+  content:"";position:absolute;left:0;top:3px;bottom:3px;width:2.5px;
+  border-radius:2px;background:linear-gradient(180deg,var(--gold),var(--gold-dark));
+}
+@media(max-width:399px){
+  .bd .calc-hint{font-size:calc(var(--u) * .76)}
+}
+
+/* ===================================================================
+   माझी पुस्तके — the list card and its totals. Fourteen elements here
+   carried no effect at all; the page never had the treatment the rest
+   of the site has.
+   =================================================================== */
+
+/* the + and − line, once above the list */
+#page-cart .cart-hint{
+  position:relative;margin:0 0 calc(var(--u) * .6);
+  padding-left:calc(var(--u) * .62);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .83);
+  font-weight:600;line-height:1.35;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#page-cart .cart-hint::before{
+  content:"";position:absolute;left:0;top:3px;bottom:3px;width:2.5px;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark));
+}
+
+/* the card takes the book's own colour, as its title does */
+#page-cart .cart-row{
+  position:relative;overflow:hidden;
+  transition:border-color .2s ease,box-shadow .22s ease,background .22s ease,transform .14s ease;
+}
+#page-cart .cart-row::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--bc,var(--gold)),var(--bc,var(--gold-dark)),var(--bc,var(--gold)));
+  background-size:100% 220%;animation:flowBar 4.6s ease-in-out infinite;opacity:.85;
+}
+#page-cart .cart-row:nth-child(even){background:#FDFCF8}
+#page-cart .cart-row:active{transform:translateY(1px);box-shadow:0 2px 10px rgba(0,0,0,.1)}
+@media(hover:hover){.cart-row:hover{box-shadow:0 5px 18px rgba(0,0,0,.09)}}
+
+/* the cover, as on the picker */
+#page-cart .cart-thumb{position:relative;transition:transform .26s cubic-bezier(.34,1.4,.64,1)}
+#page-cart .cart-thumb::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;z-index:2;
+  background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0));
+}
+@media(hover:hover){.cart-row:hover .cart-thumb{transform:translateY(-2px) scale(1.05)}}
+
+/* standard and medium, so four books are told apart at a glance */
+#page-cart .cart-sub{
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);
+  font-weight:600;color:var(--ink-soft);margin:1px 0 3px;
+}
+#page-cart .cart-meta{
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  display:flex;align-items:center;gap:calc(var(--u) * .4);flex-wrap:wrap;
+}
+#page-cart .cart-mrp{color:#A79C88;animation:mrpFade 4.4s ease-in-out infinite}
+#page-cart .cart-pct{
+  font-family:Mukta,system-ui,sans-serif;font-weight:800;font-size:calc(var(--u) * .78);
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#2E1E02;
+  border-radius:999px;padding:2px 8px;
+  animation:ofPop .42s cubic-bezier(.34,1.5,.64,1),ofGold 3.6s ease-in-out infinite .42s;
+}
+#page-cart .cart-row .cart-saved{
+  display:inline-flex;font-family:Mukta,system-ui,sans-serif;font-weight:800;
+  font-size:calc(var(--u) * .78);
+  background:linear-gradient(180deg,#3E8E52,#256138);color:#fff;
+  border-radius:999px;padding:2px 8px;
+  animation:ofPop .42s cubic-bezier(.34,1.5,.64,1),ofGreen 3.6s ease-in-out infinite .6s;
+}
+
+/* what one more slab would give */
+#page-cart .cart-next{
+  grid-column:1/-1;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);font-weight:600;
+  color:#7A5410;background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
+  border:1px dashed var(--gold);border-radius:calc(var(--u) * .7);
+  padding:calc(var(--u) * .4) calc(var(--u) * .55);
+  animation:flowGlow 4.2s ease-in-out infinite;
+}
+#page-cart .cart-next b{color:var(--gold-dark);font-weight:800}
+#page-cart .cart-next.best{
+  color:#20492E;background:linear-gradient(90deg,#E6F5EC,#FBFFFC);
+  border-color:#57A46A;animation-name:flowGlowWa;
+}
+
+/* the stepper, the amount and the remove mark */
+#page-cart .cart-qty{border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.07);transition:box-shadow .2s ease}
+#page-cart .cart-qty:focus-within{box-shadow:0 0 0 3px rgba(26,77,46,.14),0 1px 6px rgba(0,0,0,.07)}
+#page-cart .cart-amt{
+  font-family:Mukta,system-ui,sans-serif;font-weight:800;
+  animation:sumLift .5s cubic-bezier(.34,1.5,.64,1);
+}
+#page-cart .cart-x{transition:color .16s ease,transform .14s ease}
+#page-cart .cart-x:active{color:#C33;transform:scale(.88)}
+
+/* the totals block */
+#page-cart .cart-sums{
+  border:1.5px solid #CFE0D5;border-radius:calc(var(--u) * .9);
+  background:linear-gradient(160deg,#F2F8F3,#FBFEFC);
+  padding:calc(var(--u) * .7);
+}
+#page-cart .cart-sums > div{font-family:Mukta,system-ui,sans-serif;font-weight:600}
+#page-cart .cart-mrpline s{color:#A79C88;animation:mrpFade 4.4s ease-in-out infinite}
+#page-cart .cart-sums .cart-saved b{color:var(--gold-dark);animation:ofGold 3.6s ease-in-out infinite}
+#page-cart .cart-grand{
+  margin-top:calc(var(--u) * .45);padding-top:calc(var(--u) * .45);
+  border-top:1.5px solid rgba(26,77,46,.18);
+  font-weight:800;
+}
+#page-cart .cart-grand b{
+  font-family:Mukta,system-ui,sans-serif;font-weight:800;color:var(--green);
+  display:inline-block;animation:totalPulse 3.4s ease-in-out infinite;
+}
+#page-cart .cart-foot{border-top:1.5px solid var(--line);margin-top:calc(var(--u) * .8);padding-top:calc(var(--u) * .8)}
+#page-cart .cart-info{font-family:Mukta,system-ui,sans-serif;font-weight:700}
+#page-cart .cart-cta .btn-gold{
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 14px rgba(232,163,61,.34);
+  animation:submitFlash 3s ease-in-out infinite;
+}
+#page-cart .cart-cta .btn-gold::after{
+  content:"";position:absolute;top:0;left:-55%;width:42%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-18deg);animation:gateSheen 4.4s ease-in-out infinite;
+}
+
+@media(max-width:399px){
+  #page-cart .cart-hint{font-size:calc(var(--u) * .76)}
+  #page-cart .cart-next{font-size:calc(var(--u) * .76)}
+}
+@media(prefers-reduced-motion:reduce){
+  .cart-row::before,.cart-mrp,.cart-pct,.cart-row .cart-saved,.cart-next,
+  .cart-amt,.cart-grand b,.cart-mrpline s,.cart-sums .cart-saved b,
+  #page-cart .cart-cta .btn-gold,
+#page-cart .cart-cta .btn-gold::after{animation:none}
+}
+
+/* ===================================================================
+   BOOKS PAGE — the hint, the book dropdown and the filter grid.
+   Scoped to the page so nothing here can reach another window.
+   =================================================================== */
+#page-books .books-hint{
+  position:relative;margin:0 0 calc(var(--u) * .7);padding-left:calc(var(--u) * .62);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .83);
+  font-weight:600;line-height:1.35;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#page-books .books-hint::before{
+  content:"";position:absolute;left:0;top:3px;bottom:3px;width:2.5px;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark));
+}
+
+#page-books .filters{display:flex;flex-direction:column;gap:calc(var(--u) * .55)}
+#page-books .ffield,#page-books .fpick{display:flex;flex-direction:column;gap:3px;min-width:0}
+#page-books .flab{
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .78);font-weight:700;
+  color:var(--green-dark);letter-spacing:.2px;padding-left:2px;
+}
+/* two even columns, equal heights, aligned labels */
+#page-books .fgrid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:calc(var(--u) * .5) calc(var(--u) * .55);
+}
+#page-books .fsel{
+  width:100%;min-width:0;height:calc(var(--u) * 2.9);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .92);font-weight:700;
+  color:var(--ink);background:var(--white);
+  border:1.5px solid var(--line);border-radius:calc(var(--u) * .7);
+  padding:0 calc(var(--u) * 1.7) 0 calc(var(--u) * .6);
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 9l6 6 6-6' fill='none' stroke='%23B87A1E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat:no-repeat;background-position:right calc(var(--u) * .55) center;
+  background-size:calc(var(--u) * .85);
+  transition:border-color .18s ease,box-shadow .2s ease;
+}
+#page-books .fsel:focus{
+  outline:none;border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(26,77,46,.14);
+}
+/* the book dropdown is the way in, so it is the loudest thing here */
+#page-books .fsel-pick{
+  height:calc(var(--u) * 3.2);
+  font-weight:800;font-size:calc(var(--u) * 1);
+  color:#5A3B06;
+  background-color:#FFF7E6;
+  border:2px solid var(--gold);
+  box-shadow:0 2px 10px rgba(232,163,61,.22);
+  animation:pickHalo 3s ease-in-out infinite;
+}
+@keyframes pickHalo{
+  0%,100%{box-shadow:0 2px 10px rgba(232,163,61,.22)}
+  50%    {box-shadow:0 2px 10px rgba(232,163,61,.22),0 0 0 5px rgba(232,163,61,.16)}
+}
+#page-books .fpick .flab{color:var(--gold-dark)}
+
+#page-books .fclear{
+  align-self:flex-start;
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .85);font-weight:800;
+  color:var(--green-dark);background:var(--white);
+  border:1.5px solid var(--line);border-radius:999px;
+  padding:calc(var(--u) * .34) calc(var(--u) * .8);
+  transition:transform .14s ease,border-color .18s ease,color .18s ease;
+}
+#page-books .fclear:active{transform:scale(.95);border-color:#C33;color:#C33}
+
+#page-books .fcount{
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .88);
+  font-weight:700;color:var(--ink-soft);margin:calc(var(--u) * .2) 0 0;
+}
+#page-books .fcount strong{
+  color:var(--green);font-weight:800;display:inline-block;
+  animation:sumLift .45s cubic-bezier(.34,1.5,.64,1);
+}
+@media(max-width:399px){
+  #page-books .books-hint{font-size:calc(var(--u) * .76)}
+}
+@media(prefers-reduced-motion:reduce){
+  #page-books .fsel-pick,#page-books .fcount strong{animation:none}
+}

@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15j',
+  VERSION: 'v15p',
   lang: 'mr',
   text: {},
   locations: null,
@@ -995,13 +995,16 @@ const BOOKS = {
     this.app = app;
     const g = id => document.getElementById(id);
     this.el = { grid: g('bookGrid'), feat: g('featGrid'), none: g('bookNone'),
-                count: g('bCount'), search: g('bSearch'), std: g('fStd'),
+                count: g('bCount'), countW: g('bCountW'), pick: g('bPick'), std: g('fStd'),
                 med: g('fMed'), sub: g('fSub'), sort: g('fSort'),
                 clear: g('fClear'), detail: g('bookDetail'), slab: g('slabTable'),
                 note: g('sampleNote') };
 
-    this.el.search.addEventListener('input', () => {
-      this.filters.q = this.el.search.value.trim().toLowerCase(); this.renderGrid();
+    /* Five books do not need typing. The dropdown lists every live book,
+       and choosing one opens it straight away. */
+    this.el.pick.addEventListener('change', () => {
+      const v = this.el.pick.value;
+      if (v) { this.openBook(v); this.el.pick.value = ''; }
     });
     ['std','med','sub','sort'].forEach(k => {
       this.el[k].addEventListener('change', () => {
@@ -1010,7 +1013,7 @@ const BOOKS = {
     });
     this.el.clear.addEventListener('click', () => {
       this.filters = { q: '', std: '', med: '', sub: '', sort: 'std' };
-      this.el.search.value = '';
+      this.el.pick.value = '';
       ['std','med','sub'].forEach(k => this.el[k].value = '');
       this.el.sort.value = 'std';
       this.renderGrid();
@@ -1098,7 +1101,10 @@ const BOOKS = {
     const all = `<option value="">${t('books_all')}</option>`;
     const books = this.live();
 
-    this.el.search.placeholder = t('books_search_ph');
+    /* built from the data, so a new LIVE book appears here by itself */
+    const mrL = this.app.lang === 'mr';
+    this.el.pick.innerHTML = `<option value="">${t('books_all')}</option>` +
+      this.live().map(b => `<option value="${b.book_id}">${mrL ? b.name_mr : b.name_en}</option>`).join('');
 
     this.el.std.innerHTML = all + ['1','2','3','4','5']
       .map(s => `<option value="${s}">${t('books_standard')} ${mr ? '१२३४५'[s-1] : s}</option>`).join('');
@@ -1199,6 +1205,7 @@ const BOOKS = {
     this.el.grid.innerHTML = list.map(b => this.card(b)).join('');
     try { PATH.draw('page-books', 'booksPath', 'terra'); } catch (e) { console.error('path', e); }
     this.el.count.textContent = list.length;
+    if (this.el.countW) this.el.countW.textContent = CART.bookWord(list.length);
     this.el.none.classList.toggle('hidden', list.length > 0);
     this.bind(this.el.grid);
   },
@@ -1375,6 +1382,7 @@ const BOOKS = {
                 <button type="button" id="qPlus">+</button>
               </div>
             </div>
+            <p class="calc-hint">${t('calc_qty_hint')}</p>
             <div class="nudge" id="nudge"></div>
             <div class="calc-out" id="calcOut"></div>
             <div id="ladderBox"></div>
@@ -1833,6 +1841,10 @@ const CART = {
       .sort((a, b) => rank(a.book.book_id) - rank(b.book.book_id));
   },
 
+  /* one book is पुस्तक, more than one पुस्तके — the count and the word
+     were separate, so a single book read "1 पुस्तके" */
+  bookWord(n) { return this.app.t(n === 1 ? 'cart_book_one' : 'cart_book_many'); },
+
   totals() {
     const l = this.lines();
     return { n: l.length,
@@ -1851,6 +1863,10 @@ const CART = {
     if (bar) {
       bar.classList.toggle('hidden', t.n === 0);
       document.getElementById('cartBarN').textContent = t.n;
+    const bw = document.getElementById('cartBarW');
+    if (bw) bw.textContent = this.bookWord(t.n);
+    const bq = document.getElementById('cartBarQ');
+    if (bq) bq.textContent = t.qty + ' ' + this.app.t('price_qty');
       document.getElementById('cartBarT').textContent = '\u20B9' + t.total;
     }
   },
@@ -1872,13 +1888,22 @@ const CART = {
 
     const T = this.totals();
     box.innerHTML = `
+      <p class="cart-hint">${t('cart_qty_hint')}</p>
       <div class="cart-list">${lines.map(l => `
-        <div class="cart-row">
+        <div class="cart-row" style="--bc:${l.book.title_colour || 'var(--gold)'}">
           <div class="cart-thumb">${this.app.img('books', l.book.cover_image, '', this.app.lang === 'mr' ? l.book.name_mr : l.book.name_en)}</div>
           <div class="cart-info">
             ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="cart-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
+            <div class="cart-sub">${BOOKS.stdLabel(l.book)} &middot; ${BOOKS.medLabel(l.book)}</div>
             <div class="cart-meta">&#8377;${l.each} ${t('price_each')}
-              ${l.pct ? `<span class="cart-pct">${l.pct}% ${t('cart_saving')}</span>` : ''}</div>
+              ${l.book.mrp > l.each ? `<s class="cart-mrp">&#8377;${l.book.mrp}</s>` : ''}
+              ${l.pct ? `<span class="cart-pct">${l.pct}% ${t('cart_saving')}</span>` : ''}
+              ${l.saved ? `<span class="cart-saved">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}</div>
+            ${(() => { const nx = BOOKS.nextSlab(l.book, l.qty);
+               if (!nx) return `<div class="cart-next best">${t('cart_best_rate')}</div>`;
+               const need = Number(nx.qty_min) - l.qty;
+               const save = (l.each - Number(nx.selling_rate)) * Number(nx.qty_min);
+               return `<div class="cart-next">${t('cart_more_a')} <b>${need}</b> ${t('cart_more_b')} <b>&#8377;${nx.selling_rate}</b> ${t('cart_more_c')} <b>&#8377;${save}</b> ${t('cart_more_d')}</div>`; })()}
           </div>
           <div class="cart-qty">
             <button data-cq="${l.book.book_id}" data-d="-1">&minus;</button>
@@ -1895,7 +1920,9 @@ const CART = {
 
       <div class="cart-foot">
         <div class="cart-sums">
-          <div><span>${T.qty} ${t('price_qty')} &middot; ${T.n} ${t('cart_books')}</span></div>
+          <div><span>${T.n} ${this.bookWord(T.n)} &middot; ${T.qty} ${t('price_qty')}</span></div>
+          ${T.saved ? `<div class="cart-mrpline">${t('cart_mrp')}
+            <s>&#8377;${T.total + T.saved}</s></div>` : ''}
           ${T.saved ? `<div class="cart-saved">${t('cart_total_save')}
             <b>&#8377;${T.saved}</b></div>` : ''}
           <div class="cart-grand">${t('cart_total')} <b>&#8377;${T.total}</b></div>
