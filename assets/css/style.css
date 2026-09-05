@@ -468,7 +468,8 @@ a{color:inherit;text-decoration:none}
   text-underline-offset:3px}
 
 .bd-title{font-size:29px;color:var(--green-dark);line-height:1.3;
-  display:flex;align-items:center;gap:calc(var(--u) * .55);min-width:0}
+  display:flex;align-items:center;gap:calc(var(--u) * .55);min-width:0;
+  justify-content:center;text-align:center}
 .bd-title > span{min-width:0}
 .bd-sub{font-size:15px;color:var(--ink-soft);margin:4px 0 16px}
 .bd-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;
@@ -4473,12 +4474,8 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
    mistaken for a section heading */
 .bt-mark{
   flex-shrink:0;align-self:center;
-  width:.62em;height:.46em;border-radius:1px;
-  background:
-    linear-gradient(180deg, currentColor, currentColor) center/1.5px 100% no-repeat,
-    linear-gradient(180deg, currentColor, currentColor) left/45% 1.5px no-repeat,
-    linear-gradient(180deg, currentColor, currentColor) right/45% 1.5px no-repeat;
-  border:1.5px solid currentColor;border-top-width:0;border-bottom-width:0;
+  width:.44em;height:.44em;border-radius:2px;
+  background:currentColor;
   transform-origin:center;
   animation:btGlow 1.9s cubic-bezier(.3,0,.2,1) infinite;
 }
