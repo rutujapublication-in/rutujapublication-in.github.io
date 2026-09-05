@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15t',
+  VERSION: 'v15u',
   lang: 'mr',
   text: {},
   locations: null,
@@ -462,6 +462,8 @@ const RUTUJA = {
   go(page, fromHash) {
     const target = document.getElementById('page-' + page);
     if (!target) return;
+    /* leaving a page must silence anything playing on it */
+    try { MEDIA.stopAll(); } catch (e) {}
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     target.classList.add('active');
     document.querySelectorAll('.nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === page));
@@ -590,6 +592,7 @@ const ENTRY = {
   },
 
   closeModal(fromBack) {
+    try { MEDIA.stopAll(); } catch (e) {}
     document.getElementById('modal').classList.add('hidden');
     document.body.style.overflow = '';
     try { QA.forAudience(''); } catch (e) {}
@@ -1528,21 +1531,24 @@ const MEDIA = {
       .filter(v => !v.video_type || /book/i.test(v.video_type) || v.book_id);
     const ads  = this.live('ads', true);
 
+    /* Only the home carousel is needed for the first paint. The rest —
+       the videos page carousel, the ad strip and the full grid — are off
+       screen, so they are built after the browser has drawn. */
     this.build('vidCar',  vids, 'video', this.cfg('video_rotate_seconds', 4000));
-    this.build('vidCar2', vids, 'video', this.cfg('video_rotate_seconds', 4000));
-    this.build('adCar',   ads,  'ad',    this.cfg('ad_rotate_seconds', 3000));
-    this.grid('vidGrid', vids);
+    requestAnimationFrame(() => {
+      this.build('vidCar2', vids, 'video', this.cfg('video_rotate_seconds', 4000));
+      this.build('adCar',   ads,  'ad',    this.cfg('ad_rotate_seconds', 3000));
+      this.grid('vidGrid', vids);
+    });
   },
 
-  /* maxresdefault is 1280x720. Not every video has one, so fall back
-     through sd, then hq, which always exist. */
-  /* maxresdefault is the largest still YouTube keeps (1280x720).
-     Not every video has one, so step down through sd, then hq. */
+  /* hqdefault is 480x360 and always exists — about 15KB against 90-130KB
+     for maxresdefault, which was being downloaded for a still displayed
+     around 300px wide. It also never 404s, so no failed requests. */
   thumbImg(id, eager) {
-    const hq = `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'`;
-    return `<img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
-      onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/sddefault.jpg';this.onerror=function(){${hq}}"
-      alt="" decoding="async"${eager ? '' : ' loading="lazy"'}>`;
+    return `<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg"
+      alt="" decoding="async" loading="${eager ? 'eager' : 'lazy'}"
+      width="480" height="360">`;
   },
 
 
@@ -1703,13 +1709,28 @@ const MEDIA = {
     this.bindPlay(box);
   },
 
+  /* Stop every player on the page and put its still back. Navigating away
+     used to leave the iframe alive, so the sound carried into the next
+     window; and a second tap could start a video while the first played. */
+  stopAll() {
+    document.querySelectorAll('[data-yt].playing').forEach(m => {
+      m.classList.remove('playing');
+      m.innerHTML = this.thumbImg(m.dataset.yt, false) + (m.dataset.link || '');
+    });
+  },
+
   /* Clicking the frame swaps the still for the real player, in place. */
   bindPlay(root) {
     root.querySelectorAll('[data-yt]').forEach(m => {
       m.setAttribute('role', 'button');
       m.setAttribute('tabindex', '0');
+      if (!m.dataset.link) {
+        const a = m.querySelector('.car-full');
+        if (a) m.dataset.link = a.outerHTML;
+      }
       m.addEventListener('click', () => {
         if (m.classList.contains('playing')) return;
+        this.stopAll();
         m.classList.add('playing');
         m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
@@ -2299,6 +2320,7 @@ const PEEK = {
   },
 
   close(fromBack) {
+    try { MEDIA.stopAll(); } catch (e) {}
     if (!fromBack) this.app.popWin();
     document.getElementById('peek').classList.add('hidden');
     document.body.style.overflow = '';
@@ -2516,6 +2538,7 @@ const ORDER = {
   },
 
   close(fromBack) {
+    try { MEDIA.stopAll(); } catch (e) {}
     if (!fromBack) this.app.popWin();
     document.getElementById('orderWin').classList.add('hidden');
     document.body.style.overflow = '';
