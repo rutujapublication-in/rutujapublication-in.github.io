@@ -1070,7 +1070,10 @@ a{color:inherit;text-decoration:none}
 .cart-empty p{font-size:16px;color:var(--ink-soft);margin-bottom:18px}
 .cart-list{display:flex;flex-direction:column;gap:12px}
 .cart-row{
-  display:grid;grid-template-columns:64px 1fr auto auto 34px;gap:14px;align-items:center;
+  display:grid;
+  grid-template-columns:64px 1fr auto 34px;
+  grid-template-areas:"t i i x" "t n n n" "t l l l" "t q a a";
+  gap:10px 14px;align-items:center;
   background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 15px;
 }
 .cart-thumb{width:64px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
@@ -1608,7 +1611,7 @@ html[lang="en"] body{line-height:1.65}
 /* ---------- 480 to 819 : large phone and small tablet ---------- */
 @media(max-width:819px){
 .cart-row{grid-template-columns:56px 1fr auto;grid-template-areas:
-    "t i x" "t q a";row-gap:11px}
+    "t i x" "t n n" "t l l" "t q a";row-gap:9px}
   .cart-thumb{grid-area:t;width:56px}
   .cart-info{grid-area:i}
   .cart-qty{grid-area:q}
@@ -1864,7 +1867,10 @@ html[lang="en"] body{line-height:1.65}
   .opick-cover{width:54px}
   .opick-line{width:100%;font-size:13px}
 .bd-facts{grid-template-columns:repeat(2,1fr)}
-  .cart-row{grid-template-columns:48px 1fr;grid-template-areas:"t i" "q a" "x x";gap:9px}
+  /* the stepper spans both columns here: in one column it inherits the
+     48px cover width and the + button is clipped */
+  .cart-row{grid-template-columns:48px 1fr;
+    grid-template-areas:"t i" "n n" "l l" "q q" "a x";gap:8px}
   .cart-thumb{width:48px}
   .cart-x{grid-area:x;justify-self:end;margin-top:-6px}
   .cart-amt{text-align:right}
@@ -3252,7 +3258,9 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   text-wrap:pretty;
 }
 .flow-note > span:last-child::first-line{
-  font-weight:700;font-size:13.2px;color:#5A3B06;letter-spacing:.1px;
+  /* weight, not size — a larger first line pushed the sentence to a
+     second row while the rest of the note fitted */
+  font-weight:700;color:#5A3B06;letter-spacing:.1px;
 }
 .flow-note-wa > span:last-child::first-line{color:#15381F}
 @keyframes flowGlow{
@@ -3321,7 +3329,11 @@ html[lang="mr"] .book-t{
   .hd-sm .hd-t{font-size:15.5px}
   .hd-s{font-size:12.8px}
   .win-lang{font-size:11.8px;padding:4px 11px;top:20px;right:62px}
-  .flow-note{font-size:12.1px;padding:9px 11px 9px 13px;gap:8px}
+  /* 11px here too — the base rule was being overridden on every phone,
+     which is why two sentences rendered as four rows */
+  .flow-note{font-size:11px;padding:8px 8px 8px 10px;gap:5px}
+  .flow-note .flow-ico{width:12px;height:12px}
+  .flow-note > span:last-child::first-line{font-size:11px}
   .done-wa,.modal-wa-btn,.qa-ask-btn{font-size:15.5px;min-height:50px}
 }
 
@@ -4662,10 +4674,12 @@ form.collapsed .cond{display:none}
 #page-cart .cart-sub{
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);
   font-weight:600;color:var(--ink-soft);margin:1px 0 3px;
+  animation:descIn .5s ease-out .06s both;
 }
 #page-cart .cart-meta{
   font-family:Mukta,system-ui,sans-serif;font-weight:600;
   display:flex;align-items:center;gap:calc(var(--u) * .4);flex-wrap:wrap;
+  animation:descIn .5s ease-out .12s both;
 }
 #page-cart .cart-mrp{color:#A79C88;animation:mrpFade 4.4s ease-in-out infinite}
 #page-cart .cart-pct{
@@ -4684,7 +4698,7 @@ form.collapsed .cond{display:none}
 
 /* what one more slab would give */
 #page-cart .cart-next{
-  grid-column:1/-1;
+  grid-area:n;margin:0;
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);font-weight:600;
   color:#7A5410;background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-radius:calc(var(--u) * .7);
@@ -4698,13 +4712,15 @@ form.collapsed .cond{display:none}
 }
 
 /* the stepper, the amount and the remove mark */
-#page-cart .cart-qty{border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.07);transition:box-shadow .2s ease}
+#page-cart .cart-qty{border-radius:10px;justify-self:start;
+  box-shadow:0 1px 6px rgba(0,0,0,.07);transition:box-shadow .2s ease}
 #page-cart .cart-qty:focus-within{box-shadow:0 0 0 3px rgba(26,77,46,.14),0 1px 6px rgba(0,0,0,.07)}
 #page-cart .cart-amt{
+  justify-self:end;
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
   animation:sumLift .5s cubic-bezier(.34,1.5,.64,1);
 }
-#page-cart .cart-x{transition:color .16s ease,transform .14s ease}
+#page-cart .cart-x{justify-self:end;transition:color .16s ease,transform .14s ease}
 #page-cart .cart-x:active{color:#C33;transform:scale(.88)}
 
 /* the totals block */
@@ -4726,7 +4742,7 @@ form.collapsed .cond{display:none}
   display:inline-block;animation:totalPulse 3.4s ease-in-out infinite;
 }
 #page-cart .cart-foot{border-top:1.5px solid var(--line);margin-top:calc(var(--u) * .8);padding-top:calc(var(--u) * .8)}
-#page-cart .cart-info{font-family:Mukta,system-ui,sans-serif;font-weight:700}
+#page-cart .cart-info{font-family:Mukta,system-ui,sans-serif;font-weight:700;transition:transform .14s ease}
 #page-cart .cart-cta .btn-gold{
   position:relative;overflow:hidden;
   box-shadow:0 4px 14px rgba(232,163,61,.34);
@@ -4891,3 +4907,47 @@ form.collapsed .cond{display:none}
 #page-books .hd-page{margin:calc(var(--u) * .35) 0 calc(var(--u) * .28)}
 #page-books .wpath{margin-bottom:calc(var(--u) * .42)}
 #page-books .book-grid{margin-top:12px}
+
+
+/* ===================================================================
+   माझी पुस्तके card — every child claims an area, so nothing is
+   auto-placed into a column it cannot fit. That is what clipped the
+   + button and squashed the slab hint beside the cover.
+   =================================================================== */
+#page-cart .cart-qlab{grid-area:l;display:flex;flex-direction:column;gap:2px;min-width:0}
+#page-cart .cart-qlab-t{
+  display:flex;align-items:center;gap:calc(var(--u) * .4);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .88);
+  font-weight:800;color:var(--green-dark);
+}
+#page-cart .cart-qmark{
+  flex-shrink:0;width:calc(var(--u) * .5);height:calc(var(--u) * .5);
+  border-radius:2px;transform:rotate(45deg);
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  animation:hdGlow 2.4s ease-in-out infinite;
+}
+#page-cart .cart-qhint{
+  position:relative;padding-left:calc(var(--u) * .58);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .76);
+  font-weight:600;color:var(--ink-soft);line-height:1.35;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#page-cart .cart-qhint::before{
+  content:"";position:absolute;left:0;top:2px;bottom:2px;width:2.5px;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark));
+}
+
+/* the five elements that still carried no effect */
+#page-cart .cart-row:active .cart-info{transform:translateY(-1px)}
+#page-cart .cart-name{transition:transform .14s ease}
+#page-cart .cart-row:active .cart-name{transform:scale(.99)}
+#page-cart .cart-foot::before{
+  content:"";position:absolute;left:0;top:-1.5px;height:2.5px;width:70px;
+  border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--green));
+  animation:hdRule 5.2s ease-in-out infinite;
+}
+#page-cart .cart-qty input{font-weight:800}
+@media(prefers-reduced-motion:reduce){
+  #page-cart .cart-qmark,#page-cart .cart-sub,#page-cart .cart-meta,
+  #page-cart .cart-foot::before{animation:none}
+}

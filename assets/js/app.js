@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15r',
+  VERSION: 'v15s',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1912,7 +1912,6 @@ const CART = {
 
     const T = this.totals();
     box.innerHTML = `
-      <p class="cart-hint">${t('cart_qty_hint')}</p>
       <div class="cart-list">${lines.map(l => `
         <div class="cart-row" style="--bc:${l.book.title_colour || 'var(--gold)'}">
           <div class="cart-thumb">${this.app.img('books', l.book.cover_image, '', this.app.lang === 'mr' ? l.book.name_mr : l.book.name_en)}</div>
@@ -1923,11 +1922,15 @@ const CART = {
               ${l.book.mrp > l.each ? `<s class="cart-mrp">&#8377;${l.book.mrp}</s>` : ''}
               ${l.pct ? `<span class="cart-pct">${l.pct}% ${t('cart_saving')}</span>` : ''}
               ${l.saved ? `<span class="cart-saved">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}</div>
-            ${(() => { const nx = BOOKS.nextSlab(l.book, l.qty);
-               if (!nx) return `<div class="cart-next best">${t('cart_best_rate')}</div>`;
-               const need = Number(nx.qty_min) - l.qty;
-               const save = (l.each - Number(nx.selling_rate)) * Number(nx.qty_min);
-               return `<div class="cart-next">${t('cart_more_a')} <b>${need}</b> ${t('cart_more_b')} <b>&#8377;${nx.selling_rate}</b> ${t('cart_more_c')} <b>&#8377;${save}</b> ${t('cart_more_d')}</div>`; })()}
+          </div>
+          ${(() => { const nx = BOOKS.nextSlab(l.book, l.qty);
+             if (!nx) return `<div class="cart-next best">${t('cart_best_rate')}</div>`;
+             const need = Number(nx.qty_min) - l.qty;
+             const save = (l.each - Number(nx.selling_rate)) * Number(nx.qty_min);
+             return `<div class="cart-next">${t('cart_more_a')} <b>${need}</b> ${t('cart_more_b')} <b>&#8377;${nx.selling_rate}</b> ${t('cart_more_c')} <b>&#8377;${save}</b> ${t('cart_more_d')}</div>`; })()}
+          <div class="cart-qlab">
+            <span class="cart-qlab-t"><i class="cart-qmark" aria-hidden="true"></i>${t('price_qty')}</span>
+            <span class="cart-qhint">${t('cart_qty_hint')}</span>
           </div>
           <div class="cart-qty">
             <button data-cq="${l.book.book_id}" data-d="-1">&minus;</button>
