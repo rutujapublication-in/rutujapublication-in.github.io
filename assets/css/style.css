@@ -3931,10 +3931,12 @@ html[lang="mr"] .book-t{
 
 .bd .bd-subtitle{color:var(--gold-dark);font-weight:600;text-align:center}
 /* the line sits directly under the title, above the two lines below it */
-.bd .bd-title{position:relative;padding-bottom:12px;margin-bottom:6px}
-.bd .bd-title::after{
-  content:"";position:absolute;left:50%;transform:translateX(-50%);
-  bottom:0;height:2.5px;width:120px;border-radius:2px;
+/* The line is its own centred element between the title and the two
+   lines beneath. Absolute placement inside the flex title kept drifting. */
+.bd .bd-title{margin-bottom:0}
+.bd-rule{
+  display:block;height:2.5px;width:120px;margin:9px auto 7px;
+  border-radius:2px;
   background:linear-gradient(90deg,var(--gold),var(--green));
   animation:hdRule 5s ease-in-out infinite;
 }
@@ -4025,7 +4027,7 @@ html[lang="mr"] .book-t{
 }
 
 @media(prefers-reduced-motion:reduce){
-  .bd .bd-title::after,.bd .bd-cover::after,.bd .bd-desc,
+  .bd-rule,.bd .bd-cover::after,.bd .bd-desc,
   .bd .disc-head,.bd .disc-head b,.bd .calc-total,.bd .calc-save,
   .bd .nudge-text b,.bd .btn-gold,.bd .btn-gold::after,.bd .pct{animation:none}
   .bd .bd-title{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
@@ -4439,12 +4441,20 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 
 /* the form section's heading — title and subtitle, one row each */
 .need-hd{margin:0 0 calc(var(--u) * .8)}
+/* Set the way the book description and the notes are: the sentence keeps
+   every word and wraps, justified between the margins with a straight
+   right edge, breaking whole words only. Forcing one line here is what
+   made the wording have to be cut. */
 .need-s{
   position:relative;padding:0 0 9px;
   font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:calc(var(--u) * .95);line-height:1.35;
+  font-size:calc(var(--u) * .95);line-height:1.45;
   color:var(--gold-dark);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  white-space:pre-line;
+  text-align:justify;text-align-last:left;
+  overflow-wrap:break-word;
+  hyphens:none;-webkit-hyphens:none;
+  text-wrap:pretty;
 }
 
 /* ===================================================================
@@ -4511,8 +4521,12 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 
 /* the width each surface gives a title */
 .bd-title.bt   {--btw:252px}
-.opick-name.bt {--btw:256px}
-.oline-name.bt {--btw:200px}
+/* the order window keeps colour, flash and the weight split, but takes
+   its own sizing and carries no mark */
+.bt-plain{font-size:inherit}
+.bt-plain > span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opick-name.bt{font-size:15px}
+.oline-name.bt{font-size:15.5px}
 .cart-name.bt  {--btw:210px}
 
 @media(prefers-reduced-motion:reduce){
@@ -4527,12 +4541,4 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
    =================================================================== */
 
 /* the widths the new surfaces give a title */
-.vcard-title.bt{--btw:287px;justify-content:center}
-/* a grid card is about 155px on a phone, far too narrow for one line at
-   a readable size, so here the title keeps its original size and wraps —
-   only the colour, the weight split and the mark are applied */
-.book-name.bt{
-  font-size:16.5px;flex-wrap:wrap;align-items:center;
-}
-.book-name.bt > span{white-space:normal;overflow:visible;text-overflow:clip}
 .peek-name.bt  {--btw:220px;justify-content:center}

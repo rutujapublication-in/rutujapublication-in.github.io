@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15c',
+  VERSION: 'v15e',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1149,7 +1149,7 @@ const BOOKS = {
           <span class="chip chip-std" style="background:${this.stdColor(b)}">${t('chip_std')} ${num}</span>
           ${pct ? `<span class="chip chip-off">${pct}% ${t('disc_upto')}</span>` : ''}
         </span>
-        ${(() => { const T = MEDIA.bookTitle(b, mr); return `<span class="book-name${plain ? '' : ' bt'}" style="--tw:${T.w};--bc:${T.c}">${plain ? name : `<i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span>`}</span>`; })()}
+        <span class="book-name">${name}</span>
         <span class="book-meta">${sub} · ${this.medLabel(b)}</span>
         ${b.subtitle_mr || b.subtitle_en ? `<span class="book-sub">${mr ? b.subtitle_mr : b.subtitle_en}</span>` : ''}
         <span class="book-price">&#8377;${b.mrp}${hint}</span>
@@ -1307,6 +1307,7 @@ const BOOKS = {
         </div>
         <div>
           ${(() => { const T = MEDIA.bookTitle(b, mr); return `<h1 class="bd-title bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></h1>`; })()}
+          <span class="bd-rule" aria-hidden="true"></span>
           ${(mr ? b.subtitle_mr : b.subtitle_en) ? `<p class="bd-subtitle">${mr ? b.subtitle_mr : b.subtitle_en}</p>` : ''}
           <p class="bd-sub">${this.subs(b).join(' · ')} &nbsp;|&nbsp; ${this.medLabel(b)}</p>
           <div id="bdPath" class="wpath"></div>
@@ -1600,7 +1601,7 @@ const MEDIA = {
         </div>
       </div>
       <div class="vcard-body">
-        ${(() => { const T = book ? MEDIA.bookTitle(book, mr) : { html: `<b>${mr ? v.title_mr : v.title_en}</b>`, w: 20, c: '' }; return `<h3 class="vcard-title bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></h3>`; })()}
+        <h3 class="vcard-title" style="--chw:${MEDIA.titleWidth(mr ? v.title_mr : v.title_en, mr)}"><i class="vcard-mark" aria-hidden="true"></i><span>${mr ? v.title_mr : v.title_en}</span></h3>
         <span class="vcard-tag">${mr ? v.tagline_mr : v.tagline_en}</span>
         <p class="vcard-cap">${mr ? v.caption_mr : v.caption_en}</p>
         ${book ? `<button class="vcard-btn" ${own ? `data-order-book="${book.book_id}"` : `data-book="${book.book_id}"`}>${t(own ? 'book_order_now' : 'video_see_book')} &rarr;</button>` : ''}
@@ -2308,7 +2309,7 @@ const ORDER = {
         return `<div class="opick-row bk-${(i % 5) + 1}${q ? ' on' : ''}">
           <div class="opick-cover">${this.app.img('books', b.cover_image, '', this.app.lang === 'mr' ? b.name_mr : b.name_en)}</div>
           <div class="opick-main">
-            ${(() => { const T = MEDIA.bookTitle(b, mr); return `<div class="opick-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
+            ${(() => { const T = MEDIA.bookTitle(b, mr); return `<div class="opick-name bt bt-plain" style="--bc:${T.c}"><span>${T.html}</span></div>`; })()}
             <div class="opick-money">
               <span class="om-mrp"><em>${t('mrp_short')}</em><s>&#8377;${b.mrp}</s></span>
               <span class="om-arrow">&rarr;</span>
@@ -2341,7 +2342,7 @@ const ORDER = {
     document.getElementById('orderSum').innerHTML = T.n ? `
       <div class="osum-h">${t('order_lines')}</div>
       ${L.map(l => `<div class="oline">
-        ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
+        ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt bt-plain" style="--bc:${T.c}"><span>${T.html}</span></div>`; })()}
         <div class="oline-facts">
           ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
           <span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>
