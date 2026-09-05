@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15u',
+  VERSION: 'v15w',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1542,13 +1542,17 @@ const MEDIA = {
     });
   },
 
-  /* hqdefault is 480x360 and always exists — about 15KB against 90-130KB
-     for maxresdefault, which was being downloaded for a still displayed
-     around 300px wide. It also never 404s, so no failed requests. */
+  /* maxresdefault, 1280x720 — sharp on any screen including 3x. Quality
+     matters more here than the weight: these stills are the books.
+     Not every video has one, so step down through sd, then hq.
+     width and height are set so nothing reflows as they arrive, and
+     everything off screen is lazy — that is where the speed comes from. */
   thumbImg(id, eager) {
-    return `<img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg"
+    const hq = `this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'`;
+    return `<img src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
+      onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/sddefault.jpg';this.onerror=function(){${hq}}"
       alt="" decoding="async" loading="${eager ? 'eager' : 'lazy'}"
-      width="480" height="360">`;
+      width="1280" height="720">`;
   },
 
 
