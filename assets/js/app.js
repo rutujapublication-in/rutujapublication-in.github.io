@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v16n',
+  VERSION: 'v16x',
   lang: 'mr',
   text: {},
   locations: null,
@@ -305,7 +305,7 @@ const RUTUJA = {
 
     document.querySelectorAll('.std-card').forEach(c => {
       c.addEventListener('click', () => {
-        sessionStorage.setItem('rutuja_filter_std', c.dataset.std);
+        /* the filter itself is set by the .std-card listener in BOOKS */
         this.go('books');
       });
     });
@@ -663,6 +663,10 @@ const ENTRY = {
   /* The skip link inside the form. */
   onSkipped() {
     this.closeModal();
+    /* the label promises the books — all of them. closeModal is
+       synchronous and has already popped the window from history. */
+    try { BOOKS.clearFilters(); } catch (e) {}
+    try { this.app.go('books'); } catch (e) {}
   }
 };
 
@@ -1047,13 +1051,7 @@ const BOOKS = {
         this.filters[k] = this.el[k].value; this.renderGrid();
       });
     });
-    this.el.clear.addEventListener('click', () => {
-      this.filters = { q: '', std: '', med: '', sub: '', sort: 'std' };
-      this.el.pick.value = '';
-      ['std','med','sub'].forEach(k => this.el[k].value = '');
-      this.el.sort.value = 'std';
-      this.renderGrid();
-    });
+    this.el.clear.addEventListener('click', () => this.clearFilters());
 
     // Any [data-book] control anywhere opens that book.
     document.addEventListener('click', e => {
@@ -1143,7 +1141,7 @@ const BOOKS = {
       this.live().map(b => `<option value="${b.book_id}">${mrL ? b.name_mr : b.name_en}</option>`).join('');
 
     this.el.std.innerHTML = all + ['1','2','3','4','5']
-      .map(s => `<option value="${s}">${t('books_standard')} ${mr ? '१२३४५'[s-1] : s}</option>`).join('');
+      .map(s => `<option value="${s}">${t('std_word')} ${mr ? '१२३४५'[s-1] : s}</option>`).join('');
 
     const meds = [];
     books.forEach(b => this.meds(b).forEach(m => { if (!meds.includes(m)) meds.push(m); }));
@@ -1188,6 +1186,18 @@ const BOOKS = {
     else if (f.sort === 'high') out.sort((a, b) => b.mrp - a.mrp);
     else out.sort((a, b) => (a.standard - b.standard) || (a.sort_order - b.sort_order));
     return out;
+  },
+
+  /* The filter survives navigation, so someone who filtered earlier and
+     came back through another route would land on a partial list. This
+     puts the page back to every book. */
+  clearFilters() {
+    this.filters = { q: '', std: '', med: '', sub: '', sort: 'std' };
+    if (!this.el || !this.el.pick) return;
+    this.el.pick.value = '';
+    ['std','med','sub'].forEach(k => { if (this.el[k]) this.el[k].value = ''; });
+    if (this.el.sort) this.el.sort.value = 'std';
+    this.renderGrid();
   },
 
   /* Marks a card as seen the first time it scrolls into view, so its
@@ -1424,7 +1434,7 @@ const BOOKS = {
           <section class="bsec ${SEC.tone()}" data-step="st_b_facts">
             ${this.bhd('bd_facts_h', 'bd_facts_s')}
             <div class="bd-facts">
-              <div class="bd-fact"><div class="bd-fact-k">${t('books_standard')}</div>
+              <div class="bd-fact"><div class="bd-fact-k">${t('std_word')}</div>
                 <div class="bd-fact-v">${num}</div></div>
               <div class="bd-fact"><div class="bd-fact-k">${t('book_mrp')}</div>
                 <div class="bd-fact-v">₹${b.mrp}</div></div>
@@ -2197,7 +2207,11 @@ const ORDERFORM = {
     /* the label comes from the form template — gate_skip, "आधी पुस्तके पाहा".
        It used to be overwritten here with "पुन्हा", which reads wrongly
        before an order has been placed. */
-    this.el.skip.onclick = () => { ORDER.close(); this.app.go('books'); };
+    this.el.skip.onclick = () => {
+      ORDER.close();
+      try { BOOKS.clearFilters(); } catch (e) {}
+      this.app.go('books');
+    };
 
     this.node.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
     this.el.state.addEventListener('change', () => FORM.onState.call(this));

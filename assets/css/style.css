@@ -260,7 +260,6 @@ a{color:inherit;text-decoration:none}
 .w-list{list-style:none;margin-top:14px;font-size:14px}
 .w-list li{padding:7px 0;border-top:1px solid rgba(255,255,255,.14)}
 .w-list strong{color:var(--gold);font-size:16px;margin-right:6px}
-@keyframes rise{0%,100%{transform:translateY(3px);opacity:.6}50%{transform:translateY(-3px);opacity:1}}
 
 /* ---- FORM SHEET ---- */
 .sheet{
@@ -410,7 +409,6 @@ a{color:inherit;text-decoration:none}
 
 /* ---- WELCOME FOOTER: two buttons ---- */
 .welcome-foot{padding:6px 20px 40px;text-align:center}
-@keyframes rise{0%,100%{transform:translateY(4px);opacity:.55}50%{transform:translateY(-4px);opacity:1}}
 
 /* ---- REGISTER AS A NAV ITEM ---- */
 
@@ -1361,7 +1359,9 @@ html[lang="en"] body{line-height:1.65}
 .om-now b{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:700;color:var(--green)}
 .om-now.live b{
   color:var(--gold-dark);
-  animation:ratepulse 1.8s ease-in-out infinite;
+  /* rateLift brings the new figure in, then ratepulse holds it */
+  animation:rateLift .34s cubic-bezier(.34,1.5,.64,1),
+            ratepulse 1.8s ease-in-out .34s infinite;
   display:inline-block;
 }
 @keyframes ratepulse{
@@ -1372,6 +1372,9 @@ html[lang="en"] body{line-height:1.65}
   background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#2E1E02;
   border-radius:7px;padding:4px 10px;font-size:12px;font-weight:800;
   align-self:center;box-shadow:0 2px 7px rgba(184,122,30,.4);
+  /* offPop existed but was applied to nothing, so the badge arrived
+     with no motion. It pops as the rate changes, then holds. */
+  animation:offPop .42s cubic-bezier(.34,1.5,.64,1);
 }
 @media(prefers-reduced-motion:reduce){.om-now.live b{animation:none}}
 
@@ -1540,7 +1543,10 @@ html[lang="en"] body{line-height:1.65}
 .opick-cover{width:74px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
   box-shadow:0 3px 10px rgba(0,0,0,.26)}
 .opick-cover img{width:100%;height:100%;object-fit:cover}
-.opick-main{min-width:0;display:flex;flex-direction:column;gap:5px}
+/* the name column: without a declared area a named-area grid auto-places
+   it, and it can land in the cover's cell — which is what put the book
+   name on top of the picture */
+.opick-main{grid-area:i;min-width:0;display:flex;flex-direction:column;gap:5px}
 
 .opick-name{
   font-family:Mukta,system-ui,sans-serif;font-size:15px;font-weight:700;
@@ -1751,7 +1757,10 @@ html[lang="en"] body{line-height:1.65}
   .nudge{margin:0 0 11px}
   .ph{margin-bottom:13px}
   .sheet{align-items:flex-end}
-.opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q" "s s";row-gap:6px}
+/* one declaration per breakpoint: the columns and the cover width must
+     be set together or they drift apart */
+  .opick-row{grid-template-columns:64px minmax(0,1fr);
+    grid-template-areas:"c i" "q q" "s s";gap:6px 12px;padding:12px}
   .opick-row .cart-qty{width:fit-content}
   .opick-money{gap:12px}
   .om-now b{font-size:19px}
@@ -1764,8 +1773,7 @@ html[lang="en"] body{line-height:1.65}
 .sel select{padding-right:48px}
   .sel::after{right:18px;width:10px;height:10px}
   #gDistT,#gTalT,#o_gDistT,#o_gTalT{height:52px}
-.opick-row{grid-template-columns:64px minmax(0,1fr);gap:12px;padding:12px}
-  .opick-cover{width:64px}
+.opick-cover{width:64px}
   .opick-name{font-size:15px}
   .om-now b{font-size:19px}
   .opick-row .cart-qty button{width:42px;height:42px;font-size:19px}
@@ -1816,7 +1824,8 @@ html[lang="en"] body{line-height:1.65}
   .site{padding-bottom:64px}
 .calc-actions{flex-direction:column}
   .opick-list{max-height:none}
-  .opick-row{grid-template-columns:38px 1fr;grid-template-areas:"c i" "q q";row-gap:6px}
+  /* areas only — the columns are set once, above */
+  .opick-row{grid-template-areas:"c i" "q q";row-gap:6px}
   .opick-cover{grid-area:c}.opick-info{grid-area:i}.opick-row .cart-qty{grid-area:q;width:fit-content}
 }
 
@@ -1879,8 +1888,7 @@ html[lang="en"] body{line-height:1.65}
   .std-right{min-width:62px;padding:13px 5px;gap:7px}
   .std-count{font-size:12px}
   .std-go{font-size:12.5px;padding:7px 11px 7px 13px}
-.opick-row{grid-template-columns:54px minmax(0,1fr);gap:10px}
-  .opick-cover{width:54px}
+.opick-cover{width:60px}
   .opick-line{width:100%;font-size:13px}
 .bd-facts{grid-template-columns:repeat(2,1fr)}
   /* the stepper spans both columns here: in one column it inherits the
@@ -1890,8 +1898,7 @@ html[lang="en"] body{line-height:1.65}
   .cart-thumb{width:48px}
   .cart-x{grid-area:x;justify-self:end;margin-top:-6px}
   .cart-amt{text-align:right}
-  .opick-row{grid-template-columns:34px 1fr}
-  .opick-cover{width:34px}
+  /* 34px was left from an older layout and fought the 60px below */
   .chip{font-size:10px;padding:2px 7px}
   .w-name-mr{font-size:26px}
   .w-name-en{font-size:18px}
@@ -1910,7 +1917,6 @@ html[lang="en"] body{line-height:1.65}
 
   /* the picker cover stays large — earlier drafts shrank it to 34px */
   .opick-row{grid-template-columns:60px minmax(0,1fr);gap:12px;padding:12px}
-  .opick-cover{width:60px}
   .opick-line{width:100%;font-size:13px}
 }
 
@@ -2136,13 +2142,13 @@ img.brand-logo{
 }
 /* a slow warm light drifting behind the composition */
 .st-hero::before{
-  content:"";position:absolute;left:-18%;top:-30%;width:78%;height:150%;
-  background:radial-gradient(50% 50% at 50% 50%, rgba(250,199,117,.22), transparent 70%);
+  content:"";position:absolute;left:-26%;top:-40%;width:110%;height:180%;
+  background:radial-gradient(50% 50% at 50% 50%, rgba(250,199,117,.34), transparent 72%);
   animation:heroDrift 9s ease-in-out infinite;pointer-events:none;
 }
 @keyframes heroDrift{
-  0%,100%{transform:translate(0,0) scale(1);opacity:.75}
-  50%    {transform:translate(14%,6%) scale(1.14);opacity:1}
+  0%,100%{transform:translate(0,0) scale(1);opacity:.7}
+  50%    {transform:translate(30%,10%) scale(1.3);opacity:1}
 }
 /* a fine gold hairline framing the whole slide */
 .st-hero::after{
@@ -2393,8 +2399,13 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 .st-hero{
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   padding:4px 14px;gap:0;
+  /* three glows, spread across the slide rather than one in the middle.
+     A later rewrite had reduced this to a single centred radial, which
+     is why the light looked shifted and flat. */
   background:
-    radial-gradient(72% 48% at 50% 44%, rgba(247,200,107,.20) 0%, transparent 64%),
+    radial-gradient(86% 62% at 18% 22%, rgba(247,200,107,.30) 0%, transparent 66%),
+    radial-gradient(78% 56% at 84% 14%, rgba(196,163,232,.22) 0%, transparent 62%),
+    radial-gradient(96% 70% at 50% 96%, rgba(247,200,107,.18) 0%, transparent 68%),
     linear-gradient(158deg,#3A2450 0%,#2B1B3A 48%,#20142C 100%);
 }
 .sh-title{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0}
@@ -2418,7 +2429,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
 }
 /* rays spreading outward, breathing slowly */
 .sh-rays{
-  position:absolute;left:50%;top:50%;width:230%;height:230%;z-index:0;
+  position:absolute;left:50%;top:50%;width:330%;height:330%;z-index:0;
   transform:translate(-50%,-50%);pointer-events:none;border-radius:22px;
   background:
     conic-gradient(from 0deg,
@@ -2439,14 +2450,14 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
       rgba(247,200,107,.30) 315deg,transparent 323deg,
       rgba(247,200,107,.22) 338deg,transparent 346deg,
       rgba(247,200,107,.30) 360deg),
-    radial-gradient(closest-side, rgba(247,200,107,.34), transparent 72%);
-  -webkit-mask-image:radial-gradient(closest-side,#000 26%,rgba(0,0,0,.55) 58%,transparent 82%);
-          mask-image:radial-gradient(closest-side,#000 26%,rgba(0,0,0,.55) 58%,transparent 82%);
+    radial-gradient(closest-side, rgba(247,200,107,.46), transparent 78%);
+  -webkit-mask-image:radial-gradient(closest-side,#000 20%,rgba(0,0,0,.6) 52%,transparent 88%);
+          mask-image:radial-gradient(closest-side,#000 20%,rgba(0,0,0,.6) 52%,transparent 88%);
   animation:shRays 5.2s ease-in-out infinite;
 }
 @keyframes shRays{
-  0%,100%{transform:translate(-50%,-50%) scale(.94) rotate(0deg);   opacity:.55}
-  50%    {transform:translate(-50%,-50%) scale(1.06) rotate(9deg);  opacity:1}
+  0%,100%{transform:translate(-50%,-50%) scale(.9)  rotate(0deg);  opacity:.5}
+  50%    {transform:translate(-50%,-50%) scale(1.14) rotate(14deg); opacity:1}
 }
 .sh-logo{
   position:relative;z-index:3;display:block;
@@ -3214,11 +3225,6 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
 @keyframes hdSheen{ 0%{background-position:100% 0} 55%,100%{background-position:0 0} }
 /* the quick left-to-right flash, moved here from the path strip's border
    because it reads better on a heading than on a frame */
-@keyframes hdFlash{
-  0%     {background-position:135% 0}
-  46%    {background-position:-35% 0}
-  46.01%,100%{background-position:135% 0}
-}
 @keyframes hdRule{ 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(1.7)} }
 
 /* ---------- the language switch inside a window ---------- */
@@ -5323,4 +5329,47 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 @media(max-width:359px){
   #offerGrid .offer-d{font-size:calc(var(--u) * .78)}
   html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .70)}
+}
+
+
+/* C — the two states of the note above the fields. Both classes were
+   being applied in JS with no style behind them, so the switch between
+   "fill this in" and "your details are ready" showed nothing. */
+.flow-note.fn-amber{
+  background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
+  border-color:var(--gold);color:#6F4B0C;
+}
+.flow-note.fn-amber .flow-ico{background:var(--gold-dark)}
+.flow-note.fn-ready{
+  background:linear-gradient(90deg,#E6F5EC,#FBFFFC);
+  border-color:#57A46A;color:#20492E;
+  animation-name:flowGlowWa;
+}
+.flow-note.fn-ready .flow-ico{background:#3E8E52}
+.flow-note.fn-ready .flow-ico::after{content:"\2713";font-size:10px}
+
+/* D — the questions listed on a book page, marked but never styled */
+.qa-list-book .qa-item{border-left-color:var(--gold-dark)}
+.qa-list-book .qa-qt{font-size:calc(var(--u) * .94)}
+
+/* The Q&A page opens on a list of collapsed questions with nothing to say
+   they open. Same treatment as the books page hint, with the bar
+   travelling — this one sits above content that needs an action. */
+#page-qa .qa-hint{
+  position:relative;margin:0 0 calc(var(--u) * .7);
+  padding-left:calc(var(--u) * .62);
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .83);
+  font-weight:600;line-height:1.35;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#page-qa .qa-hint::before{
+  content:"";position:absolute;left:0;top:3px;bottom:3px;width:2.5px;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold));
+  background-size:100% 220%;animation:flowBar 3.4s ease-in-out infinite;
+}
+@media(max-width:399px){
+  #page-qa .qa-hint{font-size:calc(var(--u) * .78)}
+}
+@media(prefers-reduced-motion:reduce){
+  #page-qa .qa-hint::before{animation:none}
 }

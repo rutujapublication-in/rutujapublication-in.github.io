@@ -376,7 +376,7 @@
     "ns_bulk": "किती हवीत ते सांगा, दर ठरवूयात",
     "nh_retail": "प्रकाशकाशी थेट संपर्क, मध्ये कोणी नाही",
     "ns_retail": "दुकान सांगा, मार्जिन व पुरवठा ठरवू",
-    "nh_parent": "पुस्तक एक असो वा अनेक — घरपोच देणं आमचं काम",
+    "nh_parent": "पुस्तक एक असो वा अनेक — घरपोच मिळवा",
     "ns_parent": "कुठे राहता ते सांगा, पोहोच कळवू",
     "nh_order": "पुस्तकं निवडली, आता शेवटचं पाऊल",
     "ns_order": "माहिती भरा आणि मागणी थेट आमच्यापर्यंत पाठवा",
@@ -398,7 +398,9 @@
     "f_med": "माध्यम",
     "f_sub": "विषय",
     "f_sort": "क्रमवारी",
-    "books_found": "सापडली"
+    "books_found": "सापडली",
+    "pub_name": "ऋतुजा पब्लिकेशन",
+    "std_word": "इयत्ता"
   },
   "en": {
     "nav_home": "Home",
@@ -777,7 +779,7 @@
     "ns_bulk": "Tell Us How Many — We'll Set Your Rate",
     "nh_retail": "Direct With The Publisher",
     "ns_retail": "Your Shop — We'll Settle Margin And Supply",
-    "nh_parent": "One Book Or Many — Delivery Is Our Job",
+    "nh_parent": "One Book Or Many — Get It Delivered",
     "ns_parent": "Where You Live — We'll Arrange It",
     "nh_order": "Books Chosen, One Step Left",
     "ns_order": "Fill In Your Details And Send The Order To Us",
@@ -799,6 +801,8 @@
     "f_med": "Medium",
     "f_sub": "Subject",
     "f_sort": "Sort",
-    "books_found": "Found"
+    "books_found": "Found",
+    "pub_name": "Rutuja Publication",
+    "std_word": "Standard"
   }
 }
