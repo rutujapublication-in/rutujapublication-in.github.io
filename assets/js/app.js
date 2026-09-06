@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v16b',
+  VERSION: 'v16g',
   lang: 'mr',
   text: {},
   locations: null,
@@ -273,12 +273,16 @@ const RUTUJA = {
         String(b.standard || '').split(',').map(x => x.trim()).includes(String(n)));
       /* the bracket never fits beside the name in this column, so it
          takes its own line rather than wrapping after "(एक" */
-      const list = mine.map(b => {
+      /* Each title flashes in turn — the delay equals the duration, so
+         one ends exactly as the next begins, and a card with more books
+         simply takes longer to come round. */
+      const list = mine.map((b, bi) => {
         const nm = mr ? b.name_mr : b.name_en;
         const q = nm.indexOf('(');
+        const st = ` style="--fd:${(bi * 0.9).toFixed(1)}s;--fn:${mine.length * 0.9}s"`;
         return q > 0
-          ? `<li>${nm.slice(0, q).trim()}<span class="std-q">${nm.slice(q)}</span></li>`
-          : `<li>${nm}</li>`;
+          ? `<li${st}><span class="std-nm">${nm.slice(0, q).trim()}</span><span class="std-q">${nm.slice(q)}</span></li>`
+          : `<li${st}><span class="std-nm">${nm}</span></li>`;
       }).join('');
       return `
       <button class="std-card" style="--c:var(--std${n})" data-std="${n}">
@@ -344,17 +348,23 @@ const RUTUJA = {
     /* One hue, deepening with the size of the order — parent, school,
        retailer, bulk. Depth reads as scale without being explained. */
     const html = list.map((o, i) => `
-      <button class="offer-card oq-${o.k}" data-offer="${o.k}"
+      <button class="offer-card oq-${o.k} ok-${i % 2 ? 'b' : 'a'}" data-offer="${o.k}"
         style="--od:${(i * 0.06).toFixed(2)}s">
-        <span class="offer-t">${this.t(o.t)}</span>
-        <span class="offer-d">${this.t(o.d)}</span>
+        <span class="offer-rim" aria-hidden="true"></span>
+        <span class="offer-body">
+          <span class="offer-t">${this.t(o.t)}</span>
+          <span class="offer-d">${this.t(o.d)}</span>
+        </span>
         <span class="offer-go">${this.t('offer_cta')}<i class="offer-arrow" aria-hidden="true">&rarr;</i></span>
       </button>`).join('')
       /* Not an offer, so it sits below the four and says so. */
       + `<button class="offer-card offer-qa" style="--od:0s">
+        <span class="offer-rim" aria-hidden="true"></span>
+        <span class="offer-body">
         <span class="offer-t"><i class="offer-mark" aria-hidden="true"></i>${this.t('qa_card_t')}</span>
         <span class="offer-d">${this.t('qa_card_d')}</span>
-        <span class="offer-go">${this.t('qa_card_go')} &rarr;</span>
+        </span>
+        <span class="offer-go">${this.t('qa_card_go')}<i class="offer-arrow" aria-hidden="true">&rarr;</i></span>
       </button>`;
     ['offerGrid', 'offerGrid2'].forEach(id => {
       const el = document.getElementById(id);
