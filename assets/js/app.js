@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v16g',
+  VERSION: 'v16n',
   lang: 'mr',
   text: {},
   locations: null,
@@ -273,13 +273,13 @@ const RUTUJA = {
         String(b.standard || '').split(',').map(x => x.trim()).includes(String(n)));
       /* the bracket never fits beside the name in this column, so it
          takes its own line rather than wrapping after "(एक" */
-      /* Each title flashes in turn — the delay equals the duration, so
-         one ends exactly as the next begins, and a card with more books
-         simply takes longer to come round. */
+      /* Each title reveals in turn as the card scrolls into view. A loop
+         runs whether or not anyone is looking, and the eye filters it out
+         after a few cycles; a reveal happens because the person arrived. */
       const list = mine.map((b, bi) => {
         const nm = mr ? b.name_mr : b.name_en;
         const q = nm.indexOf('(');
-        const st = ` style="--fd:${(bi * 0.9).toFixed(1)}s;--fn:${mine.length * 0.9}s"`;
+        const st = ` style="--fd:${(bi * 0.09).toFixed(2)}s"`;
         return q > 0
           ? `<li${st}><span class="std-nm">${nm.slice(0, q).trim()}</span><span class="std-q">${nm.slice(q)}</span></li>`
           : `<li${st}><span class="std-nm">${nm}</span></li>`;
@@ -300,6 +300,8 @@ const RUTUJA = {
         </span>
       </button>`;
     }).join('');
+
+    try { BOOKS.watchCards(); } catch (e) {}
 
     document.querySelectorAll('.std-card').forEach(c => {
       c.addEventListener('click', () => {
@@ -348,7 +350,7 @@ const RUTUJA = {
     /* One hue, deepening with the size of the order — parent, school,
        retailer, bulk. Depth reads as scale without being explained. */
     const html = list.map((o, i) => `
-      <button class="offer-card oq-${o.k} ok-${i % 2 ? 'b' : 'a'}" data-offer="${o.k}"
+      <button class="offer-card oq-${o.k} ok-${(Math.floor(i / 2) + i % 2) % 2 ? 'b' : 'a'}" data-offer="${o.k}"
         style="--od:${(i * 0.06).toFixed(2)}s">
         <span class="offer-rim" aria-hidden="true"></span>
         <span class="offer-body">
@@ -1186,6 +1188,25 @@ const BOOKS = {
     else if (f.sort === 'high') out.sort((a, b) => b.mrp - a.mrp);
     else out.sort((a, b) => (a.standard - b.standard) || (a.sort_order - b.sort_order));
     return out;
+  },
+
+  /* Marks a card as seen the first time it scrolls into view, so its
+     book names reveal once rather than looping. */
+  watchCards() {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.std-card').forEach(c => c.classList.add('seen'));
+      return;
+    }
+    if (!this._cardObs) {
+      this._cardObs = new IntersectionObserver((rows, obs) => {
+        rows.forEach(r => {
+          if (!r.isIntersecting) return;
+          r.target.classList.add('seen');
+          obs.unobserve(r.target);
+        });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.2 });
+    }
+    document.querySelectorAll('.std-card:not(.seen)').forEach(c => this._cardObs.observe(c));
   },
 
   /* `plain` renders the home page's featured row unchanged — the book

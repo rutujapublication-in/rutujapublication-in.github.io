@@ -5133,21 +5133,44 @@ form.collapsed .cond{display:none}
    =================================================================== */
 
 /* a light crosses one title, then the next, round the list */
+/* The letters stay solid at all times. The previous version clipped a
+   gradient to the text at 280% size and 135% offset, which places the
+   paint from -2.43w to +0.37w — so about two thirds of every name had
+   no paint and was invisible until the light swept past. */
+/* still until the card is seen, then each name takes its turn once */
 .std-nm{
-  display:inline;
-  background-image:linear-gradient(100deg,
-    #fff 0%,#fff 42%,rgba(255,255,255,.55) 50%,#fff 58%,#fff 100%);
-  background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:transparent;
-  animation:stdNameFlash var(--fn,3.6s) linear var(--fd,0s) infinite;
+  display:inline-block;position:relative;
+  color:#fff;transform-origin:left center;
 }
-/* the flash occupies only its own share of the cycle, so the rest of
-   the time the title simply sits still */
+.std-card.seen .std-nm{
+  animation:stdNameZoom .7s cubic-bezier(.3,0,.15,1) var(--fd,0s) both;
+}
+/* a light crosses the name, over the letters rather than replacing them */
+.std-nm::after{
+  content:"";position:absolute;inset:-2px -5px;pointer-events:none;
+  background:linear-gradient(100deg,
+    transparent 0%,transparent 38%,rgba(255,255,255,.85) 50%,transparent 62%,transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;
+  mix-blend-mode:overlay;
+  opacity:0;
+}
+.std-card.seen .std-nm::after{
+  animation:stdNameFlash .7s linear var(--fd,0s) both;
+}
+/* the zoom is a punch: sharp out, slow back, then still until its turn
+   comes round again. 1.04 is the ceiling — at 320px the longest name has
+   only 6px of headroom, and scale does not reflow, so more would overlap
+   the column edge. */
+@keyframes stdNameZoom{
+  0%   {transform:scale(1)}
+  30%  {transform:scale(1.05)}
+  70%  {transform:scale(1)}
+  100% {transform:scale(1)}
+}
 @keyframes stdNameFlash{
-  0%    {background-position:135% 0}
-  25%   {background-position:-35% 0}
-  25.01%,100%{background-position:135% 0}
+  0%   {background-position:130% 0;opacity:1}
+  75%  {background-position:-30% 0;opacity:1}
+  100% {background-position:-30% 0;opacity:0}
 }
 
 /* The heading sits inside the frame. One value, not three stacking, so a
@@ -5167,7 +5190,8 @@ form.collapsed .cond{display:none}
 .offer-frame > .hd-std .hd-c-sub{color:#0C554C}
 
 @media(prefers-reduced-motion:reduce){
-  .std-nm{-webkit-text-fill-color:#fff;color:#fff;animation:none}
+  .std-card.seen .std-nm,.std-card.seen .std-nm::after{animation:none}
+  .std-nm::after{opacity:0}
 }
 
 /* ===================================================================
@@ -5230,6 +5254,9 @@ form.collapsed .cond{display:none}
 #offerGrid .offer-d{
   position:relative;z-index:3;
   font-size:calc(var(--u) * .82);line-height:1.45;
+  /* one row, never wrapping, so the four keys are the same height at
+     every width without reserving space that would sit empty */
+  white-space:nowrap;
   color:rgba(255,255,255,.88);
   animation:descIn .5s ease-out calc(var(--od,0s) + .18s) both;
 }
@@ -5268,10 +5295,13 @@ form.collapsed .cond{display:none}
 /* the master: its own warm grey, and a slower rim, so it reads as a
    different kind of control */
 #offerGrid .offer-qa{
-  --oc:#6B6153;--ocd:#52493E;--osh:#38312A;
+  /* Warm against four cool keys, so the master reads as a different
+     kind of control before a word is read. */
+  --oc:#B04A2A;--ocd:#8A371D;--osh:#5C2412;
   flex-direction:row;align-items:center;gap:12px;
 }
 #offerGrid .offer-qa .offer-body{flex:1}
+#offerGrid .offer-qa .offer-d{white-space:normal}
 #offerGrid .offer-qa .offer-go{margin-top:0;flex-shrink:0}
 #offerGrid .offer-qa .offer-rim{animation-duration:6s}
 #offerGrid .offer-qa .offer-mark{background:linear-gradient(135deg,#FFF,rgba(255,255,255,.7))}
@@ -5283,4 +5313,14 @@ form.collapsed .cond{display:none}
 @media(prefers-reduced-motion:reduce){
   #offerGrid .offer-card,#offerGrid .offer-card::after,.offer-rim,
   #offerGrid .offer-d,#offerGrid .offer-go::after,#offerGrid .offer-arrow{animation:none}
+}
+
+
+/* English sets the card text in Lora, which runs wider than Mukta. On a
+   320px phone three of the four subtitles overflowed their key; a small
+   step down holds every one on its single line without losing a word. */
+html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
+@media(max-width:359px){
+  #offerGrid .offer-d{font-size:calc(var(--u) * .78)}
+  html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .70)}
 }
