@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=15w">
+<link rel="stylesheet" href="assets/css/style.css?v=16b">
 </head>
 <body>
 
@@ -237,12 +237,15 @@
       </div></div>
 
       <div class="wrap">
-        <h2 class="sec-title" data-t="books_standard"></h2>
-        <div class="std-grid" id="stdGrid"></div>
+        <div class="hd hd-std"><h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="books_standard"></span></h2><span class="hd-rule" aria-hidden="true"></span></div>
+        <div class="std-frame"><div class="std-grid" id="stdGrid"></div></div>
 
-        <h2 class="sec-title" data-t="offer_hook_head"></h2>
-        <p class="sec-sub" data-t="offer_hook_sub"></p>
-        <div class="offer-grid" id="offerGrid"></div>
+        <div class="hd hd-std">
+          <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="offer_hook_head"></span></h2>
+          <p class="hd-c-sub" data-t="offer_hook_sub"></p>
+          <span class="hd-rule" aria-hidden="true"></span>
+        </div>
+        <div class="offer-frame"><div class="offer-grid" id="offerGrid"></div></div>
 
         <h2 class="sec-title" data-t="books_featured"></h2>
         <div class="book-grid" id="featGrid"></div>
@@ -270,7 +273,6 @@
 
     <section class="page" id="page-books"><div class="wrap">
       <div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="books_title"></span></h1><p class="hd-s" data-t="books_sub"></p></div>
-        <div id="booksPath" class="wpath"></div>
       <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
 
       <p class="books-hint" data-t="books_hint"></p>
@@ -352,6 +354,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=15w"></script>
+<script src="assets/js/app.js?v=16b"></script>
 </body>
 </html>

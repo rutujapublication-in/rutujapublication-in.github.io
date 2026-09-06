@@ -917,6 +917,7 @@ a{color:inherit;text-decoration:none}
 .std-card{
   position:relative;overflow:hidden;border-radius:20px;
   background:var(--c);color:#fff;text-align:left;
+  transition:transform .14s ease,box-shadow .22s ease;
   display:grid;grid-template-columns:auto minmax(0,1fr) auto;
   align-items:stretch;gap:0;min-height:138px;
   box-shadow:0 4px 14px rgba(0,0,0,.15);
@@ -930,7 +931,7 @@ a{color:inherit;text-decoration:none}
 @media(hover:hover){
   .std-card:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(0,0,0,.24)}
 }
-.std-card:active{transform:scale(.98)}
+.std-card:active{transform:translateY(2px) scale(.985);box-shadow:0 2px 10px rgba(0,0,0,.16)}
 
 /* ---- LEFT: label above numeral, stacked, never overlapping ---- */
 .std-left{
@@ -942,17 +943,22 @@ a{color:inherit;text-decoration:none}
   font-weight:600;opacity:.9;margin-bottom:1px}
 .std-figure{display:flex;align-items:baseline;gap:3px;line-height:1}
 .std-num{font-family:'Baloo 2',sans-serif;font-size:46px;font-weight:700;
-  text-shadow:0 2px 8px rgba(0,0,0,.24)}
+  text-shadow:0 2px 8px rgba(0,0,0,.24);
+  display:inline-block;animation:stdNum 3.4s ease-in-out infinite}
 .std-ord{font-family:'Baloo 2',sans-serif;font-size:21px;font-weight:600;opacity:.95}
 
 /* ---- MIDDLE: the books in this standard ---- */
+/* A soft panel behind the names. White on gold measured 2.1, which is
+   the worst contrast on the site; this lifts it to readable on all five
+   backgrounds without changing any card colour. */
 .std-mid{
-  list-style:none;margin:0;padding:15px 16px;
+  list-style:none;margin:2px;padding:13px 12px;
   display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:0;
+  background:rgba(0,0,0,.34);border-radius:10px;
 }
 .std-mid li{
-  position:relative;padding-left:15px;font-size:13.5px;line-height:1.42;
-  color:rgba(255,255,255,.96);
+  position:relative;padding-left:15px;font-size:12.5px;line-height:1.42;
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35);
   /* full name always shown; a long one wraps and the second line
      lines up under the first character, not under the dot */
   overflow-wrap:break-word;
@@ -968,7 +974,8 @@ a{color:inherit;text-decoration:none}
   padding:15px 16px;min-width:104px;
   border-left:1px solid rgba(255,255,255,.26);
 }
-.std-count{font-size:13px;line-height:1.25;text-align:center;opacity:.94;font-weight:600}
+.std-count{font-size:13px;line-height:1.25;text-align:center;opacity:.94;font-weight:600;
+  display:inline-block;animation:stdCount 3.4s ease-in-out .5s infinite}
 .std-go{
   position:relative;overflow:hidden;
   display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13.5px;
@@ -1854,13 +1861,23 @@ html[lang="en"] body{line-height:1.65}
   
 
 .std-card{min-height:122px}
-  .std-left{min-width:80px;padding:14px 11px}
+  .std-left{min-width:66px;padding:14px 8px}
   .std-num{font-size:38px}
   .std-ord{font-size:18px}
   .std-top{font-size:11px}
-  .std-mid{padding:13px 12px;gap:5px}
-  .std-mid li{font-size:12.5px;padding-left:13px;line-height:1.38}
-  .std-right{min-width:88px;padding:13px 10px;gap:8px}
+  .std-mid{padding:11px 9px;gap:5px;margin:2px}
+  .std-right{min-width:74px;padding:13px 7px;gap:8px}
+  .std-mid li{font-size:12.4px;padding-left:13px;line-height:1.38}
+}
+@media(max-width:359px){
+  /* the narrowest phones give the middle column 130px; two titles need
+     135-140px at 12.5, so they step down rather than wrap */
+  /* the panel gives back its side padding here rather than shrinking the
+     type any further — 11.4px is already the floor for a book name */
+  .std-mid{padding:10px 6px;margin:2px 1px}
+  .std-mid li{font-size:11px;padding-left:10px}
+  .std-left{min-width:60px;padding:14px 6px}
+  .std-right{min-width:62px;padding:13px 5px;gap:7px}
   .std-count{font-size:12px}
   .std-go{font-size:12.5px;padding:7px 11px 7px 13px}
 .opick-row{grid-template-columns:54px minmax(0,1fr);gap:10px}
@@ -4877,9 +4894,16 @@ form.collapsed .cond{display:none}
 }
 /* the clear button only looks live when there is something to clear */
 #page-books .fclear.live{
-  opacity:1;color:var(--gold-dark);border-color:var(--gold);
-  box-shadow:0 2px 9px rgba(232,163,61,.26);
-  animation:pickHalo 3s ease-in-out infinite;
+  opacity:1;color:#3A2503;border-color:var(--gold-dark);
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark));
+  box-shadow:0 3px 12px rgba(232,163,61,.42);
+  animation:fclearPop .42s cubic-bezier(.34,1.6,.5,1);
+}
+@keyframes fclearPop{
+  0%  {transform:scale(.86);opacity:.5}
+  55% {transform:scale(1.16)}
+  78% {transform:scale(.97)}
+  100%{transform:scale(1);opacity:1}
 }
 #page-books .fchips{display:none;flex-wrap:wrap;gap:calc(var(--u) * .34)}
 #page-books .fchips.on{display:flex;margin-top:calc(var(--u) * .1)}
@@ -4951,4 +4975,223 @@ form.collapsed .cond{display:none}
 @media(prefers-reduced-motion:reduce){
   #page-cart .cart-qmark,#page-cart .cart-sub,#page-cart .cart-meta,
   #page-cart .cart-foot::before{animation:none}
+}
+
+
+/* On a grid card the bracket never fits beside the name, so it wrapped
+   mid-way and left "(एक" stranded. It gets its own line instead. */
+.book-name .bn-q{display:block;font-size:.86em;font-weight:500;opacity:.82}
+
+/* ===================================================================
+   SECTION 3 — the five class cards. One frame holds them; the tone
+   inside is slightly cooler and lighter than the page, so the block
+   lifts off the page and the five colours lift off the block.
+   =================================================================== */
+.hd-std{margin:0 0 calc(var(--u) * .7);text-align:center}
+.hd-std .hd-t{
+  justify-content:center;font-size:20px;
+}
+.hd-std .hd-rule{
+  display:block;height:2.5px;width:110px;margin:8px auto 0;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold),var(--green));
+  animation:hdRule 5.2s ease-in-out infinite;
+}
+
+/* one border, not two — five saturated cards do not need a second
+   rhythm of lines around them */
+.std-frame{
+  position:relative;overflow:hidden;
+  padding:14px;border-radius:22px;
+  border:1.5px solid #E4DED2;
+  background:linear-gradient(150deg,#FBF9F4,#FFFDF8);
+  box-shadow:0 3px 16px rgba(0,0,0,.05);
+}
+.std-frame::before{
+  content:"";position:absolute;inset:-1.5px;z-index:0;border-radius:inherit;
+  padding:1.5px;pointer-events:none;
+  background:linear-gradient(100deg,
+    transparent 0%,transparent 38%,rgba(232,163,61,.55) 50%,transparent 62%,transparent 100%);
+  background-size:260% 100%;background-repeat:no-repeat;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:stdFrame 7s ease-in-out infinite;
+}
+@keyframes stdFrame{
+  0%  {background-position:130% 0}
+  100%{background-position:-30% 0}
+}
+.std-frame > .std-grid{position:relative;z-index:1}
+
+/* the bracketed part of a title, on its own line */
+.std-mid .std-q{display:block;font-size:.88em;opacity:.82}
+
+/* three things move on a card: the digit that names it, the count,
+   and the card itself on press. Everything else stays still. */
+@keyframes stdNum{
+  0%,100%{transform:scale(1);text-shadow:0 2px 6px rgba(0,0,0,.18)}
+  46%    {transform:scale(1.12);text-shadow:0 0 16px rgba(255,255,255,.9),0 2px 6px rgba(0,0,0,.18)}
+}
+@keyframes stdCount{
+  0%,100%{transform:scale(1)}
+  12%    {transform:scale(1.14)}
+  30%    {transform:scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .std-frame::before,.std-num,.std-count,.hd-std .hd-rule{animation:none}
+}
+
+/* ===================================================================
+   QUESTIONS AND OFFERS — the cool counterpart to section 3.
+   Three tones: terracotta for the route, gold and green alternating
+   for the four, so no card touches its own colour.
+   =================================================================== */
+
+/* the subtitle above the centred rule, no drawn line of its own */
+.hd-c-sub{
+  font-family:Mukta,system-ui,sans-serif;font-size:13.5px;font-weight:500;
+  color:var(--gold-dark);line-height:1.4;margin:0;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* the frame: cool where section 3 is warm, and its light slower, so it
+   reads as a breath around active content rather than a fifth rhythm */
+.offer-frame{
+  position:relative;overflow:hidden;
+  padding:14px;border-radius:22px;
+  border:1.5px solid #DCE6DE;
+  background:linear-gradient(150deg,#F5F8F5,#FCFEFC);
+  box-shadow:0 3px 16px rgba(26,77,46,.06);
+}
+.offer-frame::before{
+  content:"";position:absolute;inset:-1.5px;z-index:0;border-radius:inherit;
+  padding:1.5px;pointer-events:none;
+  background:linear-gradient(100deg,
+    transparent 0%,transparent 38%,rgba(23,130,116,.55) 50%,transparent 62%,transparent 100%);
+  background-size:260% 100%;background-repeat:no-repeat;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:offerFrame 9s ease-in-out infinite;
+}
+@keyframes offerFrame{
+  0%  {background-position:130% 0}
+  100%{background-position:-30% 0}
+}
+/* an older rule forces one card per row on phones; inside this frame the
+   four must pair, with the Q&A spanning above them */
+.offer-frame > .offer-grid{
+  position:relative;z-index:1;
+  grid-template-columns:1fr 1fr;gap:10px;
+}
+
+
+
+/* ---- 4.1 to 4.4 — arrival, once, then still ---- */
+.offer-frame .offer-card{
+  position:relative;overflow:hidden;
+  border-left-width:4px;border-left-style:solid;
+  border-left-color:var(--oc,var(--gold));
+  padding:13px 12px;gap:4px;
+  animation:offerIn .5s cubic-bezier(.34,1.4,.64,1) var(--od,0s) both;
+  transition:transform .14s ease,box-shadow .22s ease;
+}
+@keyframes offerIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* a shine crossing the whole card as it arrives */
+.offer-frame .offer-card::after{
+  content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;
+  pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);
+  transform:skewX(-18deg);
+  animation:gateSheen 1.4s ease-out var(--od,0s) 1 both;
+}
+.offer-frame .offer-t{
+  font-size:calc(var(--u) * 1.06);line-height:1.3;
+  background-image:linear-gradient(100deg,
+    var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
+    var(--green-dark) 62%,var(--green-dark) 100%);
+  background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdFlash 1.8s linear var(--od,0s) 1 both;
+}
+.offer-frame .offer-d{
+  font-size:calc(var(--u) * .82);line-height:1.45;
+  overflow-wrap:break-word;hyphens:none;-webkit-hyphens:none;
+  animation:descIn .5s ease-out calc(var(--od,0s) + .18s) both;
+}
+
+/* ---- 4.5 to 4.7 — three continuous ---- */
+.offer-frame .offer-card::before{
+  content:"";position:absolute;left:-4px;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--oc),var(--ocd),var(--oc));
+  background-size:100% 220%;animation:flowBar 4.6s ease-in-out infinite;
+}
+.offer-frame .offer-go{
+  position:relative;display:inline-flex;align-items:center;gap:5px;
+  font-size:calc(var(--u) * .85);margin-top:5px;
+  /* the words take the card's own colour, so the line and the mark
+     beside it agree — this was gold, left over from the old scheme */
+  background-image:linear-gradient(100deg,
+    var(--ocd) 0%,var(--ocd) 40%,var(--oc) 50%,
+    var(--ocd) 60%,var(--ocd) 100%);
+  background-size:260% 100%;background-position:100% 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:hdSheen 6s ease-in-out infinite;
+}
+.offer-arrow{
+  -webkit-text-fill-color:var(--oc);color:var(--oc);
+  font-style:normal;font-size:16px;line-height:1;display:inline-block;
+  animation:beckon 1.5s cubic-bezier(.4,0,.2,1) infinite;
+}
+
+/* ---- 4.8 and 4.9 — on touch ---- */
+.offer-frame .offer-card:active{
+  transform:translateY(2px) scale(.995);box-shadow:0 2px 10px rgba(0,0,0,.14);
+}
+.offer-frame .offer-card:active .offer-arrow{animation:offerLeap .4s cubic-bezier(.3,0,.2,1)}
+@keyframes offerLeap{
+  0%{transform:translateX(0)}45%{transform:translateX(9px)}100%{transform:translateX(0)}
+}
+
+/* ---- the quantity ladder ----
+   One hue at four depths: the more copies a card is about, the deeper
+   its mark. Section 3 is a sequence of classes and uses the spectrum;
+   these four are parallel audiences, so a spectrum would imply an order
+   between them that does not exist. Depth implies scale, which is real. */
+.oq-parent{--oc:#1DA593;--ocd:#158578}   /* one book to a few  */
+.oq-school{--oc:#178274;--ocd:#116156}   /* a class set        */
+.oq-retail{--oc:#126459;--ocd:#0D4A42}   /* shop stock         */
+.oq-bulk  {--oc:#0C453E;--ocd:#07302B}   /* the largest orders */
+/* the lightest rung gets a wider mark, so it reads as clearly as the
+   deeper ones against the frame */
+.offer-frame .oq-parent{border-left-width:5px}
+/* the Q&A spans the width, above the four pairs */
+.offer-frame .offer-qa{
+  grid-column:1/-1;order:-1;
+  /* not an offer and has no quantity, so it stands outside the ladder */
+  --oc:#786E5E;--ocd:#5A5245;
+  background:linear-gradient(150deg,#FAF9F6,#FFFEFC);
+  border-color:#E2DDD2;
+}
+/* 4.10 — out of step with the four, so it reads as separate */
+.offer-frame .offer-qa::before{animation-duration:4.2s}
+.offer-frame .offer-qa .offer-mark{background:linear-gradient(135deg,#786E5E,#5A5245)}
+.offer-frame .offer-qa .offer-arrow{-webkit-text-fill-color:#5A5245;color:#5A5245}
+
+@media(prefers-reduced-motion:reduce){
+  .offer-frame::before,.offer-frame .offer-card,.offer-frame .offer-card::before,
+  .offer-frame .offer-card::after,.offer-frame .offer-t,.offer-frame .offer-d,
+  .offer-frame .offer-go,.offer-arrow{animation:none}
+  .offer-frame .offer-t{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
+  .offer-frame .offer-go{-webkit-text-fill-color:var(--ocd);color:var(--ocd)}
+}
+
+
+/* two per row means a narrower card, so the text is sized for it */
+/* the Q&A spans the width, so it keeps the roomier setting */
+.offer-frame .offer-qa .offer-d{font-size:calc(var(--u) * .88)}
+@media(max-width:339px){
+  .offer-frame > .offer-grid{gap:8px}
+  .offer-frame .offer-card{padding:11px 9px}
 }

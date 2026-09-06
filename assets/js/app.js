@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v15w',
+  VERSION: 'v16b',
   lang: 'mr',
   text: {},
   locations: null,
@@ -271,8 +271,15 @@ const RUTUJA = {
     document.getElementById('stdGrid').innerHTML = [1,2,3,4,5].map((n, i) => {
       const mine = books.filter(b =>
         String(b.standard || '').split(',').map(x => x.trim()).includes(String(n)));
-      const list = mine.map(b =>
-        `<li>${mr ? b.name_mr : b.name_en}</li>`).join('');
+      /* the bracket never fits beside the name in this column, so it
+         takes its own line rather than wrapping after "(एक" */
+      const list = mine.map(b => {
+        const nm = mr ? b.name_mr : b.name_en;
+        const q = nm.indexOf('(');
+        return q > 0
+          ? `<li>${nm.slice(0, q).trim()}<span class="std-q">${nm.slice(q)}</span></li>`
+          : `<li>${nm}</li>`;
+      }).join('');
       return `
       <button class="std-card" style="--c:var(--std${n})" data-std="${n}">
         <span class="std-left">
@@ -331,14 +338,20 @@ const RUTUJA = {
       { k: 'retail', t: 'offer_retail_t', d: 'offer_retail_d' },
       { k: 'parent', t: 'offer_parent_t', d: 'offer_parent_d' }
     ];
-    const html = list.map(o => `
-      <button class="offer-card" data-offer="${o.k}">
+    /* Gold and green alternate by position, so no card touches its own
+       colour — including the Q&A above the first row, which is a third
+       tone of its own. */
+    /* One hue, deepening with the size of the order — parent, school,
+       retailer, bulk. Depth reads as scale without being explained. */
+    const html = list.map((o, i) => `
+      <button class="offer-card oq-${o.k}" data-offer="${o.k}"
+        style="--od:${(i * 0.06).toFixed(2)}s">
         <span class="offer-t">${this.t(o.t)}</span>
         <span class="offer-d">${this.t(o.d)}</span>
-        <span class="offer-go">${this.t('offer_cta')} &rarr;</span>
+        <span class="offer-go">${this.t('offer_cta')}<i class="offer-arrow" aria-hidden="true">&rarr;</i></span>
       </button>`).join('')
       /* Not an offer, so it sits below the four and says so. */
-      + `<button class="offer-card offer-qa" data-nav="qa">
+      + `<button class="offer-card offer-qa" style="--od:0s">
         <span class="offer-t"><i class="offer-mark" aria-hidden="true"></i>${this.t('qa_card_t')}</span>
         <span class="offer-d">${this.t('qa_card_d')}</span>
         <span class="offer-go">${this.t('qa_card_go')} &rarr;</span>
@@ -1198,7 +1211,9 @@ const BOOKS = {
           <span class="chip chip-std" style="background:${this.stdColor(b)}">${t('chip_std')} ${num}</span>
           ${pct ? `<span class="chip chip-off">${pct}% ${t('disc_upto')}</span>` : ''}
         </span>
-        <span class="book-name">${name}</span>
+        ${(() => { const i = name.indexOf('(');
+           if (i < 1) return `<span class="book-name">${name}</span>`;
+           return `<span class="book-name">${name.slice(0, i).trim()}<span class="bn-q">${name.slice(i)}</span></span>`; })()}
         <span class="book-meta">${sub} · ${this.medLabel(b)}</span>
         ${b.subtitle_mr || b.subtitle_en ? `<span class="book-sub">${mr ? b.subtitle_mr : b.subtitle_en}</span>` : ''}
         <span class="book-price">&#8377;${b.mrp}${hint}</span>
@@ -1214,7 +1229,6 @@ const BOOKS = {
   renderGrid() {
     const list = this.match();
     this.el.grid.innerHTML = list.map(b => this.card(b)).join('');
-    try { PATH.draw('page-books', 'booksPath', 'terra'); } catch (e) { console.error('path', e); }
     this.el.count.textContent = list.length;
     if (this.el.countW) this.el.countW.textContent = CART.bookWord(list.length);
 
