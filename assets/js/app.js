@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v16y',
+  VERSION: 'v17b',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2559,7 +2559,7 @@ const ORDER = {
         ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt bt-plain" style="--bc:${T.c}"><span>${T.html}</span></div>`; })()}
         <div class="oline-facts">
           ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
-          <span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>
+          ${(!l.pct && !l.saved) ? `<span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>` : ''}
           ${l.saved ? `<span class="of of-save">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}
         </div>
         <div class="oline-amt"><span>${l.qty} &times; &#8377;${l.each}</span>

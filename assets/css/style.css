@@ -1700,7 +1700,10 @@ html[lang="en"] body{line-height:1.65}
   .cart-x{width:40px;height:40px}
 
   /* ---------- ORDER WINDOW ---------- */
-  .order-card{padding:64px 16px 30px}
+  /* (1,1,0) — a bare .order-card here loses to .modal-card{padding:64px
+     18px 40px} in the max-width:479px block below, which is the same
+     specificity and later in the file. This never applied on a phone. */
+  .modal-card.order-card{padding:64px 16px 30px}
   .order-pick{margin-bottom:14px}
   .opick-list{gap:9px}
   .opick-row{padding:10px}
@@ -1891,13 +1894,6 @@ html[lang="en"] body{line-height:1.65}
 .opick-cover{width:60px}
   .opick-line{width:100%;font-size:13px}
 .bd-facts{grid-template-columns:repeat(2,1fr)}
-  /* the stepper spans both columns here: in one column it inherits the
-     48px cover width and the + button is clipped */
-  .cart-row{grid-template-columns:48px 1fr;
-    grid-template-areas:"t i" "n n" "l l" "q q" "a x";gap:6px 8px}
-  .cart-thumb{width:48px}
-  .cart-x{grid-area:x;justify-self:end;margin-top:-6px}
-  .cart-amt{text-align:right}
   /* 34px was left from an older layout and fought the 60px below */
   .chip{font-size:10px;padding:2px 7px}
   .w-name-mr{font-size:26px}
@@ -1918,6 +1914,29 @@ html[lang="en"] body{line-height:1.65}
   /* the picker cover stays large — earlier drafts shrank it to 34px */
   .opick-row{grid-template-columns:60px minmax(0,1fr);gap:12px;padding:12px}
   .opick-line{width:100%;font-size:13px}
+}
+
+/* ===================================================================
+   v16z — माझी पुस्तके below 400px: quantity and money stop sharing a
+   row. In the three-column card the stepper is 147px (44+56+44+3, set
+   by the max-width:819px block) against a 130px track at 360px, and
+   overflow:hidden on the row clips the difference. Two columns give
+   the stepper and the नगसंख्या hint the full 302px instead.
+   Scoped to the cart alone: the 359px block above carries two dozen
+   unrelated rules and must not be widened.
+   =================================================================== */
+@media(max-width:399px){
+  .cart-row{grid-template-columns:48px 1fr;
+    grid-template-areas:"t i" "n n" "l l" "q q" "x a";gap:6px 8px}
+  .cart-thumb{grid-area:t;width:48px}
+  .cart-info{grid-area:i}
+  /* the total was landing in the 48px cover column, forced to 88px by
+     min-width and right-aligned 180px away from the card edge */
+  .cart-amt{grid-area:a;text-align:right}
+  /* #page-cart .cart-x is (1,1,0) and sets justify-self:end — a plain
+     .cart-x here would lose to it and leave the mark inside the cover
+     column, so this match has to be scoped the same way */
+  #page-cart .cart-x{grid-area:x;justify-self:start}
 }
 
 /* ---------- 359 and below : very small ---------- */
@@ -3736,11 +3755,13 @@ html[lang="mr"] .book-t{
   grid-area:f;display:flex;flex-wrap:nowrap;gap:5px;
   min-width:0;overflow:hidden;
 }
-/* All three badges must sit on one row without being cut, so in the
-   summary only they run smaller than elsewhere. The picker cards keep
-   the full size — they have the width for it. */
+/* Two badges now, not three — the rate badge duplicated the amount
+   column on the same row, which reads "5 × ₹40" a centimetre away. The
+   freed width buys legibility: 10.2px was only ever there to force
+   three onto one line. At 320px worst case (₹12500 वाचले) two badges
+   measure 117px against a 137px column. */
 #orderSum .oline-facts .of{
-  flex-shrink:0;font-size:10.2px;padding:2px 6px;letter-spacing:.1px;
+  flex-shrink:0;font-size:11px;padding:2px 6px;letter-spacing:.1px;
 }
 /* the calculation column keeps one width, so every row lines up */
 #orderSum .oline-amt{
