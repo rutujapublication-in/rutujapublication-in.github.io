@@ -1926,17 +1926,18 @@ html[lang="en"] body{line-height:1.65}
    unrelated rules and must not be widened.
    =================================================================== */
 @media(max-width:399px){
-  .cart-row{grid-template-columns:48px 1fr;
-    grid-template-areas:"t i" "n n" "l l" "q q" "x a";gap:6px 8px}
+  .cart-row{grid-template-columns:48px 1fr auto;
+    grid-template-areas:"t i i" "n n n" "l l l" "q q a";gap:6px 8px}
   .cart-thumb{grid-area:t;width:48px}
-  .cart-info{grid-area:i}
-  /* the total was landing in the 48px cover column, forced to 88px by
-     min-width and right-aligned 180px away from the card edge */
+  /* i spans columns 2-3, so the name block keeps its full 246px and the
+     48px reserve for the corner mark is the only cost */
+  .cart-info{grid-area:i;padding-right:48px}
   .cart-amt{grid-area:a;text-align:right}
-  /* #page-cart .cart-x is (1,1,0) and sets justify-self:end — a plain
-     .cart-x here would lose to it and leave the mark inside the cover
-     column, so this match has to be scoped the same way */
-  #page-cart .cart-x{grid-area:x;justify-self:start}
+  /* the remove mark leaves the grid entirely and sits in the card corner.
+     Absolutely positioned, it is not a grid child at all, so it cannot be
+     auto-placed; grid-area:auto makes the card's padding box its
+     containing block rather than a stale "x" area that no longer exists. */
+  #page-cart .cart-x{position:absolute;top:8px;right:8px;grid-area:auto;justify-self:auto}
 }
 
 /* ---------- 359 and below : very small ---------- */
@@ -3736,7 +3737,16 @@ html[lang="mr"] .book-t{
   background:#FFF8E8;border:1px dashed var(--gold);
   animation:flowGlow 4.2s ease-in-out infinite;
 }
-#orderSum .cond-i{animation:flowPing 2.8s ease-in-out infinite;display:inline-block}
+/* flowPing expands a box-shadow spread from 0 to 5px. On a bare glyph that
+   draws an expanding rectangle; on a round chip it reads as the halo it was
+   written to be. The cart footer carried the same mark with no effect at all. */
+#orderSum .cond-i,#page-cart .cond-i{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(184,122,30,.14);
+  font-size:13px;line-height:1;
+  animation:flowPing 2.8s ease-in-out infinite;
+}
 
 @media(prefers-reduced-motion:reduce){
   .osum-h,.oline-name,.of,.of-pct,.of-save,.osf-avg b,
@@ -3793,7 +3803,15 @@ html[lang="mr"] .book-t{
 }
 #orderSum .osf s{animation:mrpFade 4.4s ease-in-out infinite}
 @keyframes mrpFade{0%,100%{opacity:.55}50%{opacity:.85}}
-#orderSum .osf-save b{animation:ofGreen 3.6s ease-in-out infinite}
+/* same defect as the cart footer: ofGreen is a pill keyframe and this was
+   a bare <b>, so the shadow read as a plate over the text */
+#orderSum .osf-save b{
+  display:inline-block;
+  background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;font-weight:800;
+  border-radius:999px;padding:2px 11px;letter-spacing:.2px;
+  animation:ofPop .42s cubic-bezier(.34,1.5,.64,1),ofGreen 3.6s ease-in-out infinite .42s;
+}
 #orderSum .osf-grand span{
   background-image:linear-gradient(100deg,
     var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
@@ -3838,14 +3856,14 @@ html[lang="mr"] .book-t{
   background:linear-gradient(160deg,#FDFAF3,#FFFDF8);
   border-color:#E2CFA6;
 }
-.qa-bsec-book::before{background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold))}
+.qa-bsec-book::before{background-image:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold))}
 
 /* where it fits — the green one, so the two never blur together */
 .qa-bsec-learn{
   background:linear-gradient(160deg,#F2F8F3,#FBFEFC);
   border-color:#CFE0D5;
 }
-.qa-bsec-learn::before{background:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A)}
+.qa-bsec-learn::before{background-image:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A)}
 .qa-bsec-learn .hd-mark{background:linear-gradient(135deg,#57A46A,#2F7A44)}
 .qa-bsec-learn .hd-s{color:#2F7A44}
 .qa-bsec-learn .hd-s::after{background:linear-gradient(90deg,#57A46A,var(--gold))}
@@ -3890,9 +3908,9 @@ html[lang="mr"] .book-t{
 }
 /* two tones, alternating, so adjacent sections stay apart */
 .bsec-a{background:linear-gradient(160deg,#FDFAF3,#FFFDF8);border-color:#E7D8B8}
-.bsec-a::before{background:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold))}
+.bsec-a::before{background-image:linear-gradient(180deg,var(--gold),var(--gold-dark),var(--gold))}
 .bsec-b{background:linear-gradient(160deg,#F3F8F4,#FBFEFC);border-color:#CFE0D5}
-.bsec-b::before{background:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A)}
+.bsec-b::before{background-image:linear-gradient(180deg,#57A46A,#2F7A44,#57A46A)}
 .bsec-b .hd-mark{background:linear-gradient(135deg,#57A46A,#2F7A44)}
 .bsec-b .hd-s{color:#2F7A44}
 .bsec-b .hd-s::after{background:linear-gradient(90deg,#57A46A,var(--gold))}
@@ -4761,8 +4779,19 @@ form.collapsed .cond{display:none}
 #page-cart .cart-qty:focus-within{box-shadow:0 0 0 3px rgba(26,77,46,.14),0 1px 6px rgba(0,0,0,.07)}
 #page-cart .cart-amt{
   justify-self:end;
+  display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
   animation:sumLift .5s cubic-bezier(.34,1.5,.64,1);
+}
+/* the multiplication line the order summary has and this block did not */
+#page-cart .cart-calc{
+  font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .82);
+  font-weight:600;color:var(--ink-soft);white-space:nowrap;
+}
+/* rowTotal, the same glow #orderSum .oline-amt b carries */
+#page-cart .cart-amt b{
+  letter-spacing:.3px;
+  animation:rowTotal 3.8s ease-in-out infinite .5s;
 }
 #page-cart .cart-x{justify-self:end;transition:color .16s ease,transform .14s ease}
 #page-cart .cart-x:active{color:#C33;transform:scale(.88)}
@@ -4775,7 +4804,35 @@ form.collapsed .cond{display:none}
 }
 #page-cart .cart-sums > div{font-family:Mukta,system-ui,sans-serif;font-weight:600}
 #page-cart .cart-mrpline s{color:#A79C88;animation:mrpFade 4.4s ease-in-out infinite}
-#page-cart .cart-sums .cart-saved b{color:var(--gold-dark);animation:ofGold 3.6s ease-in-out infinite}
+/* This carried ofGold — a keyframe written for .of-pct, which is a filled
+   pill. On a bare inline <b> the animated box-shadow drew a hard-edged
+   plate around the digits instead of a glow behind a chip. Giving it the
+   pill completes the detail rather than dropping the effect. */
+#page-cart .cart-sums .cart-saved b{
+  display:inline-block;margin-left:5px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dark));color:#2E1E02;
+  font-family:Mukta,system-ui,sans-serif;font-size:14px;font-weight:800;
+  border-radius:999px;padding:2px 11px;letter-spacing:.2px;
+  animation:ofPop .42s cubic-bezier(.34,1.5,.64,1),ofGold 3.6s ease-in-out infinite .42s;
+}
+/* the average saving, which the order window shows and this footer did not */
+#page-cart .cart-avg b{
+  display:inline-block;margin-left:5px;
+  background:var(--gold);color:#2E1E02;
+  font-family:Mukta,system-ui,sans-serif;font-size:13.5px;font-weight:800;
+  border-radius:7px;padding:2px 10px;letter-spacing:.2px;
+  animation:ofGold 3.6s ease-in-out infinite;
+}
+/* the row saving matched .bd .calc-save on the book page but rendered as
+   plain 12px text here */
+#page-cart .cart-amt .calc-save{
+  display:inline-flex;align-items:center;margin-top:3px;
+  background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
+  font-family:Mukta,system-ui,sans-serif;font-size:11px;font-weight:800;
+  border-radius:999px;padding:1px 8px;letter-spacing:.2px;
+  box-shadow:0 2px 6px rgba(37,97,56,.3);
+  animation:ofPop .42s cubic-bezier(.34,1.5,.64,1);
+}
 #page-cart .cart-grand{
   margin-top:calc(var(--u) * .45);padding-top:calc(var(--u) * .45);
   border-top:1.5px solid rgba(26,77,46,.18);
@@ -4805,6 +4862,7 @@ form.collapsed .cond{display:none}
 @media(prefers-reduced-motion:reduce){
   .cart-row::before,.cart-mrp,.cart-pct,.cart-row .cart-saved,.cart-next,
   .cart-amt,.cart-grand b,.cart-mrpline s,.cart-sums .cart-saved b,
+  #page-cart .cart-avg b,#page-cart .cart-amt .calc-save,#page-cart .cart-amt b,#page-cart .cond-i,
   #page-cart .cart-cta .btn-gold,
 #page-cart .cart-cta .btn-gold::after{animation:none}
 }

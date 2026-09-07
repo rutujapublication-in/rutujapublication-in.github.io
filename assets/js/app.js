@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v17b',
+  VERSION: 'v17f',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2018,6 +2018,7 @@ const CART = {
             <button data-cq="${l.book.book_id}" data-d="1">+</button>
           </div>
           <div class="cart-amt">
+            <span class="cart-calc">${l.qty} &times; &#8377;${l.each}</span>
             <b>&#8377;${l.total}</b>
             ${l.saved ? `<span class="calc-save">&#8377;${l.saved}</span>` : ''}
           </div>
@@ -2030,6 +2031,8 @@ const CART = {
           <div><span>${T.n} ${this.bookWord(T.n)} &middot; ${T.qty} ${t('price_qty')}</span></div>
           ${T.saved ? `<div class="cart-mrpline">${t('cart_mrp')}
             <s>&#8377;${T.total + T.saved}</s></div>` : ''}
+          ${T.saved ? `<div class="cart-avg">${t('avg_saving')}
+            <b>${Math.round(T.saved / (T.total + T.saved) * 100)}%</b></div>` : ''}
           ${T.saved ? `<div class="cart-saved">${t('cart_total_save')}
             <b>&#8377;${T.saved}</b></div>` : ''}
           <div class="cart-grand">${t('cart_total')} <b>&#8377;${T.total}</b></div>
@@ -2559,7 +2562,6 @@ const ORDER = {
         ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt bt-plain" style="--bc:${T.c}"><span>${T.html}</span></div>`; })()}
         <div class="oline-facts">
           ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
-          ${(!l.pct && !l.saved) ? `<span class="of of-rate">&#8377;${l.each} ${t('per_unit')}</span>` : ''}
           ${l.saved ? `<span class="of of-save">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}
         </div>
         <div class="oline-amt"><span>${l.qty} &times; &#8377;${l.each}</span>
