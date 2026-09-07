@@ -1080,14 +1080,14 @@ a{color:inherit;text-decoration:none}
   gap:7px 14px;align-items:center;
   background:var(--white);border:1px solid var(--line);border-radius:14px;padding:10px 12px;
 }
-.cart-thumb{width:64px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
+.cart-thumb{grid-area:t;width:64px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
   box-shadow:0 2px 7px rgba(0,0,0,.2)}
 .cart-thumb img{width:100%;height:100%;object-fit:cover}
 .cart-name{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;color:var(--green-dark)}
 .cart-meta{font-size:13px;color:var(--ink-soft);margin-top:3px}
 .cart-pct{background:var(--green-light);color:#2C5A3D;border-radius:5px;
   padding:2px 7px;font-size:11.5px;font-weight:700;margin-left:7px}
-.cart-qty{display:flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden;
+.cart-qty{grid-area:q;display:flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden;
   background:var(--white)}
 .cart-qty button{width:36px;height:40px;font-size:19px;color:var(--green)}
 .cart-qty button:hover{background:var(--green-light)}
@@ -1096,10 +1096,10 @@ a{color:inherit;text-decoration:none}
 .cart-qty input{width:52px;text-align:center;border:0;font-family:inherit;
   font-size:15px;font-weight:800;letter-spacing:.4px}
 .cart-qty input:focus{outline:none}
-.cart-amt{text-align:right;min-width:88px}
+.cart-amt{grid-area:a;text-align:right;min-width:88px}
 .cart-amt b{font-family:'Baloo 2',sans-serif;font-size:18px;color:var(--green)}
 .cart-amt span{display:block;font-size:12px}
-.cart-x{width:34px;height:34px;border-radius:8px;font-size:22px;color:var(--ink-soft)}
+.cart-x{grid-area:x;width:34px;height:34px;border-radius:8px;font-size:22px;color:var(--ink-soft)}
 .cart-x:hover{background:#FDECEC;color:#C33}
 
 .cart-foot{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:end;
@@ -4765,7 +4765,7 @@ form.collapsed .cond{display:none}
   display:inline-block;animation:totalPulse 3.4s ease-in-out infinite;
 }
 #page-cart .cart-foot{border-top:1.5px solid var(--line);margin-top:calc(var(--u) * .8);padding-top:calc(var(--u) * .8)}
-#page-cart .cart-info{font-family:Mukta,system-ui,sans-serif;font-weight:700;transition:transform .14s ease}
+#page-cart .cart-info{grid-area:i;font-family:Mukta,system-ui,sans-serif;font-weight:700;transition:transform .14s ease}
 #page-cart .cart-cta .btn-gold{
   position:relative;overflow:hidden;
   box-shadow:0 4px 14px rgba(232,163,61,.34);
