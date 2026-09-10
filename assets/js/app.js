@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18p',
+  VERSION: 'v18s',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2771,7 +2771,6 @@ const VISION = {
   init(app) {
     this.app = app;
     this.deck = document.getElementById('visDeck');
-    this.dots = document.getElementById('visDots');
     if (!this.deck) return;
     this.slides = app.vision || [];
     if (!this.slides.length) { this.deck.closest('.vis').classList.add('hidden'); return; }
@@ -2794,7 +2793,12 @@ const VISION = {
   rows(items, strip, fs, pad, gap, mr) {
     const wds = items.map(x => this.wid(x, fs, mr) + pad);
     const n = items.length;
-    const target = n <= 2 ? 1 : n <= 5 ? 2 : 3;
+    /* Your rule: one row whenever it fits, and only then fall back on the
+       count. Built count-first it forced every three-to-five item group
+       onto two rows even when all of them fit on one — six wasted rows
+       across slides 2, 3 and 5. */
+    const one = wds.reduce((a, b) => a + b, 0) + (n - 1) * gap;
+    const target = one <= strip ? 1 : (n <= 5 ? 2 : 3);
     for (let R = target; R <= n; R++) {
       let best = null;
       const walk = (at, left, rows) => {
@@ -2830,18 +2834,20 @@ const VISION = {
     /* the focus block: pairs on the overview slides, boxes elsewhere */
     let focus;
     if (s.list) {
-      /* two parts is a name and a role — the signature on slide 1.
-         three parts is a book, the class band it serves, and the span it
-         covers: name and class ride the top line, the span sits under
-         them, because side by side the longest row overflows by 60px. */
+      /* The shape is declared by the slide, not guessed from how many
+         parts the string has. Counting parts made slide 7's rows — now
+         name and class band only — render with slide 1's large signature
+         styling, which grew the card instead of shrinking it. */
       focus = `<div class="vis-pairs">` + L('focus').map(x => {
         const b = String(x).split(' — ');
-        return b.length > 2
-          ? `<div class="vis-pair">
-               <div class="vp-top"><span>${esc(b[0])}</span><em>${esc(b[1])}</em></div>
-               <b>${esc(b.slice(2).join(' — '))}</b>
-             </div>`
-          : `<div class="vis-pair vis-sign"><span>${esc(b[0] || '')}</span><b>${esc(b[1] || '')}</b></div>`;
+        if (s.sign) {
+          return `<div class="vis-pair vis-sign"><span>${esc(b[0] || '')}</span><b>${esc(b[1] || '')}</b></div>`;
+        }
+        return `<div class="vis-pair vis-book">
+                  <div class="vp-top"><span>${esc(b[0])}</span>${
+                    b[1] ? `<em>${esc(b[1])}</em>` : ''}</div>${
+                  b.length > 2 ? `<b>${esc(b.slice(2).join(' — '))}</b>` : ''}
+                </div>`;
       }).join('') + `</div>`;
     } else {
       focus = this.boxes(L('focus'), esc, U, mr);
@@ -2866,6 +2872,7 @@ const VISION = {
           }"><span>${esc(g('title'))}</span>${
             g('q') ? `<i class="vis-q">${esc(g('q'))}</i>` : ''}</h3>
           ${g('sub') ? `<p class="vis-sub">${esc(g('sub'))}</p>` : ''}
+          ${g('span') ? `<p class="vis-span">${esc(g('span'))}</p>` : ''}
         </div>
 
         <p class="vis-lab"><span>${t('vis_view')}</span></p>
@@ -2906,15 +2913,41 @@ const VISION = {
      instantly, with none of the motion running. Rebuild only when the
      language or the viewport changes, since the row packing depends on
      both. */
+  /* How tall this card's box block will be, so a card carrying four
+     groups can be scaled to sit alongside one carrying a single row.
+     Same auto-fit discipline as the title clamp: measure, compare to a
+     budget, set one number on the card. */
+  boxHeight(s, mr) {
+    const U = this.u();
+    const rowH = U * 0.88 * 1.24 + 2 * Math.round(U * 0.18);
+    const gap = Math.round(U * 0.3);
+    let h = 0, first = true;
+    for (const k of ['focus', 'focus2', 'focus3', 'focus4']) {
+      const items = (mr ? s[k + '_mr'] : s[k + '_en']) || [];
+      if (!items.length) continue;
+      if (!first) h += U * 0.3 + U * 0.74 * 1.3 + U * 0.16;
+      first = false;
+      const r = this.rows(items, this.strip(), U * 0.84,
+        2 * Math.round(U * 0.48) + 2, gap, mr).length;
+      h += r * rowH + (r - 1) * gap;
+    }
+    return h;
+  },
+
+  /* --bs shrinks only a card whose boxes exceed the budget, and never
+     below .78 — under that the packer takes another row instead. */
+  tag(s, k, mr) {
+    const bh = s.list ? 0 : this.boxHeight(s, mr);
+    const bs = bh > 125 ? Math.max(0.78, Math.sqrt(125 / bh)) : 1;
+    return `<article class="vis-card${s.hero ? ' vis-hero-' + s.hero : ''}" data-k="${k}"
+              style="--base:${s.base};--bs:${bs.toFixed(3)}">${this.card(s, mr)}</article>`;
+  },
+
   build() {
     const mr = this.app.lang === 'mr';
     this.deck.innerHTML = this.slides.map((s, k) =>
-      `<article class="vis-card${s.hero ? ' vis-hero-' + s.hero : ''}" data-k="${k}" style="--base:${s.base}">${this.card(s, mr)}</article>`
+      this.tag(s, k, mr)
     ).join('');
-    this.dots.innerHTML = this.slides.map((s, k) =>
-      `<button class="vis-dot" data-k="${k}" aria-label="${k + 1}"></button>`).join('');
-    this.dots.querySelectorAll('.vis-dot').forEach(b =>
-      b.addEventListener('click', () => { this.go(+b.dataset.k); this.start(); }));
     this.cards = [...this.deck.querySelectorAll('.vis-card')];
     this.place(true);
   },
@@ -2952,8 +2985,6 @@ const VISION = {
         if (b) { b.style.animation = 'none'; void b.getBoundingClientRect(); b.style.animation = ''; }
       }
     });
-    this.dots.querySelectorAll('.vis-dot').forEach((b, k) =>
-      b.classList.toggle('on', k === this.i));
     this.fit();
   },
 

@@ -1,5 +1,5 @@
 {
-  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and its span. focus2_* adds a second labelled box group under the first. hero:'path' makes the chain the largest thing on that slide. path_h_* names the chain heading. seconds is how long it holds.",
+  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds.",
   "slides": [
     {
       "n": 1,
@@ -55,7 +55,10 @@
       "hero_mr": "",
       "hero_en": "",
       "out_mid_mr": "",
-      "out_mid_en": ""
+      "out_mid_en": "",
+      "span_mr": "",
+      "span_en": "",
+      "sign": true
     },
     {
       "n": 2,
@@ -119,7 +122,10 @@
       "hero_mr": "",
       "hero_en": "",
       "out_mid_mr": "",
-      "out_mid_en": ""
+      "out_mid_en": "",
+      "span_mr": "अक्षरापासून शब्दसंपदेपर्यंत",
+      "span_en": "From letters to a working vocabulary",
+      "sign": false
     },
     {
       "n": 3,
@@ -189,7 +195,10 @@
       "hero_mr": "PHONICS",
       "hero_en": "PHONICS",
       "out_mid_mr": "",
-      "out_mid_en": ""
+      "out_mid_en": "",
+      "span_mr": "ध्वनीपासून वाचन व व्याकरणापर्यंत",
+      "span_en": "From sound to reading and grammar",
+      "sign": false
     },
     {
       "n": 4,
@@ -257,7 +266,10 @@
       "hero_mr": "",
       "hero_en": "",
       "out_mid_mr": "",
-      "out_mid_en": ""
+      "out_mid_en": "",
+      "span_mr": "संकल्पनेपासून गणिती विचारापर्यंत",
+      "span_en": "From first ideas to mathematical thinking",
+      "sign": false
     },
     {
       "n": 5,
@@ -349,7 +361,10 @@
       "hero_mr": "",
       "hero_en": "",
       "out_mid_mr": "",
-      "out_mid_en": ""
+      "out_mid_en": "",
+      "span_mr": "संख्येपासून अपूर्णांक व मापनापर्यंत",
+      "span_en": "From number to fractions and measure",
+      "sign": false
     },
     {
       "n": 6,
@@ -417,7 +432,10 @@
       "out_mid_mr": "कारण",
       "out_mid_en": "because",
       "hero_mr": "",
-      "hero_en": ""
+      "hero_en": "",
+      "span_mr": "अक्षरओळखीपासून वळणदार हस्ताक्षरापर्यंत",
+      "span_en": "From letter shapes to a steady hand",
+      "sign": false
     },
     {
       "n": 7,
@@ -433,18 +451,18 @@
       "focus_h_mr": "पाच पुस्तके, एकत्र वाचल्यास",
       "focus_h_en": "The five, read together",
       "focus_mr": [
-        "अक्षरमित्र सुलेखन पुस्तिका — इयत्ता १–२ — अक्षरओळखीपासून वळणदार हस्ताक्षरापर्यंत",
-        "चला वाचूया झटपट — इयत्ता १–५ — अक्षरापासून शब्दसंपदेपर्यंत",
-        "इंग्लिश प्रायमर विथ फोनिक्स — इयत्ता १–५ — ध्वनीपासून वाचन व व्याकरणापर्यंत",
-        "गणितमित्र भाग १ — इयत्ता १–२ — संकल्पनेपासून गणिती विचारापर्यंत",
-        "गणितमित्र भाग २ — इयत्ता ३–५ — संख्येपासून अपूर्णांक व मापनापर्यंत"
+        "अक्षरमित्र सुलेखन पुस्तिका — इयत्ता १–२",
+        "चला वाचूया झटपट — इयत्ता १–५",
+        "इंग्लिश प्रायमर विथ फोनिक्स — इयत्ता १–५",
+        "गणितमित्र भाग १ — इयत्ता १–२",
+        "गणितमित्र भाग २ — इयत्ता ३–५"
       ],
       "focus_en": [
-        "Aksharmitra Sulekhan Pustika — Std 1–2 — From letter shapes to a steady hand",
-        "Chala Vachuya Zatpat — Std 1–5 — From letters to a working vocabulary",
-        "English Primer with Phonics — Std 1–5 — From sound to reading and grammar",
-        "Ganitmitra Bhag 1 — Std 1–2 — From first ideas to mathematical thinking",
-        "Ganitmitra Bhag 2 — Std 3–5 — From number to fractions and measure"
+        "Aksharmitra Sulekhan Pustika — Std 1–2",
+        "Chala Vachuya Zatpat — Std 1–5",
+        "English Primer with Phonics — Std 1–5",
+        "Ganitmitra Bhag 1 — Std 1–2",
+        "Ganitmitra Bhag 2 — Std 3–5"
       ],
       "path_mr": [
         "पहिलं अक्षर",
@@ -485,7 +503,10 @@
       "hero_mr": "",
       "hero_en": "",
       "out_mid_mr": "",
-      "out_mid_en": ""
+      "out_mid_en": "",
+      "span_mr": "",
+      "span_en": "",
+      "sign": false
     }
   ]
 }
