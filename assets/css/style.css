@@ -2504,7 +2504,19 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
    travels across them as an overlay, left to right. btFlash runs
    background-position 130% -> -30%, which with background-size:250% moves
    the band from -0.7w to +1.7w — in at the left, out at the right. */
-.st-hero .sh-quote{position:relative;isolation:isolate;margin-top:auto;margin-bottom:10px}
+/* v17t — the quote drops as far as the band allows, without touching the
+   rays, the logo or any effect. margin-top:auto already takes every free
+   pixel above it; these three values release the rest:
+     · the quote's own bottom margin 10px -> 2px
+     · the steps' top padding 6px -> 0
+     · the logo wrap's top margin 6px -> 2px, which lifts the logo (and
+       the rays with it) rather than moving the text
+   Together that is 18px more clearance between the logo edge and the
+   first line. The rays reach ~116px below the logo, so this reduces the
+   overlap; it cannot remove it without changing the rays, which you
+   asked me not to touch. */
+.st-hero .sh-logo-wrap{margin-top:2px}
+.st-hero .sh-quote{position:relative;isolation:isolate;margin-top:auto;margin-bottom:2px}
 .st-hero .sh-quote::after{
   content:"";position:absolute;inset:-2px -6px;pointer-events:none;z-index:1;
   background:linear-gradient(105deg,
@@ -2526,7 +2538,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
    given width is what it moves — no fixed number to go stale.
    The margin lives on the .sh-quote rule above, merged there so this
    selector appears only once and the duplicate count holds at 64. */
-.st-hero .sh-steps{margin-top:0;padding:6px 0 6px;width:100%;gap:7px}
+.st-hero .sh-steps{margin-top:0;padding:0 0 6px;width:100%;gap:7px}
 
 @media(prefers-reduced-motion:reduce){ .sh-rays{animation:none;opacity:.8} }
 
@@ -3780,20 +3792,58 @@ html[lang="mr"] .book-t{
   font-size:13px;line-height:1;
   animation:flowPing 2.8s ease-in-out infinite;
 }
-/* v17q — the chip added in v17f replaced a ~6px glyph with a 22px circle
-   and took 16px off the note's text column, which pushed the delivery
-   note onto two lines. On phones the chip goes to 16px and .cond's
-   padding from 14px to 9px, returning that 16px. The note is measured
-   against the narrowest of its five containers — the order window at
-   254px — so it holds one line in both languages everywhere. */
+/* v17r — the full delivery sentence, held on ONE line everywhere.
+   Marathi is 243px and English 258px at 13.5px, against a column that is
+   only 211px in the narrowest of the five containers (the order window)
+   at 320px. The text is not shortened; the room is made instead.
+   Measured against that narrowest container in both languages:
+     360-479px  chip 16px, padding 9/7, gap 6, 12.5px  -> +17px
+     <=359px    chip hidden, 11.5px                    -> +18px
+   The chip is decorative — the amber fill and the gold left edge still
+   read as a warning without it — so it is the first thing to go at 320px
+   rather than the words. flowPing still runs on it from 360px up. */
+/* v17s — the note carries the attention it lost when the ⚠ chip was
+   dropped below 360px. Two effects, both already in the file:
+     · factPulseGold — a gentle zoom with a gold glow, matching the note's
+       own palette. transform-origin is the left edge so the line grows
+       rightward into its own margin rather than spreading both ways, and
+       transform never reflows text, so it cannot cause a wrap.
+     · btFlash on an ::after overlay — the same left-to-right light the
+       book titles carry in the order window. The letters stay solid and
+       the light passes over them; a gradient clipped to the text would
+       make parts of the words vanish as it crossed.
+   .cond is display:flex, so its spans are flex items and therefore
+   blockified — transform applies. On a plain inline span it would be
+   silently ignored, which is why this is on the flex child. */
+.cond > span:last-child{
+  position:relative;isolation:isolate;
+  transform-origin:left center;
+  animation:factPulseGold 4.2s ease-in-out infinite;
+}
+.cond > span:last-child::after{
+  content:"";position:absolute;inset:-1px -4px;pointer-events:none;z-index:1;
+  background:linear-gradient(105deg,
+    transparent 0%, transparent 40%,
+    rgba(255,255,255,.9) 50%,
+    transparent 60%, transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;
+  mix-blend-mode:overlay;
+  animation:btFlash 2.6s linear infinite;
+}
+
 @media(max-width:479px){
   #orderSum .cond-i,#page-cart .cond-i{width:16px;height:16px;font-size:11px}
-  .cond{padding:9px 9px;gap:7px}
+  .cond{padding:9px 7px;gap:6px;font-size:12.5px}
+}
+@media(max-width:359px){
+  .cond{font-size:11.5px}
+  .cond-i{display:none}
 }
 
 @media(prefers-reduced-motion:reduce){
   .osum-h,.oline-name,.of,.of-pct,.of-save,.osf-avg b,
-  .osum-foot::before,.cond,.cond-i{animation:none}
+  .osum-foot::before,.cond,.cond-i,
+  .cond > span:last-child,.cond > span:last-child::after{animation:none}
   .osum-h{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
 }
 

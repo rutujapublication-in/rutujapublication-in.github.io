@@ -84,7 +84,7 @@
       "keyword_effect": "beam",
       "symbol": "logo",
       "right_divider": true,
-      "seconds": 4.0
+      "seconds": 5.0
     },
     {
       "slide": 2,
@@ -103,7 +103,7 @@
       "keyword_effect": "rings",
       "symbol": "rings",
       "right_divider": false,
-      "seconds": 5.5,
+      "seconds": 6.5,
       "box_one_line_mr": true,
       "box_size_mr": 12.6,
       "box_one_line_en": true,
