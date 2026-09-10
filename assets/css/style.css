@@ -5684,24 +5684,31 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   padding:calc(var(--u) * .68) calc(var(--u) * .6) calc(var(--u) * .62);
   box-shadow:0 6px 22px rgba(90,66,20,.07);
 }
-/* a light walking the frame's edge, slower than the boxes inside it so
-   the two read as one family rather than competing. Reuses --vang and
-   vangSpin, already registered for the video cards, so no new property
-   and no new keyframe. */
+/* A light walking the frame's EDGE. The first attempt used a plain
+   conic gradient behind the frame: a negative-z-index child paints after
+   its parent's background, not behind it, so the whole cone showed
+   across the panel as a large orange wedge instead of a rim. The mask
+   below keeps only the ring — two layers, the inner one subtracted — so
+   the gradient can only ever appear in the 2px border band. */
 .vis-frame::before{
-  content:"";position:absolute;inset:-1.5px;z-index:-1;
+  content:"";position:absolute;inset:-2px;z-index:0;
   border-radius:inherit;pointer-events:none;
+  padding:2px;
   background:conic-gradient(from var(--vang),
     transparent 0deg, var(--gold) 42deg,
     rgba(26,77,46,.55) 78deg, transparent 130deg, transparent 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite:exclude;
+  opacity:.6;
   animation:vangSpin 11s linear infinite;
-  opacity:.55;
 }
 
 /* ---------- the deck ---------- */
 
 .vis-deck{
-  position:relative;
+  position:relative;z-index:1;
   /* The deck used to stand at one fixed height, sized for the tallest
       slide, so every shorter slide carried the difference as dead space
       at the bottom — 58px on average, 81px on slide 4. It now follows the
@@ -5860,7 +5867,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
   gap:calc(var(--u) * .3);
 }
 .vis-chip{
-  position:relative;isolation:isolate;
+  position:relative;isolation:isolate;z-index:0;
   display:inline-flex;align-items:center;justify-content:center;text-align:center;
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
   font-size:calc(var(--u) * .84);line-height:1.24;
@@ -5880,13 +5887,22 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 }
 /* the light that travels clockwise round each box, reusing the --vang
    property and vangSpin already registered for the video cards */
+/* masked to the rim, for the same reason as the frame: a negative
+   z-index child paints after its parent's background, and these chips
+   are only 12-16% opaque, so the unmasked cone showed straight through
+   the pill instead of travelling its edge */
 .vis-chip::before{
-  content:"";position:absolute;inset:-1.5px;z-index:-1;border-radius:inherit;
+  content:"";position:absolute;inset:-1.5px;z-index:0;border-radius:inherit;
+  pointer-events:none;padding:1.5px;
   background:conic-gradient(from var(--vang),
     transparent 0deg, rgba(255,255,255,.85) 60deg,
     transparent 140deg, transparent 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite:exclude;
   animation:vangSpin 4.6s linear infinite;
-  opacity:.6;
+  opacity:.75;
 }
 .vis-chip.vc-b::before{
   background:conic-gradient(from var(--vang),

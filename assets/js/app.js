@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18k',
+  VERSION: 'v18m',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2315,18 +2315,6 @@ const ORDERFORM = {
     this.prefill();
   },
 
-  /* one group of boxes: packed into rows by width, tones alternating */
-  boxes(items, esc, U, mr) {
-    const shape = this.rows(items, this.strip(), U * 0.84,
-      2 * Math.round(U * 0.48) + 2, Math.round(U * 0.3), mr);
-    let at = 0;
-    return `<div class="vis-chips">` + shape.map(n => {
-      const row = items.slice(at, at + n); at += n;
-      return `<div class="vis-row">` + row.map((c, k) =>
-        `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join('') + `</div>`;
-    }).join('') + `</div>`;
-  },
-
   build() {
     this.node = document.getElementById('formTemplate').content.firstElementChild.cloneNode(true);
     this.node.id = 'orderForm';
@@ -2897,6 +2885,18 @@ const VISION = {
           ${g('out2') ? `<i>${esc(g('out2'))}</i>` : ''}
         </div>
       </div>`;
+  },
+
+  /* one group of boxes: packed into rows by width, tones alternating */
+  boxes(items, esc, U, mr) {
+    const shape = this.rows(items, this.strip(), U * 0.84,
+      2 * Math.round(U * 0.48) + 2, Math.round(U * 0.3), mr);
+    let at = 0;
+    return `<div class="vis-chips">` + shape.map(n => {
+      const row = items.slice(at, at + n); at += n;
+      return `<div class="vis-row">` + row.map((c, k) =>
+        `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join('') + `</div>`;
+    }).join('') + `</div>`;
   },
 
   /* The cards are built once. An advance only swaps class names, because
