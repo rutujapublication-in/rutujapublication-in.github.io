@@ -5685,7 +5685,7 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      moment whenever a card changes. */
   border:1.5px solid #2E6B45;border-radius:calc(var(--u) * 1.05);
   background:linear-gradient(160deg,#FFFDF8,#FBF6EC);
-  padding:calc(var(--u) * .68) calc(var(--u) * .6) calc(var(--u) * .62);
+  padding:calc(var(--u) * .68) calc(var(--u) * .25) calc(var(--u) * .5);
   box-shadow:0 6px 22px rgba(90,66,20,.07);
 }
 /* A light walking the frame's EDGE. The first attempt used a plain
@@ -5723,13 +5723,14 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   /* matched to the card, so the frame finishes resizing as the page lands */
   transition:height .5s cubic-bezier(.5,0,.3,1);
   margin-top:calc(var(--u) * .1);
-  /* the band the arrows sit in, reserved so nothing overlaps */
-  padding-bottom:calc(var(--u) * 2 + 8px);
+  /* the arrows sit at the side edges now; the deck reserves 6px above
+     and 6px below the card and nothing more */
   perspective:900px;perspective-origin:30% 50%;
 }
 
 .vis-card{
-  position:absolute;top:6px;bottom:auto;left:0;right:0;
+  position:absolute;top:6px;bottom:auto;
+  left:calc(var(--u) * 1.35 + 4px);right:calc(var(--u) * 1.35 + 4px);
   display:flex;flex-direction:column;
   border-radius:calc(var(--u) * .95);
   padding:calc(var(--u) * .7) calc(var(--u) * .72) calc(var(--u) * .6);
@@ -5759,8 +5760,11 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
    front of it. Flat colour at .3 and .14 reads as depth — and it now sits
    BELOW the slide, where a stack of pages would cast. */
 .vis-card.is-next,.vis-card.is-back{transform-origin:50% 50%}
-.vis-card.is-next   {transform:translateY(14px) scale(.965) rotateX(-1.6deg);opacity:.3;z-index:3}
-.vis-card.is-back   {transform:translateY(26px) scale(.93) rotateX(-2.8deg);opacity:.14;z-index:2}
+/* The stack behind is scrapped. Two coloured slabs framing the slide
+   competed with the matter on it. The cards stay in the DOM so the page
+   turn has something to turn to; nothing of them renders. */
+.vis-card.is-next   {transform:translateY(10px) scale(.97);opacity:0;z-index:3}
+.vis-card.is-back   {transform:translateY(18px) scale(.94);opacity:0;z-index:2}
 .vis-card:not(.is-front){background:var(--base);box-shadow:none}
 /* The page turn. The card pivots from its left edge, the way a page in a
    book does — forward it turns away, backward it comes back and settles.
@@ -5814,14 +5818,18 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
    column at 320px and would have lost its last two words. */
 .vis-title{
   margin:0;position:relative;isolation:isolate;
-  --btw:calc(100vw - 26px - (var(--u) * 3.3) - 3px);
+  /* the card lost 2 x (1.35u + 4px) to the arrow bands and the frame
+     gave back 2 x .35u, so the title's fit width is re-derived:
+     100vw - 2*pad - 15px - 4.64u */
+  --btw:calc(100vw - 26px - 15px - (var(--u) * 4.64));
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:clamp(12px, calc(var(--btw) / var(--tw, 14)), calc(var(--u) * 1.45));
-  line-height:1.22;color:#F7C86B;
+  line-height:1.22;color:#FFD98A;
   letter-spacing:.2px;white-space:nowrap;
+  animation:visTitleGlow 3.2s ease-in-out infinite;
 }
-@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - (var(--u) * 3.3) - 3px)} }
-@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - (var(--u) * 3.3) - 3px)} }
+@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - 15px - (var(--u) * 4.64))} }
+@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - 15px - (var(--u) * 4.64))} }
 /* English display type carries the letter-spacing Section 1 gives it */
 html[lang="mr"] .vis-quote{font-size:calc(var(--u) * 1.04);line-height:1.58}
 html[lang="mr"] .vis-chip{font-size:calc(var(--u) * .88 * var(--bs, 1))}
@@ -5845,7 +5853,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
     transparent 60%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
-  animation:btFlash 1.5s linear both;
+  animation:btFlash 2.4s linear infinite;
 }
 /* the bracketed tail rides the same line at 0.72 of the title */
 .vis-q{
@@ -5866,13 +5874,14 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
   margin:calc(var(--u) * .42) 0 calc(var(--u) * .16);
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
   font-size:calc(var(--u) * .8);letter-spacing:.8px;
-  color:#F7C86B;
+  color:#FFDD95;
   display:flex;align-items:center;gap:calc(var(--u) * .38);
+  animation:visLabGlow 2.4s ease-in-out infinite;
 }
 .vis-lab::before{
   content:"";width:calc(var(--u) * .36);height:calc(var(--u) * .36);
   border-radius:2px;background:var(--gold);transform:rotate(45deg);
-  flex-shrink:0;
+  flex-shrink:0;animation:hdGlow 2.4s ease-in-out infinite;
 }
 .vis-lab > span{position:relative;display:inline-block;isolation:isolate}
 .vis-lab > span::after{
@@ -5883,8 +5892,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
     transparent 60%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
-  animation:btFlash 1.7s linear both;
-  animation-delay:.12s;
+  animation:btFlash 2.9s linear infinite;
 }
 
 /* ---------- 3 · the matter, on the book page's reading strategy ---------- */
@@ -5918,7 +5926,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 }
 /* the two tones, alternating along each row */
 .vis-chip.vc-a{
-  color:#F7C86B;background:rgba(255,255,255,.12);
+  color:#FFD98A;background:rgba(255,255,255,.12);
   border:1px solid rgba(247,200,107,.42);
   text-shadow:0 0 8px rgba(247,200,107,.45);
 }
@@ -5959,7 +5967,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 }
 .vis-pair span{
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * .9);color:#F7C86B;
+  font-size:calc(var(--u) * .9);color:#FFD98A;
 }
 .vis-pair em{
   font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:700;
@@ -5976,7 +5984,6 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 .vis-sign{align-items:flex-start;padding:calc(var(--u) * .34) calc(var(--u) * .48)}
 .vis-sign span{font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:calc(var(--u) * 1.06);letter-spacing:.2px}
-.vis-sign b{font-size:calc(var(--u) * .78);color:rgba(247,200,107,.78);font-weight:700}
 
 /* ---------- 6 · the path, full width, arrows leaning forward ---------- */
 
@@ -5994,7 +6001,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 .vis-step{
   position:relative;display:inline-flex;align-items:center;
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * .84);color:#FFF3DA;
+  font-size:calc(var(--u) * .84);color:#FFF6E2;
   text-shadow:0 0 7px rgba(255,243,218,.28);
 }
 .vis-step + .vis-step::before{
@@ -6031,23 +6038,23 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 /* The arrows live in the band between the card's lower edge and the
    frame border. The band is 2u + 8px, sized from --u — at a fixed 18px
    a 26.6px arrow would have overlapped the card by 16.6px. */
+/* the arrows live in the bands at the card's left and right edges,
+   vertically centred, so they read as the page's own edges */
 .vis-nav{
-  position:absolute;left:0;right:0;bottom:calc(var(--u) * .1);
-  height:calc(var(--u) * 2 + 8px);
+  position:absolute;top:6px;bottom:6px;left:0;right:0;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 calc(var(--u) * .3);
-  pointer-events:none;z-index:3;
+  pointer-events:none;z-index:4;
 }
 .vis-nav > *{pointer-events:auto}
 
 
 .vis-arrow::before{
   content:"";position:absolute;top:50%;left:50%;width:0;height:0;
-  border-top:calc(var(--u) * .28) solid transparent;
-  border-bottom:calc(var(--u) * .28) solid transparent;
+  border-top:calc(var(--u) * .2) solid transparent;
+  border-bottom:calc(var(--u) * .2) solid transparent;
 }
-.vis-next::before{border-left:calc(var(--u) * .42) solid var(--gold-dark);transform:translate(-35%,-50%)}
-.vis-prev::before{border-right:calc(var(--u) * .42) solid var(--gold-dark);transform:translate(-65%,-50%)}
+.vis-next::before{border-left:calc(var(--u) * .3) solid var(--gold-dark);transform:translate(-30%,-50%)}
+.vis-prev::before{border-right:calc(var(--u) * .3) solid var(--gold-dark);transform:translate(-70%,-50%)}
 
 @keyframes visArrow{
   0%,100%{opacity:.6;transform:translateX(0)}
@@ -6130,9 +6137,9 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--u) * 1.1)}
    boxes, then the chain. Only the outcome line and the frame ring stay
    alive — the conclusion, and an ambient light at the border where no
    text sits. */
-.vis-card.is-front .vis-title{animation:visLand .5s ease-out both}
-.vis-card.is-front .vis-lab::before{animation:visLand .5s ease-out .06s both}
-.vis-card.is-front .vis-lab{animation:visLand .5s ease-out .08s both}
+.vis-card.is-front .vis-title{animation:visTitleGlow 3.2s ease-in-out infinite, visLand .5s ease-out both}
+.vis-card.is-front .vis-lab::before{animation:hdGlow 2.4s ease-in-out infinite, visLand .5s ease-out .06s both}
+.vis-card.is-front .vis-lab{animation:visLabGlow 2.4s ease-in-out infinite, visLand .5s ease-out .08s both}
 .vis-card.is-front .vis-quote{animation:visArrive .5s ease-out .14s both}
 .vis-card.is-front .vis-row:nth-child(1) .vis-chip{animation-delay:.22s}
 .vis-card.is-front .vis-row:nth-child(2) .vis-chip{animation-delay:.28s}
@@ -6175,7 +6182,7 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--u) * 1.1)}
 /* the arrows: bigger targets, gold ring, pressed state, and a slow pulse
    on the same beat as the frame so the pair reads as one */
 .vis-arrow{
-  width:calc(var(--u) * 2);height:calc(var(--u) * 2);border-radius:50%;
+  width:calc(var(--u) * 1.35);height:calc(var(--u) * 1.35);border-radius:50%;
   padding:0;position:relative;flex-shrink:0;
   transition:background .2s ease,border-color .2s ease,transform .16s ease;
   border:1.5px solid rgba(46,107,69,.45);
@@ -6206,3 +6213,60 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--u) * 1.1)}
   70% {opacity:1;transform:scale(1.03)}
   100%{opacity:1;transform:none}
 }
+
+/* The signature is the one line here carrying a state honour, so it takes
+   an effect nothing else on the site has: a slow gold shimmer travelling
+   its length. 6.5s, so it reads as deliberate rather than decorative.
+   No background shorthand may follow background-clip in this rule — a
+   later shorthand resets it and the text turns invisible. */
+.vis-sign b{
+  position:relative;isolation:isolate;
+  font-size:calc(var(--u) * .78);
+  font-weight:800;color:#FFE3A8;
+  background-image:linear-gradient(100deg,
+    #FFE3A8 0%, #FFE3A8 38%, #FFFFFF 48%, #FFD273 58%, #FFE3A8 68%, #FFE3A8 100%);
+  background-size:280% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:visSign 6.5s ease-in-out infinite;
+}
+@keyframes visSign{
+  0%,8%   {background-position:130% 0}
+  55%,100%{background-position:-30% 0}
+}
+@media(prefers-reduced-motion:reduce){
+  .vis-sign b{animation:none;-webkit-text-fill-color:#FFE3A8}
+}
+
+@keyframes visTitleGlow{
+  0%,100%{text-shadow:0 0 0 rgba(255,217,138,0)}
+  50%    {text-shadow:0 0 16px rgba(255,217,138,.7)}
+}
+@keyframes visLabGlow{
+  0%,100%{text-shadow:0 0 0 rgba(255,221,149,0)}
+  50%    {text-shadow:0 0 12px rgba(255,221,149,.6)}
+}
+
+/* ===================================================================
+   OFF-SCREEN STILLNESS
+   153 rules on this site animate forever. Without this they all run at
+   once, on every page, whether or not the visitor can see them — Section
+   1's rays and story band, the three action buttons, the book cards, the
+   cart's pills, the order window's chips. A phone paints all of it every
+   frame.
+
+   One observer adds .is-still to a region that has left the viewport,
+   and this pauses everything inside it. Paused, not cancelled: each
+   animation holds its current frame and resumes from there, so nothing
+   restarts or jumps when the region comes back.
+
+   Section 5's own rule already does this per card; this is the same
+   pattern applied to the rest of the site.
+   =================================================================== */
+
+.is-still,
+.is-still *,
+.is-still::before,
+.is-still::after,
+.is-still *::before,
+.is-still *::after{animation-play-state:paused !important}

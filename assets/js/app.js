@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18s',
+  VERSION: 'v18v',
   lang: 'mr',
   text: {},
   locations: null,
@@ -20,15 +20,13 @@ const RUTUJA = {
     this.bindLangToggle();
 
     try {
-      const [t, l, c, s, v] = await Promise.all([
+      const [t, c, s, v] = await Promise.all([
         fetch('data/sitetext.json?v=' + this.VERSION).then(r => r.json()),
-        fetch('data/locations.json?v=' + this.VERSION).then(r => r.json()),
         fetch('data/content.json?v=' + this.VERSION).then(r => r.json()),
         fetch('data/story.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] })),
         fetch('data/vision.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] }))
       ]);
       this.text = t;
-      this.locations = l;
       this.content = c;
       this.story = (s && s.slides) || [];
       this.vision = (v && v.slides) || [];
@@ -36,7 +34,19 @@ const RUTUJA = {
       console.error('Data load failed', e);
     }
 
+    /* the boot skeleton comes off the moment there is real text to show */
+    try { document.body.classList.remove('booting'); } catch (e) {}
+
     this.config = this.defaultConfig();
+
+    /* 153 rules on this site animate forever. Without this they all run
+       at once — Section 1's rays, the story band, the three buttons, the
+       cart's pills — whether or not any of them is on screen. One
+       observer per region adds .is-still when it leaves the viewport, and
+       one CSS rule pauses everything inside it. Nothing is removed and
+       nothing restarts from the beginning; each animation holds its frame
+       and resumes where it stopped. */
+    this.stillWhenOffscreen();
 
     /* A registration that could not be confirmed is kept in
        rutuja_pending. Retry it once per visit, quietly and in the
@@ -226,6 +236,9 @@ const RUTUJA = {
   /* Which sections the visitor can actually see right now. Repainting
      these first keeps a language tap feeling immediate; everything else
      can catch up a frame later without anyone noticing. */
+  /* newly built regions need observing too */
+  reStill() { try { if (this._stillWatch) this._stillWatch(); } catch (e) {} },
+
   visibleSections() {
     const open = id => {
       const el = document.getElementById(id);
@@ -244,6 +257,8 @@ const RUTUJA = {
 
   /* `only` renders just those sections; `skip` renders all but those. */
   paintSections(only, skip) {
+    /* a repaint may have built regions that were not there before */
+    setTimeout(() => this.reStill(), 0);
     // Each section is isolated: if one fails, the rest of the site still renders.
     [['strip', () => this.paintStrip()],
      ['standards', () => this.paintStandards()],
@@ -523,6 +538,36 @@ const RUTUJA = {
         localStorage.removeItem('rutuja_pending');
       }
     } catch (e) { /* still pending; try again next visit */ }
+  },
+
+  /* locations.json is 44 KB and only the registration and order forms
+     need it — it was blocking the first paint for every visitor who never
+     opens a form. Fetched once, on demand; the form repaints itself when
+     it lands. Both call sites already guard for it being absent, so
+     nothing breaks in the gap. */
+  /* Pause every animation in a region the visitor cannot see. */
+  stillWhenOffscreen() {
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => e.target.classList.toggle('is-still', !e.isIntersecting));
+    }, { rootMargin: '120px 0px' });
+    const watch = () => document
+      .querySelectorAll('.story, .std-frame, .offer-frame, .ex-grid, .vis, '
+        + '#page-books .book-grid, .bd, #page-cart, #orderSum, .qa-list, .site-foot')
+      .forEach(el => { if (!el.dataset.still) { el.dataset.still = '1'; io.observe(el); } });
+    watch();
+    /* sections that are built later, or rebuilt on a language switch */
+    this._stillWatch = watch;
+  },
+
+  ensureLocations() {
+    if (this.locations) return Promise.resolve(this.locations);
+    if (this._locPromise) return this._locPromise;
+    this._locPromise = fetch('data/locations.json?v=' + this.VERSION)
+      .then(r => r.json())
+      .then(l => { this.locations = l; try { FORM.repaint(); } catch (e) {} return l; })
+      .catch(() => { this._locPromise = null; return null; });
+    return this._locPromise;
   },
 
   /* Called when a window is closed by its own X, so the stack stays true. */
@@ -940,6 +985,9 @@ const FORM = {
   digits(input, max) { input.value = input.value.replace(/\D/g, '').slice(0, max); },
 
   repaint() {
+    /* if a form is opening before locations.json has been asked for, ask
+       now; this method runs again the moment it lands */
+    try { if (!this.app.locations) this.app.ensureLocations(); } catch (e) {}
     const t = k => this.app.t(k);
     this.node.querySelectorAll('[data-t]').forEach(el => {
       const v = t(el.dataset.t);
@@ -2964,7 +3012,10 @@ const VISION = {
        positioned with height:auto, and transforms never affect layout. */
     const incoming = this.cards[this.i];
     if (incoming && incoming.offsetHeight) {
-      this.deck.style.height = (incoming.offsetHeight + 48) + 'px';
+      /* 6px above the card and 6px below. The 48 here was reserved for
+         the bottom band the arrows used to sit in; they moved to the side
+         edges, so it left 42px of dead space under every slide. */
+      this.deck.style.height = (incoming.offsetHeight + 12) + 'px';
     }
     const frame = this.deck.closest('.vis-frame');
     if (frame && !first) {
@@ -2998,7 +3049,7 @@ const VISION = {
     if (!front) return;
     requestAnimationFrame(() => {
       const h = front.offsetHeight;
-      if (h) this.deck.style.height = (h + 48) + 'px';
+      if (h) this.deck.style.height = (h + 12) + 'px';
     });
   },
 

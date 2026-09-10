@@ -10,9 +10,51 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Mukta:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=18s">
+<!-- The 269 KB stylesheet used to block the first paint: on a rural 4G
+     phone nothing appeared for about four and a half seconds, so people
+     reloaded, and the reload hit cache and worked. That is why the site
+     seemed to "need refreshing".
+
+     The few rules the header and the first screen need are inline below,
+     so something correct is on screen almost immediately. The full sheet
+     then loads without blocking and takes over. The noscript copy keeps
+     it working with JavaScript disabled. -->
+<style>
+  :root{--u:clamp(13px,3.7vw,16px);--green-dark:#14432A;--gold:#E8A33D;
+        --gold-dark:#B87A1E;--ink:#22301F;--white:#fff;--cream:#FBF7EF}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);
+       font-family:Mukta,system-ui,-apple-system,sans-serif;
+       -webkit-text-size-adjust:100%}
+  .header{position:sticky;top:0;z-index:50;background:var(--green-dark)}
+  .header-inner{display:flex;align-items:center;gap:10px;
+                padding:10px 16px;max-width:1100px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;color:#fff;
+         text-decoration:none;font-weight:700}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+  .hero{background:linear-gradient(160deg,#14432A,#1E5C3A);color:#fff;
+        padding:calc(var(--u) * 1.4) 0}
+  .strip{background:var(--gold);overflow:hidden}
+  img{max-width:100%;height:auto}
+  /* the boot skeleton: grey blocks where text will be, so the page is
+     never a blank white sheet. app.js removes .booting when data lands. */
+  body.booting .wrap [data-t]:empty,
+  body.booting .book-grid:empty,
+  body.booting .std-frame,
+  body.booting .offer-frame{
+    background:linear-gradient(90deg,#EFE9DC 25%,#F7F2E6 37%,#EFE9DC 63%);
+    background-size:400% 100%;
+    border-radius:8px;min-height:14px;
+    animation:bootWait 1.4s ease-in-out infinite;
+  }
+  @keyframes bootWait{0%{background-position:100% 0}100%{background-position:0 0}}
+  @media(prefers-reduced-motion:reduce){body.booting *{animation:none}}
+</style>
+<link rel="stylesheet" href="assets/css/style.css?v=18v" media="print" onload="this.media='all';this.onload=null">
+<noscript><link rel="stylesheet" href="assets/css/style.css?v=18v"></noscript>
 </head>
-<body>
+<body class="booting">
 
 <!-- ================= SCREEN 1 — WELCOME ================= -->
 
@@ -380,6 +422,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=18s"></script>
+<script src="assets/js/app.js?v=18v"></script>
 </body>
 </html>
