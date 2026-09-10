@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18m',
+  VERSION: 'v18p',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2924,6 +2924,23 @@ const VISION = {
   place(first) {
     const n = this.slides.length;
     const away = this.dir > 0 ? 'is-away-l' : 'is-away-r';
+    /* Size the deck to the card that is ARRIVING, before the classes
+       change. Measuring afterwards left one frame where the frame was
+       the old height around new content — the jump between slides.
+       Height does not depend on the class: every card is absolutely
+       positioned with height:auto, and transforms never affect layout. */
+    const incoming = this.cards[this.i];
+    if (incoming && incoming.offsetHeight) {
+      this.deck.style.height = (incoming.offsetHeight + 48) + 'px';
+    }
+    const frame = this.deck.closest('.vis-frame');
+    if (frame && !first) {
+      frame.classList.remove('is-turning');
+      void frame.getBoundingClientRect();
+      frame.classList.add('is-turning');
+      clearTimeout(this._ring);
+      this._ring = setTimeout(() => frame.classList.remove('is-turning'), 560);
+    }
     this.cards.forEach((el, k) => {
       const rel = (k - this.i + n) % n;
       const pos = rel === 0 ? 'is-front' : rel === 1 ? 'is-next' : rel === 2 ? 'is-back' : away;
@@ -2950,7 +2967,7 @@ const VISION = {
     if (!front) return;
     requestAnimationFrame(() => {
       const h = front.offsetHeight;
-      if (h) this.deck.style.height = (h + 70) + 'px';
+      if (h) this.deck.style.height = (h + 48) + 'px';
     });
   },
 

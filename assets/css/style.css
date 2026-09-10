@@ -4262,7 +4262,8 @@ html[lang="mr"] .book-t{
 .bd-desc,.qa-a,.qa-inner,.slab td,.slab th,.rung-q{overflow-wrap:break-word}
 /* no browser hyphenates Marathi, so the setting only adds breaks */
 html[lang="mr"] .bd-desc,html[lang="mr"] .qa-p,html[lang="mr"] .vcard-cap,
-html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
+html[lang="mr"] .flow-note,
+html[lang="mr"] .vis-quote{hyphens:none;-webkit-hyphens:none}
 
 /* the "you are here" marker is a 4px bar; its label was rendering
    inside those four pixels and spilling across the rows below */
@@ -5679,7 +5680,10 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 
 .vis-frame{
   position:relative;isolation:isolate;
-  border:1.5px solid #E2D6BC;border-radius:calc(var(--u) * 1.05);
+  /* Sections 3 and 4 share the beige #E2D6BC. Section 5 takes the deep
+     green so it reads as its own chapter, and the ring brightens for a
+     moment whenever a card changes. */
+  border:1.5px solid #2E6B45;border-radius:calc(var(--u) * 1.05);
   background:linear-gradient(160deg,#FFFDF8,#FBF6EC);
   padding:calc(var(--u) * .68) calc(var(--u) * .6) calc(var(--u) * .62);
   box-shadow:0 6px 22px rgba(90,66,20,.07);
@@ -5716,13 +5720,13 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
       space it does not use. 30px above and 40px below stay clear for the
       lifted and leaving cards. */
   height:460px;
-  transition:height .52s cubic-bezier(.33,1,.42,1);
-  margin-top:calc(var(--u) * .35);
+  transition:height .38s cubic-bezier(.33,1,.42,1);
+  margin-top:calc(var(--u) * .1);
   perspective:1200px;
 }
 
 .vis-card{
-  position:absolute;top:30px;bottom:auto;left:0;right:0;
+  position:absolute;top:22px;bottom:auto;left:0;right:0;
   display:flex;flex-direction:column;
   border-radius:calc(var(--u) * .95);
   padding:calc(var(--u) * .7) calc(var(--u) * .72) calc(var(--u) * .6);
@@ -5735,7 +5739,7 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      card's top down faster than translateY lifts it and the stack behind
      the front card disappears entirely */
   transform-origin:50% 50%;
-  transition:transform .6s cubic-bezier(.33,1,.42,1), opacity .48s ease;
+  transition:transform .38s cubic-bezier(.33,1,.42,1), opacity .3s ease;
   will-change:transform,opacity;
   overflow:hidden;
 }
@@ -5743,8 +5747,11 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 /* the front card rises from the back of the stack; a leaving card is
    stretched sideways as it is pulled off, then fades */
 .vis-card.is-front  {transform:translateX(0) translateY(0) scale(1) rotateX(0deg);opacity:1;z-index:5}
-.vis-card.is-next   {transform:translateY(-20px) scale(.955) rotateX(2.4deg);opacity:.92;z-index:3}
-.vis-card.is-back   {transform:translateY(-38px) scale(.912) rotateX(4.2deg);opacity:.72;z-index:2}
+/* peeks measured against the front card's top edge at a 390px card:
+   next 7px, back 13px — half what they were, so the stack still reads
+   as depth without stacking 50px of clutter above the slide */
+.vis-card.is-next   {transform:translateY(-16px) scale(.955) rotateX(2deg);opacity:.9;z-index:3}
+.vis-card.is-back   {transform:translateY(-30px) scale(.912) rotateX(3.4deg);opacity:.66;z-index:2}
 .vis-card.is-away-l {transform:translateX(-118%) scaleX(1.15) scaleY(.94) rotateX(-4deg);
   opacity:0;z-index:1;pointer-events:none}
 .vis-card.is-away-r {transform:translateX(118%) scaleX(1.15) scaleY(.94) rotateX(-4deg);
@@ -5753,12 +5760,25 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 /* Nothing behind the front card may be read. The peeking edges show
    colour only, like a stack of closed pages — otherwise the text of the
    card underneath reads as part of the matter in front of it. */
-.vis-card:not(.is-front) .vis-body{visibility:hidden}
-
+/* The body used to snap from hidden to visible the instant the class
+   changed, while the card was still moving — that is the flash between
+   slides. It now fades with the card and only the front one is shown,
+   so nothing behind can be read and nothing appears mid-flight. */
 .vis-body{
   display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
-  animation:visArrive .5s ease-out both;
+  opacity:0;transition:opacity .22s ease;
 }
+.vis-card.is-front .vis-body{opacity:1;animation:visArrive .4s ease-out both}
+
+/* All seven cards live in the DOM, so without this every card's
+   animations keep running while six of them are invisible — 195 at once,
+   about 165 of them painting nothing. A conic gradient re-rasterises
+   every frame, and there are fifteen of those on slide 5 alone. That is
+   the stutter between slides and down the page. Only the card in front
+   animates; the rest hold their last frame at no cost. */
+.vis-card:not(.is-front) *,
+.vis-card:not(.is-front)::before,
+.vis-card:not(.is-front)::after{animation-play-state:paused}
 .is-held .vis-card.is-front{box-shadow:0 10px 34px rgba(20,26,20,.34)}
 
 /* ---------- 1 · the title, centred, with three layers of glow ---------- */
@@ -5792,6 +5812,12 @@ html[lang="mr"] .vis-quote{font-size:calc(var(--u) * 1.04);line-height:1.58}
 html[lang="mr"] .vis-chip{font-size:calc(var(--u) * .88)}
 html[lang="mr"] .vis-step{font-size:calc(var(--u) * .88)}
 html[lang="mr"] .vis-pair b{font-size:calc(var(--u) * .88)}
+/* No word splits in Section 5, in either language. English hyphenates
+   correctly and the book pages keep hyphens:auto, but this column is
+   248px on a 320px phone — "understanding" is 26% of a line, and the
+   browser breaks it. On a reading card a split word costs more than a
+   wider word gap, so justify does the work alone here. */
+html[lang="en"] .vis-quote{hyphens:none;-webkit-hyphens:none}
 html[lang="en"] .vis-title{letter-spacing:.6px}
 html[lang="en"] .vis-lab{letter-spacing:1.1px}
 html[lang="en"] .vis-out b{letter-spacing:.4px}
@@ -6001,7 +6027,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 
 .vis-nav{
   display:flex;align-items:center;justify-content:center;
-  gap:calc(var(--u) * .7);margin-top:calc(var(--u) * .55);
+  gap:calc(var(--u) * .7);margin-top:calc(var(--u) * -.15);
 }
 .vis-dots{display:flex;align-items:center;gap:calc(var(--u) * .32)}
 .vis-dot{
@@ -6102,3 +6128,26 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--u) * 1.1)}
   font-size:calc(var(--u) * .8);color:rgba(255,255,255,.62);
 }
 @media(prefers-reduced-motion:reduce){ .vis-word{animation:none} }
+
+/* the ring answers a slide change: a short brighten, driven by a class
+   the module adds for 500ms */
+.vis-frame.is-turning::before{animation:vangSpin 11s linear infinite, visRing 0.5s ease-out}
+@keyframes visRing{
+  0%  {opacity:.6}
+  40% {opacity:1}
+  100%{opacity:.6}
+}
+
+/* the title lands rather than merely glowing: a brief gold shimmer and a
+   scale on the diamond, replayed with the card's arrival cascade */
+.vis-card.is-front .vis-title{animation:visTitleGlow 3.2s ease-in-out infinite, visLand .5s ease-out both}
+.vis-card.is-front .vis-lab::before{animation:hdGlow 2.4s ease-in-out infinite, visLand .5s ease-out .06s both}
+@keyframes visLand{
+  0%  {opacity:0;transform:translateY(-5px) scale(.97)}
+  60% {opacity:1;transform:translateY(0) scale(1.02)}
+  100%{opacity:1;transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .vis-card.is-front .vis-title,.vis-card.is-front .vis-lab::before,
+  .vis-body,.vis-card.is-front .vis-body,.vis-frame.is-turning::before{animation:none}
+}
