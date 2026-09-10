@@ -5655,20 +5655,15 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 
 /* ===================================================================
    SECTION 5 — THE WRITER'S VISION
-   Added whole in v18a. Nothing above this line was edited.
+   Rebuilt in v18c. Everything above this line is untouched.
 
-   A full-bleed band with a framed inner, the way Section 3 is framed,
-   so it reads as its own chapter without breaking the page's rhythm.
+   A full-bleed band with a framed inner, the way Section 3 is framed.
+   Seven cards. The front one is read; the two behind it show colour
+   only, so nothing behind can be mistaken for the matter in front.
 
-   The cards shuffle like a phone's window switcher: the front card
-   lifts, tilts back and falls away; the next rises from beneath. Only
-   three are painted — front, next, back — and everything moves on
-   transform and opacity, so no layout is recalculated and the GPU does
-   the work. On a 360px Android that is the difference between a smooth
-   shuffle and a stutter.
-
-   Every size descends from --u, so the section scales with the site and
-   needs no breakpoints of its own.
+   All motion is transform and opacity — no layout is recalculated, so
+   a 360px Android shuffles smoothly instead of stuttering. Every size
+   descends from --u, so the section scales with the rest of the site.
    =================================================================== */
 
 .vis{
@@ -5682,7 +5677,6 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 }
 .vis.hidden{display:none}
 
-/* the frame, echoing .std-frame so Section 5 belongs to the same page */
 .vis-frame{
   position:relative;
   border:1.5px solid #E2D6BC;border-radius:calc(var(--u) * 1.05);
@@ -5697,64 +5691,103 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   position:relative;
   height:460px;
   margin-top:calc(var(--u) * .5);
-  perspective:1100px;
+  perspective:1200px;
 }
-/* The card is inset 30px at the top and 40px at the bottom, so a lifted
-   card and a falling one both stay inside the deck. Without that the
-   stack bled over the heading rule above and the dots below. Deck height
-   is therefore card height + 70. */
+/* the card is inset 30px at the top and 40px at the bottom, so a lifted
+   card and a leaving one both stay inside the deck instead of bleeding
+   over the heading rule above and the dots below */
 @media(max-width:359px){ .vis-deck{height:490px} }
-@media(min-width:400px){ .vis-deck{height:476px} }
-@media(min-width:560px){ .vis-deck{height:462px} }
+@media(min-width:400px){ .vis-deck{height:530px} }
+@media(min-width:560px){ .vis-deck{height:540px} }
 
 .vis-card{
   position:absolute;top:30px;bottom:40px;left:0;right:0;
   display:flex;flex-direction:column;
   border-radius:calc(var(--u) * .95);
-  padding:calc(var(--u) * .85) calc(var(--u) * .85) calc(var(--u) * .7);
+  padding:calc(var(--u) * .85) calc(var(--u) * .85) calc(var(--u) * .55);
   background:
     radial-gradient(96% 62% at 14% 6%, rgba(255,255,255,.10) 0%, transparent 58%),
     linear-gradient(165deg, var(--base) 0%, rgba(0,0,0,.30) 140%);
   color:#EDF2F4;
   box-shadow:0 10px 30px rgba(20,26,20,.26);
-  /* Centre, not the bottom edge. Anchored at the bottom, scaling pulled
-      each card's top down faster than translateY lifted it, so the stack
-      behind the front card was completely hidden and the shuffle read as
-      one flat card. */
+  /* centre, not the bottom edge: anchored at the bottom, scaling pulls a
+     card's top down faster than translateY lifts it and the stack behind
+     the front card disappears entirely */
   transform-origin:50% 50%;
-  transition:transform .62s cubic-bezier(.33,1,.42,1), opacity .5s ease;
+  transition:transform .6s cubic-bezier(.33,1,.42,1), opacity .48s ease;
   will-change:transform,opacity;
   overflow:hidden;
 }
 
-/* the four states of the shuffle */
-/* peeks measured against the front card's top edge, at a 390px card:
-   next 11px, back 21px, away falls 36px clear below */
-.vis-card.is-front{transform:translateY(0)    scale(1)    rotateX(0deg);   opacity:1; z-index:4}
-.vis-card.is-next {transform:translateY(-20px) scale(.955) rotateX(2.4deg); opacity:.92;z-index:3}
-.vis-card.is-back {transform:translateY(-38px) scale(.912) rotateX(4.2deg); opacity:.72;z-index:2}
-.vis-card.is-away {transform:translateY(30px)  scale(1.03) rotateX(-5deg);  opacity:0;  z-index:1;
-  pointer-events:none}
+/* the front card rises from the back of the stack; a leaving card is
+   stretched sideways as it is pulled off, then fades */
+.vis-card.is-front  {transform:translateX(0) translateY(0) scale(1) rotateX(0deg);opacity:1;z-index:5}
+.vis-card.is-next   {transform:translateY(-20px) scale(.955) rotateX(2.4deg);opacity:.92;z-index:3}
+.vis-card.is-back   {transform:translateY(-38px) scale(.912) rotateX(4.2deg);opacity:.72;z-index:2}
+.vis-card.is-away-l {transform:translateX(-118%) scaleX(1.15) scaleY(.94) rotateX(-4deg);
+  opacity:0;z-index:1;pointer-events:none}
+.vis-card.is-away-r {transform:translateX(118%) scaleX(1.15) scaleY(.94) rotateX(-4deg);
+  opacity:0;z-index:1;pointer-events:none}
 
-/* ---------- inside a card ---------- */
+/* Nothing behind the front card may be read. The peeking edges show
+   colour only, like a stack of closed pages — otherwise the text of the
+   card underneath reads as part of the matter in front of it. */
+.vis-card:not(.is-front) .vis-body,
+.vis-card:not(.is-front) .vis-num,
+.vis-card:not(.is-front) .vis-ring{visibility:hidden}
 
-.vis-head{flex-shrink:0}
+.vis-body{
+  display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
+  animation:visArrive .5s ease-out both;
+}
+.is-held .vis-card.is-front{box-shadow:0 10px 34px rgba(20,26,20,.34)}
+
+/* ---------- 1 · the title, centred, with three layers of glow ---------- */
+
+.vis-head{flex-shrink:0;text-align:center;position:relative}
+.vis-head::before{
+  content:"";position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
+  width:82%;height:150%;pointer-events:none;
+  background:radial-gradient(58% 52% at 50% 50%, rgba(247,200,107,.18) 0%, transparent 70%);
+}
+/* The card clips, and the title is nowrap, so a title too wide for the
+   column would be cut rather than wrapped. --tw is the title measured in
+   units of font-size (bracket included at 0.72), --btw is the column it
+   has to live in; the clamp picks the largest size that holds one line
+   and never grows past 1.45u. English needs this more than Marathi:
+   "Chala Vachuya Zatpat (A complete revision)" is 263px against a 249px
+   column at 320px and would have lost its last two words. */
 .vis-title{
   margin:0;position:relative;isolation:isolate;
+  --btw:calc(100vw - 26px - (var(--u) * 3.3) - 3px);
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * 1.45);line-height:1.22;color:#F7C86B;
-  letter-spacing:.2px;
+  font-size:clamp(12px, calc(var(--btw) / var(--tw, 14)), calc(var(--u) * 1.45));
+  line-height:1.22;color:#F7C86B;
+  letter-spacing:.2px;white-space:nowrap;
+  animation:visTitleGlow 3.2s ease-in-out infinite;
 }
+@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - (var(--u) * 3.3) - 3px)} }
+@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - (var(--u) * 3.3) - 3px)} }
+/* English display type carries the letter-spacing Section 1 gives it */
+html[lang="en"] .vis-title{letter-spacing:.6px}
+html[lang="en"] .vis-lab{letter-spacing:1.1px}
+html[lang="en"] .vis-out b{letter-spacing:.4px}
 .vis-title > span{position:relative;display:inline-block}
 .vis-title > span::after{
   content:"";position:absolute;inset:-1px -5px;pointer-events:none;
   background:linear-gradient(105deg,
     transparent 0%, transparent 40%,
-    rgba(255,255,255,.62) 50%,
+    rgba(255,255,255,.72) 50%,
     transparent 60%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
   animation:btFlash 2.4s linear infinite;
+}
+/* the bracketed tail rides the same line at 0.72 of the title */
+.vis-q{
+  font-style:normal;font-weight:600;
+  font-size:.72em;color:rgba(247,200,107,.86);
+  margin-left:.28em;
 }
 .vis-sub{
   margin:calc(var(--u) * .18) 0 0;
@@ -5762,58 +5795,144 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   font-size:calc(var(--u) * .86);color:rgba(247,200,107,.82);
 }
 
+.vis-num{
+  position:absolute;top:calc(var(--u) * .6);right:calc(var(--u) * .72);
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .68);letter-spacing:1px;
+  color:rgba(255,255,255,.42);z-index:2;
+}
+
+/* ---------- 2 · part headings, the title's sweep, at full gold ---------- */
+
 .vis-lab{
-  margin:calc(var(--u) * .62) 0 calc(var(--u) * .22);
+  margin:calc(var(--u) * .58) 0 calc(var(--u) * .24);
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
-  font-size:calc(var(--u) * .78);letter-spacing:.7px;
-  color:rgba(247,200,107,.72);
+  font-size:calc(var(--u) * .8);letter-spacing:.8px;
+  color:#F7C86B;
   display:flex;align-items:center;gap:calc(var(--u) * .38);
+  animation:visLabGlow 2.4s ease-in-out infinite;
 }
 .vis-lab::before{
-  content:"";width:calc(var(--u) * .34);height:calc(var(--u) * .34);
+  content:"";width:calc(var(--u) * .36);height:calc(var(--u) * .36);
   border-radius:2px;background:var(--gold);transform:rotate(45deg);
   flex-shrink:0;animation:hdGlow 2.4s ease-in-out infinite;
 }
+.vis-lab > span{position:relative;display:inline-block;isolation:isolate}
+.vis-lab > span::after{
+  content:"";position:absolute;inset:-1px -4px;pointer-events:none;
+  background:linear-gradient(105deg,
+    transparent 0%, transparent 40%,
+    rgba(255,255,255,.6) 50%,
+    transparent 60%, transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;
+  mix-blend-mode:overlay;
+  animation:btFlash 2.9s linear infinite;
+}
+
+/* ---------- 3 · the matter, on the book page's reading strategy ---------- */
 
 .vis-quote{
   margin:0;font-family:Mukta,system-ui,sans-serif;font-weight:500;
-  font-size:calc(var(--u) * .9);line-height:1.52;
-  color:rgba(255,255,255,.90);
+  font-size:calc(var(--u) * .98);line-height:1.65;
+  color:rgba(255,255,255,.92);
   border-left:2px solid rgba(247,200,107,.5);
   padding-left:calc(var(--u) * .55);
+  text-align:justify;text-align-last:left;
+  hyphens:auto;-webkit-hyphens:auto;
+  text-wrap:pretty;
 }
 
-.vis-chips{display:flex;flex-wrap:wrap;gap:calc(var(--u) * .3)}
+/* ---------- 4 and 5 · the boxes ---------- */
+
+.vis-chips{display:flex;flex-direction:column;gap:calc(var(--u) * .3)}
+.vis-row{
+  display:flex;justify-content:center;align-items:stretch;
+  gap:calc(var(--u) * .3);
+}
 .vis-chip{
+  position:relative;isolation:isolate;
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * .84);line-height:1.2;
-  color:#FFF8E8;background:rgba(255,255,255,.11);
-  border:1px solid rgba(247,200,107,.34);
-  border-radius:999px;padding:calc(var(--u) * .16) calc(var(--u) * .48);
-  animation:ofPop .44s cubic-bezier(.34,1.5,.64,1) both;
-  animation-delay:var(--d,0ms);
+  font-size:calc(var(--u) * .84);line-height:1.24;
+  border-radius:999px;padding:calc(var(--u) * .18) calc(var(--u) * .48);
+  animation:visPuff 2.8s ease-in-out infinite;
+}
+/* the two tones, alternating along each row */
+.vis-chip.vc-a{
+  color:#F7C86B;background:rgba(255,255,255,.12);
+  border:1px solid rgba(247,200,107,.42);
+  text-shadow:0 0 8px rgba(247,200,107,.45);
+}
+.vis-chip.vc-b{
+  color:#FFF8E8;background:rgba(247,200,107,.16);
+  border:1px solid rgba(255,255,255,.42);
+  text-shadow:0 0 8px rgba(255,255,255,.4);
+}
+/* the light that travels clockwise round each box, reusing the --vang
+   property and vangSpin already registered for the video cards */
+.vis-chip::before{
+  content:"";position:absolute;inset:-1.5px;z-index:-1;border-radius:inherit;
+  background:conic-gradient(from var(--vang),
+    transparent 0deg, rgba(255,255,255,.85) 60deg,
+    transparent 140deg, transparent 360deg);
+  animation:vangSpin 4.6s linear infinite;
+  opacity:.6;
+}
+.vis-chip.vc-b::before{
+  background:conic-gradient(from var(--vang),
+    transparent 0deg, var(--gold) 60deg,
+    transparent 140deg, transparent 360deg);
 }
 
-.vis-path{display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--u) * .26)}
-.vis-step{
-  position:relative;
+/* the overview slides carry subject — book pairs, not keywords */
+.vis-pairs{display:flex;flex-direction:column;gap:calc(var(--u) * .16)}
+.vis-pair{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:calc(var(--u) * .5);
+  padding:calc(var(--u) * .2) calc(var(--u) * .42);
+  border-radius:calc(var(--u) * .5);
+  background:rgba(255,255,255,.07);
+  border-left:2px solid rgba(247,200,107,.55);
+  animation:visPuff 2.8s ease-in-out infinite;
+}
+.vis-pair span{
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * .82);color:#FFF3DA;
-  animation:visStep .5s ease-out both;animation-delay:var(--d,0ms);
+  font-size:calc(var(--u) * .8);color:rgba(247,200,107,.9);
+  flex-shrink:0;
+}
+.vis-pair b{
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:calc(var(--u) * .84);color:#FFF8E8;text-align:right;
+}
+
+/* ---------- 6 · the path, full width, arrows leaning forward ---------- */
+
+.vis-path{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:calc(var(--u) * .22) 0;width:100%;
+}
+.vis-step{
+  position:relative;display:inline-flex;align-items:center;
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .84);color:#FFF3DA;
+  text-shadow:0 0 7px rgba(255,243,218,.28);
 }
 .vis-step + .vis-step::before{
-  content:"";display:inline-block;vertical-align:middle;
-  width:0;height:0;margin-right:calc(var(--u) * .26);
-  border-left:calc(var(--u) * .34) solid rgba(247,200,107,.85);
-  border-top:calc(var(--u) * .2) solid transparent;
-  border-bottom:calc(var(--u) * .2) solid transparent;
-  animation:visArrow 1.9s ease-in-out infinite;animation-delay:var(--d,0ms);
+  content:"";display:inline-block;flex-shrink:0;
+  width:0;height:0;margin:0 calc(var(--u) * .26) 0 calc(var(--u) * .1);
+  border-left:calc(var(--u) * .38) solid var(--gold);
+  border-top:calc(var(--u) * .22) solid transparent;
+  border-bottom:calc(var(--u) * .22) solid transparent;
+  animation:visArrow 1.8s ease-in-out infinite;
 }
 
+/* ---------- 8 · the outcome, evenly spaced between rule and edge ---------- */
+
 .vis-out{
-  margin-top:auto;padding-top:calc(var(--u) * .5);
+  margin-top:calc(var(--u) * .55);
+  padding-top:calc(var(--u) * .55);
   text-align:center;
-  border-top:1px solid rgba(247,200,107,.26);
+  border-top:1px solid rgba(247,200,107,.3);
 }
 .vis-out b{
   display:block;font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;
@@ -5821,10 +5940,22 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   animation:factPulseGold 4.4s ease-in-out infinite;
 }
 .vis-out i{
-  display:block;margin-top:calc(var(--u) * .12);
+  display:block;margin-top:calc(var(--u) * .14);
   font-family:Mukta,system-ui,sans-serif;font-style:normal;font-weight:700;
-  font-size:calc(var(--u) * 1.02);line-height:1.28;color:rgba(255,255,255,.88);
+  font-size:calc(var(--u) * 1.02);line-height:1.28;color:rgba(255,255,255,.9);
 }
+
+/* ---------- 12A · the seconds, drawn as a ring ---------- */
+
+.vis-ring{
+  position:absolute;top:calc(var(--u) * .5);left:calc(var(--u) * .62);
+  width:calc(var(--u) * 1.5);height:calc(var(--u) * 1.5);
+  transform:rotate(-90deg);z-index:2;
+}
+.vis-ring circle{fill:none;stroke-width:3.5;stroke-linecap:round}
+.vis-ring .vr-t{stroke:rgba(255,255,255,.16)}
+.vis-ring .vr-p{stroke:var(--gold);stroke-dasharray:106.8;stroke-dashoffset:0}
+.is-held .vis-ring .vr-p{animation-play-state:paused}
 
 /* ---------- dots and arrows ---------- */
 
@@ -5851,31 +5982,41 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   border-top:calc(var(--u) * .28) solid transparent;
   border-bottom:calc(var(--u) * .28) solid transparent;
 }
-.vis-next::before{
-  border-left:calc(var(--u) * .42) solid var(--gold-dark);
-  transform:translate(-35%,-50%);
-}
-.vis-prev::before{
-  border-right:calc(var(--u) * .42) solid var(--gold-dark);
-  transform:translate(-65%,-50%);
-}
+.vis-next::before{border-left:calc(var(--u) * .42) solid var(--gold-dark);transform:translate(-35%,-50%)}
+.vis-prev::before{border-right:calc(var(--u) * .42) solid var(--gold-dark);transform:translate(-65%,-50%)}
 .vis-arrow:active{transform:scale(.9);background:#FFF6E4}
 
-@keyframes visStep{
-  from{opacity:0;transform:translateY(5px)}
-  to  {opacity:1;transform:none}
+@keyframes visPuff{
+  0%,100%{transform:scale(1)}
+  50%    {transform:scale(1.035)}
 }
 @keyframes visArrow{
-  0%,100%{opacity:.55;transform:translateX(0)}
-  50%    {opacity:1;  transform:translateX(2px)}
+  0%,100%{opacity:.6;transform:translateX(0)}
+  50%    {opacity:1; transform:translateX(3px)}
+}
+@keyframes visArrive{
+  from{opacity:0;transform:translateY(9px)}
+  to  {opacity:1;transform:none}
+}
+@keyframes visTitleGlow{
+  0%,100%{text-shadow:0 0 0 rgba(247,200,107,0)}
+  50%    {text-shadow:0 0 14px rgba(247,200,107,.6)}
+}
+@keyframes visLabGlow{
+  0%,100%{text-shadow:0 0 0 rgba(247,200,107,0)}
+  50%    {text-shadow:0 0 10px rgba(247,200,107,.5)}
+}
+@keyframes visRing{
+  from{stroke-dashoffset:0}
+  to  {stroke-dashoffset:106.8}
 }
 
-/* Reduced motion: the deck still changes card, it just stops performing.
-   The shuffle becomes a plain cross-fade — option E from the draft. */
 @media(prefers-reduced-motion:reduce){
   .vis-card{transition:opacity .3s ease}
-  .vis-card.is-front,.vis-card.is-next,.vis-card.is-back,.vis-card.is-away{transform:none}
+  .vis-card.is-front,.vis-card.is-next,.vis-card.is-back,
+  .vis-card.is-away-l,.vis-card.is-away-r{transform:none}
   .vis-card.is-next,.vis-card.is-back{opacity:0}
-  .vis-title > span::after,.vis-lab::before,.vis-chip,
-  .vis-step,.vis-step + .vis-step::before,.vis-out b{animation:none}
+  .vis-title,.vis-title > span::after,.vis-lab,.vis-lab > span::after,.vis-lab::before,
+  .vis-chip,.vis-chip::before,.vis-pair,.vis-step + .vis-step::before,
+  .vis-out b,.vis-body,.vis-ring .vr-p{animation:none}
 }

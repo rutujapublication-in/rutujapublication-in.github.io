@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18b',
+  VERSION: 'v18e',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2759,7 +2759,7 @@ const ORDER = {
    =================================================================== */
 
 const VISION = {
-  i: 0, timer: null, slides: [],
+  i: 0, timer: null, t0: 0, paused: false, dir: 1, slides: [],
 
   init(app) {
     this.app = app;
@@ -2768,19 +2768,193 @@ const VISION = {
     if (!this.deck) return;
     this.slides = app.vision || [];
     if (!this.slides.length) { this.deck.closest('.vis').classList.add('hidden'); return; }
-
-    this.paint();
+    this.build();
     this.bind();
     this.start();
   },
 
+  /* ---- text width, the same advances bookTitle() uses ---- */
+  wid(s, fs, mr) {
+    let d = 0;
+    for (const c of s) if (c >= '\u0900' && c <= '\u097F') d++;
+    return d * fs * 0.415 + (s.length - d) * fs * (mr ? 0.415 : 0.39);
+  },
+
+  /* Rows for the boxes. The count comes from the rule — two or fewer on
+     one row, three to five on two, six or more on three — but the split
+     point is chosen by width so no row overflows, and a row is added only
+     when nothing else will fit. Document order is never changed. */
+  rows(items, strip, fs, pad, gap, mr) {
+    const wds = items.map(x => this.wid(x, fs, mr) + pad);
+    const n = items.length;
+    const target = n <= 2 ? 1 : n <= 5 ? 2 : 3;
+    for (let R = target; R <= n; R++) {
+      let best = null;
+      const walk = (at, left, rows) => {
+        if (left === 1) {
+          const all = rows.concat([wds.slice(at)]);
+          const worst = Math.max(...all.map(r => r.reduce((a, b) => a + b, 0) + (r.length - 1) * gap));
+          if (!best || worst < best.w) best = { w: worst, shape: all.map(r => r.length) };
+          return;
+        }
+        for (let k = 1; k <= n - at - left + 1; k++) walk(at + k, left - 1, rows.concat([wds.slice(at, at + k)]));
+      };
+      walk(0, R, []);
+      if (best && best.w <= strip) return best.shape;
+    }
+    return items.map(() => 1);
+  },
+
+  /* the strip a box row has to live in, at this viewport */
+  strip() {
+    const u = Math.max(13, Math.min(16, window.innerWidth * 0.037));
+    const pad = window.innerWidth <= 359 ? 13 : window.innerWidth <= 479 ? 16 : 20;
+    return window.innerWidth - 2 * pad - 2 * Math.round(u * 0.8) - 3 - 2 * Math.round(u * 0.85);
+  },
+  u() { return Math.max(13, Math.min(16, window.innerWidth * 0.037)); },
+
+  card(s, mr) {
+    const t = k => this.app.t(k);
+    const g = k => (mr ? s[k + '_mr'] : s[k + '_en']) || '';
+    const L = k => (mr ? s[k + '_mr'] : s[k + '_en']) || [];
+    const esc = x => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const U = this.u();
+
+    /* the focus block: pairs on the overview slides, boxes elsewhere */
+    let focus;
+    if (s.list) {
+      focus = `<div class="vis-pairs">` + L('focus').map(x => {
+        const bits = String(x).split(' — ');
+        return `<div class="vis-pair"><span>${esc(bits[0] || '')}</span><b>${esc(bits[1] || '')}</b></div>`;
+      }).join('') + `</div>`;
+    } else {
+      const items = L('focus');
+      const shape = this.rows(items, this.strip(), U * 0.84,
+        2 * Math.round(U * 0.48) + 2, Math.round(U * 0.3), mr);
+      let at = 0;
+      focus = shape.map(n => {
+        const row = items.slice(at, at + n); at += n;
+        return `<div class="vis-row">` + row.map((c, k) =>
+          `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join('') + `</div>`;
+      }).join('');
+      focus = `<div class="vis-chips">${focus}</div>`;
+    }
+
+    const steps = L('path');
+    const path = steps.map((f, n) =>
+      `<span class="vis-step">${esc(f)}</span>`).join('');
+
+    const num = mr
+      ? String(s.n).replace(/\d/g, d => '०१२३४५६७८९'[d]) + ' / ' + '७'
+      : ('0' + s.n) + ' / 7';
+
+    return `
+      <div class="vis-num">${num}</div>
+      <div class="vis-body">
+        <div class="vis-head">
+          <h3 class="vis-title" style="--tw:${
+            (this.wid(g('title'), 1, mr)
+             + (g('q') ? this.wid(g('q'), 1, mr) * 0.72 + 0.28 : 0)).toFixed(2)
+          }"><span>${esc(g('title'))}</span>${
+            g('q') ? `<i class="vis-q">${esc(g('q'))}</i>` : ''}</h3>
+          ${g('sub') ? `<p class="vis-sub">${esc(g('sub'))}</p>` : ''}
+        </div>
+
+        <p class="vis-lab"><span>${t('vis_view')}</span></p>
+        <blockquote class="vis-quote">${esc(g('view'))}</blockquote>
+
+        <p class="vis-lab"><span>${esc(g('focus_h')) || t('vis_focus')}</span></p>
+        ${focus}
+
+        <p class="vis-lab"><span>${t('vis_path')}</span></p>
+        <div class="vis-path">${path}</div>
+
+        <div class="vis-out">
+          <b>${esc(g('out'))}</b>
+          ${g('out2') ? `<i>${esc(g('out2'))}</i>` : ''}
+        </div>
+      </div>
+      <svg class="vis-ring" viewBox="0 0 40 40" aria-hidden="true">
+        <circle class="vr-t" cx="20" cy="20" r="17"></circle>
+        <circle class="vr-p" cx="20" cy="20" r="17"></circle>
+      </svg>`;
+  },
+
+  /* The cards are built once. An advance only swaps class names, because
+     a CSS transition needs the element to still be the same element — if
+     the deck's innerHTML is rewritten on every step, each card is a brand
+     new node that starts at its final style and the shuffle happens
+     instantly, with none of the motion running. Rebuild only when the
+     language or the viewport changes, since the row packing depends on
+     both. */
+  build() {
+    const mr = this.app.lang === 'mr';
+    this.deck.innerHTML = this.slides.map((s, k) =>
+      `<article class="vis-card" data-k="${k}" style="--base:${s.base}">${this.card(s, mr)}</article>`
+    ).join('');
+    this.dots.innerHTML = this.slides.map((s, k) =>
+      `<button class="vis-dot" data-k="${k}" aria-label="${k + 1}"></button>`).join('');
+    this.dots.querySelectorAll('.vis-dot').forEach(b =>
+      b.addEventListener('click', () => { this.go(+b.dataset.k); this.start(); }));
+    this.cards = [...this.deck.querySelectorAll('.vis-card')];
+    this.place(true);
+  },
+
+  /* front, next, back, and everything else parked off the side the deck
+     is travelling toward */
+  place(first) {
+    const n = this.slides.length;
+    const away = this.dir > 0 ? 'is-away-l' : 'is-away-r';
+    this.cards.forEach((el, k) => {
+      const rel = (k - this.i + n) % n;
+      const pos = rel === 0 ? 'is-front' : rel === 1 ? 'is-next' : rel === 2 ? 'is-back' : away;
+      el.classList.remove('is-front', 'is-next', 'is-back', 'is-away-l', 'is-away-r');
+      el.classList.add(pos);
+      if (rel === 0 && !first) {
+        /* replay the reading cascade on the card that just arrived */
+        const b = el.querySelector('.vis-body');
+        if (b) { b.style.animation = 'none'; void b.getBoundingClientRect(); b.style.animation = ''; }
+      }
+    });
+    this.dots.querySelectorAll('.vis-dot').forEach((b, k) =>
+      b.classList.toggle('on', k === this.i));
+  },
+
+  go(k) {
+    const n = this.slides.length;
+    const next = ((k % n) + n) % n;
+    if (next === this.i) return;
+    this.dir = (next === (this.i + 1) % n) ? 1 : (next === (this.i - 1 + n) % n) ? -1 : 1;
+    this.i = next;
+    this.place(false);
+  },
+
+  start() {
+    this.stop();
+    if (this.paused) return;
+    const secs = Number(this.slides[this.i] && this.slides[this.i].seconds) || 7;
+    this.t0 = Date.now();
+    const ring = this.deck.querySelector('.is-front .vr-p');
+    if (ring) { ring.style.animation = 'none'; void ring.getBoundingClientRect(); ring.style.animation = `visRing ${secs}s linear forwards`; }
+    this.timer = setTimeout(() => this.go(this.i + 1), secs * 1000);
+  },
+
+  stop() { if (this.timer) { clearTimeout(this.timer); this.timer = null; } },
+
   bind() {
     const p = document.getElementById('visPrev');
-    const n = document.getElementById('visNext');
+    const nx = document.getElementById('visNext');
     if (p) p.addEventListener('click', () => { this.go(this.i - 1); this.start(); });
-    if (n) n.addEventListener('click', () => { this.go(this.i + 1); this.start(); });
+    if (nx) nx.addEventListener('click', () => { this.go(this.i + 1); this.start(); });
 
-    /* swipe: the deck answers a horizontal drag the way the story band does */
+    /* a tap on the card holds it, so a slow reader is not chased by the timer */
+    this.deck.addEventListener('click', e => {
+      if (e.target.closest('button, a')) return;
+      this.paused = !this.paused;
+      this.deck.classList.toggle('is-held', this.paused);
+      if (this.paused) this.stop(); else this.start();
+    });
+
     let x0 = null, y0 = null;
     this.deck.addEventListener('touchstart', e => {
       x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
@@ -2796,87 +2970,21 @@ const VISION = {
       x0 = y0 = null;
     }, { passive: true });
 
-    /* a card off screen should not be burning a timer */
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(es => {
         es.forEach(e => e.isIntersecting ? this.start() : this.stop());
       }, { threshold: 0.25 }).observe(this.deck);
     }
+
+    /* the row split depends on the viewport, so a rotation repacks */
+    let rt = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt); rt = setTimeout(() => this.build(), 220);
+    });
   },
 
-  /* the words for one card, in the chosen language */
-  card(s, mr) {
-    const t = k => this.app.t(k);
-    const g = k => (mr ? s[k + '_mr'] : s[k + '_en']) || '';
-    const list = k => (mr ? s[k + '_mr'] : s[k + '_en']) || [];
-    const esc = x => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-
-    const chips = list('focus').map((f, n) =>
-      `<span class="vis-chip" style="--d:${(n * 70) + 120}ms">${esc(f)}</span>`).join('');
-    const path = list('path').map((f, n) =>
-      `<span class="vis-step" style="--d:${(n * 90) + 300}ms">${esc(f)}</span>`).join('');
-
-    return `
-      <div class="vis-head">
-        <h3 class="vis-title"><span>${esc(g('title'))}</span></h3>
-        ${g('sub') ? `<p class="vis-sub">${esc(g('sub'))}</p>` : ''}
-      </div>
-
-      <p class="vis-lab">${t('vis_view')}</p>
-      <blockquote class="vis-quote">${esc(g('view'))}</blockquote>
-
-      <p class="vis-lab">${esc(g('focus_h')) || t('vis_focus')}</p>
-      <div class="vis-chips">${chips}</div>
-
-      <p class="vis-lab">${t('vis_path')}</p>
-      <div class="vis-path">${path}</div>
-
-      <div class="vis-out">
-        <b>${esc(g('out'))}</b>
-        ${g('out2') ? `<i>${esc(g('out2'))}</i>` : ''}
-      </div>`;
-  },
-
-  paint() {
-    const mr = this.app.lang === 'mr';
-    const n = this.slides.length;
-    /* front, next, and the one behind it — three layers, never more */
-    this.deck.innerHTML = this.slides.map((s, k) => {
-      const rel = (k - this.i + n) % n;
-      const pos = rel === 0 ? 'front' : rel === 1 ? 'next' : rel === 2 ? 'back' : 'away';
-      /* the colour is carried by --base; a tone class would render with
-         no rule behind it, so the tone field stays in the data as a name
-         for you and never reaches the markup */
-      return `<article class="vis-card is-${pos}"
-                data-k="${k}" style="--base:${s.base}">${this.card(s, mr)}</article>`;
-    }).join('');
-
-    this.dots.innerHTML = this.slides.map((s, k) =>
-      `<button class="vis-dot${k === this.i ? ' on' : ''}" data-k="${k}"
-         aria-label="${k + 1}"></button>`).join('');
-    this.dots.querySelectorAll('.vis-dot').forEach(b =>
-      b.addEventListener('click', () => { this.go(+b.dataset.k); this.start(); }));
-  },
-
-  go(k) {
-    const n = this.slides.length;
-    this.i = ((k % n) + n) % n;
-    this.paint();
-  },
-
-  start() {
-    this.stop();
-    const s = this.slides[this.i];
-    const secs = Number(s && s.seconds) || 9;
-    this.timer = setTimeout(() => this.go(this.i + 1), secs * 1000);
-  },
-
-  stop() { if (this.timer) { clearTimeout(this.timer); this.timer = null; } },
-
-  /* the language switch repaints in place, keeping the card you are on */
-  relang() { if (this.slides.length) this.paint(); }
+  relang() { if (this.slides.length) { this.build(); this.start(); } }
 };
-
 
 const STORY = {
   app: null, i: 0, timer: null, held: false,

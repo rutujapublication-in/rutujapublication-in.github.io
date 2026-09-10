@@ -1,11 +1,11 @@
 {
-  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. Keep every field, use \"\" for an empty one. tone sets the colour family; base is the slide's own background.",
+  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_mr / q_en is a bracketed tail that sits on the same line as the title at a smaller size. list:true renders focus items as subject — book pairs instead of keyword chips. seconds is how long the slide holds.",
   "slides": [
     {
       "n": 1,
       "tone": "ink",
       "base": "#1E2A38",
-      "seconds": 9,
+      "seconds": 7,
       "title_mr": "पुस्तकांच्या पलीकडे",
       "title_en": "Beyond the Books",
       "sub_mr": "",
@@ -41,17 +41,20 @@
       "out_mr": "एकच दिशा",
       "out_en": "One direction",
       "out2_mr": "",
-      "out2_en": ""
+      "out2_en": "",
+      "list": true,
+      "q_mr": "",
+      "q_en": ""
     },
     {
       "n": 2,
       "tone": "leaf",
       "base": "#14503A",
-      "seconds": 9,
+      "seconds": 7,
       "title_mr": "चला वाचूया झटपट",
       "title_en": "Chala Vachuya Zatpat",
-      "sub_mr": "एक परिपूर्ण उजळणी",
-      "sub_en": "A complete revision",
+      "sub_mr": "",
+      "sub_en": "",
       "view_mr": "मुलांना केवळ अक्षरे आणि शब्द वाचता यावेत एवढेच नाही, तर वाचन–लेखनातून त्यांची भाषिक कौशल्ये, शब्दसंपदा आणि अभिव्यक्ती विकसित व्हावी — हा या पुस्तकामागचा मुख्य हेतू.",
       "view_en": "Not merely that children can read letters and words, but that reading and writing develop their language skill, vocabulary and expression — that is the purpose behind this book.",
       "focus_h_mr": "पुस्तकाचा केंद्रबिंदू",
@@ -83,13 +86,16 @@
       "out_mr": "भाषेचा मजबूत पाया",
       "out_en": "A strong base in language",
       "out2_mr": "विचार व्यक्त करण्याचा आत्मविश्वास",
-      "out2_en": "The confidence to express a thought"
+      "out2_en": "The confidence to express a thought",
+      "list": false,
+      "q_mr": "(एक परिपूर्ण उजळणी)",
+      "q_en": "(A complete revision)"
     },
     {
       "n": 3,
       "tone": "sky",
       "base": "#153C56",
-      "seconds": 10,
+      "seconds": 7,
       "title_mr": "English Primer with Phonics",
       "title_en": "English Primer with Phonics",
       "sub_mr": "ध्वनीतून इंग्रजी",
@@ -131,13 +137,16 @@
       "out_mr": "ध्वनी समजला, शब्द वाचला",
       "out_en": "The sound understood, the word read",
       "out2_mr": "इंग्रजी सहज झालं",
-      "out2_en": "English made easy"
+      "out2_en": "English made easy",
+      "list": false,
+      "q_mr": "",
+      "q_en": ""
     },
     {
       "n": 4,
       "tone": "ember",
       "base": "#6B3113",
-      "seconds": 10,
+      "seconds": 7,
       "title_mr": "गणितमित्र – भाग १",
       "title_en": "Ganitmitra – Part 1",
       "sub_mr": "गणिताशी मैत्री",
@@ -177,13 +186,16 @@
       "out_mr": "गणिताची भीती कमी",
       "out_en": "Less fear of mathematics",
       "out2_mr": "गणिताशी मैत्री आणि आत्मविश्वास",
-      "out2_en": "Friendship with numbers, and confidence"
+      "out2_en": "Friendship with numbers, and confidence",
+      "list": false,
+      "q_mr": "",
+      "q_en": ""
     },
     {
       "n": 5,
       "tone": "ember-deep",
       "base": "#5A2A18",
-      "seconds": 12,
+      "seconds": 7,
       "title_mr": "गणितमित्र – भाग २",
       "title_en": "Ganitmitra – Part 2",
       "sub_mr": "पाया अधिक मजबूत",
@@ -223,13 +235,16 @@
       "out_mr": "गणिताचा मजबूत पाया",
       "out_en": "A strong base in mathematics",
       "out2_mr": "",
-      "out2_en": ""
+      "out2_en": "",
+      "list": false,
+      "q_mr": "",
+      "q_en": ""
     },
     {
       "n": 6,
       "tone": "amber",
       "base": "#5C3D0C",
-      "seconds": 9,
+      "seconds": 7,
       "title_mr": "अक्षरमित्र – सुलेखन",
       "title_en": "Aksharmitra – Handwriting",
       "sub_mr": "अक्षराला आकार",
@@ -269,13 +284,16 @@
       "out_mr": "सुंदर अक्षर",
       "out_en": "Beautiful handwriting",
       "out2_mr": "अक्षरलेखन ही एक कला आहे.",
-      "out2_en": "Letter-writing is an art."
+      "out2_en": "Letter-writing is an art.",
+      "list": false,
+      "q_mr": "",
+      "q_en": ""
     },
     {
       "n": 7,
       "tone": "signature",
       "base": "#0F3D2A",
-      "seconds": 8,
+      "seconds": 7,
       "title_mr": "पाच पुस्तके. एक शैक्षणिक विचार.",
       "title_en": "Five books. One educational idea.",
       "sub_mr": "ऋतुजा पब्लिकेशन",
@@ -315,7 +333,10 @@
       "out_mr": "शिकण्याची सुरुवात,",
       "out_en": "Where learning begins,",
       "out2_mr": "आत्मविश्वासाची वाटचाल.",
-      "out2_en": "confidence follows."
+      "out2_en": "confidence follows.",
+      "list": true,
+      "q_mr": "",
+      "q_en": ""
     }
   ]
 }
