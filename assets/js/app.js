@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18j',
+  VERSION: 'v18k',
   lang: 'mr',
   text: {},
   locations: null,
@@ -53,13 +53,20 @@ const RUTUJA = {
       if (e.target && e.target.tagName === 'IMG') e.preventDefault();
     });
 
-    BOOKS.init(this);
-    MEDIA.init(this);
-    STORY.init(this);
-    VISION.init(this);
-    CART.init(this);
-    ORDERFORM.init(this);
-    ORDER.init(this);
+    /* Every module is isolated the way paintSections isolates the render
+       passes. One module failing to start must never take the page down
+       with it — an unguarded throw here stops boot, and everything after
+       this line never runs, which shows as a blank site. */
+    [['books', () => BOOKS.init(this)],
+     ['media', () => MEDIA.init(this)],
+     ['story', () => STORY.init(this)],
+     ['vision', () => VISION.init(this)],
+     ['cart', () => CART.init(this)],
+     ['orderform', () => ORDERFORM.init(this)],
+     ['order', () => ORDER.init(this)]
+    ].forEach(([name, run]) => {
+      try { run(); } catch (e) { console.error('init failed: ' + name, e); }
+    });
     PEEK.init(this);
     QA.init(this);
     PATH.init(this);
@@ -2853,10 +2860,10 @@ const VISION = {
     }
     /* a second labelled group, where one flat row of six would hide that
        the items belong to two different domains */
-    const focus2 = L('focus2').length
-      ? `<p class="vis-lab"><span>${esc(g('focus2_h'))}</span></p>`
-        + this.boxes(L('focus2'), esc, U, mr)
-      : '';
+    const more = ['focus2', 'focus3', 'focus4'].map(k => L(k).length
+      ? `<p class="vis-lab vis-lab-sub"><span>${esc(g(k + '_h'))}</span></p>`
+        + this.boxes(L(k), esc, U, mr)
+      : '').join('');
 
     const steps = L('path');
     const path = steps.map((f, n) =>
@@ -2878,13 +2885,15 @@ const VISION = {
 
         <p class="vis-lab"><span>${esc(g('focus_h')) || t('vis_focus')}</span></p>
         ${focus}
-        ${focus2}
+        ${more}
 
+        ${s.hero === 'word' && g('hero') ? `<div class="vis-word">${esc(g('hero'))}</div>` : ''}
         <p class="vis-lab"><span>${esc(g('path_h')) || t('vis_path')}</span></p>
         <div class="vis-path">${path}</div>
 
         <div class="vis-out">
           <b>${esc(g('out'))}</b>
+          ${g('out_mid') ? `<u>${esc(g('out_mid'))}</u>` : ''}
           ${g('out2') ? `<i>${esc(g('out2'))}</i>` : ''}
         </div>
       </div>`;

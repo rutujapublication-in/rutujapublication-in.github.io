@@ -6060,3 +6060,29 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--u) * 1.1)}
   border-radius:calc(var(--u) * .5);
   background:rgba(255,255,255,.06);
 }
+
+/* v18k — restored from the original draft: slide 5's four groups with
+   every sub-item, slide 3's PHONICS, and slide 6's कारण between its two
+   closing lines. Sub-group headings sit quieter than the first so the
+   four read as one block rather than four sections. */
+.vis-lab-sub{
+  margin-top:calc(var(--u) * .3);
+  font-size:calc(var(--u) * .74);
+  color:rgba(247,200,107,.82);
+}
+.vis-lab-sub::before{width:calc(var(--u) * .28);height:calc(var(--u) * .28)}
+
+.vis-word{
+  align-self:center;margin:calc(var(--u) * .3) 0 calc(var(--u) * .1);
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;
+  font-size:calc(var(--u) * 1.5);letter-spacing:3px;
+  color:var(--gold);
+  animation:visTitleGlow 3.2s ease-in-out infinite;
+}
+.vis-out u{
+  display:block;text-decoration:none;
+  margin:calc(var(--u) * .1) 0;
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:calc(var(--u) * .8);color:rgba(255,255,255,.62);
+}
+@media(prefers-reduced-motion:reduce){ .vis-word{animation:none} }

@@ -43,7 +43,19 @@
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
-      "focus2_en": []
+      "focus2_en": [],
+      "focus3_h_mr": "",
+      "focus3_h_en": "",
+      "focus4_h_mr": "",
+      "focus4_h_en": "",
+      "focus3_mr": [],
+      "focus3_en": [],
+      "focus4_mr": [],
+      "focus4_en": [],
+      "hero_mr": "",
+      "hero_en": "",
+      "out_mid_mr": "",
+      "out_mid_en": ""
     },
     {
       "n": 2,
@@ -95,7 +107,19 @@
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
-      "focus2_en": []
+      "focus2_en": [],
+      "focus3_h_mr": "",
+      "focus3_h_en": "",
+      "focus4_h_mr": "",
+      "focus4_h_en": "",
+      "focus3_mr": [],
+      "focus3_en": [],
+      "focus4_mr": [],
+      "focus4_en": [],
+      "hero_mr": "",
+      "hero_en": "",
+      "out_mid_mr": "",
+      "out_mid_en": ""
     },
     {
       "n": 3,
@@ -149,11 +173,23 @@
       "q_en": "",
       "path_h_mr": "फोनिक्सची वाटचाल",
       "path_h_en": "How phonics moves",
-      "hero": "path",
+      "hero": "word",
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
-      "focus2_en": []
+      "focus2_en": [],
+      "focus3_h_mr": "",
+      "focus3_h_en": "",
+      "focus4_h_mr": "",
+      "focus4_h_en": "",
+      "focus3_mr": [],
+      "focus3_en": [],
+      "focus4_mr": [],
+      "focus4_en": [],
+      "hero_mr": "PHONICS",
+      "hero_en": "PHONICS",
+      "out_mid_mr": "",
+      "out_mid_en": ""
     },
     {
       "n": 4,
@@ -209,7 +245,19 @@
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
-      "focus2_en": []
+      "focus2_en": [],
+      "focus3_h_mr": "",
+      "focus3_h_en": "",
+      "focus4_h_mr": "",
+      "focus4_h_en": "",
+      "focus3_mr": [],
+      "focus3_en": [],
+      "focus4_mr": [],
+      "focus4_en": [],
+      "hero_mr": "",
+      "hero_en": "",
+      "out_mid_mr": "",
+      "out_mid_en": ""
     },
     {
       "n": 5,
@@ -222,17 +270,17 @@
       "sub_en": "A firmer foundation",
       "view_mr": "गणितातील पायाभूत संख्याज्ञान आणि संकल्पना सुरुवातीपासून स्पष्ट झाल्या, तर पुढील गणित अधिक सहज शिकता येते — म्हणून समज, विचार आणि नियमित सरावावर भर.",
       "view_en": "Get number sense and the early ideas clear, and everything after them is easier. So this book works on understanding, on thinking, and on steady practice.",
-      "focus_h_mr": "संख्या व क्रिया",
-      "focus_h_en": "Number and operations",
+      "focus_h_mr": "संख्याज्ञान",
+      "focus_h_en": "Number sense",
       "focus_mr": [
-        "संख्याज्ञान",
-        "बेरीज · वजाबाकी",
-        "गुणाकार · भागाकार"
+        "संख्या",
+        "स्थानिक किंमत",
+        "विस्तारित रूप"
       ],
       "focus_en": [
-        "Number sense",
-        "Addition · subtraction",
-        "Multiplication · division"
+        "Number",
+        "Place value",
+        "Expanded form"
       ],
       "path_mr": [
         "संकल्पना",
@@ -255,19 +303,53 @@
       "q_en": "",
       "path_h_mr": "",
       "path_h_en": "",
-      "focus2_h_mr": "आकार, मापन व अपूर्णांक",
-      "focus2_h_en": "Shape, measure and fractions",
+      "focus2_h_mr": "गणिती क्रिया",
+      "focus2_h_en": "The four operations",
       "focus2_mr": [
-        "आकृती · कोन · सममिती",
-        "वेळ · नाणी · मापन",
-        "अपूर्णांक"
+        "बेरीज",
+        "वजाबाकी",
+        "गुणाकार",
+        "भागाकार"
       ],
       "focus2_en": [
-        "Shape · angle · symmetry",
-        "Time · money · measure",
+        "Addition",
+        "Subtraction",
+        "Multiplication",
+        "Division"
+      ],
+      "hero": "",
+      "focus3_h_mr": "भौमितिक संकल्पना",
+      "focus3_h_en": "Geometric ideas",
+      "focus4_h_mr": "वेळ · नाणी · मापन · अपूर्णांक",
+      "focus4_h_en": "Time · money · measure · fractions",
+      "focus3_mr": [
+        "आकृती",
+        "कोन",
+        "सममिती",
+        "चित्रालेख"
+      ],
+      "focus3_en": [
+        "Shape",
+        "Angle",
+        "Symmetry",
+        "Pictograph"
+      ],
+      "focus4_mr": [
+        "वेळ",
+        "नाणी",
+        "मापन",
+        "अपूर्णांक"
+      ],
+      "focus4_en": [
+        "Time",
+        "Money",
+        "Measure",
         "Fractions"
       ],
-      "hero": ""
+      "hero_mr": "",
+      "hero_en": "",
+      "out_mid_mr": "",
+      "out_mid_en": ""
     },
     {
       "n": 6,
@@ -323,7 +405,19 @@
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
-      "focus2_en": []
+      "focus2_en": [],
+      "focus3_h_mr": "",
+      "focus3_h_en": "",
+      "focus4_h_mr": "",
+      "focus4_h_en": "",
+      "focus3_mr": [],
+      "focus3_en": [],
+      "focus4_mr": [],
+      "focus4_en": [],
+      "out_mid_mr": "कारण",
+      "out_mid_en": "because",
+      "hero_mr": "",
+      "hero_en": ""
     },
     {
       "n": 7,
@@ -379,7 +473,19 @@
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
-      "focus2_en": []
+      "focus2_en": [],
+      "focus3_h_mr": "",
+      "focus3_h_en": "",
+      "focus4_h_mr": "",
+      "focus4_h_en": "",
+      "focus3_mr": [],
+      "focus3_en": [],
+      "focus4_mr": [],
+      "focus4_en": [],
+      "hero_mr": "",
+      "hero_en": "",
+      "out_mid_mr": "",
+      "out_mid_en": ""
     }
   ]
 }
