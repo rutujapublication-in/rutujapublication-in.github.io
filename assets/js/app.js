@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v17t',
+  VERSION: 'v17x',
   lang: 'mr',
   text: {},
   locations: null,
@@ -35,6 +35,12 @@ const RUTUJA = {
     }
 
     this.config = this.defaultConfig();
+
+    /* A registration that could not be confirmed is kept in
+       rutuja_pending. Retry it once per visit, quietly and in the
+       background — it must never block the page or show anything. Only a
+       readable reply clears the queue and marks the details as sent. */
+    this.retryPending();
 
     /* No right-click menu on images, on a laptop or a phone.
        Delegated, so it covers images added later too. */
@@ -477,9 +483,39 @@ const RUTUJA = {
     this.winStack.push({ close: closeFn });
     try { history.pushState({ win: this.winStack.length }, ''); } catch (e) {}
   },
+  /* One quiet attempt per visit at a registration that never confirmed.
+     Nothing is shown either way: if it lands, the queue clears and the
+     fingerprint is written so it is not sent twice; if not, it waits for
+     the next visit. */
+  async retryPending() {
+    let raw;
+    try { raw = localStorage.getItem('rutuja_pending'); } catch (e) { return; }
+    if (!raw) return;
+    const url = this.settings && this.settings.backendUrl;
+    if (!url) return;
+    let payload;
+    try { payload = JSON.parse(raw); } catch (e) {
+      try { localStorage.removeItem('rutuja_pending'); } catch (e2) {}
+      return;
+    }
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const j = await r.json();
+      if (j && j.reg_id) {
+        BUYER.markSent(payload);
+        localStorage.setItem('rutuja_reg',
+          JSON.stringify({ id: j.reg_id, cat: payload.category }));
+        localStorage.removeItem('rutuja_pending');
+      }
+    } catch (e) { /* still pending; try again next visit */ }
+  },
+
   /* Called when a window is closed by its own X, so the stack stays true. */
-  popWin() {
-    if (!this.winStack.length) return;
+  popWin() {    if (!this.winStack.length) return;
     this.winStack.pop();
     try { history.back(); } catch (e) {}
   },
@@ -659,12 +695,27 @@ const ENTRY = {
     return 'https://wa.me/' + num + '?text=' + encodeURIComponent(lines.join('\n'));
   },
 
+  /* regId null means the send could not be confirmed. The person is told
+     plainly rather than shown a tick and a number that exists nowhere. */
   onSubmitted(regId) {
-    const link = this.regMessage(regId);
+    const ok = !!regId;
+    const link = this.regMessage(regId || '');
+    const done = document.getElementById('modalDone');
 
-    document.getElementById('regId2').textContent = regId;
+    done.classList.toggle('unsent', !ok);
+    const t = k => this.app.t(k);
+    const h = done.querySelector('.hd-t > span');
+    const s = done.querySelector('.hd-s');
+    const idLine = document.getElementById('regId2').closest('.gate-done-id');
+    if (h) h.textContent = ok ? t('gate_success') : t('gate_unsent');
+    if (s) s.textContent = ok ? t('gate_done_sub') : t('gate_unsent_s');
+    if (idLine) idLine.classList.toggle('hidden', !ok);
+    const note = done.querySelector('.flow-note-wa > span:last-child');
+    if (note) note.textContent = ok ? t('wa_note') : t('gate_unsent_n');
+
+    if (ok) document.getElementById('regId2').textContent = regId;
     document.getElementById('modalBody').classList.add('hidden');
-    document.getElementById('modalDone').classList.remove('hidden');
+    done.classList.remove('hidden');
 
     const btn = document.getElementById('modalWaBtn2');
     if (btn) {
@@ -992,6 +1043,11 @@ const FORM = {
     const url = this.app.settings.backendUrl;
     const changed = BUYER.isNew(payload);
     const prev = localStorage.getItem('rutuja_reg');
+    /* Only a readable reply counts. The no-cors fallback below returns an
+       opaque response, so a 500, a missing Visitors tab and a success all
+       look identical through it — it is a best effort, never a
+       confirmation. */
+    let sent = false;
 
     if (url && changed) {
       try {
@@ -1001,7 +1057,7 @@ const FORM = {
           body: JSON.stringify(payload)
         });
         const j = await r.json();
-        if (j && j.reg_id) regId = j.reg_id;
+        if (j && j.reg_id) { regId = j.reg_id; sent = true; }
       } catch (err) {
         try {
           await fetch(url, { method: 'POST', mode: 'no-cors',
@@ -1009,17 +1065,30 @@ const FORM = {
             body: JSON.stringify(payload) });
         } catch (e2) { console.error('Send failed', e2); }
       }
+    } else if (!changed) {
+      /* nothing to send: the same details already reached the sheet */
+      sent = true;
     }
 
     if (!changed && prev) { try { regId = JSON.parse(prev).id || regId; } catch (e) {} }
     BUYER.set({ name: payload.name, whatsapp: payload.whatsapp, category: payload.category,
                 state: payload.state, district: payload.district, taluka: payload.taluka,
                 village_city: payload.village_city, pin: payload.pin });
-    BUYER.markSent(payload);
-    localStorage.setItem('rutuja_reg', JSON.stringify({ id: regId, cat: payload.category }));
+    /* markSent writes the fingerprint that isNew() checks. Writing it on a
+       failed send told every later visit the details had already reached
+       the sheet, so the row was lost and could never retry. It is now
+       written only on a confirmed send; on failure the payload is kept and
+       the next boot tries again. */
+    if (sent) {
+      BUYER.markSent(payload);
+      localStorage.removeItem('rutuja_pending');
+      localStorage.setItem('rutuja_reg', JSON.stringify({ id: regId, cat: payload.category }));
+    } else {
+      try { localStorage.setItem('rutuja_pending', JSON.stringify(payload)); } catch (e) {}
+    }
     this.el.submit.disabled = false;
     this.el.submit.textContent = this.app.t('gate_submit');
-    this.entry.onSubmitted(regId);
+    this.entry.onSubmitted(sent ? regId : null);
   },
 
   localId() {
@@ -1703,7 +1772,11 @@ const MEDIA = {
      CSS can pick the largest size that still holds one row. */
   bookTitle(b, mr) {
     const t = (mr ? b.name_mr : b.name_en) || '';
-    const adv = mr ? 0.394 : 0.371;
+    /* 0.394 under-measured Marathi by 5.1% against the 0.415 advance
+       START-HERE records, so the clamp picked a size ~5% too large and the
+       longest title tipped into the ellipsis. The mark and gap are added in
+       CSS via --mk, not here, because bt-plain surfaces carry neither. */
+    const adv = mr ? 0.415 : 0.39;
     const i = t.indexOf('(');
     const esc = x => x.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     let inner, w;
@@ -2489,7 +2562,15 @@ const ORDER = {
     const hero = document.getElementById('heroOrder');
     if (hero) hero.addEventListener('click', () => this.open(null));
     const again = document.getElementById('orderBooksAgain');
-    if (again) again.addEventListener('click', () => { this.close(true); app.goFromWin('books'); });
+    if (again) again.addEventListener('click', () => {
+      /* the three other buttons that promise books all clear the filters.
+         This one did not, so someone finishing an order could land on a
+         list still narrowed to an earlier filter — possibly to the single
+         title they had just ordered. */
+      this.close(true);
+      try { BOOKS.clearFilters(); } catch (e) {}
+      app.goFromWin('books');
+    });
   },
 
   /* preset = books to start with. null means start from the list,

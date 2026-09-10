@@ -401,7 +401,10 @@
     "books_found": "सापडली",
     "pub_name": "ऋतुजा पब्लिकेशन",
     "std_word": "इयत्ता",
-    "path_lead_v": "या पानावर व्हिडिओ :"
+    "path_lead_v": "या पानावर व्हिडिओ :",
+    "gate_unsent": "माहिती अजून पोहोचली नाही",
+    "gate_unsent_s": "तुमची माहिती फोनमध्ये सुरक्षित आहे",
+    "gate_unsent_n": "पुढच्या भेटीत आपोआप पाठवली जाईल. आत्ताच हवे असल्यास व्हॉट्सॲपवर पाठवा."
   },
   "en": {
     "nav_home": "Home",
@@ -805,6 +808,9 @@
     "books_found": "Found",
     "pub_name": "Rutuja Publication",
     "std_word": "Standard",
-    "path_lead_v": "On this page:"
+    "path_lead_v": "On this page:",
+    "gate_unsent": "Not sent to us yet",
+    "gate_unsent_s": "Your details are safe on this phone",
+    "gate_unsent_n": "It will send automatically next visit. To reach us now, use WhatsApp."
   }
 }
