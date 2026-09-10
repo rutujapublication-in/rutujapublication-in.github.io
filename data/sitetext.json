@@ -163,7 +163,7 @@
     "book_back": "सर्व पुस्तके",
     "book_not_found": "पुस्तक सापडले नाही",
     "filter_open": "निवड",
-    "price_delivery": "वाहतूक, टपाल व पोहोच खर्च वेगळा आकारला जाईल.",
+    "price_delivery": "वाहतूक, टपाल व पोहोच खर्च वेगळा.",
     "price_rate": "विक्री दर",
     "price_slabs_all": "सर्व पुस्तकांचे नग दर",
     "std_range": "इयत्ता",
@@ -311,7 +311,7 @@
     "qa_learn_head": "प्रश्न व उत्तरे — शिक्षण आणि धोरण",
     "qa_learn_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल",
     "qa_book_sub": "प्रश्नावर क्लिक करा — उत्तर मिळेल",
-    "bd_about_h": "हे पुस्तक काय आहे",
+    "bd_about_h": "हे पुस्तक कशासाठी व काय शिकवते",
     "bd_about_s": "थोडक्यात ओळख",
     "bd_facts_h": "पुस्तकाची माहिती",
     "bd_facts_s": "इयत्ता, किंमत व पाने",
@@ -331,8 +331,8 @@
     "st_b_video": "व्हिडिओ",
     "st_b_qa": "प्रश्न व उत्तरे",
     "st_q_ask": "प्रश्न विचारा",
-    "st_v_car": "सरकते व्हिडिओ",
-    "st_v_one": "खाली प्रत्येक व्हिडिओ माहितीसह",
+    "st_v_car": "ठराविक वेळेने एकामागोमाग",
+    "st_v_one": "तेच खाली एका खालोखाल",
     "st_k_filter": "फिल्टर",
     "st_k_list": "यादी",
     "st_m_q": "नेहमीचे प्रश्न",
@@ -400,7 +400,8 @@
     "f_sort": "क्रमवारी",
     "books_found": "सापडली",
     "pub_name": "ऋतुजा पब्लिकेशन",
-    "std_word": "इयत्ता"
+    "std_word": "इयत्ता",
+    "path_lead_v": "या पानावर व्हिडिओ :"
   },
   "en": {
     "nav_home": "Home",
@@ -566,7 +567,7 @@
     "book_back": "All Books",
     "book_not_found": "Book not found",
     "filter_open": "Filters",
-    "price_delivery": "Transport, postal and delivery charges are extra.",
+    "price_delivery": "Transport, postal and delivery extra.",
     "price_rate": "Your Rate",
     "price_slabs_all": "Quantity Rates for All Books",
     "std_range": "Std",
@@ -714,7 +715,7 @@
     "qa_learn_head": "Q And A — Learning And Policy",
     "qa_learn_sub": "Tap A Question — The Answer Opens",
     "qa_book_sub": "Tap A Question — The Answer Opens",
-    "bd_about_h": "What This Book Is",
+    "bd_about_h": "What This Book Is For And Teaches",
     "bd_about_s": "A Short Introduction",
     "bd_facts_h": "Book Details",
     "bd_facts_s": "Standard, Price And Pages",
@@ -734,8 +735,8 @@
     "st_b_video": "Video",
     "st_b_qa": "Questions And Answers",
     "st_q_ask": "Ask A Question",
-    "st_v_car": "Swipe Through",
-    "st_v_one": "Each Video Below, With Details",
+    "st_v_car": "One after another, timed",
+    "st_v_one": "The same, stacked below",
     "st_k_filter": "Filters",
     "st_k_list": "The List",
     "st_m_q": "Common Questions",
@@ -803,6 +804,7 @@
     "f_sort": "Sort",
     "books_found": "Found",
     "pub_name": "Rutuja Publication",
-    "std_word": "Standard"
+    "std_word": "Standard",
+    "path_lead_v": "On this page:"
   }
 }

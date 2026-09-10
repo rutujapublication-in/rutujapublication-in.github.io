@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v17f',
+  VERSION: 'v17q',
   lang: 'mr',
   text: {},
   locations: null,
@@ -484,6 +484,22 @@ const RUTUJA = {
     try { history.back(); } catch (e) {}
   },
 
+  /* Close a window AND land on a page, in one move.
+     popWin() calls history.back(), which is asynchronous — it queues a
+     traversal rather than performing one. A window that called popWin()
+     and then go('books') therefore set the hash to #books first, and the
+     queued back() arrived afterwards and returned to the entry underneath,
+     which was #home. The books page rendered for a frame and was replaced.
+     replaceState is synchronous and queues nothing, so swapping the
+     window's own history entry for the destination removes the race.
+     Back from the destination then returns to whatever preceded the
+     window, which is the behaviour a person expects. */
+  goFromWin(page) {
+    if (this.winStack.length) this.winStack.pop();
+    try { history.replaceState({}, '', '#' + page); } catch (e) {}
+    this.go(page, true);
+  },
+
   go(page, fromHash) {
     const target = document.getElementById('page-' + page);
     if (!target) return;
@@ -662,11 +678,12 @@ const ENTRY = {
 
   /* The skip link inside the form. */
   onSkipped() {
-    this.closeModal();
-    /* the label promises the books — all of them. closeModal is
-       synchronous and has already popped the window from history. */
+    /* closeModal(true) skips popWin, so no history.back() is queued to
+       arrive late and send this to the home page — see goFromWin. */
+    this.closeModal(true);
+    /* the label promises the books — all of them. */
     try { BOOKS.clearFilters(); } catch (e) {}
-    try { this.app.go('books'); } catch (e) {}
+    try { this.app.goFromWin('books'); } catch (e) {}
   }
 };
 
@@ -1986,7 +2003,14 @@ const CART = {
       box.innerHTML = `<div class="cart-empty">
         <p>${t('cart_empty')}</p>
         <button class="btn btn-primary" data-nav="books">${t('cart_empty_go')}</button></div>`;
-      box.querySelector('[data-nav]').onclick = () => this.app.go('books');
+      box.querySelector('[data-nav]').onclick = () => {
+        /* the list is empty and the label offers the books — all of them.
+           A filter left from earlier browsing could land the person on a
+           short list, or an empty one, straight after being told their
+           booklist was empty. */
+        try { BOOKS.clearFilters(); } catch (e) {}
+        this.app.go('books');
+      };
       return;
     }
 
@@ -1998,7 +2022,7 @@ const CART = {
           <div class="cart-info">
             ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="cart-name bt" style="--tw:${T.w};--bc:${T.c}"><i class="bt-mark" aria-hidden="true"></i><span>${T.html}</span></div>`; })()}
             <div class="cart-sub">${BOOKS.stdLabel(l.book)} &middot; ${BOOKS.medLabel(l.book)}</div>
-            <div class="cart-meta">&#8377;${l.each} ${t('price_each')}
+            <div class="cart-meta">${(!l.pct && !l.saved && !(l.book.mrp > l.each)) ? `&#8377;${l.each} ${t('price_each')}` : ''}
               ${l.book.mrp > l.each ? `<s class="cart-mrp">&#8377;${l.book.mrp}</s>` : ''}
               ${l.pct ? `<span class="cart-pct">${l.pct}% ${t('cart_saving')}</span>` : ''}
               ${l.saved ? `<span class="cart-saved">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}</div>
@@ -2029,13 +2053,26 @@ const CART = {
       <div class="cart-foot">
         <div class="cart-sums">
           <div><span>${T.n} ${this.bookWord(T.n)} &middot; ${T.qty} ${t('price_qty')}</span></div>
-          ${T.saved ? `<div class="cart-mrpline">${t('cart_mrp')}
-            <s>&#8377;${T.total + T.saved}</s></div>` : ''}
-          ${T.saved ? `<div class="cart-avg">${t('avg_saving')}
-            <b>${Math.round(T.saved / (T.total + T.saved) * 100)}%</b></div>` : ''}
-          ${T.saved ? `<div class="cart-saved">${t('cart_total_save')}
-            <b>&#8377;${T.saved}</b></div>` : ''}
-          <div class="cart-grand">${t('cart_total')} <b>&#8377;${T.total}</b></div>
+          ${(() => {
+            const mrpTotal = T.total + T.saved;
+            const avgPct = mrpTotal ? Math.round(T.saved / mrpTotal * 100) : 0;
+            return `<div class="osum-h">${t('order_lines')}</div>
+          ${lines.map(l => `<div class="oline">
+            ${(() => { const B = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt bt-plain" style="--tw:${B.w};--bc:${B.c}"><span>${B.html}</span></div>`; })()}
+            <div class="oline-facts">
+              ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
+              ${l.saved ? `<span class="of of-save">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}
+            </div>
+            <div class="oline-amt"><span>${l.qty} &times; &#8377;${l.each}</span>
+              <b>&#8377;${l.total}</b></div>
+          </div>`).join('')}
+          <div class="osum-foot">
+            ${T.saved ? `<div class="osf"><span>${t('at_mrp')}</span><s>&#8377;${mrpTotal}</s></div>` : ''}
+            ${avgPct ? `<div class="osf osf-avg"><span>${t('avg_saving')}</span><b>${avgPct}%</b></div>` : ''}
+            ${T.saved ? `<div class="osf osf-save"><span>${t('you_save_now')}</span>
+              <b>&#8377;${T.saved}</b></div>` : ''}
+            <div class="osf osf-grand"><span>${t('grand_total')}</span><b>&#8377;${T.total}</b></div>
+          </div>`; })()}
           <div class="cond"><span class="cond-i">&#9888;</span><span>${t('price_delivery')}</span></div>
         </div>
         <div class="cart-cta">
@@ -2065,7 +2102,14 @@ const CART = {
       };
     });
     document.getElementById('cartOrder').onclick = () => ORDER.open(null);
-    document.getElementById('cartMore').onclick = () => this.app.go('books');
+    document.getElementById('cartMore').onclick = () => {
+      /* "आणखी पुस्तके पाहा" promises more books. A filter left from earlier
+         browsing could show fewer than five, or none at all if the single
+         match is already in the list. The three window-skip routes have
+         cleared filters since v16x; this one had been missed. */
+      try { BOOKS.clearFilters(); } catch (e) {}
+      this.app.go('books');
+    };
   },
 
   /* ---- ORDER WINDOW ---- */
@@ -2211,9 +2255,9 @@ const ORDERFORM = {
        It used to be overwritten here with "पुन्हा", which reads wrongly
        before an order has been placed. */
     this.el.skip.onclick = () => {
-      ORDER.close();
+      ORDER.close(true);
       try { BOOKS.clearFilters(); } catch (e) {}
-      this.app.go('books');
+      this.app.goFromWin('books');
     };
 
     this.node.addEventListener('submit', e => { e.preventDefault(); this.submit(); });
@@ -2445,7 +2489,7 @@ const ORDER = {
     const hero = document.getElementById('heroOrder');
     if (hero) hero.addEventListener('click', () => this.open(null));
     const again = document.getElementById('orderBooksAgain');
-    if (again) again.addEventListener('click', () => { this.close(); app.go('books'); });
+    if (again) again.addEventListener('click', () => { this.close(true); app.goFromWin('books'); });
   },
 
   /* preset = books to start with. null means start from the list,
@@ -2526,7 +2570,7 @@ const ORDER = {
         return `<div class="opick-row bk-${(i % 5) + 1}${q ? ' on' : ''}">
           <div class="opick-cover">${this.app.img('books', b.cover_image, '', this.app.lang === 'mr' ? b.name_mr : b.name_en)}</div>
           <div class="opick-main">
-            ${(() => { const T = MEDIA.bookTitle(b, mr); return `<div class="opick-name bt bt-plain" style="--bc:${T.c}"><span>${T.html}</span></div>`; })()}
+            ${(() => { const T = MEDIA.bookTitle(b, mr); return `<div class="opick-name bt bt-plain" style="--tw:${T.w};--bc:${T.c}"><span>${T.html}</span></div>`; })()}
             <div class="opick-money">
               <span class="om-mrp"><em>${t('mrp_short')}</em><s>&#8377;${b.mrp}</s></span>
               <span class="om-arrow">&rarr;</span>
@@ -2559,7 +2603,7 @@ const ORDER = {
     document.getElementById('orderSum').innerHTML = T.n ? `
       <div class="osum-h">${t('order_lines')}</div>
       ${L.map(l => `<div class="oline">
-        ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt bt-plain" style="--bc:${T.c}"><span>${T.html}</span></div>`; })()}
+        ${(() => { const T = MEDIA.bookTitle(l.book, mr); return `<div class="oline-name bt bt-plain" style="--tw:${T.w};--bc:${T.c}"><span>${T.html}</span></div>`; })()}
         <div class="oline-facts">
           ${l.pct ? `<span class="of of-pct">${l.pct}% ${t('price_discount')}</span>` : ''}
           ${l.saved ? `<span class="of of-save">&#8377;${l.saved} ${t('saved_amt')}</span>` : ''}
@@ -2941,8 +2985,11 @@ const PATH = {
     if (!steps.length) { host.innerHTML = ''; host.className = 'wpath empty'; return; }
 
     host.className = 'wpath wp-' + (tone || 'gold');
-    /* the lead-in says what the strip is before listing the route */
-    host.innerHTML = `<span class="wp-lead">${this.app.t('path_lead')}</span>` +
+    /* the lead-in says what the strip is before listing the route.
+       A page may name its own lead with data-lead on the strip host;
+       everything else keeps the shared path_lead. */
+    const leadKey = host.dataset.lead || 'path_lead';
+    host.innerHTML = `<span class="wp-lead">${this.app.t(leadKey)}</span>` +
       steps.map((k, i) => `
         <span class="wp-s">${this.app.t(k)}</span>
         ${i < steps.length - 1 ? `<i class="wp-a" style="--d:${(i + 1) * 0.1}s" aria-hidden="true"></i>` : ''}

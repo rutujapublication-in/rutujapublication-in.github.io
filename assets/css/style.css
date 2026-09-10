@@ -1077,14 +1077,14 @@ a{color:inherit;text-decoration:none}
   display:grid;
   grid-template-columns:64px 1fr auto 34px;
   grid-template-areas:"t i i x" "t n n n" "t l l l" "t q a a";
-  gap:7px 14px;align-items:center;
+  gap:4px 14px;align-items:center;
   background:var(--white);border:1px solid var(--line);border-radius:14px;padding:10px 12px;
 }
 .cart-thumb{grid-area:t;width:64px;aspect-ratio:1/1.4142;border-radius:6px;overflow:hidden;
   box-shadow:0 2px 7px rgba(0,0,0,.2)}
 .cart-thumb img{width:100%;height:100%;object-fit:cover}
 .cart-name{font-family:'Baloo 2',sans-serif;font-size:16px;font-weight:600;color:var(--green-dark)}
-.cart-meta{font-size:13px;color:var(--ink-soft);margin-top:3px}
+.cart-meta{font-size:13px;color:var(--ink-soft);margin-top:2px}
 .cart-pct{background:var(--green-light);color:#2C5A3D;border-radius:5px;
   padding:2px 7px;font-size:11.5px;font-weight:700;margin-left:7px}
 .cart-qty{grid-area:q;display:flex;border:1.5px solid var(--line);border-radius:9px;overflow:hidden;
@@ -1695,7 +1695,7 @@ html[lang="en"] body{line-height:1.65}
   .cart-grand b{font-size:23px}
   .cart-name{font-size:15px}
   .cart-qty button{width:44px;height:44px;font-size:20px}
-  .cart-qty input{width:56px;height:44px;font-size:16px}
+  .cart-qty input{width:68px;height:44px;font-size:16px}
   .cart-amt b{font-size:17px}
   .cart-x{width:40px;height:40px}
 
@@ -1927,11 +1927,19 @@ html[lang="en"] body{line-height:1.65}
    =================================================================== */
 @media(max-width:399px){
   .cart-row{grid-template-columns:48px 1fr auto;
-    grid-template-areas:"t i i" "n n n" "l l l" "q q a";gap:6px 8px}
+    grid-template-areas:"t i i" "n n n" "l l l" "q q a";gap:4px 8px}
   .cart-thumb{grid-area:t;width:48px}
-  /* i spans columns 2-3, so the name block keeps its full 246px and the
-     48px reserve for the corner mark is the only cost */
-  .cart-info{grid-area:i;padding-right:48px}
+  /* i spans columns 2-3. Below 400px the mark is absolutely positioned, so
+     it is placed against the row's PADDING box: 8..48px from the inner
+     border edge, which is 36px inside the 12px-padded content column, over
+     y 0-38. Every line that can reach into that band needs the reserve, not
+     just the title — holding it on .cart-info alone was pushing the saving
+     pill onto a second line, and holding it on the title alone let the meta
+     run under the mark at 320px. 40px gives 4px over the 36px intrusion. */
+  .cart-info{grid-area:i}
+  #page-cart .cart-name{padding-right:48px}
+  #page-cart .cart-sub,
+  #page-cart .cart-meta{padding-right:40px}
   .cart-amt{grid-area:a;text-align:right}
   /* the remove mark leaves the grid entirely and sits in the card corner.
      Absolutely positioned, it is not a grid child at all, so it cannot be
@@ -2492,8 +2500,33 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
   text-shadow:0 2px 12px rgba(0,0,0,.34);
 }
 
+/* the same flash the book names carry: the letters stay solid and a light
+   travels across them as an overlay, left to right. btFlash runs
+   background-position 130% -> -30%, which with background-size:250% moves
+   the band from -0.7w to +1.7w — in at the left, out at the right. */
+.st-hero .sh-quote{position:relative;isolation:isolate;margin-top:auto;margin-bottom:10px}
+.st-hero .sh-quote::after{
+  content:"";position:absolute;inset:-2px -6px;pointer-events:none;z-index:1;
+  background:linear-gradient(105deg,
+    transparent 0%, transparent 40%,
+    rgba(255,255,255,.85) 50%,
+    transparent 60%, transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;
+  mix-blend-mode:overlay;
+  animation:btFlash 1.9s linear infinite;
+}
+
+@media(prefers-reduced-motion:reduce){ .st-hero .sh-quote::after{animation:none;opacity:0} }
+
 /* ---------- the three boxes ---------- */
-.st-hero .sh-steps{margin-top:auto;padding:6px 0 6px;width:100%;gap:7px}
+/* The spare height in the band used to pool below the quote, because the
+   boxes carried margin-top:auto. Moving the auto onto the quote sends that
+   same space above it, so the two lines drop clear of the rays and the gap
+   above the boxes is spent rather than left empty. Whatever is free at a
+   given width is what it moves — no fixed number to go stale.
+   The margin lives on the .sh-quote rule above, merged there so this
+   selector appears only once and the duplicate count holds at 64. */
+.st-hero .sh-steps{margin-top:0;padding:6px 0 6px;width:100%;gap:7px}
 
 @media(prefers-reduced-motion:reduce){ .sh-rays{animation:none;opacity:.8} }
 
@@ -3654,7 +3687,7 @@ html[lang="mr"] .book-t{
    =================================================================== */
 
 /* the block heading, matching the pattern used everywhere else */
-#orderSum .osum-h{
+#orderSum .osum-h,#page-cart .osum-h{
   font-family:Mukta,system-ui,sans-serif;font-weight:700;letter-spacing:.2px;
   background-image:linear-gradient(100deg,
     var(--green-dark) 0%,var(--green-dark) 40%,
@@ -3665,7 +3698,7 @@ html[lang="mr"] .book-t{
   -webkit-text-fill-color:transparent;color:transparent;
   animation:hdSheen 7s ease-in-out infinite;
 }
-#orderSum .osum-h::before{-webkit-text-fill-color:initial}
+#orderSum .osum-h::before,#page-cart .osum-h::before{-webkit-text-fill-color:initial}
 
 /* each book row: its own quiet frame that answers a touch */
 /* Each book is its own small card, matching the picker cards in the
@@ -3673,7 +3706,7 @@ html[lang="mr"] .book-t{
    no separator at all — they read as one continuous list. A card gives
    the boundary without a second device doing the same job, and costs no
    height: the border box was already reserved. */
-#orderSum .oline{
+#orderSum .oline,#page-cart .oline{
   display:grid;grid-template-columns:1fr auto;
   grid-template-areas:"n a" "f a";
   align-items:center;column-gap:10px;row-gap:4px;
@@ -3683,13 +3716,13 @@ html[lang="mr"] .book-t{
   margin:0 0 calc(var(--u) * .38);
   transition:background .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
-#orderSum .oline:last-of-type{margin-bottom:0}
+#orderSum .oline:last-of-type,#page-cart .oline:last-of-type{margin-bottom:0}
 .oline:nth-child(even){background:rgba(255,255,255,.55)}
 @media(hover:hover){
   .oline:hover{background:#fff;border-color:#D8E6DC;box-shadow:0 3px 12px rgba(26,77,46,.08)}
 }
 /* the title carries the same glow as the picker above */
-#orderSum .oline-name{
+#orderSum .oline-name,#page-cart .oline-name{
   grid-area:n;min-width:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
@@ -3713,20 +3746,20 @@ html[lang="mr"] .book-t{
 }
 
 /* the totals block: a frame of its own, with a line that draws itself */
-#orderSum .osum-foot{position:relative}
-#orderSum .osum-foot::before{
+#orderSum .osum-foot,#page-cart .osum-foot{position:relative}
+#orderSum .osum-foot::before,#page-cart .osum-foot::before{
   content:"";position:absolute;left:0;right:0;top:-1px;height:2px;border-radius:2px;
   background:linear-gradient(90deg,var(--gold),var(--green),var(--gold));
   background-size:220% 100%;animation:sendRule 5s ease-in-out infinite;
 }
-#orderSum .osf{
+#orderSum .osf,#page-cart .osf{
   border-radius:8px;padding:4px 6px;margin:0 -2px;
   transition:background .2s ease;
 }
 .osf span{font-family:Mukta,system-ui,sans-serif;font-weight:600}
-#orderSum .osf-avg b{animation:ofGold 3.6s ease-in-out infinite}
+#orderSum .osf-avg b,#page-cart .osf-avg b{animation:ofGold 3.6s ease-in-out infinite}
 .osf-save{background:rgba(255,255,255,.5)}
-#orderSum .osf-grand{
+#orderSum .osf-grand,#page-cart .osf-grand{
   background:linear-gradient(90deg,rgba(26,77,46,.07),rgba(26,77,46,.02));
   padding:8px 8px;margin-top:6px;
 }
@@ -3747,6 +3780,16 @@ html[lang="mr"] .book-t{
   font-size:13px;line-height:1;
   animation:flowPing 2.8s ease-in-out infinite;
 }
+/* v17q — the chip added in v17f replaced a ~6px glyph with a 22px circle
+   and took 16px off the note's text column, which pushed the delivery
+   note onto two lines. On phones the chip goes to 16px and .cond's
+   padding from 14px to 9px, returning that 16px. The note is measured
+   against the narrowest of its five containers — the order window at
+   254px — so it holds one line in both languages everywhere. */
+@media(max-width:479px){
+  #orderSum .cond-i,#page-cart .cond-i{width:16px;height:16px;font-size:11px}
+  .cond{padding:9px 9px;gap:7px}
+}
 
 @media(prefers-reduced-motion:reduce){
   .osum-h,.oline-name,.of,.of-pct,.of-save,.osf-avg b,
@@ -3761,7 +3804,7 @@ html[lang="mr"] .book-t{
    =================================================================== */
 
 /* ---- the summary rows ---- */
-#orderSum .oline-facts{
+#orderSum .oline-facts,#page-cart .oline-facts{
   grid-area:f;display:flex;flex-wrap:nowrap;gap:5px;
   min-width:0;overflow:hidden;
 }
@@ -3770,18 +3813,18 @@ html[lang="mr"] .book-t{
    freed width buys legibility: 10.2px was only ever there to force
    three onto one line. At 320px worst case (₹12500 वाचले) two badges
    measure 117px against a 137px column. */
-#orderSum .oline-facts .of{
+#orderSum .oline-facts .of,#page-cart .oline-facts .of{
   flex-shrink:0;font-size:11px;padding:2px 6px;letter-spacing:.1px;
 }
 /* the calculation column keeps one width, so every row lines up */
-#orderSum .oline-amt{
+#orderSum .oline-amt,#page-cart .oline-amt{
   grid-area:a;text-align:right;white-space:nowrap;
   min-width:92px;display:flex;flex-direction:column;
   align-items:flex-end;justify-content:center;gap:2px;
 }
 
 /* B9 — the row total, which had no treatment at all */
-#orderSum .oline-amt b{
+#orderSum .oline-amt b,#page-cart .oline-amt b{
   font-size:19px;letter-spacing:.3px;
   animation:sumLift .5s cubic-bezier(.34,1.5,.64,1),
             rowTotal 3.8s ease-in-out infinite .5s;
@@ -3790,10 +3833,10 @@ html[lang="mr"] .book-t{
   0%,100%{text-shadow:none}
   50%    {text-shadow:0 0 12px rgba(26,77,46,.4)}
 }
-#orderSum .oline-amt span{font-family:Mukta,system-ui,sans-serif;font-weight:600}
+#orderSum .oline-amt span,#page-cart .oline-amt span{font-family:Mukta,system-ui,sans-serif;font-weight:600}
 
 /* B10 — the closing rows: labels and figures both */
-#orderSum .osf span{
+#orderSum .osf span,#page-cart .osf span{
   background-image:linear-gradient(100deg,
     var(--ink) 0%,var(--ink) 40%,var(--gold-dark) 50%,var(--ink) 60%,var(--ink) 100%);
   background-size:260% 100%;background-position:100% 0;background-repeat:no-repeat;
@@ -3801,18 +3844,18 @@ html[lang="mr"] .book-t{
   -webkit-text-fill-color:transparent;color:transparent;
   animation:hdSheen 9s ease-in-out infinite;
 }
-#orderSum .osf s{animation:mrpFade 4.4s ease-in-out infinite}
+#orderSum .osf s,#page-cart .osf s{animation:mrpFade 4.4s ease-in-out infinite}
 @keyframes mrpFade{0%,100%{opacity:.55}50%{opacity:.85}}
 /* same defect as the cart footer: ofGreen is a pill keyframe and this was
    a bare <b>, so the shadow read as a plate over the text */
-#orderSum .osf-save b{
+#orderSum .osf-save b,#page-cart .osf-save b{
   display:inline-block;
   background:linear-gradient(180deg,#2E7A44,#1E5A33);color:#fff;
   font-family:Mukta,system-ui,sans-serif;font-size:14px;font-weight:800;
   border-radius:999px;padding:2px 11px;letter-spacing:.2px;
   animation:ofPop .42s cubic-bezier(.34,1.5,.64,1),ofGreen 3.6s ease-in-out infinite .42s;
 }
-#orderSum .osf-grand span{
+#orderSum .osf-grand span,#page-cart .osf-grand span{
   background-image:linear-gradient(100deg,
     var(--green-dark) 0%,var(--green-dark) 38%,var(--gold-dark) 50%,
     var(--green-dark) 62%,var(--green-dark) 100%);
@@ -3821,15 +3864,15 @@ html[lang="mr"] .book-t{
 
 @media(max-width:399px){
   .osum-empty{font-size:11.2px;padding:10px 9px;gap:7px}
-  #orderSum .oline-amt{min-width:86px}
-  #orderSum .oline-facts{gap:4px}
-  #orderSum .oline-facts .of{font-size:9.8px;padding:2px 5px}
-  #orderSum .oline-amt b{font-size:17.5px}
+  #orderSum .oline-amt,#page-cart .oline-amt{min-width:86px}
+  #orderSum .oline-facts,#page-cart .oline-facts{gap:4px}
+  #orderSum .oline-facts .of,#page-cart .oline-facts .of{font-size:9.8px;padding:2px 5px}
+  #orderSum .oline-amt b,#page-cart .oline-amt b{font-size:17.5px}
 }
 @media(prefers-reduced-motion:reduce){
   #orderSum .oline-amt b,#orderSum .osf span,#orderSum .osf s,
   #orderSum .osf-save b,.osum-empty,.osum-empty::before{animation:none}
-  #orderSum .osf span{-webkit-text-fill-color:var(--ink);color:var(--ink)}
+  #orderSum .osf span,#page-cart .osf span{-webkit-text-fill-color:var(--ink);color:var(--ink)}
 }
 
 /* ===================================================================
@@ -4120,7 +4163,7 @@ html[lang="mr"] .book-t{
 .bd,.bd > *,
 .bsec,.qa-bsec,.need-box,
 .opick-row,.opick-main,
-#orderSum,#orderSum .oline,
+#orderSum,#orderSum .oline,#page-cart .oline,
 .calc,.calc-row,.calc-line,.oline-facts,
 .qa-item,.qa-q,.qa-list,.qa-group{min-width:0}
 
@@ -4467,9 +4510,33 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 .wp-blue  {--pc:#3A7FA8;--pa:#1F5273;--ptx:#173B54;--pbg1:#F0F6FA;--pbg2:#FAFDFF}
 .wp-terra {--pc:#C0603F;--pa:#8A3A1E;--ptx:#5E2712;--pbg1:#FDF4F1;--pbg2:#FFFBFA}
 
+/* ===================================================================
+   v17m — the strip must hold ONE LINE at every width. The videos page
+   now carries the longest lead on the site (या पानावर व्हिडिओ :), and
+   at the base sizes its Marathi needs 290px inside a 275px box at
+   320px. These two phone tiers trim type, gap and padding rather than
+   shorten the words. Measured in both languages at 320 / 360 / 412 /
+   479: every case clears by 12% or more. 480px and up is untouched —
+   it already cleared by 46-59px.
+   flex-wrap:wrap is deliberately kept, so a longer label added later
+   breaks onto a second line instead of being clipped.
+   =================================================================== */
+@media(max-width:479px){
+  .wpath{gap:calc(var(--u) * .26) calc(var(--u) * .32);
+    padding:calc(var(--u) * .5) calc(var(--u) * .48)}
+  .wp-lead{font-size:calc(var(--u) * .70)}
+  .wp-s{font-size:calc(var(--u) * .76)}
+}
+@media(max-width:359px){
+  .wpath{gap:calc(var(--u) * .22) calc(var(--u) * .26);
+    padding:calc(var(--u) * .46) calc(var(--u) * .40)}
+  .wp-lead{font-size:calc(var(--u) * .66)}
+  .wp-s{font-size:calc(var(--u) * .71)}
+}
+
 @media(prefers-reduced-motion:reduce){
   .wpath,.wpath::before,.wp-s,.wp-a,
-  .hd-t > span,.need-t > span,#orderSum .osum-h,
+  .hd-t > span,.need-t > span,#orderSum .osum-h,#page-cart .osum-h,
   .bd .bd-title,.vcard-title > span,.qa-gt,.rate-cap::after{animation:none}
   .qa-gt{-webkit-text-fill-color:var(--green-dark);color:var(--green-dark)}
   .wpath::before{opacity:.6}
@@ -4603,11 +4670,38 @@ html[lang="mr"] .flow-note{hyphens:none;-webkit-hyphens:none}
 .bd-title.bt   {--btw:252px}
 /* the order window keeps colour, flash and the weight split, but takes
    its own sizing and carries no mark */
-.bt-plain{font-size:inherit}
+/* The order window used to take its own sizing here: font-size:inherit beat
+   .bt's clamp (equal specificity, later in the file), so the picker and the
+   summary were the two surfaces where a title could not size itself to one
+   line. They now carry --tw from bookTitle() and a --btw of their own, so the
+   same clamp works on all five surfaces and any book added later fits too. */
+/* Picker: available = vw - 2*wrap - 36 - 2 - 2*rowpad - cover - gap. The
+   wrap padding, cover and row padding all change at 359px, so it takes two
+   values, not one. 4px of slack on each so sub-pixel rounding cannot clip. */
 .bt-plain > span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.opick-name.bt{font-size:15px}
-.oline-name.bt{font-size:15.5px}
+/* Picker: available = vw - 2*wrap - 36 - 2 - 2*rowpad - cover - gap. Wrap
+   padding, cover and row padding all change at 359px, so it takes two values.
+   4px of slack each so sub-pixel rounding cannot clip. The fixed 15px that
+   stood here was a second reason the title could not size itself. */
+.opick-name.bt{
+  --btw:calc(100vw - 170px);
+  font-size:clamp(12px, calc(var(--btw) / var(--tw, 20)), 24px);
+}
+/* Summary: available = vw - 170 - --u. --u is itself a clamp, so it is carried
+   into the calc rather than approximated. The 12px floor in .bt is what clipped
+   this at 320px, so this surface takes an 11px floor — 11px beats losing 44px
+   of the title. Replaces a fixed 15.5px for the same reason as above. */
+.oline-name.bt{
+  --btw:calc(100vw - 174px - var(--u));
+  font-size:clamp(11px, calc(var(--btw) / var(--tw, 20)), 24px);
+}
+@media(max-width:359px){ .opick-name.bt{--btw:calc(100vw - 164px)} }
+/* 210px was right before v17e added a 48px corner reserve to .cart-info and
+   left this untouched, which is what truncated the longest title. Below 400px
+   it now follows the real container: vw - 2*wrap - 26 - 56 - 48 - 14. */
 .cart-name.bt  {--btw:210px}
+@media(max-width:399px){ .cart-name.bt{--btw:calc(100vw - 180px)} }
+@media(max-width:359px){ .cart-name.bt{--btw:calc(100vw - 174px)} }
 
 @media(prefers-reduced-motion:reduce){
   .bt-mark,.bt b::after{animation:none}
@@ -4735,14 +4829,21 @@ form.collapsed .cond{display:none}
 /* standard and medium, so four books are told apart at a glance */
 #page-cart .cart-sub{
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);
-  font-weight:600;color:var(--ink-soft);margin:0 0 2px;
+  font-weight:600;color:var(--ink-soft);margin:0;
   animation:descIn .5s ease-out .06s both;
 }
+/* nowrap, not wrap: this row must hold one line at every width, in both
+   languages. Verified against the real values — meta 13px, pills
+   calc(--u*.78) with 2px 8px padding, gap calc(--u*.4), .cart-pct
+   margin-left 7px — the tightest case is English at 320px with the
+   ₹300000 ceiling: 156px into 172px, 11% spare. Every realistic case has
+   16% or more. .cart-mrp and the two pills also hold their own line. */
 #page-cart .cart-meta{
   font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  display:flex;align-items:center;gap:calc(var(--u) * .4);flex-wrap:wrap;
+  display:flex;align-items:center;gap:calc(var(--u) * .4);flex-wrap:nowrap;
   animation:descIn .5s ease-out .12s both;
 }
+#page-cart .cart-meta > *{flex-shrink:0;white-space:nowrap}
 #page-cart .cart-mrp{color:#A79C88;animation:mrpFade 4.4s ease-in-out infinite}
 #page-cart .cart-pct{
   font-family:Mukta,system-ui,sans-serif;font-weight:800;font-size:calc(var(--u) * .78);
@@ -4764,7 +4865,7 @@ form.collapsed .cond{display:none}
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .8);font-weight:600;
   color:#7A5410;background:linear-gradient(90deg,#FFF6E0,#FFFDF6);
   border:1px dashed var(--gold);border-radius:calc(var(--u) * .7);
-  padding:calc(var(--u) * .3) calc(var(--u) * .5);
+  padding:calc(var(--u) * .24) calc(var(--u) * .5);
   animation:flowGlow 4.2s ease-in-out infinite;
 }
 #page-cart .cart-next b{color:var(--gold-dark);font-weight:800}
@@ -5023,7 +5124,7 @@ form.collapsed .cond{display:none}
    auto-placed into a column it cannot fit. That is what clipped the
    + button and squashed the slab hint beside the cover.
    =================================================================== */
-#page-cart .cart-qlab{grid-area:l;display:flex;flex-direction:column;gap:1px;min-width:0}
+#page-cart .cart-qlab{grid-area:l;display:flex;flex-direction:column;gap:0;min-width:0}
 #page-cart .cart-qlab-t{
   display:flex;align-items:center;gap:calc(var(--u) * .4);
   font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .88);
