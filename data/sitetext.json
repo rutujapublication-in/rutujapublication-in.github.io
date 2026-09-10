@@ -404,7 +404,13 @@
     "path_lead_v": "या पानावर व्हिडिओ :",
     "gate_unsent": "माहिती अजून पोहोचली नाही",
     "gate_unsent_s": "तुमची माहिती फोनमध्ये सुरक्षित आहे",
-    "gate_unsent_n": "पुढच्या भेटीत आपोआप पाठवली जाईल. आत्ताच हवे असल्यास व्हॉट्सॲपवर पाठवा."
+    "gate_unsent_n": "पुढच्या भेटीत आपोआप पाठवली जाईल. आत्ताच हवे असल्यास व्हॉट्सॲपवर पाठवा.",
+    "vis_head": "लेखिकेच्या दृष्टिकोनातून",
+    "vis_sub": "पाच पुस्तकांचा शैक्षणिक प्रवास",
+    "vis_view": "लेखिकेचा दृष्टिकोन",
+    "vis_focus": "पुस्तकाचा केंद्रबिंदू",
+    "vis_path": "शिकण्याची वाटचाल",
+    "vis_out": "मुख्य परिणाम"
   },
   "en": {
     "nav_home": "Home",
@@ -811,6 +817,12 @@
     "path_lead_v": "On this page:",
     "gate_unsent": "Not sent to us yet",
     "gate_unsent_s": "Your details are safe on this phone",
-    "gate_unsent_n": "It will send automatically next visit. To reach us now, use WhatsApp."
+    "gate_unsent_n": "It will send automatically next visit. To reach us now, use WhatsApp.",
+    "vis_head": "From the Writer’s View",
+    "vis_sub": "The educational journey behind five books",
+    "vis_view": "The writer’s view",
+    "vis_focus": "What it centres on",
+    "vis_path": "How a child moves forward",
+    "vis_out": "What it builds"
   }
 }

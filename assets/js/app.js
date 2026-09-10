@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v17x',
+  VERSION: 'v18b',
   lang: 'mr',
   text: {},
   locations: null,
@@ -20,16 +20,18 @@ const RUTUJA = {
     this.bindLangToggle();
 
     try {
-      const [t, l, c, s] = await Promise.all([
+      const [t, l, c, s, v] = await Promise.all([
         fetch('data/sitetext.json?v=' + this.VERSION).then(r => r.json()),
         fetch('data/locations.json?v=' + this.VERSION).then(r => r.json()),
         fetch('data/content.json?v=' + this.VERSION).then(r => r.json()),
-        fetch('data/story.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] }))
+        fetch('data/story.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] })),
+        fetch('data/vision.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] }))
       ]);
       this.text = t;
       this.locations = l;
       this.content = c;
       this.story = (s && s.slides) || [];
+      this.vision = (v && v.slides) || [];
     } catch (e) {
       console.error('Data load failed', e);
     }
@@ -54,6 +56,7 @@ const RUTUJA = {
     BOOKS.init(this);
     MEDIA.init(this);
     STORY.init(this);
+    VISION.init(this);
     CART.init(this);
     ORDERFORM.init(this);
     ORDER.init(this);
@@ -224,7 +227,7 @@ const RUTUJA = {
     if (open('order')) return ['order'];
     if (open('modal') || open('sheet')) return [];
     const byPage = {
-      home:    ['strip', 'standards', 'offers', 'explore', 'story', 'footer'],
+      home:    ['strip', 'standards', 'offers', 'explore', 'story', 'vision', 'footer'],
       books:   ['books'], book: ['books'],
       cart:    ['cart'], qa: ['qa'], contact: ['contact'],
       media:   ['media'], offers: ['offers']
@@ -241,6 +244,7 @@ const RUTUJA = {
      ['explore', () => this.paintExplore()],
      ['books', () => BOOKS.paint()],
      ['story', () => STORY.paint()],
+     ['vision', () => VISION.relang()],
      ['media', () => MEDIA.paint()],
      ['cart', () => CART.render()],
      ['order', () => {
@@ -2743,6 +2747,136 @@ const ORDER = {
    RIGHT  two to four stacked words, the impact zone
    Three seconds each, right to left, automatic.
    =================================================================== */
+
+/* ===================================================================
+   SECTION 5 — THE WRITER'S VISION
+   Seven cards, shuffled like a phone's window switcher: the top card
+   lifts, tilts back and falls away while the next rises from beneath.
+   Three cards are rendered at a time — front, next, and the one behind
+   it — so the depth reads without seven layers of paint on a cheap
+   Android. Everything is transform and opacity, which the GPU handles
+   without touching layout.
+   =================================================================== */
+
+const VISION = {
+  i: 0, timer: null, slides: [],
+
+  init(app) {
+    this.app = app;
+    this.deck = document.getElementById('visDeck');
+    this.dots = document.getElementById('visDots');
+    if (!this.deck) return;
+    this.slides = app.vision || [];
+    if (!this.slides.length) { this.deck.closest('.vis').classList.add('hidden'); return; }
+
+    this.paint();
+    this.bind();
+    this.start();
+  },
+
+  bind() {
+    const p = document.getElementById('visPrev');
+    const n = document.getElementById('visNext');
+    if (p) p.addEventListener('click', () => { this.go(this.i - 1); this.start(); });
+    if (n) n.addEventListener('click', () => { this.go(this.i + 1); this.start(); });
+
+    /* swipe: the deck answers a horizontal drag the way the story band does */
+    let x0 = null, y0 = null;
+    this.deck.addEventListener('touchstart', e => {
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive: true });
+    this.deck.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      const dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+        this.go(this.i + (dx < 0 ? 1 : -1));
+        this.start();
+      }
+      x0 = y0 = null;
+    }, { passive: true });
+
+    /* a card off screen should not be burning a timer */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(es => {
+        es.forEach(e => e.isIntersecting ? this.start() : this.stop());
+      }, { threshold: 0.25 }).observe(this.deck);
+    }
+  },
+
+  /* the words for one card, in the chosen language */
+  card(s, mr) {
+    const t = k => this.app.t(k);
+    const g = k => (mr ? s[k + '_mr'] : s[k + '_en']) || '';
+    const list = k => (mr ? s[k + '_mr'] : s[k + '_en']) || [];
+    const esc = x => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+    const chips = list('focus').map((f, n) =>
+      `<span class="vis-chip" style="--d:${(n * 70) + 120}ms">${esc(f)}</span>`).join('');
+    const path = list('path').map((f, n) =>
+      `<span class="vis-step" style="--d:${(n * 90) + 300}ms">${esc(f)}</span>`).join('');
+
+    return `
+      <div class="vis-head">
+        <h3 class="vis-title"><span>${esc(g('title'))}</span></h3>
+        ${g('sub') ? `<p class="vis-sub">${esc(g('sub'))}</p>` : ''}
+      </div>
+
+      <p class="vis-lab">${t('vis_view')}</p>
+      <blockquote class="vis-quote">${esc(g('view'))}</blockquote>
+
+      <p class="vis-lab">${esc(g('focus_h')) || t('vis_focus')}</p>
+      <div class="vis-chips">${chips}</div>
+
+      <p class="vis-lab">${t('vis_path')}</p>
+      <div class="vis-path">${path}</div>
+
+      <div class="vis-out">
+        <b>${esc(g('out'))}</b>
+        ${g('out2') ? `<i>${esc(g('out2'))}</i>` : ''}
+      </div>`;
+  },
+
+  paint() {
+    const mr = this.app.lang === 'mr';
+    const n = this.slides.length;
+    /* front, next, and the one behind it — three layers, never more */
+    this.deck.innerHTML = this.slides.map((s, k) => {
+      const rel = (k - this.i + n) % n;
+      const pos = rel === 0 ? 'front' : rel === 1 ? 'next' : rel === 2 ? 'back' : 'away';
+      /* the colour is carried by --base; a tone class would render with
+         no rule behind it, so the tone field stays in the data as a name
+         for you and never reaches the markup */
+      return `<article class="vis-card is-${pos}"
+                data-k="${k}" style="--base:${s.base}">${this.card(s, mr)}</article>`;
+    }).join('');
+
+    this.dots.innerHTML = this.slides.map((s, k) =>
+      `<button class="vis-dot${k === this.i ? ' on' : ''}" data-k="${k}"
+         aria-label="${k + 1}"></button>`).join('');
+    this.dots.querySelectorAll('.vis-dot').forEach(b =>
+      b.addEventListener('click', () => { this.go(+b.dataset.k); this.start(); }));
+  },
+
+  go(k) {
+    const n = this.slides.length;
+    this.i = ((k % n) + n) % n;
+    this.paint();
+  },
+
+  start() {
+    this.stop();
+    const s = this.slides[this.i];
+    const secs = Number(s && s.seconds) || 9;
+    this.timer = setTimeout(() => this.go(this.i + 1), secs * 1000);
+  },
+
+  stop() { if (this.timer) { clearTimeout(this.timer); this.timer = null; } },
+
+  /* the language switch repaints in place, keeping the card you are on */
+  relang() { if (this.slides.length) this.paint(); }
+};
+
 
 const STORY = {
   app: null, i: 0, timer: null, held: false,

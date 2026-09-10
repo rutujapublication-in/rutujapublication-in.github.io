@@ -5652,3 +5652,230 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 @media(prefers-reduced-motion:reduce){
   #page-qa .qa-hint::before{animation:none}
 }
+
+/* ===================================================================
+   SECTION 5 — THE WRITER'S VISION
+   Added whole in v18a. Nothing above this line was edited.
+
+   A full-bleed band with a framed inner, the way Section 3 is framed,
+   so it reads as its own chapter without breaking the page's rhythm.
+
+   The cards shuffle like a phone's window switcher: the front card
+   lifts, tilts back and falls away; the next rises from beneath. Only
+   three are painted — front, next, back — and everything moves on
+   transform and opacity, so no layout is recalculated and the GPU does
+   the work. On a 360px Android that is the difference between a smooth
+   shuffle and a stutter.
+
+   Every size descends from --u, so the section scales with the site and
+   needs no breakpoints of its own.
+   =================================================================== */
+
+.vis{
+  position:relative;width:100%;padding:calc(var(--u) * 1.5) 0 calc(var(--u) * 1.7);
+  background:
+    radial-gradient(120% 70% at 12% 0%, rgba(247,200,107,.10) 0%, transparent 62%),
+    radial-gradient(110% 60% at 88% 100%, rgba(26,77,46,.10) 0%, transparent 60%),
+    linear-gradient(180deg,#FBF7EF 0%,#F4EFE4 100%);
+  border-top:2px solid var(--gold);
+  -webkit-user-select:none;user-select:none;
+}
+.vis.hidden{display:none}
+
+/* the frame, echoing .std-frame so Section 5 belongs to the same page */
+.vis-frame{
+  position:relative;
+  border:1.5px solid #E2D6BC;border-radius:calc(var(--u) * 1.05);
+  background:linear-gradient(160deg,#FFFDF8,#FBF6EC);
+  padding:calc(var(--u) * .95) calc(var(--u) * .8) calc(var(--u) * .85);
+  box-shadow:0 6px 22px rgba(90,66,20,.07);
+}
+
+/* ---------- the deck ---------- */
+
+.vis-deck{
+  position:relative;
+  height:460px;
+  margin-top:calc(var(--u) * .5);
+  perspective:1100px;
+}
+/* The card is inset 30px at the top and 40px at the bottom, so a lifted
+   card and a falling one both stay inside the deck. Without that the
+   stack bled over the heading rule above and the dots below. Deck height
+   is therefore card height + 70. */
+@media(max-width:359px){ .vis-deck{height:490px} }
+@media(min-width:400px){ .vis-deck{height:476px} }
+@media(min-width:560px){ .vis-deck{height:462px} }
+
+.vis-card{
+  position:absolute;top:30px;bottom:40px;left:0;right:0;
+  display:flex;flex-direction:column;
+  border-radius:calc(var(--u) * .95);
+  padding:calc(var(--u) * .85) calc(var(--u) * .85) calc(var(--u) * .7);
+  background:
+    radial-gradient(96% 62% at 14% 6%, rgba(255,255,255,.10) 0%, transparent 58%),
+    linear-gradient(165deg, var(--base) 0%, rgba(0,0,0,.30) 140%);
+  color:#EDF2F4;
+  box-shadow:0 10px 30px rgba(20,26,20,.26);
+  /* Centre, not the bottom edge. Anchored at the bottom, scaling pulled
+      each card's top down faster than translateY lifted it, so the stack
+      behind the front card was completely hidden and the shuffle read as
+      one flat card. */
+  transform-origin:50% 50%;
+  transition:transform .62s cubic-bezier(.33,1,.42,1), opacity .5s ease;
+  will-change:transform,opacity;
+  overflow:hidden;
+}
+
+/* the four states of the shuffle */
+/* peeks measured against the front card's top edge, at a 390px card:
+   next 11px, back 21px, away falls 36px clear below */
+.vis-card.is-front{transform:translateY(0)    scale(1)    rotateX(0deg);   opacity:1; z-index:4}
+.vis-card.is-next {transform:translateY(-20px) scale(.955) rotateX(2.4deg); opacity:.92;z-index:3}
+.vis-card.is-back {transform:translateY(-38px) scale(.912) rotateX(4.2deg); opacity:.72;z-index:2}
+.vis-card.is-away {transform:translateY(30px)  scale(1.03) rotateX(-5deg);  opacity:0;  z-index:1;
+  pointer-events:none}
+
+/* ---------- inside a card ---------- */
+
+.vis-head{flex-shrink:0}
+.vis-title{
+  margin:0;position:relative;isolation:isolate;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * 1.45);line-height:1.22;color:#F7C86B;
+  letter-spacing:.2px;
+}
+.vis-title > span{position:relative;display:inline-block}
+.vis-title > span::after{
+  content:"";position:absolute;inset:-1px -5px;pointer-events:none;
+  background:linear-gradient(105deg,
+    transparent 0%, transparent 40%,
+    rgba(255,255,255,.62) 50%,
+    transparent 60%, transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;
+  mix-blend-mode:overlay;
+  animation:btFlash 2.4s linear infinite;
+}
+.vis-sub{
+  margin:calc(var(--u) * .18) 0 0;
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;font-style:italic;
+  font-size:calc(var(--u) * .86);color:rgba(247,200,107,.82);
+}
+
+.vis-lab{
+  margin:calc(var(--u) * .62) 0 calc(var(--u) * .22);
+  font-family:Mukta,system-ui,sans-serif;font-weight:800;
+  font-size:calc(var(--u) * .78);letter-spacing:.7px;
+  color:rgba(247,200,107,.72);
+  display:flex;align-items:center;gap:calc(var(--u) * .38);
+}
+.vis-lab::before{
+  content:"";width:calc(var(--u) * .34);height:calc(var(--u) * .34);
+  border-radius:2px;background:var(--gold);transform:rotate(45deg);
+  flex-shrink:0;animation:hdGlow 2.4s ease-in-out infinite;
+}
+
+.vis-quote{
+  margin:0;font-family:Mukta,system-ui,sans-serif;font-weight:500;
+  font-size:calc(var(--u) * .9);line-height:1.52;
+  color:rgba(255,255,255,.90);
+  border-left:2px solid rgba(247,200,107,.5);
+  padding-left:calc(var(--u) * .55);
+}
+
+.vis-chips{display:flex;flex-wrap:wrap;gap:calc(var(--u) * .3)}
+.vis-chip{
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .84);line-height:1.2;
+  color:#FFF8E8;background:rgba(255,255,255,.11);
+  border:1px solid rgba(247,200,107,.34);
+  border-radius:999px;padding:calc(var(--u) * .16) calc(var(--u) * .48);
+  animation:ofPop .44s cubic-bezier(.34,1.5,.64,1) both;
+  animation-delay:var(--d,0ms);
+}
+
+.vis-path{display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--u) * .26)}
+.vis-step{
+  position:relative;
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .82);color:#FFF3DA;
+  animation:visStep .5s ease-out both;animation-delay:var(--d,0ms);
+}
+.vis-step + .vis-step::before{
+  content:"";display:inline-block;vertical-align:middle;
+  width:0;height:0;margin-right:calc(var(--u) * .26);
+  border-left:calc(var(--u) * .34) solid rgba(247,200,107,.85);
+  border-top:calc(var(--u) * .2) solid transparent;
+  border-bottom:calc(var(--u) * .2) solid transparent;
+  animation:visArrow 1.9s ease-in-out infinite;animation-delay:var(--d,0ms);
+}
+
+.vis-out{
+  margin-top:auto;padding-top:calc(var(--u) * .5);
+  text-align:center;
+  border-top:1px solid rgba(247,200,107,.26);
+}
+.vis-out b{
+  display:block;font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;
+  font-size:calc(var(--u) * 1.25);line-height:1.24;color:var(--gold);
+  animation:factPulseGold 4.4s ease-in-out infinite;
+}
+.vis-out i{
+  display:block;margin-top:calc(var(--u) * .12);
+  font-family:Mukta,system-ui,sans-serif;font-style:normal;font-weight:700;
+  font-size:calc(var(--u) * 1.02);line-height:1.28;color:rgba(255,255,255,.88);
+}
+
+/* ---------- dots and arrows ---------- */
+
+.vis-nav{
+  display:flex;align-items:center;justify-content:center;
+  gap:calc(var(--u) * .7);margin-top:calc(var(--u) * .78);
+}
+.vis-dots{display:flex;align-items:center;gap:calc(var(--u) * .32)}
+.vis-dot{
+  width:calc(var(--u) * .44);height:calc(var(--u) * .44);border-radius:50%;
+  border:0;padding:0;background:rgba(90,66,20,.26);
+  transition:background .25s ease,transform .25s ease,width .25s ease;
+}
+.vis-dot.on{background:var(--gold-dark);width:calc(var(--u) * 1.15);border-radius:999px}
+
+.vis-arrow{
+  width:calc(var(--u) * 2);height:calc(var(--u) * 2);border-radius:50%;
+  border:1.5px solid #E2D6BC;background:#FFFDF8;padding:0;
+  position:relative;flex-shrink:0;
+  transition:background .2s ease,border-color .2s ease,transform .16s ease;
+}
+.vis-arrow::before{
+  content:"";position:absolute;top:50%;left:50%;width:0;height:0;
+  border-top:calc(var(--u) * .28) solid transparent;
+  border-bottom:calc(var(--u) * .28) solid transparent;
+}
+.vis-next::before{
+  border-left:calc(var(--u) * .42) solid var(--gold-dark);
+  transform:translate(-35%,-50%);
+}
+.vis-prev::before{
+  border-right:calc(var(--u) * .42) solid var(--gold-dark);
+  transform:translate(-65%,-50%);
+}
+.vis-arrow:active{transform:scale(.9);background:#FFF6E4}
+
+@keyframes visStep{
+  from{opacity:0;transform:translateY(5px)}
+  to  {opacity:1;transform:none}
+}
+@keyframes visArrow{
+  0%,100%{opacity:.55;transform:translateX(0)}
+  50%    {opacity:1;  transform:translateX(2px)}
+}
+
+/* Reduced motion: the deck still changes card, it just stops performing.
+   The shuffle becomes a plain cross-fade — option E from the draft. */
+@media(prefers-reduced-motion:reduce){
+  .vis-card{transition:opacity .3s ease}
+  .vis-card.is-front,.vis-card.is-next,.vis-card.is-back,.vis-card.is-away{transform:none}
+  .vis-card.is-next,.vis-card.is-back{opacity:0}
+  .vis-title > span::after,.vis-lab::before,.vis-chip,
+  .vis-step,.vis-step + .vis-step::before,.vis-out b{animation:none}
+}
