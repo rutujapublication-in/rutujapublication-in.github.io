@@ -5667,7 +5667,7 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
    =================================================================== */
 
 .vis{
-  position:relative;width:100%;padding:calc(var(--u) * 1.5) 0 calc(var(--u) * 1.7);
+  position:relative;width:100%;padding:calc(var(--u) * 1.05) 0 calc(var(--u) * 1.15);
   background:
     radial-gradient(120% 70% at 12% 0%, rgba(247,200,107,.10) 0%, transparent 62%),
     radial-gradient(110% 60% at 88% 100%, rgba(26,77,46,.10) 0%, transparent 60%),
@@ -5678,33 +5678,47 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 .vis.hidden{display:none}
 
 .vis-frame{
-  position:relative;
+  position:relative;isolation:isolate;
   border:1.5px solid #E2D6BC;border-radius:calc(var(--u) * 1.05);
   background:linear-gradient(160deg,#FFFDF8,#FBF6EC);
-  padding:calc(var(--u) * .95) calc(var(--u) * .8) calc(var(--u) * .85);
+  padding:calc(var(--u) * .68) calc(var(--u) * .6) calc(var(--u) * .62);
   box-shadow:0 6px 22px rgba(90,66,20,.07);
+}
+/* a light walking the frame's edge, slower than the boxes inside it so
+   the two read as one family rather than competing. Reuses --vang and
+   vangSpin, already registered for the video cards, so no new property
+   and no new keyframe. */
+.vis-frame::before{
+  content:"";position:absolute;inset:-1.5px;z-index:-1;
+  border-radius:inherit;pointer-events:none;
+  background:conic-gradient(from var(--vang),
+    transparent 0deg, var(--gold) 42deg,
+    rgba(26,77,46,.55) 78deg, transparent 130deg, transparent 360deg);
+  animation:vangSpin 11s linear infinite;
+  opacity:.55;
 }
 
 /* ---------- the deck ---------- */
 
 .vis-deck{
   position:relative;
+  /* The deck used to stand at one fixed height, sized for the tallest
+      slide, so every shorter slide carried the difference as dead space
+      at the bottom — 58px on average, 81px on slide 4. It now follows the
+      front card, measured after each change and eased, so no slide holds
+      space it does not use. 30px above and 40px below stay clear for the
+      lifted and leaving cards. */
   height:460px;
-  margin-top:calc(var(--u) * .5);
+  transition:height .52s cubic-bezier(.33,1,.42,1);
+  margin-top:calc(var(--u) * .35);
   perspective:1200px;
 }
-/* the card is inset 30px at the top and 40px at the bottom, so a lifted
-   card and a leaving one both stay inside the deck instead of bleeding
-   over the heading rule above and the dots below */
-@media(max-width:359px){ .vis-deck{height:490px} }
-@media(min-width:400px){ .vis-deck{height:530px} }
-@media(min-width:560px){ .vis-deck{height:540px} }
 
 .vis-card{
-  position:absolute;top:30px;bottom:40px;left:0;right:0;
+  position:absolute;top:30px;bottom:auto;left:0;right:0;
   display:flex;flex-direction:column;
   border-radius:calc(var(--u) * .95);
-  padding:calc(var(--u) * .85) calc(var(--u) * .85) calc(var(--u) * .55);
+  padding:calc(var(--u) * .7) calc(var(--u) * .72) calc(var(--u) * .6);
   background:
     radial-gradient(96% 62% at 14% 6%, rgba(255,255,255,.10) 0%, transparent 58%),
     linear-gradient(165deg, var(--base) 0%, rgba(0,0,0,.30) 140%);
@@ -5732,9 +5746,7 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 /* Nothing behind the front card may be read. The peeking edges show
    colour only, like a stack of closed pages — otherwise the text of the
    card underneath reads as part of the matter in front of it. */
-.vis-card:not(.is-front) .vis-body,
-.vis-card:not(.is-front) .vis-num,
-.vis-card:not(.is-front) .vis-ring{visibility:hidden}
+.vis-card:not(.is-front) .vis-body{visibility:hidden}
 
 .vis-body{
   display:flex;flex-direction:column;flex:1 1 auto;min-height:0;
@@ -5769,6 +5781,10 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 @media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - (var(--u) * 3.3) - 3px)} }
 @media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - (var(--u) * 3.3) - 3px)} }
 /* English display type carries the letter-spacing Section 1 gives it */
+html[lang="mr"] .vis-quote{font-size:calc(var(--u) * 1.04);line-height:1.58}
+html[lang="mr"] .vis-chip{font-size:calc(var(--u) * .88)}
+html[lang="mr"] .vis-step{font-size:calc(var(--u) * .88)}
+html[lang="mr"] .vis-pair b{font-size:calc(var(--u) * .88)}
 html[lang="en"] .vis-title{letter-spacing:.6px}
 html[lang="en"] .vis-lab{letter-spacing:1.1px}
 html[lang="en"] .vis-out b{letter-spacing:.4px}
@@ -5795,17 +5811,11 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
   font-size:calc(var(--u) * .86);color:rgba(247,200,107,.82);
 }
 
-.vis-num{
-  position:absolute;top:calc(var(--u) * .6);right:calc(var(--u) * .72);
-  font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * .68);letter-spacing:1px;
-  color:rgba(255,255,255,.42);z-index:2;
-}
 
 /* ---------- 2 · part headings, the title's sweep, at full gold ---------- */
 
 .vis-lab{
-  margin:calc(var(--u) * .58) 0 calc(var(--u) * .24);
+  margin:calc(var(--u) * .42) 0 calc(var(--u) * .16);
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
   font-size:calc(var(--u) * .8);letter-spacing:.8px;
   color:#F7C86B;
@@ -5844,7 +5854,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 
 /* ---------- 4 and 5 · the boxes ---------- */
 
-.vis-chips{display:flex;flex-direction:column;gap:calc(var(--u) * .3)}
+.vis-chips{display:flex;flex-direction:column;gap:calc(var(--u) * .24)}
 .vis-row{
   display:flex;justify-content:center;align-items:stretch;
   gap:calc(var(--u) * .3);
@@ -5887,29 +5897,54 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 /* the overview slides carry subject — book pairs, not keywords */
 .vis-pairs{display:flex;flex-direction:column;gap:calc(var(--u) * .16)}
 .vis-pair{
-  display:flex;align-items:baseline;justify-content:space-between;
-  gap:calc(var(--u) * .5);
-  padding:calc(var(--u) * .2) calc(var(--u) * .42);
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:calc(var(--u) * .1);
+  padding:calc(var(--u) * .24) calc(var(--u) * .42);
   border-radius:calc(var(--u) * .5);
   background:rgba(255,255,255,.07);
   border-left:2px solid rgba(247,200,107,.55);
   animation:visPuff 2.8s ease-in-out infinite;
 }
+/* the book, its class band, and underneath the span it covers. Side by
+   side the longest row needs 309px against a 277px strip, so the span
+   takes its own line rather than the name being cut. */
+.vis-pair .vp-top{
+  display:flex;align-items:baseline;flex-wrap:wrap;
+  gap:calc(var(--u) * .34);width:100%;
+}
 .vis-pair span{
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--u) * .8);color:rgba(247,200,107,.9);
-  flex-shrink:0;
+  font-size:calc(var(--u) * .9);color:#F7C86B;
+}
+.vis-pair em{
+  font-style:normal;font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .74);color:rgba(255,255,255,.62);
+  border:1px solid rgba(247,200,107,.34);border-radius:999px;
+  padding:0 calc(var(--u) * .34);
 }
 .vis-pair b{
   font-family:Mukta,system-ui,sans-serif;font-weight:600;
-  font-size:calc(var(--u) * .84);color:#FFF8E8;text-align:right;
+  font-size:calc(var(--u) * .8);color:rgba(255,248,232,.92);
 }
+/* slide 1 carries a signature, not a book: the name reads at the size an
+   outcome does, the role sits quietly under it */
+.vis-sign{align-items:flex-start;padding:calc(var(--u) * .34) calc(var(--u) * .48)}
+.vis-sign span{font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * 1.06);letter-spacing:.2px}
+.vis-sign b{font-size:calc(var(--u) * .78);color:rgba(247,200,107,.78);font-weight:700}
 
 /* ---------- 6 · the path, full width, arrows leaning forward ---------- */
 
+/* space-between pinned the first step to the left edge of the card and
+   the last to the right, so both touched the boundary; and because the
+   arrow is a ::before inside the step that follows it, all the free space
+   fell BEFORE the arrow — it hugged the word after it and floated away
+   from the word before. Centred with a real gap and a little end padding
+   gives even spacing round every arrow and keeps the row off the edge. */
 .vis-path{
-  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
-  gap:calc(var(--u) * .22) 0;width:100%;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:calc(var(--u) * .14) calc(var(--u) * .1);
+  width:100%;padding:0 calc(var(--u) * .25);
 }
 .vis-step{
   position:relative;display:inline-flex;align-items:center;
@@ -5919,7 +5954,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 }
 .vis-step + .vis-step::before{
   content:"";display:inline-block;flex-shrink:0;
-  width:0;height:0;margin:0 calc(var(--u) * .26) 0 calc(var(--u) * .1);
+  width:0;height:0;margin:0 calc(var(--u) * .22) 0 calc(var(--u) * .22);
   border-left:calc(var(--u) * .38) solid var(--gold);
   border-top:calc(var(--u) * .22) solid transparent;
   border-bottom:calc(var(--u) * .22) solid transparent;
@@ -5929,8 +5964,8 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 /* ---------- 8 · the outcome, evenly spaced between rule and edge ---------- */
 
 .vis-out{
-  margin-top:calc(var(--u) * .55);
-  padding-top:calc(var(--u) * .55);
+  margin-top:calc(var(--u) * .42);
+  padding-top:calc(var(--u) * .42);
   text-align:center;
   border-top:1px solid rgba(247,200,107,.3);
 }
@@ -5945,23 +5980,12 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
   font-size:calc(var(--u) * 1.02);line-height:1.28;color:rgba(255,255,255,.9);
 }
 
-/* ---------- 12A · the seconds, drawn as a ring ---------- */
-
-.vis-ring{
-  position:absolute;top:calc(var(--u) * .5);left:calc(var(--u) * .62);
-  width:calc(var(--u) * 1.5);height:calc(var(--u) * 1.5);
-  transform:rotate(-90deg);z-index:2;
-}
-.vis-ring circle{fill:none;stroke-width:3.5;stroke-linecap:round}
-.vis-ring .vr-t{stroke:rgba(255,255,255,.16)}
-.vis-ring .vr-p{stroke:var(--gold);stroke-dasharray:106.8;stroke-dashoffset:0}
-.is-held .vis-ring .vr-p{animation-play-state:paused}
 
 /* ---------- dots and arrows ---------- */
 
 .vis-nav{
   display:flex;align-items:center;justify-content:center;
-  gap:calc(var(--u) * .7);margin-top:calc(var(--u) * .78);
+  gap:calc(var(--u) * .7);margin-top:calc(var(--u) * .55);
 }
 .vis-dots{display:flex;align-items:center;gap:calc(var(--u) * .32)}
 .vis-dot{
@@ -6006,10 +6030,6 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
   0%,100%{text-shadow:0 0 0 rgba(247,200,107,0)}
   50%    {text-shadow:0 0 10px rgba(247,200,107,.5)}
 }
-@keyframes visRing{
-  from{stroke-dashoffset:0}
-  to  {stroke-dashoffset:106.8}
-}
 
 @media(prefers-reduced-motion:reduce){
   .vis-card{transition:opacity .3s ease}
@@ -6018,5 +6038,25 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
   .vis-card.is-next,.vis-card.is-back{opacity:0}
   .vis-title,.vis-title > span::after,.vis-lab,.vis-lab > span::after,.vis-lab::before,
   .vis-chip,.vis-chip::before,.vis-pair,.vis-step + .vis-step::before,
-  .vis-out b,.vis-body,.vis-ring .vr-p{animation:none}
+  .vis-out b,.vis-body{animation:none}
+}
+
+/* Slide 3's chain is the book's whole method — अक्षर → ध्वनी → उच्चार →
+   शब्द → वाचन — so on that slide it leads instead of sitting third.
+   hero:'path' in vision.json is what turns this on. */
+.vis-hero-path .vis-step{
+  font-size:calc(var(--u) * 1.06);
+  color:var(--gold);
+  text-shadow:0 0 10px rgba(247,200,107,.45);
+}
+html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--u) * 1.1)}
+.vis-hero-path .vis-step + .vis-step::before{
+  border-left-width:calc(var(--u) * .44);
+  border-top-width:calc(var(--u) * .26);
+  border-bottom-width:calc(var(--u) * .26);
+}
+.vis-hero-path .vis-path{
+  padding:calc(var(--u) * .3) calc(var(--u) * .25);
+  border-radius:calc(var(--u) * .5);
+  background:rgba(255,255,255,.06);
 }

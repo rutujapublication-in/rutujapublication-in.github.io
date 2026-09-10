@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18e',
+  VERSION: 'v18j',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2308,6 +2308,18 @@ const ORDERFORM = {
     this.prefill();
   },
 
+  /* one group of boxes: packed into rows by width, tones alternating */
+  boxes(items, esc, U, mr) {
+    const shape = this.rows(items, this.strip(), U * 0.84,
+      2 * Math.round(U * 0.48) + 2, Math.round(U * 0.3), mr);
+    let at = 0;
+    return `<div class="vis-chips">` + shape.map(n => {
+      const row = items.slice(at, at + n); at += n;
+      return `<div class="vis-row">` + row.map((c, k) =>
+        `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join('') + `</div>`;
+    }).join('') + `</div>`;
+  },
+
   build() {
     this.node = document.getElementById('formTemplate').content.firstElementChild.cloneNode(true);
     this.node.id = 'orderForm';
@@ -2823,33 +2835,34 @@ const VISION = {
     /* the focus block: pairs on the overview slides, boxes elsewhere */
     let focus;
     if (s.list) {
+      /* two parts is a name and a role — the signature on slide 1.
+         three parts is a book, the class band it serves, and the span it
+         covers: name and class ride the top line, the span sits under
+         them, because side by side the longest row overflows by 60px. */
       focus = `<div class="vis-pairs">` + L('focus').map(x => {
-        const bits = String(x).split(' — ');
-        return `<div class="vis-pair"><span>${esc(bits[0] || '')}</span><b>${esc(bits[1] || '')}</b></div>`;
+        const b = String(x).split(' — ');
+        return b.length > 2
+          ? `<div class="vis-pair">
+               <div class="vp-top"><span>${esc(b[0])}</span><em>${esc(b[1])}</em></div>
+               <b>${esc(b.slice(2).join(' — '))}</b>
+             </div>`
+          : `<div class="vis-pair vis-sign"><span>${esc(b[0] || '')}</span><b>${esc(b[1] || '')}</b></div>`;
       }).join('') + `</div>`;
     } else {
-      const items = L('focus');
-      const shape = this.rows(items, this.strip(), U * 0.84,
-        2 * Math.round(U * 0.48) + 2, Math.round(U * 0.3), mr);
-      let at = 0;
-      focus = shape.map(n => {
-        const row = items.slice(at, at + n); at += n;
-        return `<div class="vis-row">` + row.map((c, k) =>
-          `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join('') + `</div>`;
-      }).join('');
-      focus = `<div class="vis-chips">${focus}</div>`;
+      focus = this.boxes(L('focus'), esc, U, mr);
     }
+    /* a second labelled group, where one flat row of six would hide that
+       the items belong to two different domains */
+    const focus2 = L('focus2').length
+      ? `<p class="vis-lab"><span>${esc(g('focus2_h'))}</span></p>`
+        + this.boxes(L('focus2'), esc, U, mr)
+      : '';
 
     const steps = L('path');
     const path = steps.map((f, n) =>
       `<span class="vis-step">${esc(f)}</span>`).join('');
 
-    const num = mr
-      ? String(s.n).replace(/\d/g, d => '०१२३४५६७८९'[d]) + ' / ' + '७'
-      : ('0' + s.n) + ' / 7';
-
     return `
-      <div class="vis-num">${num}</div>
       <div class="vis-body">
         <div class="vis-head">
           <h3 class="vis-title" style="--tw:${
@@ -2865,19 +2878,16 @@ const VISION = {
 
         <p class="vis-lab"><span>${esc(g('focus_h')) || t('vis_focus')}</span></p>
         ${focus}
+        ${focus2}
 
-        <p class="vis-lab"><span>${t('vis_path')}</span></p>
+        <p class="vis-lab"><span>${esc(g('path_h')) || t('vis_path')}</span></p>
         <div class="vis-path">${path}</div>
 
         <div class="vis-out">
           <b>${esc(g('out'))}</b>
           ${g('out2') ? `<i>${esc(g('out2'))}</i>` : ''}
         </div>
-      </div>
-      <svg class="vis-ring" viewBox="0 0 40 40" aria-hidden="true">
-        <circle class="vr-t" cx="20" cy="20" r="17"></circle>
-        <circle class="vr-p" cx="20" cy="20" r="17"></circle>
-      </svg>`;
+      </div>`;
   },
 
   /* The cards are built once. An advance only swaps class names, because
@@ -2890,7 +2900,7 @@ const VISION = {
   build() {
     const mr = this.app.lang === 'mr';
     this.deck.innerHTML = this.slides.map((s, k) =>
-      `<article class="vis-card" data-k="${k}" style="--base:${s.base}">${this.card(s, mr)}</article>`
+      `<article class="vis-card${s.hero ? ' vis-hero-' + s.hero : ''}" data-k="${k}" style="--base:${s.base}">${this.card(s, mr)}</article>`
     ).join('');
     this.dots.innerHTML = this.slides.map((s, k) =>
       `<button class="vis-dot" data-k="${k}" aria-label="${k + 1}"></button>`).join('');
@@ -2918,6 +2928,21 @@ const VISION = {
     });
     this.dots.querySelectorAll('.vis-dot').forEach((b, k) =>
       b.classList.toggle('on', k === this.i));
+    this.fit();
+  },
+
+  /* No slide should stand in a card sized for the tallest one. The deck
+     takes the height of whatever is in front of it, measured after the
+     class swap and eased, so the empty space at the bottom of the short
+     slides disappears. 70px is the clearance the lifted and leaving
+     cards need above and below. */
+  fit() {
+    const front = this.deck.querySelector('.vis-card.is-front');
+    if (!front) return;
+    requestAnimationFrame(() => {
+      const h = front.offsetHeight;
+      if (h) this.deck.style.height = (h + 70) + 'px';
+    });
   },
 
   go(k) {
@@ -2933,9 +2958,6 @@ const VISION = {
     this.stop();
     if (this.paused) return;
     const secs = Number(this.slides[this.i] && this.slides[this.i].seconds) || 7;
-    this.t0 = Date.now();
-    const ring = this.deck.querySelector('.is-front .vr-p');
-    if (ring) { ring.style.animation = 'none'; void ring.getBoundingClientRect(); ring.style.animation = `visRing ${secs}s linear forwards`; }
     this.timer = setTimeout(() => this.go(this.i + 1), secs * 1000);
   },
 
@@ -2979,7 +3001,7 @@ const VISION = {
     /* the row split depends on the viewport, so a rotation repacks */
     let rt = null;
     window.addEventListener('resize', () => {
-      clearTimeout(rt); rt = setTimeout(() => this.build(), 220);
+      clearTimeout(rt); rt = setTimeout(() => { this.build(); this.fit(); }, 220);
     });
   },
 

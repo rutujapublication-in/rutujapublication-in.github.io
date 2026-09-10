@@ -1,5 +1,5 @@
 {
-  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_mr / q_en is a bracketed tail that sits on the same line as the title at a smaller size. list:true renders focus items as subject — book pairs instead of keyword chips. seconds is how long the slide holds.",
+  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and its span. focus2_* adds a second labelled box group under the first. hero:'path' makes the chain the largest thing on that slide. path_h_* names the chain heading. seconds is how long it holds.",
   "slides": [
     {
       "n": 1,
@@ -11,22 +11,14 @@
       "sub_mr": "",
       "sub_en": "",
       "view_mr": "प्राथमिक शिक्षणाच्या टप्प्यावर योग्य सुरुवात, समजून घेण्याची पद्धत आणि नियमित सराव यांतून मुलांच्या शिकण्याचा पाया आणि आत्मविश्वास घडतो.",
-      "view_en": "At the primary stage, a right beginning, a way of understanding and steady practice are what build a child's foundation and confidence.",
-      "focus_h_mr": "पाच पुस्तके · पाच गरजा",
-      "focus_h_en": "Five books · five needs",
+      "view_en": "Three things build a child in the primary years: a right beginning, a way of understanding, and steady practice. Together they make the foundation — and the confidence.",
+      "focus_h_mr": "ही मांडणी कोणाची",
+      "focus_h_en": "Whose view this is",
       "focus_mr": [
-        "अक्षर — अक्षरमित्र",
-        "भाषा — चला वाचूया झटपट",
-        "इंग्रजी — English Primer",
-        "गणित — गणितमित्र १",
-        "गणित — गणितमित्र २"
+        "सौ. मीना सुनिल गिरमे — लेखिका"
       ],
       "focus_en": [
-        "Letters — Aksharmitra",
-        "Language — Chala Vachuya",
-        "English — English Primer",
-        "Maths — Ganitmitra 1",
-        "Maths — Ganitmitra 2"
+        "सौ. मीना सुनिल गिरमे — Author"
       ],
       "path_mr": [
         "समज",
@@ -38,13 +30,20 @@
         "Practice",
         "Confidence"
       ],
-      "out_mr": "एकच दिशा",
-      "out_en": "One direction",
-      "out2_mr": "",
-      "out2_en": "",
+      "out_mr": "पाया पक्का, तर पुढचं सोपं.",
+      "out_en": "A firm base makes the rest easy.",
+      "out2_mr": "प्राथमिक शिक्षणाची खरी कमाई.",
+      "out2_en": "That is what primary schooling is really for.",
       "list": true,
       "q_mr": "",
-      "q_en": ""
+      "q_en": "",
+      "path_h_mr": "एकच दिशा",
+      "path_h_en": "One direction",
+      "hero": "",
+      "focus2_h_mr": "",
+      "focus2_h_en": "",
+      "focus2_mr": [],
+      "focus2_en": []
     },
     {
       "n": 2,
@@ -56,7 +55,7 @@
       "sub_mr": "",
       "sub_en": "",
       "view_mr": "मुलांना केवळ अक्षरे आणि शब्द वाचता यावेत एवढेच नाही, तर वाचन–लेखनातून त्यांची भाषिक कौशल्ये, शब्दसंपदा आणि अभिव्यक्ती विकसित व्हावी — हा या पुस्तकामागचा मुख्य हेतू.",
-      "view_en": "Not merely that children can read letters and words, but that reading and writing develop their language skill, vocabulary and expression — that is the purpose behind this book.",
+      "view_en": "Reading letters and words is only the start. This book is written so that reading and writing grow a child's language, their vocabulary, and their ability to say what they mean.",
       "focus_h_mr": "पुस्तकाचा केंद्रबिंदू",
       "focus_h_en": "What the book centres on",
       "focus_mr": [
@@ -84,12 +83,19 @@
         "Further learning"
       ],
       "out_mr": "भाषेचा मजबूत पाया",
-      "out_en": "A strong base in language",
+      "out_en": "Language on a firm footing",
       "out2_mr": "विचार व्यक्त करण्याचा आत्मविश्वास",
-      "out2_en": "The confidence to express a thought",
+      "out2_en": "and the confidence to say what they think",
       "list": false,
       "q_mr": "(एक परिपूर्ण उजळणी)",
-      "q_en": "(A complete revision)"
+      "q_en": "(Ek Paripurna Ujalani)",
+      "path_h_mr": "",
+      "path_h_en": "",
+      "hero": "",
+      "focus2_h_mr": "",
+      "focus2_h_en": "",
+      "focus2_mr": [],
+      "focus2_en": []
     },
     {
       "n": 3,
@@ -101,7 +107,7 @@
       "sub_mr": "ध्वनीतून इंग्रजी",
       "sub_en": "English through sound",
       "view_mr": "इंग्रजी पाठांतरातून नव्हे, तर अक्षर–ध्वनी संबंध समजून, योग्य उच्चार, शब्दनिर्मिती आणि वाचनाचा सराव करून सहज व आनंदाने शिकता यावी — हा या पुस्तकाचा केंद्रबिंदू.",
-      "view_en": "English learnt not by rote but by understanding the letter–sound relationship: correct sound, word building and reading practice, so it comes easily and with joy.",
+      "view_en": "English is not learnt by repeating it. This book teaches the link between letter and sound, then builds words and reading on top of it — so English comes easily, and with some pleasure.",
       "focus_h_mr": "पुस्तकाचा केंद्रबिंदू",
       "focus_h_en": "What the book centres on",
       "focus_mr": [
@@ -137,10 +143,17 @@
       "out_mr": "ध्वनी समजला, शब्द वाचला",
       "out_en": "The sound understood, the word read",
       "out2_mr": "इंग्रजी सहज झालं",
-      "out2_en": "English made easy",
+      "out2_en": "and English stops being difficult",
       "list": false,
       "q_mr": "",
-      "q_en": ""
+      "q_en": "",
+      "path_h_mr": "फोनिक्सची वाटचाल",
+      "path_h_en": "How phonics moves",
+      "hero": "path",
+      "focus2_h_mr": "",
+      "focus2_h_en": "",
+      "focus2_mr": [],
+      "focus2_en": []
     },
     {
       "n": 4,
@@ -148,11 +161,11 @@
       "base": "#6B3113",
       "seconds": 7,
       "title_mr": "गणितमित्र – भाग १",
-      "title_en": "Ganitmitra – Part 1",
+      "title_en": "Ganitmitra Bhag 1",
       "sub_mr": "गणिताशी मैत्री",
       "sub_en": "Making friends with numbers",
       "view_mr": "मुलांच्या मनातील “मला जमेल का?” या भीतीऐवजी गणिताबद्दल समज, आनंद आणि आत्मविश्वास निर्माण व्हावा — हा या पुस्तकामागचा विचार.",
-      "view_en": "In place of the fear “will I manage this?”, the aim is understanding, enjoyment and confidence about mathematics.",
+      "view_en": "Most children meet mathematics with one question: will I manage this? This book is written to replace that question with understanding, some enjoyment, and confidence.",
       "focus_h_mr": "शिकवण्याची पद्धत",
       "focus_h_en": "How it teaches",
       "focus_mr": [
@@ -184,12 +197,19 @@
         "Friendship"
       ],
       "out_mr": "गणिताची भीती कमी",
-      "out_en": "Less fear of mathematics",
+      "out_en": "The fear goes",
       "out2_mr": "गणिताशी मैत्री आणि आत्मविश्वास",
-      "out2_en": "Friendship with numbers, and confidence",
+      "out2_en": "and numbers become friendly",
       "list": false,
       "q_mr": "",
-      "q_en": ""
+      "q_en": "",
+      "path_h_mr": "",
+      "path_h_en": "",
+      "hero": "",
+      "focus2_h_mr": "",
+      "focus2_h_en": "",
+      "focus2_mr": [],
+      "focus2_en": []
     },
     {
       "n": 5,
@@ -197,28 +217,22 @@
       "base": "#5A2A18",
       "seconds": 7,
       "title_mr": "गणितमित्र – भाग २",
-      "title_en": "Ganitmitra – Part 2",
+      "title_en": "Ganitmitra Bhag 2",
       "sub_mr": "पाया अधिक मजबूत",
       "sub_en": "A firmer foundation",
       "view_mr": "गणितातील पायाभूत संख्याज्ञान आणि संकल्पना सुरुवातीपासून स्पष्ट झाल्या, तर पुढील गणित अधिक सहज शिकता येते — म्हणून समज, विचार आणि नियमित सरावावर भर.",
-      "view_en": "When basic number sense and concepts are clear from the start, the mathematics that follows is far easier — so the emphasis is on understanding, thinking and steady practice.",
-      "focus_h_mr": "पुस्तकाचा केंद्रबिंदू",
-      "focus_h_en": "What the book centres on",
+      "view_en": "Get number sense and the early ideas clear, and everything after them is easier. So this book works on understanding, on thinking, and on steady practice.",
+      "focus_h_mr": "संख्या व क्रिया",
+      "focus_h_en": "Number and operations",
       "focus_mr": [
         "संख्याज्ञान",
         "बेरीज · वजाबाकी",
-        "गुणाकार · भागाकार",
-        "आकृती · कोन · सममिती",
-        "वेळ · नाणी · मापन",
-        "अपूर्णांक"
+        "गुणाकार · भागाकार"
       ],
       "focus_en": [
         "Number sense",
         "Addition · subtraction",
-        "Multiplication · division",
-        "Shape · angle · symmetry",
-        "Time · money · measure",
-        "Fractions"
+        "Multiplication · division"
       ],
       "path_mr": [
         "संकल्पना",
@@ -233,12 +247,27 @@
         "Confidence"
       ],
       "out_mr": "गणिताचा मजबूत पाया",
-      "out_en": "A strong base in mathematics",
+      "out_en": "Mathematics on a firm footing",
       "out2_mr": "",
       "out2_en": "",
       "list": false,
       "q_mr": "",
-      "q_en": ""
+      "q_en": "",
+      "path_h_mr": "",
+      "path_h_en": "",
+      "focus2_h_mr": "आकार, मापन व अपूर्णांक",
+      "focus2_h_en": "Shape, measure and fractions",
+      "focus2_mr": [
+        "आकृती · कोन · सममिती",
+        "वेळ · नाणी · मापन",
+        "अपूर्णांक"
+      ],
+      "focus2_en": [
+        "Shape · angle · symmetry",
+        "Time · money · measure",
+        "Fractions"
+      ],
+      "hero": ""
     },
     {
       "n": 6,
@@ -246,11 +275,11 @@
       "base": "#5C3D0C",
       "seconds": 7,
       "title_mr": "अक्षरमित्र – सुलेखन",
-      "title_en": "Aksharmitra – Handwriting",
+      "title_en": "Aksharmitra Sulekhan Pustika",
       "sub_mr": "अक्षराला आकार",
       "sub_en": "Shape for the letter",
       "view_mr": "अक्षर ओळख झाल्यापासूनच मुलांना योग्य आकार, वळण आणि लेखनाचा सराव मिळावा; नियमित सरावातून त्यांचे अक्षर सुवाच्य, वळणदार आणि आकर्षक व्हावे — हा या पुस्तिकेचा मुख्य हेतू.",
-      "view_en": "From the moment letters are known, children should practise correct shape and stroke; steady practice makes their hand legible, well-formed and pleasing — that is the purpose of this booklet.",
+      "view_en": "From the moment a child knows the letters, the shape and the stroke should be practised. Steady practice is what makes a hand legible, well formed, and good to look at.",
       "focus_h_mr": "पुस्तकाचा केंद्रबिंदू",
       "focus_h_en": "What the book centres on",
       "focus_mr": [
@@ -287,7 +316,14 @@
       "out2_en": "Letter-writing is an art.",
       "list": false,
       "q_mr": "",
-      "q_en": ""
+      "q_en": "",
+      "path_h_mr": "",
+      "path_h_en": "",
+      "hero": "",
+      "focus2_h_mr": "",
+      "focus2_h_en": "",
+      "focus2_mr": [],
+      "focus2_en": []
     },
     {
       "n": 7,
@@ -299,22 +335,22 @@
       "sub_mr": "ऋतुजा पब्लिकेशन",
       "sub_en": "Rutuja Publication",
       "view_mr": "प्रत्येक पुस्तकाचा स्वतंत्र उद्देश — पण मुलांच्या प्राथमिक शिक्षणाचा एकच व्यापक पाया.",
-      "view_en": "Each book has its own purpose — but one broad foundation for a child's primary education.",
-      "focus_h_mr": "एकत्र वाचल्यास",
-      "focus_h_en": "Read together",
+      "view_en": "Each book has its own purpose. Together they build one foundation for a child's primary years.",
+      "focus_h_mr": "पाच पुस्तके, एकत्र वाचल्यास",
+      "focus_h_en": "The five, read together",
       "focus_mr": [
-        "अक्षरमित्र — अक्षराला आकार",
-        "चला वाचूया — भाषेला पाया",
-        "English Primer — ध्वनीतून समज",
-        "गणितमित्र १ — गणिताशी मैत्री",
-        "गणितमित्र २ — समज अधिक मजबूत"
+        "अक्षरमित्र सुलेखन पुस्तिका — इयत्ता १–२ — अक्षरओळखीपासून वळणदार हस्ताक्षरापर्यंत",
+        "चला वाचूया झटपट — इयत्ता १–५ — अक्षरापासून शब्दसंपदेपर्यंत",
+        "इंग्लिश प्रायमर विथ फोनिक्स — इयत्ता १–५ — ध्वनीपासून वाचन व व्याकरणापर्यंत",
+        "गणितमित्र भाग १ — इयत्ता १–२ — संकल्पनेपासून गणिती विचारापर्यंत",
+        "गणितमित्र भाग २ — इयत्ता ३–५ — संख्येपासून अपूर्णांक व मापनापर्यंत"
       ],
       "focus_en": [
-        "Aksharmitra — shape for the letter",
-        "Chala Vachuya — a base for language",
-        "English Primer — sense through sound",
-        "Ganitmitra 1 — friendship with numbers",
-        "Ganitmitra 2 — a deeper sense"
+        "Aksharmitra Sulekhan Pustika — Std 1–2 — From letter shapes to a steady hand",
+        "Chala Vachuya Zatpat — Std 1–5 — From letters to a working vocabulary",
+        "English Primer with Phonics — Std 1–5 — From sound to reading and grammar",
+        "Ganitmitra Bhag 1 — Std 1–2 — From first ideas to mathematical thinking",
+        "Ganitmitra Bhag 2 — Std 3–5 — From number to fractions and measure"
       ],
       "path_mr": [
         "पहिलं अक्षर",
@@ -336,7 +372,14 @@
       "out2_en": "confidence follows.",
       "list": true,
       "q_mr": "",
-      "q_en": ""
+      "q_en": "",
+      "path_h_mr": "",
+      "path_h_en": "",
+      "hero": "",
+      "focus2_h_mr": "",
+      "focus2_h_en": "",
+      "focus2_mr": [],
+      "focus2_en": []
     }
   ]
 }
