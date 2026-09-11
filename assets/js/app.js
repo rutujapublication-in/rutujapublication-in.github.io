@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18v',
+  VERSION: 'v18z',
   lang: 'mr',
   text: {},
   locations: null,
@@ -604,8 +604,18 @@ const RUTUJA = {
     if (!fromHash) location.hash = page;
     this.page = page;
     try { QA.onPage(page); } catch (e) { console.error('QA page', e); }
+    /* the story band and Section 5 keep their timers running unless told
+       otherwise; leaving the home page must silence both */
+    try { page === 'home' ? STORY.start() : STORY.stop(); } catch (e) {}
+    try { page === 'home' ? VISION.start() : VISION.stop(); } catch (e) {}
     this.waFloat();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    /* A page swap used to smooth-scroll to the top — and html has
+       scroll-behavior:smooth as well, so the browser animated the old
+       scroll position up through a page that was laying out and starting
+       its animations at the same time. That is the lag when moving
+       between the home page and a window. The new page simply starts at
+       the top; anchor links keep their smooth scroll. */
+    window.scrollTo(0, 0);
   },
 
   bindMenu() {
@@ -2902,14 +2912,31 @@ const VISION = {
     }
     /* a second labelled group, where one flat row of six would hide that
        the items belong to two different domains */
-    const more = ['focus2', 'focus3', 'focus4'].map(k => L(k).length
-      ? `<p class="vis-lab vis-lab-sub"><span>${esc(g(k + '_h'))}</span></p>`
-        + this.boxes(L(k), esc, U, mr)
-      : '').join('');
+    const more = ['focus2', 'focus3', 'focus4'].map(k => {
+      const items = L(k), head = esc(g(k + '_h'));
+      if (!items.length && !head) return '';
+      /* a group whose heading already names its own items needs no chips
+         under it — slide 5's fourth said the same four words twice */
+      return `<p class="vis-lab vis-lab-sub"><span>${head}</span></p>`
+        + (items.length ? this.boxes(items, esc, U, mr) : '');
+    }).join('');
 
+    /* The chain breaks where the slide says it should, not where the
+       browser happens to run out of room. Slide 1's five steps are long
+       enough to wrap on their own, but they land 3+2 at 360px and 4+1 at
+       412px — the split is declared so it reads the same everywhere.
+       Slides 3, 4 and 6 also carry five steps and fit one row, so they
+       are left alone. */
     const steps = L('path');
-    const path = steps.map((f, n) =>
-      `<span class="vis-step">${esc(f)}</span>`).join('');
+    const sp = (mr ? s.path_split_mr : s.path_split_en) || [];
+    const split = sp.length ? sp : [steps.length];
+    let at = 0;
+    const path = split.map((n, row) => {
+      const part = steps.slice(at, at + n); at += n;
+      return `<div class="vis-prow${row ? ' vis-prow-c' : ''}">`
+        + part.map(f => `<span class="vis-step">${esc(f)}</span>`).join('')
+        + `</div>`;
+    }).join('');
 
     return `
       <div class="vis-body">
@@ -2961,34 +2988,48 @@ const VISION = {
      instantly, with none of the motion running. Rebuild only when the
      language or the viewport changes, since the row packing depends on
      both. */
-  /* How tall this card's box block will be, so a card carrying four
-     groups can be scaled to sit alongside one carrying a single row.
-     Same auto-fit discipline as the title clamp: measure, compare to a
-     budget, set one number on the card. */
-  boxHeight(s, mr) {
-    const U = this.u();
-    const rowH = U * 0.88 * 1.24 + 2 * Math.round(U * 0.18);
-    const gap = Math.round(U * 0.3);
-    let h = 0, first = true;
-    for (const k of ['focus', 'focus2', 'focus3', 'focus4']) {
-      const items = (mr ? s[k + '_mr'] : s[k + '_en']) || [];
-      if (!items.length) continue;
-      if (!first) h += U * 0.3 + U * 0.74 * 1.3 + U * 0.16;
-      first = false;
-      const r = this.rows(items, this.strip(), U * 0.84,
-        2 * Math.round(U * 0.48) + 2, gap, mr).length;
-      h += r * rowH + (r - 1) * gap;
-    }
-    return h;
+  tag(s, k, mr) {
+    return `<article class="vis-card${s.hero ? ' vis-hero-' + s.hero : ''}" data-k="${k}"
+              style="--base:${s.base};--cs:1">${this.card(s, mr)}</article>`;
   },
 
-  /* --bs shrinks only a card whose boxes exceed the budget, and never
-     below .78 — under that the packer takes another row instead. */
-  tag(s, k, mr) {
-    const bh = s.list ? 0 : this.boxHeight(s, mr);
-    const bs = bh > 125 ? Math.max(0.78, Math.sqrt(125 / bh)) : 1;
-    return `<article class="vis-card${s.hero ? ' vis-hero-' + s.hero : ''}" data-k="${k}"
-              style="--base:${s.base};--bs:${bs.toFixed(3)}">${this.card(s, mr)}</article>`;
+  /* Every card is the same height. A card with less to say scales its
+     body up to fill it; a crowded one scales down. One number per card,
+     measured — the same discipline as the title clamp.
+
+     It has to be measured rather than calculated: scaling the chips
+     changes how many fit a row, which changes the height, which changes
+     the scale. So the card is laid out at 1, measured, scaled, and
+     measured again. Three passes at most, and only when the deck is
+     built — never per frame.
+
+     --cs reaches the body only. The title has its own clamp solved to the
+     exact width available; multiplying it would push a nowrap title past
+     a card that clips, and it would vanish without a trace. */
+  fitCards() {
+    const target = this.deckHeight();
+    if (!target || !this.cards) return;
+    this.cards.forEach(el => {
+      const body = el.querySelector('.vis-body');
+      if (!body) return;
+      let cs = 1;
+      for (let pass = 0; pass < 3; pass++) {
+        el.style.setProperty('--cs', cs.toFixed(3));
+        const h = body.scrollHeight;
+        if (!h) return;
+        const want = target - (el.offsetHeight - body.offsetHeight);
+        if (!want || want <= 0) return;
+        const next = Math.max(0.82, Math.min(1.18, cs * (want / h)));
+        if (Math.abs(next - cs) < 0.01) { cs = next; break; }
+        cs = next;
+      }
+      el.style.setProperty('--cs', cs.toFixed(3));
+    });
+  },
+
+  deckHeight() {
+    const w = window.innerWidth;
+    return w <= 359 ? 356 : w <= 399 ? 350 : w <= 559 ? 400 : 404;
   },
 
   build() {
@@ -2998,6 +3039,8 @@ const VISION = {
     ).join('');
     this.cards = [...this.deck.querySelectorAll('.vis-card')];
     this.place(true);
+    this.deck.style.height = this.deckHeight() + 'px';
+    requestAnimationFrame(() => this.fitCards());
   },
 
   /* front, next, back, and everything else parked off the side the deck
@@ -3010,13 +3053,6 @@ const VISION = {
        the old height around new content — the jump between slides.
        Height does not depend on the class: every card is absolutely
        positioned with height:auto, and transforms never affect layout. */
-    const incoming = this.cards[this.i];
-    if (incoming && incoming.offsetHeight) {
-      /* 6px above the card and 6px below. The 48 here was reserved for
-         the bottom band the arrows used to sit in; they moved to the side
-         edges, so it left 42px of dead space under every slide. */
-      this.deck.style.height = (incoming.offsetHeight + 12) + 'px';
-    }
     const frame = this.deck.closest('.vis-frame');
     if (frame && !first) {
       frame.classList.remove('is-turning');
@@ -3028,6 +3064,15 @@ const VISION = {
     this.cards.forEach((el, k) => {
       const rel = (k - this.i + n) % n;
       const pos = rel === 0 ? 'is-front' : rel === 1 ? 'is-next' : rel === 2 ? 'is-back' : away;
+      /* the card leaving keeps its text for the length of the fade —
+         without this the body drops to opacity 0 the instant the class
+         changes, and an empty coloured card fades out behind the new
+         one: a cross-fade with nothing to fade */
+      if (!first && el.classList.contains('is-front') && pos !== 'is-front') {
+        el.classList.add('is-leaving');
+        clearTimeout(el._lv);
+        el._lv = setTimeout(() => el.classList.remove('is-leaving'), 360);
+      }
       el.classList.remove('is-front', 'is-next', 'is-back', 'is-away-l', 'is-away-r');
       el.classList.add(pos);
       if (rel === 0 && !first) {
@@ -3039,18 +3084,14 @@ const VISION = {
     this.fit();
   },
 
-  /* No slide should stand in a card sized for the tallest one. The deck
-     takes the height of whatever is in front of it, measured after the
-     class swap and eased, so the empty space at the bottom of the short
-     slides disappears. 70px is the clearance the lifted and leaving
-     cards need above and below. */
+  /* The deck is one fixed height and never resizes. It used to follow
+     each card, which meant animating height — the only layout-affecting
+     animation left on the site, and one more thing mid-flight when the
+     next slide started. The cards fit the deck now, not the other way
+     round. */
   fit() {
-    const front = this.deck.querySelector('.vis-card.is-front');
-    if (!front) return;
-    requestAnimationFrame(() => {
-      const h = front.offsetHeight;
-      if (h) this.deck.style.height = (h + 12) + 'px';
-    });
+    this.deck.style.height = this.deckHeight() + 'px';
+    requestAnimationFrame(() => this.fitCards());
   },
 
   go(k) {

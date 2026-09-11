@@ -1,5 +1,5 @@
 {
-  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds.",
+  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds. path_split_mr / path_split_en set how that language's chain breaks across rows, e.g. [3,2]; leave empty for one row. The two languages wrap at different points, so they are set separately.",
   "slides": [
     {
       "n": 1,
@@ -62,7 +62,15 @@
       "out_mid_en": "",
       "span_mr": "",
       "span_en": "",
-      "sign": true
+      "sign": true,
+      "path_split_mr": [
+        3,
+        2
+      ],
+      "path_split_en": [
+        3,
+        2
+      ]
     },
     {
       "n": 2,
@@ -129,7 +137,12 @@
       "out_mid_en": "",
       "span_mr": "अक्षरापासून शब्दसंपदेपर्यंत",
       "span_en": "From letters to a working vocabulary",
-      "sign": false
+      "sign": false,
+      "path_split_mr": [],
+      "path_split_en": [
+        2,
+        2
+      ]
     },
     {
       "n": 3,
@@ -202,7 +215,9 @@
       "out_mid_en": "",
       "span_mr": "ध्वनीपासून वाचन व व्याकरणापर्यंत",
       "span_en": "From sound to reading and grammar",
-      "sign": false
+      "sign": false,
+      "path_split_mr": [],
+      "path_split_en": []
     },
     {
       "n": 4,
@@ -273,7 +288,9 @@
       "out_mid_en": "",
       "span_mr": "संकल्पनेपासून गणिती विचारापर्यंत",
       "span_en": "From first ideas to mathematical thinking",
-      "sign": false
+      "sign": false,
+      "path_split_mr": [],
+      "path_split_en": []
     },
     {
       "n": 5,
@@ -350,25 +367,17 @@
         "Symmetry",
         "Pictograph"
       ],
-      "focus4_mr": [
-        "वेळ",
-        "नाणी",
-        "मापन",
-        "अपूर्णांक"
-      ],
-      "focus4_en": [
-        "Time",
-        "Money",
-        "Measure",
-        "Fractions"
-      ],
+      "focus4_mr": [],
+      "focus4_en": [],
       "hero_mr": "",
       "hero_en": "",
       "out_mid_mr": "",
       "out_mid_en": "",
       "span_mr": "संख्येपासून अपूर्णांक व मापनापर्यंत",
       "span_en": "From number to fractions and measure",
-      "sign": false
+      "sign": false,
+      "path_split_mr": [],
+      "path_split_en": []
     },
     {
       "n": 6,
@@ -439,7 +448,9 @@
       "hero_en": "",
       "span_mr": "अक्षरओळखीपासून वळणदार हस्ताक्षरापर्यंत",
       "span_en": "From letter shapes to a steady hand",
-      "sign": false
+      "sign": false,
+      "path_split_mr": [],
+      "path_split_en": []
     }
   ]
 }
