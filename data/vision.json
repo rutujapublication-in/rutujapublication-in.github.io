@@ -8,8 +8,8 @@
       "seconds": 7,
       "title_mr": "पुस्तकांच्या पलीकडे",
       "title_en": "Beyond the Books",
-      "sub_mr": "",
-      "sub_en": "",
+      "sub_mr": "अक्षरापासून विचारापर्यंत — एकच पाया.",
+      "sub_en": "From letter to thought — one foundation.",
       "view_mr": "प्राथमिक शिक्षणाच्या टप्प्यावर योग्य सुरुवात, समजून घेण्याची पद्धत आणि नियमित सराव यांतून मुलांच्या शिकण्याचा पाया आणि आत्मविश्वास घडतो.",
       "view_en": "Three things build a child in the primary years: a right beginning, a way of understanding, and steady practice. Together they make the foundation — and the confidence.",
       "focus_h_mr": "ही मांडणी कोणाची",
@@ -34,10 +34,10 @@
         "First thought",
         "First confidence"
       ],
-      "out_mr": "शिकण्याची सुरुवात,",
-      "out_en": "Where learning begins,",
-      "out2_mr": "आत्मविश्वासाची वाटचाल.",
-      "out2_en": "confidence follows.",
+      "out_mr": "पाया पक्का, तर सर्व काही सोपं.",
+      "out_en": "A firm base, the rest is easy.",
+      "out2_mr": "हीच प्राथमिक शिक्षणाची खरी कमाई.",
+      "out2_en": "Primary schooling's real return.",
       "list": true,
       "q_mr": "",
       "q_en": "",
@@ -112,7 +112,7 @@
       "out_mr": "भाषेचा मजबूत पाया",
       "out_en": "Language on a firm footing",
       "out2_mr": "विचार व्यक्त करण्याचा आत्मविश्वास",
-      "out2_en": "and the confidence to say what they think",
+      "out2_en": "and the confidence to speak their mind",
       "list": false,
       "q_mr": "(एक परिपूर्ण उजळणी)",
       "q_en": "(Ek Paripurna Ujalani)",
@@ -138,7 +138,10 @@
       "span_mr": "अक्षरापासून शब्दसंपदेपर्यंत",
       "span_en": "From letters to a working vocabulary",
       "sign": false,
-      "path_split_mr": [],
+      "path_split_mr": [
+        2,
+        2
+      ],
       "path_split_en": [
         2,
         2
@@ -188,7 +191,7 @@
         "Reading"
       ],
       "out_mr": "ध्वनी समजला, शब्द वाचला",
-      "out_en": "The sound understood, the word read",
+      "out_en": "Sound understood, word read",
       "out2_mr": "इंग्रजी सहज झालं",
       "out2_en": "and English stops being difficult",
       "list": false,
@@ -290,7 +293,10 @@
       "span_en": "From first ideas to mathematical thinking",
       "sign": false,
       "path_split_mr": [],
-      "path_split_en": []
+      "path_split_en": [
+        3,
+        2
+      ]
     },
     {
       "n": 5,
@@ -450,7 +456,10 @@
       "span_en": "From letter shapes to a steady hand",
       "sign": false,
       "path_split_mr": [],
-      "path_split_en": []
+      "path_split_en": [
+        3,
+        2
+      ]
     }
   ]
 }

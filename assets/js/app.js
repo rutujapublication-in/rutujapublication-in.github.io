@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19a',
+  VERSION: 'v19h',
   lang: 'mr',
   text: {},
   locations: null,
@@ -216,7 +216,9 @@ const RUTUJA = {
     return `<img src="assets/img/${folder}/${file}"
       srcset="assets/img/${folder}/${file} 1x, assets/img/${folder}/${x2} 2x"
       onerror="this.removeAttribute('srcset')"
-      alt="${a}" decoding="async" loading="lazy"${cls ? ` class="${cls}"` : ''}>`;
+      alt="${a}" decoding="async" loading="lazy"${
+        folder === 'books' ? ' width="1240" height="1754"' : ''
+      }${cls ? ` class="${cls}"` : ''}>`;
   },
 
   /* ---- 3. RENDER ---- */
@@ -545,19 +547,32 @@ const RUTUJA = {
      opens a form. Fetched once, on demand; the form repaints itself when
      it lands. Both call sites already guard for it being absent, so
      nothing breaks in the gap. */
-  /* Pause every animation in a region the visitor cannot see. */
+  /* Pause every animation in a region the visitor cannot see.
+
+     Two things this must not do, both learned the hard way:
+
+     It must not start before the one-shot entrance animations have run.
+     Eighteen of them begin at opacity 0, so pausing at frame 0 leaves
+     those elements invisible — a section below the fold stayed blank and
+     then faded in late as you reached it. The observer now waits 1.6s,
+     by which time every entrance has finished; after that only the
+     perpetual ones are still running and those are all it touches.
+
+     And the margin has to be generous. At 120px a section unpaused just
+     as it appeared, so its motion began after the eye had arrived. 700px
+     is roughly two screens of warning. */
   stillWhenOffscreen() {
     if (!('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver(es => {
       es.forEach(e => e.target.classList.toggle('is-still', !e.isIntersecting));
-    }, { rootMargin: '120px 0px' });
+    }, { rootMargin: '700px 0px' });
     const watch = () => document
       .querySelectorAll('.story, .std-frame, .offer-frame, .ex-grid, .vis, '
         + '#page-books .book-grid, .bd, #page-cart, #orderSum, .qa-list, .site-foot')
       .forEach(el => { if (!el.dataset.still) { el.dataset.still = '1'; io.observe(el); } });
-    watch();
-    /* sections that are built later, or rebuilt on a language switch */
-    this._stillWatch = watch;
+    /* the entrances get 1.6s of clear air before anything is paused */
+    setTimeout(watch, 1600);
+    this._stillWatch = () => setTimeout(watch, 0);
   },
 
   ensureLocations() {
@@ -2946,7 +2961,8 @@ const VISION = {
              + (g('q') ? this.wid(g('q'), 1, mr) * 0.72 + 0.28 : 0)).toFixed(2)
           }"><span>${esc(g('title'))}</span>${
             g('q') ? `<i class="vis-q">${esc(g('q'))}</i>` : ''}</h3>
-          ${g('sub') ? `<p class="vis-sub">${esc(g('sub'))}</p>` : ''}
+          ${g('sub') ? `<p class="vis-sub" style="--sw:${
+            this.wid(g('sub'), 1, mr).toFixed(2)}">${esc(g('sub'))}</p>` : ''}
           ${g('span') ? `<p class="vis-span">${esc(g('span'))}</p>` : ''}
         </div>
 
@@ -3006,32 +3022,53 @@ const VISION = {
      --cs reaches the body only. The title has its own clamp solved to the
      exact width available; multiplying it would push a nowrap title past
      a card that clips, and it would vanish without a trace. */
+  /* Fit each card's body to the box it lives in.
+
+     Two wrong measurements before this one. body.scrollHeight ignores the
+     last child's margin and, on a flex column, often does not grow at all
+     when a flex item overflows — so a clipped card measured as fitting.
+     getBoundingClientRect fixed that but introduced a worse fault: it
+     returns the TRANSFORMED box, and five of the six cards are scaled
+     when they are measured — .97, .94, .99 — so every card was fitted
+     against a height that was never real.
+
+     offsetTop and offsetHeight are untransformed and include margins in
+     the child's own position, so they are true whatever state the card is
+     in. A card with room scales up to fill it, so no slide leaves a gap
+     under its last line either. */
   fitCards() {
     const target = this.deckHeight();
-    if (!target || !this.cards) return;
+    if (!target || !this.cards || !this.cards.length) return;
+
+    const extent = body => {
+      const kids = body.children;
+      if (!kids.length) return 0;
+      const last = kids[kids.length - 1];
+      const mb = parseFloat(getComputedStyle(last).marginBottom) || 0;
+      return (last.offsetTop - body.offsetTop) + last.offsetHeight + mb;
+    };
+
     this.cards.forEach(el => {
       const body = el.querySelector('.vis-body');
       if (!body) return;
-      let cs = 1;
-      for (let pass = 0; pass < 3; pass++) {
+      let cs = parseFloat(el.style.getPropertyValue('--cs')) || 1;
+      for (let pass = 0; pass < 5; pass++) {
         el.style.setProperty('--cs', cs.toFixed(3));
-        const h = body.scrollHeight;
-        if (!h) return;
-        const want = target - (el.offsetHeight - body.offsetHeight);
-        if (!want || want <= 0) return;
-        /* 0.80, not 0.82: the tallest card needed 0.83 at 412px and a
-           one-point margin against a model that has been wrong before
-           is not a margin */
-        const next = Math.max(0.80, Math.min(1.18, cs * (want / h)));
-        if (Math.abs(next - cs) < 0.01) { cs = next; break; }
+        const avail = body.offsetHeight;
+        const need = extent(body);
+        if (!avail || !need) break;
+        const ratio = avail / need;
+        if (ratio > 0.985 && ratio < 1.015) break;
+        const next = Math.max(0.72, Math.min(1.18, cs * ratio));
+        if (Math.abs(next - cs) < 0.004) { cs = next; break; }
         cs = next;
       }
       el.style.setProperty('--cs', cs.toFixed(3));
-      /* silent clipping is the failure that keeps getting past me, so it
-         is made loud: anything still over its box after three passes says
-         so in the console instead of losing its last line */
-      const over = body.scrollHeight - body.offsetHeight;
-      if (over > 2) console.warn('vision: card ' + el.dataset.k + ' over by ' + over + 'px');
+      const over = extent(body) - body.offsetHeight;
+      if (over > 2) {
+        console.warn('vision: card ' + el.dataset.k + ' over by ' + Math.round(over)
+          + 'px at cs ' + cs.toFixed(2));
+      }
     });
   },
 
@@ -3097,6 +3134,9 @@ const VISION = {
       }
     });
     this.fit();
+    /* the card coming to the front is the one whose box is real, so it
+       is refitted as it arrives */
+    requestAnimationFrame(() => this.fitCards());
   },
 
   /* The deck is one fixed height and never resizes. It used to follow
@@ -3340,7 +3380,8 @@ const STORY = {
 
           <div class="sh-logo-wrap">
             <span class="sh-rays" aria-hidden="true"></span>
-            <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo">
+            <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo"
+                 width="1200" height="1043" decoding="async" fetchpriority="high">
           </div>
 
           <p class="sh-quote">${F(n, 'tagline')}</p>
