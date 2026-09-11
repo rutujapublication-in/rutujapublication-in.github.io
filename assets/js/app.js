@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v18z',
+  VERSION: 'v19a',
   lang: 'mr',
   text: {},
   locations: null,
@@ -3019,17 +3019,25 @@ const VISION = {
         if (!h) return;
         const want = target - (el.offsetHeight - body.offsetHeight);
         if (!want || want <= 0) return;
-        const next = Math.max(0.82, Math.min(1.18, cs * (want / h)));
+        /* 0.80, not 0.82: the tallest card needed 0.83 at 412px and a
+           one-point margin against a model that has been wrong before
+           is not a margin */
+        const next = Math.max(0.80, Math.min(1.18, cs * (want / h)));
         if (Math.abs(next - cs) < 0.01) { cs = next; break; }
         cs = next;
       }
       el.style.setProperty('--cs', cs.toFixed(3));
+      /* silent clipping is the failure that keeps getting past me, so it
+         is made loud: anything still over its box after three passes says
+         so in the console instead of losing its last line */
+      const over = body.scrollHeight - body.offsetHeight;
+      if (over > 2) console.warn('vision: card ' + el.dataset.k + ' over by ' + over + 'px');
     });
   },
 
   deckHeight() {
     const w = window.innerWidth;
-    return w <= 359 ? 356 : w <= 399 ? 350 : w <= 559 ? 400 : 404;
+    return w <= 359 ? 390 : w <= 399 ? 385 : w <= 559 ? 435 : 430;
   },
 
   build() {
@@ -3041,6 +3049,13 @@ const VISION = {
     this.place(true);
     this.deck.style.height = this.deckHeight() + 'px';
     requestAnimationFrame(() => this.fitCards());
+    /* Devanagari measured in a fallback font has different metrics, so a
+       scale computed before Mukta arrives is computed for the wrong
+       content — and the real font then overflows. Fit again once the
+       fonts are in. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => this.fitCards()).catch(() => {});
+    }
   },
 
   /* front, next, back, and everything else parked off the side the deck
