@@ -33,7 +33,7 @@
      64 KB over the wire, not 270. The whole blocking payload is 136 KB —
      about 1.1s on rural 4G. That is worth waiting for in exchange for a
      page that is correct the moment it appears. -->
-<link rel="stylesheet" href="assets/css/style.css?v=19j">
+<link rel="stylesheet" href="assets/css/style.css?v=19l">
 </head>
 <body class="booting">
 
@@ -278,8 +278,11 @@
            the way Section 3 is, so it reads as its own chapter without
            losing the page's rhythm. Everything below is new: no existing
            rule, module or file is touched. -->
+      <!-- no inner .wrap: this block now sits inside the page's own wrap,
+           and nesting them charged Section 5 the 16px padding twice — it
+           rendered 32px narrower than Sections 3 and 4 and lost that much
+           reading width on every slide -->
       <div class="vis" id="vis">
-        <div class="wrap">
           <div class="vis-frame">
             <div class="hd hd-std">
               <h2 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="vis_head"></span></h2>
@@ -292,7 +295,6 @@
               <button class="vis-arrow vis-next" id="visNext" aria-label="next"></button>
             </div>
           </div>
-        </div>
       </div>
 
         <h2 class="sec-title" data-t="books_featured"></h2>
@@ -404,6 +406,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=19j"></script>
+<script src="assets/js/app.js?v=19l"></script>
 </body>
 </html>

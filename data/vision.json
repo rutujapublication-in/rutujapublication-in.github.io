@@ -162,19 +162,19 @@
       "focus_h_en": "What the book centres on",
       "focus_mr": [
         "ध्वनी-जागरूकता",
-        "अक्षर–ध्वनी संबंध",
+        "अक्षर–ध्वनी",
         "उच्चार",
         "शब्दनिर्मिती",
         "वाचन",
-        "Basic Grammar"
+        "व्याकरण"
       ],
       "focus_en": [
         "Sound awareness",
-        "Letter–sound link",
-        "Pronunciation",
+        "Letter–sound",
+        "Speech",
         "Word building",
         "Reading",
-        "Basic grammar"
+        "Grammar"
       ],
       "path_mr": [
         "अक्षर",
@@ -243,11 +243,11 @@
         "“का?” आणि “कसं?”"
       ],
       "focus_en": [
-        "Simple concepts",
+        "Simple ideas",
         "Pictures and figures",
-        "Puzzles and activities",
+        "Puzzles",
         "Practice",
-        "“Why?” and “How?”"
+        "Why and how"
       ],
       "path_mr": [
         "भीती",
@@ -351,10 +351,10 @@
         "भागाकार"
       ],
       "focus2_en": [
-        "Addition",
-        "Subtraction",
-        "Multiplication",
-        "Division"
+        "Add",
+        "Subtract",
+        "Multiply",
+        "Divide"
       ],
       "hero": "",
       "focus3_h_mr": "भौमितिक संकल्पना",
@@ -407,10 +407,10 @@
       ],
       "focus_en": [
         "Letter recognition",
-        "Letter shape",
-        "Correct stroke",
-        "Ordered practice",
-        "The writing habit"
+        "Shape",
+        "Stroke",
+        "Practice",
+        "The habit"
       ],
       "path_mr": [
         "अक्षर",

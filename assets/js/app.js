@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19j',
+  VERSION: 'v19l',
   lang: 'mr',
   text: {},
   locations: null,
@@ -3063,7 +3063,10 @@ const VISION = {
         if (!avail || !need) return;
         const ratio = avail / need;
         if (ratio > 0.985 && ratio < 1.015) break;
-        const next = Math.max(0.72, Math.min(1.18, cs * ratio));
+        /* the ceiling is 1.14, not 1.18: a light slide filling its box
+           exactly is worth less than keeping its type close to the
+           crowded ones. The floor stays low so nothing ever clips. */
+        const next = Math.max(0.72, Math.min(1.14, cs * ratio));
         if (Math.abs(next - cs) < 0.004) { cs = next; break; }
         cs = next;
       }
@@ -3087,7 +3090,10 @@ const VISION = {
 
   deckHeight() {
     const w = window.innerWidth;
-    return w <= 359 ? 390 : w <= 399 ? 385 : w <= 559 ? 435 : 430;
+    /* sized so the tallest card sits at about .93 rather than .82 — the
+       gap between the most and least crowded slide is what shows, not the
+       absolute size */
+    return w <= 359 ? 410 : w <= 399 ? 400 : w <= 559 ? 460 : 460;
   },
 
   build() {

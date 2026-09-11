@@ -5704,7 +5704,11 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
    =================================================================== */
 
 .vis{
-  position:relative;width:100%;padding:calc(var(--u) * .6) 0 calc(var(--u) * .9);
+  /* in the page's flow now, at the same level as Sections 3 and 4 — it
+     used to carry its own .wrap inside the page's wrap, which charged it
+     the 16px padding twice and left it 32px narrower than the frames
+     above it */
+  position:relative;width:100%;margin:calc(var(--u) * .6) 0 calc(var(--u) * .9);
   /* the browser skips layout and paint for this section while it is
      off screen, and resumes as it approaches; the reserved height
      keeps the scrollbar honest */
@@ -5758,12 +5762,12 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      meant animating height — the only layout-affecting animation left on
      the site, and one more thing still moving when the next slide began.
      The cards fit the deck now, not the other way round. */
-  height:435px;
+  height:460px;
   margin-top:calc(var(--vu) * .1);
 }
-@media(max-width:359px){ .vis-deck{height:390px} }
-@media(min-width:360px) and (max-width:399px){ .vis-deck{height:385px} }
-@media(min-width:560px){ .vis-deck{height:430px} }
+@media(max-width:359px){ .vis-deck{height:410px} }
+@media(min-width:360px) and (max-width:399px){ .vis-deck{height:400px} }
+@media(min-width:560px){ .vis-deck{height:460px} }
 
 .vis-card{
   /* Every size in this section is a multiple of --vu, not --u. --cs used
@@ -5847,7 +5851,7 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      edge, which is why the closing tagline touched the border on slides
      1 and 4 — the two cards with room to spare. The spare height goes to
      the gaps between blocks instead, and the card sits from the top. */
-  justify-content:flex-start;gap:calc(var(--vu) * .34);
+  justify-content:flex-start;gap:calc(var(--vu) * .26);
   opacity:0;transition:opacity .22s ease;
 }
 .vis-card.is-front .vis-body{opacity:1;animation:visArrive .4s ease-out both}
@@ -5866,9 +5870,9 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 /* ---------- 1 · the title, centred, with three layers of glow ---------- */
 
 .vis-head{flex-shrink:0;text-align:center;position:relative;
-  --btw:calc(100vw - 26px - 39px - (var(--u) * 3.84))}
-@media(min-width:360px){ .vis-head{--btw:calc(100vw - 32px - 39px - (var(--u) * 3.84))} }
-@media(min-width:480px){ .vis-head{--btw:calc(100vw - 40px - 39px - (var(--u) * 3.84))} }
+  --btw:calc(100vw - 26px - 35px - (var(--u) * 3.84))}
+@media(min-width:360px){ .vis-head{--btw:calc(100vw - 32px - 35px - (var(--u) * 3.84))} }
+@media(min-width:480px){ .vis-head{--btw:calc(100vw - 40px - 35px - (var(--u) * 3.84))} }
 .vis-head::before{
   content:"";position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
   width:82%;height:150%;pointer-events:none;
@@ -5887,16 +5891,16 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      gave back 2 x .35u, so the title's fit width is re-derived:
      100vw - 2*pad - 15px - 4.64u */
   /* band each side is 1.2u + 6px, frame padding 8px, border 3px,
-     card padding .72u:  100vw - 2*pad - 39px - 3.84u */
-  --btw:calc(100vw - 26px - 39px - (var(--u) * 3.84));
+     card padding .72u, 4px of safety:  100vw - 2*pad - 35px - 3.84u */
+  --btw:calc(100vw - 26px - 35px - (var(--u) * 3.84));
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:clamp(12px, calc(var(--btw) / var(--tw, 14)), calc(var(--u) * 1.45));
   line-height:1.22;color:#FFD98A;
   letter-spacing:.2px;white-space:nowrap;
   animation:visTitleGlow 3.2s ease-in-out infinite;
 }
-@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - 39px - (var(--u) * 3.84))} }
-@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - 39px - (var(--u) * 3.84))} }
+@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - 35px - (var(--u) * 3.84))} }
+@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - 35px - (var(--u) * 3.84))} }
 /* English display type carries the letter-spacing Section 1 gives it */
 html[lang="mr"] .vis-quote{font-size:calc(var(--vu) * 1.04);line-height:1.58}
 html[lang="mr"] .vis-chip{font-size:calc(var(--vu) * .88)}
