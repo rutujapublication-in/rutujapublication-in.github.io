@@ -5720,9 +5720,13 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      site. The travelling gold-and-green ring stays — that is this
      section's identity, and it sits on the border rather than replacing
      it. */
-  border:1.5px solid #E2D6BC;border-radius:calc(var(--u) * 1.05);
+  /* Sections 3 and 4 use padding:8px and border-radius:22px in fixed
+     pixels. Section 5 used --u-based values, which gave 3px of padding
+     and a 14px radius — the frames did not line up and the corners did
+     not match. Identical now. */
+  border:1.5px solid #E2D6BC;border-radius:22px;
   background:linear-gradient(150deg,#FDFAF3,#FFFEFA);
-  padding:calc(var(--u) * .55) calc(var(--u) * .25) calc(var(--u) * .9);
+  padding:8px;
   box-shadow:0 6px 22px rgba(90,66,20,.07);
 }
 /* A light walking the frame's EDGE. The first attempt used a plain
@@ -5773,7 +5777,10 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      it with 8px clear of the frame on one side and 8px clear of the
      card on the other — touching neither */
   position:absolute;top:0;bottom:0;
-  left:calc(var(--u) * 1.2 + 16px);right:calc(var(--u) * 1.2 + 16px);
+  /* band = arrow + 6px, not + 16. Sixteen put the arrows far enough
+     from the card to read as detached and cost 20px of reading width,
+     which is what pushed some lines onto two rows. */
+  left:calc(var(--u) * 1.2 + 6px);right:calc(var(--u) * 1.2 + 6px);
   display:flex;flex-direction:column;
   border-radius:calc(var(--vu) * .95);
   padding:calc(var(--vu) * .7) calc(var(--vu) * .72) calc(var(--vu) * .6);
@@ -5859,9 +5866,9 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 /* ---------- 1 · the title, centred, with three layers of glow ---------- */
 
 .vis-head{flex-shrink:0;text-align:center;position:relative;
-  --btw:calc(100vw - 26px - 39px - (var(--u) * 4.34))}
-@media(min-width:360px){ .vis-head{--btw:calc(100vw - 32px - 39px - (var(--u) * 4.34))} }
-@media(min-width:480px){ .vis-head{--btw:calc(100vw - 40px - 39px - (var(--u) * 4.34))} }
+  --btw:calc(100vw - 26px - 39px - (var(--u) * 3.84))}
+@media(min-width:360px){ .vis-head{--btw:calc(100vw - 32px - 39px - (var(--u) * 3.84))} }
+@media(min-width:480px){ .vis-head{--btw:calc(100vw - 40px - 39px - (var(--u) * 3.84))} }
 .vis-head::before{
   content:"";position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
   width:82%;height:150%;pointer-events:none;
@@ -5879,17 +5886,17 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   /* the card lost 2 x (1.35u + 4px) to the arrow bands and the frame
      gave back 2 x .35u, so the title's fit width is re-derived:
      100vw - 2*pad - 15px - 4.64u */
-  /* band each side is 1.2u + 16px, frame pad .25u, card pad .72u:
-     100vw - 2*pad - 35px - 4.34u */
-  --btw:calc(100vw - 26px - 39px - (var(--u) * 4.34));
+  /* band each side is 1.2u + 6px, frame padding 8px, border 3px,
+     card padding .72u:  100vw - 2*pad - 39px - 3.84u */
+  --btw:calc(100vw - 26px - 39px - (var(--u) * 3.84));
   font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
   font-size:clamp(12px, calc(var(--btw) / var(--tw, 14)), calc(var(--u) * 1.45));
   line-height:1.22;color:#FFD98A;
   letter-spacing:.2px;white-space:nowrap;
   animation:visTitleGlow 3.2s ease-in-out infinite;
 }
-@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - 39px - (var(--u) * 4.34))} }
-@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - 39px - (var(--u) * 4.34))} }
+@media(min-width:360px){ .vis-title{--btw:calc(100vw - 32px - 39px - (var(--u) * 3.84))} }
+@media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - 39px - (var(--u) * 3.84))} }
 /* English display type carries the letter-spacing Section 1 gives it */
 html[lang="mr"] .vis-quote{font-size:calc(var(--vu) * 1.04);line-height:1.58}
 html[lang="mr"] .vis-chip{font-size:calc(var(--vu) * .88)}
@@ -6143,7 +6150,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 .vis-nav{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 calc(var(--u) * .35);
+  padding:0 3px;
   pointer-events:none;z-index:4;
 }
 .vis-nav > *{pointer-events:auto}

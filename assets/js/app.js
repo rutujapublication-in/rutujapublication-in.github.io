@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19i',
+  VERSION: 'v19j',
   lang: 'mr',
   text: {},
   locations: null,
@@ -3037,8 +3037,9 @@ const VISION = {
      in. A card with room scales up to fill it, so no slide leaves a gap
      under its last line either. */
   fitCards() {
-    const target = this.deckHeight();
+    const target = parseInt(this.deck.style.height, 10) || this.deckHeight();
     if (!target || !this.cards || !this.cards.length) return;
+    let worst = 0;
 
     const extent = body => {
       const kids = body.children;
@@ -3069,10 +3070,19 @@ const VISION = {
       el.style.setProperty('--cs', cs.toFixed(3));
       const over = extent(body) - body.offsetHeight;
       if (over > 2) {
+        worst = Math.max(worst, over);
         console.warn('vision: card ' + el.dataset.k + ' over by ' + Math.round(over)
           + 'px at cs ' + cs.toFixed(2));
       }
     });
+    /* Nothing may ever be cut. If a card cannot fit even at the floor,
+       the deck grows to hold it rather than the card clipping its last
+       line — a slightly taller section is always better than a sentence
+       that stops mid-word. */
+    if (worst > 2) {
+      this.deck.style.height = (target + Math.ceil(worst) + 4) + 'px';
+      requestAnimationFrame(() => this.fitCards());
+    }
   },
 
   deckHeight() {
@@ -3214,7 +3224,13 @@ const VISION = {
             this.stop();
           }
         });
-      }, { threshold: 0.01, rootMargin: '300px 0px' }).observe(this.deck);
+      /* Watch the SECTION, not the deck. .vis carries
+         content-visibility:auto, and an element inside a skipped subtree
+         is not rendered — so an observer on the deck never saw a real
+         box, fitCards was never called with real numbers, --cs stayed at
+         1 and the card overflowed. Four builds missed this. */
+      }, { threshold: 0.01, rootMargin: '300px 0px' })
+        .observe(this.deck.closest('.vis') || this.deck);
     }
 
     /* the row split depends on the viewport, so a rotation repacks */
