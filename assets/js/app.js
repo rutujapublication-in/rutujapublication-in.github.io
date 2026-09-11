@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19h',
+  VERSION: 'v19i',
   lang: 'mr',
   text: {},
   locations: null,
@@ -3056,7 +3056,10 @@ const VISION = {
         el.style.setProperty('--cs', cs.toFixed(3));
         const avail = body.offsetHeight;
         const need = extent(body);
-        if (!avail || !need) break;
+        /* zero means the section has not been laid out yet — skipped by
+           content-visibility, or measured before it was in the document.
+           Leave the card alone; the observer refits it when it is real. */
+        if (!avail || !need) return;
         const ratio = avail / need;
         if (ratio > 0.985 && ratio < 1.015) break;
         const next = Math.max(0.72, Math.min(1.18, cs * ratio));
@@ -3198,8 +3201,20 @@ const VISION = {
 
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(es => {
-        es.forEach(e => e.isIntersecting ? this.start() : this.stop());
-      }, { threshold: 0.25 }).observe(this.deck);
+        es.forEach(e => {
+          if (e.isIntersecting) {
+            /* content-visibility:auto means the browser skips layout for
+               this section while it is off screen, so offsetHeight reads
+               0 and fitCards bails, leaving every card unscaled — which
+               is why the closing line was still being cut. Refit the
+               moment the section is laid out for real. */
+            this.fitCards();
+            this.start();
+          } else {
+            this.stop();
+          }
+        });
+      }, { threshold: 0.01, rootMargin: '300px 0px' }).observe(this.deck);
     }
 
     /* the row split depends on the viewport, so a rotation repacks */

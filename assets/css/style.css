@@ -5503,7 +5503,8 @@ form.collapsed .cond{display:none}
 /* 3 — the rule spans the title rather than sitting at a fixed 110px, so
    it reads as belonging to the words above it */
 .std-frame > .hd-std .hd-rule,
-.offer-frame > .hd-std .hd-rule{margin:8px auto 10px;width:min(72%,240px)}
+.offer-frame > .hd-std .hd-rule,
+.vis-frame > .hd-std .hd-rule{margin:8px auto 10px;width:min(72%,240px)}
 /* 2 — the mark and the rule take the section's own colour. Gold here was
    left from when section 4's cards were gold; they are teal now. */
 .offer-frame > .hd-std .hd-mark{background:linear-gradient(135deg,#1DA593,#0C554C)}
@@ -5703,28 +5704,25 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
    =================================================================== */
 
 .vis{
+  position:relative;width:100%;padding:calc(var(--u) * .6) 0 calc(var(--u) * .9);
   /* the browser skips layout and paint for this section while it is
      off screen, and resumes as it approaches; the reserved height
      keeps the scrollbar honest */
   content-visibility:auto;contain-intrinsic-size:auto 560px;
-  position:relative;width:100%;padding:calc(var(--vu) * 1.05) 0 calc(var(--vu) * 1.15);
-  background:
-    radial-gradient(120% 70% at 12% 0%, rgba(247,200,107,.10) 0%, transparent 62%),
-    radial-gradient(110% 60% at 88% 100%, rgba(26,77,46,.10) 0%, transparent 60%),
-    linear-gradient(180deg,#FBF7EF 0%,#F4EFE4 100%);
-  border-top:2px solid var(--gold);
   -webkit-user-select:none;user-select:none;
 }
 .vis.hidden{display:none}
 
 .vis-frame{
   position:relative;isolation:isolate;
-  /* Sections 3 and 4 share the beige #E2D6BC. Section 5 takes the deep
-     green so it reads as its own chapter, and the ring brightens for a
-     moment whenever a card changes. */
-  border:1.5px solid #2E6B45;border-radius:calc(var(--vu) * 1.05);
-  background:linear-gradient(160deg,#FFFDF8,#FBF6EC);
-  padding:calc(var(--vu) * .68) calc(var(--vu) * .25) calc(var(--vu) * .5);
+  /* Sections 3 and 4 use a soft 1.5px border and a 150deg wash. Section 5
+     had a full-strength #2E6B45, which read as a component from another
+     site. The travelling gold-and-green ring stays — that is this
+     section's identity, and it sits on the border rather than replacing
+     it. */
+  border:1.5px solid #E2D6BC;border-radius:calc(var(--u) * 1.05);
+  background:linear-gradient(150deg,#FDFAF3,#FFFEFA);
+  padding:calc(var(--u) * .55) calc(var(--u) * .25) calc(var(--u) * .9);
   box-shadow:0 6px 22px rgba(90,66,20,.07);
 }
 /* A light walking the frame's EDGE. The first attempt used a plain
@@ -6138,10 +6136,14 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 /* inset:0 makes the nav the same box as the card, so align-items:center
    puts the arrows exactly halfway between the card's top and bottom
    borders. The padding centres them across the band. */
+/* The arrows were anchored to the deck, which is the full frame width —
+   so they sat 8px inside the frame but twenty further from the card, and
+   read as detached from the thing they control. They are now inset to
+   the card's own edges, 8px clear of it on the inside. */
 .vis-nav{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 8px;
+  padding:0 calc(var(--u) * .35);
   pointer-events:none;z-index:4;
 }
 .vis-nav > *{pointer-events:auto}
