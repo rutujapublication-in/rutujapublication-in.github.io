@@ -1,5 +1,5 @@
 {
-  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds. path_split_mr / path_split_en set how that language's chain breaks across rows, e.g. [3,2]; leave empty for one row. The two languages wrap at different points, so they are set separately.",
+  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds. path_split_mr / path_split_en set how that language's chain breaks across rows, e.g. [3,2]; leave empty for one row. The two languages wrap at different points, so they are set separately. inline:true lays each focus group out as one line — heading, then its items — instead of a heading over a row of boxes.",
   "slides": [
     {
       "n": 1,
@@ -70,7 +70,8 @@
       "path_split_en": [
         3,
         2
-      ]
+      ],
+      "inline": false
     },
     {
       "n": 2,
@@ -138,14 +139,12 @@
       "span_mr": "अक्षरापासून शब्दसंपदेपर्यंत",
       "span_en": "From letters to a working vocabulary",
       "sign": false,
-      "path_split_mr": [
-        2,
-        2
-      ],
+      "path_split_mr": [],
       "path_split_en": [
         2,
         2
-      ]
+      ],
+      "inline": false
     },
     {
       "n": 3,
@@ -161,6 +160,7 @@
       "focus_h_mr": "पुस्तकाचा केंद्रबिंदू",
       "focus_h_en": "What the book centres on",
       "focus_mr": [
+        "PHONICS",
         "ध्वनी-जागरूकता",
         "अक्षर–ध्वनी",
         "उच्चार",
@@ -169,10 +169,11 @@
         "व्याकरण"
       ],
       "focus_en": [
-        "Sound awareness",
+        "PHONICS",
+        "Sounds",
         "Letter–sound",
         "Speech",
-        "Word building",
+        "Words",
         "Reading",
         "Grammar"
       ],
@@ -199,7 +200,7 @@
       "q_en": "",
       "path_h_mr": "फोनिक्सची वाटचाल",
       "path_h_en": "How phonics moves",
-      "hero": "word",
+      "hero": "",
       "focus2_h_mr": "",
       "focus2_h_en": "",
       "focus2_mr": [],
@@ -212,15 +213,19 @@
       "focus3_en": [],
       "focus4_mr": [],
       "focus4_en": [],
-      "hero_mr": "PHONICS",
-      "hero_en": "PHONICS",
+      "hero_mr": "",
+      "hero_en": "",
       "out_mid_mr": "",
       "out_mid_en": "",
       "span_mr": "ध्वनीपासून वाचन व व्याकरणापर्यंत",
       "span_en": "From sound to reading and grammar",
       "sign": false,
       "path_split_mr": [],
-      "path_split_en": []
+      "path_split_en": [
+        3,
+        2
+      ],
+      "inline": false
     },
     {
       "n": 4,
@@ -296,7 +301,8 @@
       "path_split_en": [
         3,
         2
-      ]
+      ],
+      "inline": false
     },
     {
       "n": 5,
@@ -310,16 +316,16 @@
       "view_mr": "गणितातील पायाभूत संख्याज्ञान आणि संकल्पना सुरुवातीपासून स्पष्ट झाल्या, तर पुढील गणित अधिक सहज शिकता येते — म्हणून समज, विचार आणि नियमित सरावावर भर.",
       "view_en": "Get number sense and the early ideas clear, and everything after them is easier. So this book works on understanding, on thinking, and on steady practice.",
       "focus_h_mr": "संख्याज्ञान",
-      "focus_h_en": "Number sense",
+      "focus_h_en": "Numbers",
       "focus_mr": [
         "संख्या",
         "स्थानिक किंमत",
         "विस्तारित रूप"
       ],
       "focus_en": [
-        "Number",
-        "Place value",
-        "Expanded form"
+        "number",
+        "place value",
+        "expanded form"
       ],
       "path_mr": [
         "संकल्पना",
@@ -343,7 +349,7 @@
       "path_h_mr": "",
       "path_h_en": "",
       "focus2_h_mr": "गणिती क्रिया",
-      "focus2_h_en": "The four operations",
+      "focus2_h_en": "Operations",
       "focus2_mr": [
         "बेरीज",
         "वजाबाकी",
@@ -351,14 +357,14 @@
         "भागाकार"
       ],
       "focus2_en": [
-        "Add",
-        "Subtract",
-        "Multiply",
-        "Divide"
+        "add",
+        "subtract",
+        "multiply",
+        "divide"
       ],
       "hero": "",
       "focus3_h_mr": "भौमितिक संकल्पना",
-      "focus3_h_en": "Geometric ideas",
+      "focus3_h_en": "Geometry",
       "focus4_h_mr": "वेळ · नाणी · मापन · अपूर्णांक",
       "focus4_h_en": "Time · money · measure · fractions",
       "focus3_mr": [
@@ -368,10 +374,10 @@
         "चित्रालेख"
       ],
       "focus3_en": [
-        "Shape",
-        "Angle",
-        "Symmetry",
-        "Pictograph"
+        "shape",
+        "angle",
+        "symmetry",
+        "pictograph"
       ],
       "focus4_mr": [],
       "focus4_en": [],
@@ -383,7 +389,11 @@
       "span_en": "From number to fractions and measure",
       "sign": false,
       "path_split_mr": [],
-      "path_split_en": []
+      "path_split_en": [
+        2,
+        2
+      ],
+      "inline": true
     },
     {
       "n": 6,
@@ -428,8 +438,8 @@
       ],
       "out_mr": "सुंदर अक्षर",
       "out_en": "Beautiful handwriting",
-      "out2_mr": "अक्षरलेखन ही एक कला आहे.",
-      "out2_en": "Letter-writing is an art.",
+      "out2_mr": "कारण अक्षरलेखन ही एक कला आहे.",
+      "out2_en": "because handwriting is an art.",
       "list": false,
       "q_mr": "",
       "q_en": "",
@@ -448,8 +458,8 @@
       "focus3_en": [],
       "focus4_mr": [],
       "focus4_en": [],
-      "out_mid_mr": "कारण",
-      "out_mid_en": "because",
+      "out_mid_mr": "",
+      "out_mid_en": "",
       "hero_mr": "",
       "hero_en": "",
       "span_mr": "अक्षरओळखीपासून वळणदार हस्ताक्षरापर्यंत",
@@ -459,7 +469,8 @@
       "path_split_en": [
         3,
         2
-      ]
+      ],
+      "inline": false
     }
   ]
 }

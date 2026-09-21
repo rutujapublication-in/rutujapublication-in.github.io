@@ -33,7 +33,7 @@
      64 KB over the wire, not 270. The whole blocking payload is 136 KB —
      about 1.1s on rural 4G. That is worth waiting for in exchange for a
      page that is correct the moment it appears. -->
-<link rel="stylesheet" href="assets/css/style.css?v=19l">
+<link rel="stylesheet" href="assets/css/style.css?v=19m">
 </head>
 <body class="booting">
 
@@ -289,10 +289,16 @@
               <p class="hd-c-sub" data-t="vis_sub"></p>
               <span class="hd-rule" aria-hidden="true"></span>
             </div>
-            <div class="vis-deck" id="visDeck"></div>
-            <div class="vis-nav">
-              <button class="vis-arrow vis-prev" id="visPrev" aria-label="prev"></button>
-              <button class="vis-arrow vis-next" id="visNext" aria-label="next"></button>
+            <!-- the stage is exactly the deck's box, so the arrows are placed
+                 against the card and centred on it — not against the whole
+                 frame, heading included, where they sat 25px from the card
+                 and 35px above its middle -->
+            <div class="vis-stage">
+              <div class="vis-deck" id="visDeck"></div>
+              <div class="vis-nav">
+                <button class="vis-arrow vis-prev" id="visPrev" aria-label="prev"></button>
+                <button class="vis-arrow vis-next" id="visNext" aria-label="next"></button>
+              </div>
             </div>
           </div>
       </div>
@@ -406,6 +412,6 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=19l"></script>
+<script src="assets/js/app.js?v=19m"></script>
 </body>
 </html>

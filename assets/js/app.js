@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19l',
+  VERSION: 'v19m',
   lang: 'mr',
   text: {},
   locations: null,
@@ -2859,50 +2859,12 @@ const VISION = {
     return d * fs * 0.415 + (s.length - d) * fs * (mr ? 0.415 : 0.39);
   },
 
-  /* Rows for the boxes. The count comes from the rule — two or fewer on
-     one row, three to five on two, six or more on three — but the split
-     point is chosen by width so no row overflows, and a row is added only
-     when nothing else will fit. Document order is never changed. */
-  rows(items, strip, fs, pad, gap, mr) {
-    const wds = items.map(x => this.wid(x, fs, mr) + pad);
-    const n = items.length;
-    /* Your rule: one row whenever it fits, and only then fall back on the
-       count. Built count-first it forced every three-to-five item group
-       onto two rows even when all of them fit on one — six wasted rows
-       across slides 2, 3 and 5. */
-    const one = wds.reduce((a, b) => a + b, 0) + (n - 1) * gap;
-    const target = one <= strip ? 1 : (n <= 5 ? 2 : 3);
-    for (let R = target; R <= n; R++) {
-      let best = null;
-      const walk = (at, left, rows) => {
-        if (left === 1) {
-          const all = rows.concat([wds.slice(at)]);
-          const worst = Math.max(...all.map(r => r.reduce((a, b) => a + b, 0) + (r.length - 1) * gap));
-          if (!best || worst < best.w) best = { w: worst, shape: all.map(r => r.length) };
-          return;
-        }
-        for (let k = 1; k <= n - at - left + 1; k++) walk(at + k, left - 1, rows.concat([wds.slice(at, at + k)]));
-      };
-      walk(0, R, []);
-      if (best && best.w <= strip) return best.shape;
-    }
-    return items.map(() => 1);
-  },
-
-  /* the strip a box row has to live in, at this viewport */
-  strip() {
-    const u = Math.max(13, Math.min(16, window.innerWidth * 0.037));
-    const pad = window.innerWidth <= 359 ? 13 : window.innerWidth <= 479 ? 16 : 20;
-    return window.innerWidth - 2 * pad - 2 * Math.round(u * 0.8) - 3 - 2 * Math.round(u * 0.85);
-  },
-  u() { return Math.max(13, Math.min(16, window.innerWidth * 0.037)); },
 
   card(s, mr) {
     const t = k => this.app.t(k);
     const g = k => (mr ? s[k + '_mr'] : s[k + '_en']) || '';
     const L = k => (mr ? s[k + '_mr'] : s[k + '_en']) || [];
     const esc = x => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-    const U = this.u();
 
     /* the focus block: pairs on the overview slides, boxes elsewhere */
     let focus;
@@ -2922,18 +2884,29 @@ const VISION = {
                   b.length > 2 ? `<b>${esc(b.slice(2).join(' — '))}</b>` : ''}
                 </div>`;
       }).join('') + `</div>`;
+    } else if (s.inline) {
+      /* Each group on one line — heading, then its items — instead of a
+         heading above a row of boxes. On गणितमित्र भाग २ the stacked form
+         took seven rows and made it the tallest card by a wide margin,
+         which set the height every other slide inherited. */
+      focus = `<div class="vis-lines">` + ['focus', 'focus2', 'focus3', 'focus4'].map(k => {
+        const head = g(k + '_h'), items = L(k);
+        if (!head && !items.length) return '';
+        return `<p class="vis-line"><b>${esc(head)}</b>${
+          items.length ? `<i>:</i><span>${items.map(esc).join(' · ')}</span>` : ''}</p>`;
+      }).join('') + `</div>`;
     } else {
-      focus = this.boxes(L('focus'), esc, U, mr);
+      focus = this.boxes(L('focus'), esc);
     }
     /* a second labelled group, where one flat row of six would hide that
        the items belong to two different domains */
-    const more = ['focus2', 'focus3', 'focus4'].map(k => {
+    const more = s.inline ? '' : ['focus2', 'focus3', 'focus4'].map(k => {
       const items = L(k), head = esc(g(k + '_h'));
       if (!items.length && !head) return '';
       /* a group whose heading already names its own items needs no chips
          under it — slide 5's fourth said the same four words twice */
       return `<p class="vis-lab vis-lab-sub"><span>${head}</span></p>`
-        + (items.length ? this.boxes(items, esc, U, mr) : '');
+        + (items.length ? this.boxes(items, esc) : '');
     }).join('');
 
     /* The chain breaks where the slide says it should, not where the
@@ -2969,7 +2942,7 @@ const VISION = {
         <p class="vis-lab"><span>${t('vis_view')}</span></p>
         <blockquote class="vis-quote">${esc(g('view'))}</blockquote>
 
-        <p class="vis-lab"><span>${esc(g('focus_h')) || t('vis_focus')}</span></p>
+        ${s.inline ? '' : `<p class="vis-lab"><span>${esc(g('focus_h')) || t('vis_focus')}</span></p>`}
         ${focus}
         ${more}
 
@@ -2985,16 +2958,15 @@ const VISION = {
       </div>`;
   },
 
-  /* one group of boxes: packed into rows by width, tones alternating */
-  boxes(items, esc, U, mr) {
-    const shape = this.rows(items, this.strip(), U * 0.84,
-      2 * Math.round(U * 0.48) + 2, Math.round(U * 0.3), mr);
-    let at = 0;
-    return `<div class="vis-chips">` + shape.map(n => {
-      const row = items.slice(at, at + n); at += n;
-      return `<div class="vis-row">` + row.map((c, k) =>
-        `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join('') + `</div>`;
-    }).join('') + `</div>`;
+  /* One group of boxes. They used to be packed into rows by an estimated
+     text width, which was wrong for real Devanagari — slide 3 was predicted
+     at two rows of three and rendered three rows of two, and slide 2's
+     boxes squeezed until their words broke onto two lines inside the frame.
+     The browser now wraps them by their real widths, with balanced rows,
+     and a box's own text never wraps. */
+  boxes(items, esc) {
+    return `<div class="vis-chips">` + items.map((c, k) =>
+      `<span class="vis-chip ${(k % 2) ? 'vc-b' : 'vc-a'}">${esc(c)}</span>`).join(' ') + `</div>`;
   },
 
   /* The cards are built once. An advance only swaps class names, because
@@ -3009,36 +2981,120 @@ const VISION = {
               style="--base:${s.base};--cs:1">${this.card(s, mr)}</article>`;
   },
 
-  /* Every card is the same height. A card with less to say scales its
-     body up to fill it; a crowded one scales down. One number per card,
-     measured — the same discipline as the title clamp.
+  /* Every card is the same height, and none of them may clip, leave a
+     band of empty space at the bottom, or drift far from the others in
+     type size. Three steps, all measured in the browser — never estimated,
+     because every estimate so far has been wrong for real Devanagari:
 
-     It has to be measured rather than calculated: scaling the chips
-     changes how many fit a row, which changes the height, which changes
-     the scale. So the card is laid out at 1, measured, scaled, and
-     measured again. Three passes at most, and only when the deck is
-     built — never per frame.
+     1. Lines that must stay on one line (titles, subtitle, the inline
+        rows, the two closing lines) shrink just enough to fit their width.
+     2. The card scales between .72 and 1.06 to meet the deck. The ceiling
+        is low on purpose: a light slide should not read 14% larger than a
+        busy one.
+     3. Whatever height is still spare is spread evenly between the blocks,
+        so the last line always sits the same distance above the bottom
+        edge. The gap under a section heading is held constant — only the
+        gaps between blocks open up.
 
-     --cs reaches the body only. The title has its own clamp solved to the
-     exact width available; multiplying it would push a nowrap title past
-     a card that clips, and it would vanish without a trace. */
-  /* Fit each card's body to the box it lives in.
+     Positions come from offsetTop / offsetHeight, which ignore transforms
+     (five of six cards are scaled when measured) and include margins. */
+  fitLines(el) {
+    /* The text is measured with a Range, not scrollWidth: the gold sweep
+       moving across each title and heading widens scrollWidth wherever it
+       happens to be, which reported clipping that was not there and would
+       have shrunk titles at random. A Range covers only the words. */
+    el.querySelectorAll('.vis-title, .vis-sub, .vis-span, .vis-line, .vis-prow, .vis-out b, .vis-out i')
+      .forEach(t => {
+        const held = t.classList.contains('vis-prow') ? [...t.querySelectorAll('.vis-step')] : [t];
+        held.forEach(h => { h.style.fontSize = ''; });
+        /* Measured and corrected up to four times: letter-spacing and the
+           margins between a title and its bracket are fixed pixels that do
+           not shrink with the type, so one proportional step undershoots
+           by two or three pixels and the line still pokes past the edge. */
+        for (let pass = 0; pass < 4; pass++) {
+          const r = document.createRange(); r.selectNodeContents(t);
+          const tb = t.getBoundingClientRect(), xb = r.getBoundingClientRect();
+          if (!tb.width || !xb.width) return;
+          /* the ratio of two rects taken under the same transform is true
+             even on a card that is scaled while it waits behind the front */
+          const k = tb.width / (t.offsetWidth || tb.width);
+          const cs = getComputedStyle(t);
+          const left = tb.left + (parseFloat(cs.paddingLeft) || 0) * k;
+          const right = tb.right - (parseFloat(cs.paddingRight) || 0) * k;
+          const need = Math.max(xb.right, right) - Math.min(xb.left, left);
+          const avail = right - left;
+          if (need <= avail + 0.5) return;
+          const f = avail / need * 0.985;
+          held.forEach(h => {
+            h.style.fontSize = (parseFloat(getComputedStyle(h).fontSize) * f).toFixed(2) + 'px';
+          });
+        }
+      });
+  },
 
-     Two wrong measurements before this one. body.scrollHeight ignores the
-     last child's margin and, on a flex column, often does not grow at all
-     when a flex item overflows — so a clipped card measured as fitting.
-     getBoundingClientRect fixed that but introduced a worse fault: it
-     returns the TRANSFORMED box, and five of the six cards are scaled
-     when they are measured — .97, .94, .99 — so every card was fitted
-     against a height that was never real.
+  /* Box rows from real widths. The fewest rows the boxes need, then the
+     most even split into that many — so five boxes read 3 + 2, not 4 + 1,
+     and a box never squeezes until its words break inside the frame. */
+  packChips(el) {
+    el.querySelectorAll('.vis-chips').forEach(g => {
+      g.querySelectorAll('.vis-brk').forEach(b => b.remove());
+      const chips = [...g.querySelectorAll('.vis-chip')];
+      if (chips.length < 2) return;
+      const cap = g.clientWidth;
+      const widths = () => chips.map(c => {
+        const m = getComputedStyle(c);
+        return c.offsetWidth + (parseFloat(m.marginLeft) || 0) + (parseFloat(m.marginRight) || 0);
+      });
+      const count = w => {
+        let rows = 1, run = 0;
+        w.forEach(x => { if (run && run + x > cap) { rows++; run = x; } else run += x; });
+        return rows;
+      };
+      /* No group may take more than two rows. Where one would at the
+         narrowest widths, only that group's boxes shrink — by as little as
+         it takes, never below .82 — rather than cutting anyone's words. */
+      g.style.removeProperty('--cz');
+      let w = widths(), rows = count(w), cz = 1;
+      /* the widest row of the best two-row split sets the shrink — one
+         decisive step, not creeping by 1%: text widths move in whole
+         pixels, so tiny steps can leave the widths unchanged */
+      const bestTwo = x => {
+        let b = Infinity;
+        for (let k = 1; k < x.length; k++) {
+          const a = x.slice(0, k).reduce((p, q) => p + q, 0), c = x.slice(k).reduce((p, q) => p + q, 0);
+          b = Math.min(b, Math.max(a, c));
+        }
+        return b;
+      };
+      for (let pass = 0; pass < 6 && rows > 2 && cz > 0.82; pass++) {
+        cz = Math.max(0.82, cz * Math.min(0.97, cap / bestTwo(w) * 0.98));
+        g.style.setProperty('--cz', cz.toFixed(3));
+        w = widths(); rows = count(w);
+      }
+      const n = w.length;
+      if (rows === 1) return;
+      let best = null;
+      const walk = (at, left, cuts) => {
+        if (left === 1) {
+          const all = cuts.concat([n]); let prev = 0, worst = 0;
+          for (const c of all) { worst = Math.max(worst, w.slice(prev, c).reduce((a, b) => a + b, 0)); prev = c; }
+          if (worst <= cap && (!best || worst < best.worst)) best = { worst, cuts };
+          return;
+        }
+        for (let k = at + 1; k <= n - left + 1; k++) walk(k, left - 1, cuts.concat([k]));
+      };
+      walk(0, rows, []);
+      if (!best) return;
+      best.cuts.forEach(c => {
+        const b = document.createElement('i'); b.className = 'vis-brk';
+        g.insertBefore(b, chips[c]);
+      });
+    });
+  },
 
-     offsetTop and offsetHeight are untransformed and include margins in
-     the child's own position, so they are true whatever state the card is
-     in. A card with room scales up to fill it, so no slide leaves a gap
-     under its last line either. */
   fitCards() {
-    const target = parseInt(this.deck.style.height, 10) || this.deckHeight();
-    if (!target || !this.cards || !this.cards.length) return;
+    if (!this.cards || !this.cards.length) return;
+    const measuring = !!window.VIS_MEASURE;
     let worst = 0;
 
     const extent = body => {
@@ -3049,28 +3105,57 @@ const VISION = {
       return (last.offsetTop - body.offsetTop) + last.offsetHeight + mb;
     };
 
+    /* The deck sizes itself to the tallest card, measured here in the
+       visitor's own browser with the fonts it actually has — at any width,
+       in either language. Heights fixed in advance fit the phones they were
+       measured on and left dead space on wider screens. */
+    if (!measuring) {
+      let tallest = 0, pad = 0;
+      for (const el of this.cards) {
+        const body = el.querySelector('.vis-body');
+        if (!body) continue;
+        el.style.setProperty('--cs', '1'); el.style.setProperty('--xg', '0px');
+        this.packChips(el); this.fitLines(el);
+        const need = extent(body);
+        if (!need || !body.offsetHeight) return;
+        tallest = Math.max(tallest, need);
+        pad = el.offsetHeight - body.offsetHeight;
+      }
+      this.deck.style.height = Math.ceil(tallest + pad + 2) + 'px';
+    }
+    const target = parseInt(this.deck.style.height, 10) || this.deckHeight();
+
     this.cards.forEach(el => {
       const body = el.querySelector('.vis-body');
       if (!body) return;
-      let cs = parseFloat(el.style.getPropertyValue('--cs')) || 1;
-      for (let pass = 0; pass < 5; pass++) {
+      el.style.setProperty('--xg', '0px');
+      let cs = 1;
+      for (let pass = 0; pass < 6; pass++) {
         el.style.setProperty('--cs', cs.toFixed(3));
-        const avail = body.offsetHeight;
-        const need = extent(body);
+        this.packChips(el);
+        this.fitLines(el);
+        const avail = body.offsetHeight, need = extent(body);
         /* zero means the section has not been laid out yet — skipped by
-           content-visibility, or measured before it was in the document.
-           Leave the card alone; the observer refits it when it is real. */
+           content-visibility. The observer refits it when it is real. */
         if (!avail || !need) return;
+        if (measuring) break;
         const ratio = avail / need;
-        if (ratio > 0.985 && ratio < 1.015) break;
-        /* the ceiling is 1.14, not 1.18: a light slide filling its box
-           exactly is worth less than keeping its type close to the
-           crowded ones. The floor stays low so nothing ever clips. */
-        const next = Math.max(0.72, Math.min(1.14, cs * ratio));
-        if (Math.abs(next - cs) < 0.004) { cs = next; break; }
+        if (ratio > 0.99 && ratio < 1.01) break;
+        const next = Math.max(0.72, Math.min(1.06, cs * ratio));
+        if (Math.abs(next - cs) < 0.003) { cs = next; break; }
         cs = next;
       }
       el.style.setProperty('--cs', cs.toFixed(3));
+      this.packChips(el);
+      this.fitLines(el);
+
+      const avail = body.offsetHeight, need = extent(body);
+      el.dataset.natural = need;
+      if (!measuring && avail > need + 1) {
+        const labels = body.querySelectorAll(':scope > .vis-lab').length;
+        const slots = Math.max(1, body.children.length - 1 - labels);
+        el.style.setProperty('--xg', Math.min(14, (avail - need) / slots).toFixed(2) + 'px');
+      }
       const over = extent(body) - body.offsetHeight;
       if (over > 2) {
         worst = Math.max(worst, over);
@@ -3078,23 +3163,25 @@ const VISION = {
           + 'px at cs ' + cs.toFixed(2));
       }
     });
-    /* Nothing may ever be cut. If a card cannot fit even at the floor,
-       the deck grows to hold it rather than the card clipping its last
-       line — a slightly taller section is always better than a sentence
-       that stops mid-word. */
-    if (worst > 2) {
+    /* Nothing may ever be cut. If a card still cannot fit, the deck grows
+       to hold it rather than clipping its last line. With the heights
+       below this should never fire; the console says so if it does. */
+    if (!measuring && worst > 2) {
       this.deck.style.height = (target + Math.ceil(worst) + 4) + 'px';
       requestAnimationFrame(() => this.fitCards());
     }
   },
 
+  /* Used only for the first paint, before fitCards has measured: the
+     tallest slide's height per language and width band, taken in Chrome
+     with the real fonts. fitCards then sets the exact height itself. */
   deckHeight() {
     const w = window.innerWidth;
-    /* sized so the tallest card sits at about .93 rather than .82 — the
-       gap between the most and least crowded slide is what shows, not the
-       absolute size */
-    return w <= 359 ? 410 : w <= 399 ? 400 : w <= 559 ? 460 : 460;
+    const H = document.documentElement.lang === 'en' ? this.H.en : this.H.mr;
+    return w <= 359 ? H[0] : w <= 399 ? H[1] : w <= 559 ? H[2] : H[3];
   },
+  H: { mr: [366, 355, 392, 399], en: [419, 390, 433, 442] },
+
 
   build() {
     const mr = this.app.lang === 'mr';

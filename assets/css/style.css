@@ -5505,6 +5505,11 @@ form.collapsed .cond{display:none}
 .std-frame > .hd-std .hd-rule,
 .offer-frame > .hd-std .hd-rule,
 .vis-frame > .hd-std .hd-rule{margin:8px auto 10px;width:min(72%,240px)}
+/* The shared hdRule breathes to 1.7x. At 222px that is 377px inside a
+   309px frame — the underline ran past the frame at the peak of every
+   breath, which is the 'goes outside the box' fault. Section 5's rule
+   breathes to 1.3x, so at its widest it still sits inside. */
+.vis-frame > .hd-std .hd-rule{animation-name:visRule}
 /* 2 — the mark and the rule take the section's own colour. Gold here was
    left from when section 4's cards were gold; they are teal now. */
 .offer-frame > .hd-std .hd-mark{background:linear-gradient(135deg,#1DA593,#0C554C)}
@@ -5762,12 +5767,13 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
      meant animating height — the only layout-affecting animation left on
      the site, and one more thing still moving when the next slide began.
      The cards fit the deck now, not the other way round. */
-  height:460px;
-  margin-top:calc(var(--vu) * .1);
+  height:392px;
 }
-@media(max-width:359px){ .vis-deck{height:410px} }
-@media(min-width:360px) and (max-width:399px){ .vis-deck{height:400px} }
-@media(min-width:560px){ .vis-deck{height:460px} }
+/* exactly the deck's box, so the arrows are placed against the card */
+.vis-stage{position:relative;margin-top:calc(var(--u) * .1)}
+@media(max-width:359px){ .vis-deck{height:366px} }
+@media(min-width:360px) and (max-width:399px){ .vis-deck{height:355px} }
+@media(min-width:560px){ .vis-deck{height:399px} }
 
 .vis-card{
   /* Every size in this section is a multiple of --vu, not --u. --cs used
@@ -5846,12 +5852,11 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
   /* the card's measured scale reaches the body only; the title has its
      own clamp solved to the exact width available and multiplying it
      would push a nowrap title past a card that clips */
-  font-size:calc(1em);
   /* space-between pushed the last block hard against the bottom padding
      edge, which is why the closing tagline touched the border on slides
      1 and 4 — the two cards with room to spare. The spare height goes to
      the gaps between blocks instead, and the card sits from the top. */
-  justify-content:flex-start;gap:calc(var(--vu) * .26);
+  justify-content:flex-start;gap:calc(var(--vu) * .26 + var(--xg, 0px));
   opacity:0;transition:opacity .22s ease;
 }
 .vis-card.is-front .vis-body{opacity:1;animation:visArrive .4s ease-out both}
@@ -5903,7 +5908,7 @@ html[lang="en"] #offerGrid .offer-d{font-size:calc(var(--u) * .75)}
 @media(min-width:480px){ .vis-title{--btw:calc(100vw - 40px - 35px - (var(--u) * 3.84))} }
 /* English display type carries the letter-spacing Section 1 gives it */
 html[lang="mr"] .vis-quote{font-size:calc(var(--vu) * 1.04);line-height:1.58}
-html[lang="mr"] .vis-chip{font-size:calc(var(--vu) * .88)}
+html[lang="mr"] .vis-chip{font-size:calc(var(--vu) * .88 * var(--cz, 1))}
 html[lang="mr"] .vis-step{font-size:calc(var(--vu) * .88)}
 html[lang="mr"] .vis-pair b{font-size:calc(var(--vu) * .88)}
 /* No word splits in Section 5, in either language. English hyphenates
@@ -5949,7 +5954,11 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 /* ---------- 2 · part headings, the title's sweep, at full gold ---------- */
 
 .vis-lab{
-  margin:calc(var(--vu) * .42) 0 calc(var(--vu) * .16);
+  /* a heading sits about 4px above its own content. The negative bottom
+     margin cancels the block gap under it, including any spare height the
+     fitter spreads, so the heading never drifts away from what it heads */
+  margin:calc(var(--vu) * .24) 0 calc(var(--vu) * -.16 - var(--xg, 0px));
+  line-height:1.2;
   font-family:Mukta,system-ui,sans-serif;font-weight:800;
   font-size:calc(var(--vu) * .8);letter-spacing:.8px;
   color:#FFDD95;
@@ -5988,18 +5997,27 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 
 /* ---------- 4 and 5 · the boxes ---------- */
 
-.vis-chips{display:flex;flex-direction:column;gap:calc(var(--vu) * .24)}
-.vis-row{
-  display:flex;justify-content:center;align-items:stretch;
-  gap:calc(var(--vu) * .3);
+.vis-chips{
+  /* Rows are decided in app.js from each box's real measured width —
+     text-wrap:balance was tried and gave three rows where two fit. The
+     browser wraps only as a fallback; .vis-brk forces a row break where
+     the packer chose one. */
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+  margin:calc(var(--vu) * -.12) calc(var(--vu) * -.15);
 }
+.vis-brk{flex-basis:100%;height:0;margin:0;padding:0;border:0}
 .vis-chip{
   position:relative;isolation:isolate;z-index:0;
   display:inline-flex;align-items:center;justify-content:center;text-align:center;
   font-family:Mukta,system-ui,sans-serif;font-weight:700;
-  font-size:calc(var(--vu) * .84);line-height:1.24;
+  /* --cz is set by the packer on a group that would otherwise need a
+     third row at the narrowest widths; it is 1 everywhere else */
+  font-size:calc(var(--vu) * .84 * var(--cz, 1));line-height:1.24;
   border-radius:999px;
   padding:calc(var(--vu) * .18) calc(var(--vu) * .48);
+  /* a box's own words never break — it moves to the next row instead */
+  white-space:nowrap;vertical-align:middle;
+  margin:calc(var(--vu) * .12) calc(var(--vu) * .15);
   animation:visPop .42s cubic-bezier(.34,1.5,.64,1) both;
 }
 /* the two tones, alternating along each row */
@@ -6019,11 +6037,6 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
    turning behind text a reader is trying to read were the noisiest thing
    on the card and the most expensive — a conic gradient re-rasterises
    every frame. The chips keep their two tones and their gold hairline. */
-.vis-chip.vc-b::before{
-  background:conic-gradient(from var(--vang),
-    transparent 0deg, var(--gold) 60deg,
-    transparent 140deg, transparent 360deg);
-}
 
 /* the overview slides carry subject — book pairs, not keywords */
 .vis-pairs{display:flex;flex-direction:column;gap:calc(var(--vu) * .16)}
@@ -6080,18 +6093,20 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 /* one row of the chain. A declared split keeps slide 1 at 3 + 2 at every
    width — left to itself it lands 3+2 at 360px and 4+1 at 412px. */
 .vis-prow{
-  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  /* a chain row never wraps: the split in vision.json is the layout, and
+     a row that is slightly too wide shrinks its words to fit instead */
+  display:flex;flex-wrap:nowrap;white-space:nowrap;align-items:center;justify-content:center;
   gap:calc(var(--vu) * .1);
 }
 /* a continuing row opens with an arrow, so the chain reads unbroken */
 .vis-prow-c > .vis-step:first-child::before{
   content:"";display:inline-block;flex-shrink:0;
-  width:0;height:0;margin:0 calc(var(--vu) * .22) 0 0;
+  width:0;height:0;margin:0 calc(var(--vu) * .44) 0 0;
   border-left:calc(var(--vu) * .38) solid var(--pa);
   border-top:calc(var(--vu) * .22) solid transparent;
   border-bottom:calc(var(--vu) * .22) solid transparent;
   filter:drop-shadow(0 0 3px var(--pa));
-  animation:wpPunch 2.6s cubic-bezier(.2,0,.1,1) var(--d, .66s) infinite;
+  animation:visPunch 2.6s cubic-bezier(.2,0,.1,1) var(--d, .66s) infinite;
 }
 .vis-step{
   position:relative;display:inline-flex;align-items:center;
@@ -6107,33 +6122,36 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
    absent. */
 .vis-step + .vis-step::before{
   content:"";display:inline-block;flex-shrink:0;
-  width:0;height:0;margin:0 calc(var(--vu) * .22) 0 calc(var(--vu) * .22);
+  width:0;height:0;margin:0 calc(var(--vu) * .44) 0 calc(var(--vu) * .3);
   border-left:calc(var(--vu) * .38) solid var(--pa);
   border-top:calc(var(--vu) * .22) solid transparent;
   border-bottom:calc(var(--vu) * .22) solid transparent;
   filter:drop-shadow(0 0 3px var(--pa));
-  animation:wpPunch 2.6s cubic-bezier(.2,0,.1,1) var(--d, 0s) infinite;
+  animation:visPunch 2.6s cubic-bezier(.2,0,.1,1) var(--d, 0s) infinite;
 }
 
 /* ---------- 8 · the outcome, evenly spaced between rule and edge ---------- */
 
 .vis-out{
   /* the closing line can never reach the card's border */
-  margin-top:calc(var(--vu) * .42);
-  margin-bottom:calc(var(--vu) * .55);
-  padding-top:calc(var(--vu) * .42);
+  margin-top:calc(var(--vu) * .3);
+  /* the fixed clearance under the last line — the same on every slide */
+  margin-bottom:calc(var(--vu) * .15);
+  padding-top:calc(var(--vu) * .36);
   text-align:center;
   border-top:1px solid rgba(247,200,107,.3);
 }
 .vis-out b{
   display:block;font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;
   font-size:calc(var(--vu) * 1.25);line-height:1.24;color:var(--gold);
+  white-space:nowrap;
   animation:factPulseGold 4.4s ease-in-out infinite;
 }
 .vis-out i{
   display:block;margin-top:calc(var(--vu) * .14);
   font-family:Mukta,system-ui,sans-serif;font-style:normal;font-weight:700;
   font-size:calc(var(--vu) * 1.02);line-height:1.28;color:rgba(255,255,255,.9);
+  white-space:nowrap;
 }
 
 
@@ -6261,9 +6279,6 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--vu) * 1.1)}
 .vis-card.is-front .vis-lab::before{animation:hdGlow 2.4s ease-in-out infinite, visLand .5s ease-out .06s both}
 .vis-card.is-front .vis-lab{animation:visLabGlow 2.4s ease-in-out infinite, visLand .5s ease-out .08s both}
 .vis-card.is-front .vis-quote{animation:visArrive .5s ease-out .14s both}
-.vis-card.is-front .vis-row:nth-child(1) .vis-chip{animation-delay:.22s}
-.vis-card.is-front .vis-row:nth-child(2) .vis-chip{animation-delay:.28s}
-.vis-card.is-front .vis-row:nth-child(3) .vis-chip{animation-delay:.34s}
 .vis-card.is-front .vis-pair:nth-child(1){animation-delay:.22s}
 .vis-card.is-front .vis-pair:nth-child(2){animation-delay:.27s}
 .vis-card.is-front .vis-pair:nth-child(3){animation-delay:.32s}
@@ -6305,12 +6320,15 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--vu) * 1.1)}
 /* the arrows: bigger targets, gold ring, pressed state, and a slow pulse
    on the same beat as the frame so the pair reads as one */
 .vis-arrow{
-  width:calc(var(--vu) * 1.2);height:calc(var(--vu) * 1.2);border-radius:50%;
+  /* --u, not --vu: --vu lives on the card and the arrows are outside it,
+     so these sizes were invalid and the disc collapsed to nothing — which
+     is why the arrows showed as bare chevrons */
+  width:calc(var(--u) * 1.2);height:calc(var(--u) * 1.2);border-radius:50%;
   padding:0;position:relative;flex-shrink:0;
   transition:background .2s ease,border-color .2s ease,transform .16s ease;
-  border:1.5px solid rgba(46,107,69,.45);
-  background:linear-gradient(160deg,#FFFDF8,#F6EEDD);
-  box-shadow:0 2px 8px rgba(46,107,69,.18);
+  border:1.5px solid #D9A441;
+  background:radial-gradient(circle at 35% 30%,#FFF9EA 0%,#F6E3B4 100%);
+  box-shadow:0 2px 8px rgba(184,122,30,.38),0 0 0 3px rgba(247,200,107,.16);
   animation:visArrowPulse 6.5s ease-in-out infinite;
 }
 .vis-arrow:active{transform:scale(.88);background:#FFF3DC;border-color:var(--gold)}
@@ -6461,3 +6479,40 @@ body.booting .offer-grid:empty{
   40%,100%{transform:translate(-35%,-50%) rotate(45deg);opacity:.72}
 }
 
+
+/* The chain arrows' lunge, Section 5's own. wpPunch travels 6px, and with
+   a resting gap of about 3px the arrow reached into the next word mid-
+   lunge — which is why one ▸ always looked stuck to its word. The resting
+   gap is now even on both sides and the lunge stops short of the text. */
+@keyframes visPunch{
+  0%      {transform:translateX(0) scaleX(1);opacity:.65}
+  10%     {transform:translateX(3px) scaleX(1.25);opacity:1}
+  38%,100%{transform:translateX(0) scaleX(1);opacity:.65}
+}
+
+/* गणितमित्र भाग २ — each group on one line: a gold heading, then its
+   items. Seven stacked rows become four. */
+.vis-lines{display:flex;flex-direction:column;gap:calc(var(--vu) * .34)}
+.vis-line{
+  margin:0;display:flex;align-items:baseline;justify-content:flex-start;
+  gap:calc(var(--vu) * .28);white-space:nowrap;overflow:hidden;
+  font-family:Mukta,system-ui,sans-serif;
+  font-size:calc(var(--vu) * .9);line-height:1.3;
+}
+.vis-line::before{
+  content:"";flex-shrink:0;align-self:center;
+  width:calc(var(--vu) * .34);height:calc(var(--vu) * .34);
+  border-radius:2px;background:var(--gold);transform:rotate(45deg);
+  margin-right:calc(var(--vu) * .1);
+}
+.vis-line b{font-weight:800;color:#FFDD95}
+.vis-line i{font-style:normal;font-weight:700;color:rgba(247,200,107,.7)}
+.vis-line span{font-weight:600;color:#FFF6E2}
+
+@keyframes visRule{
+  0%,100%{transform:scaleX(1)}
+  50%    {transform:scaleX(1.3)}
+}
+@media(prefers-reduced-motion:reduce){
+  .vis-frame > .hd-std .hd-rule{animation:none}
+}
