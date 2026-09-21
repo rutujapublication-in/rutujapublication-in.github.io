@@ -410,7 +410,8 @@
     "vis_view": "लेखिकेचा दृष्टिकोन",
     "vis_focus": "पुस्तकाचा केंद्रबिंदू",
     "vis_path": "शिकण्याची वाटचाल",
-    "vis_out": "मुख्य परिणाम"
+    "vis_out": "मुख्य परिणाम",
+    "mom_head": "लेखन, सन्मान आणि प्रकाशन"
   },
   "en": {
     "nav_home": "Home",
@@ -823,6 +824,7 @@
     "vis_view": "The writer’s view",
     "vis_focus": "What it centres on",
     "vis_path": "How a child moves forward",
-    "vis_out": "What it builds"
+    "vis_out": "What it builds",
+    "mom_head": "Writing, honours and publications"
   }
 }

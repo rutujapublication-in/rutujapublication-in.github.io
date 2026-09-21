@@ -1,0 +1,292 @@
+{
+  "_HOW_TO_EDIT": "Section 6 — Writing, honours and publications. One entry per photograph, shown in this order. img is the file name in assets/img/news without .webp (an @2x file is used automatically where it exists); w and h are the 1x file's pixel size. seconds is how long the slide holds. g1 and g2 are the slide's background gradient, taken from the photograph's own colours. people_* are [name, designation] pairs: the name shows bold and the designation in brackets. Leave sig_*, venue_* or date_* empty to leave them out. Marathi always shows first, English second. rows_mr / rows_en set how the people are grouped on lines, by their number in people_*: [[1],[2,3]] puts person 1 alone and persons 2 and 3 together. A line too wide for a small screen splits by itself. keep lists phrases that must never break across two lines.",
+  "slides": [
+    {
+      "n": 1,
+      "img": "rp-n-001",
+      "w": 800,
+      "h": 421,
+      "seconds": 6,
+      "g1": "#3A1A16",
+      "g2": "#6B3727",
+      "title_mr": "महाराष्ट्र राज्य आदर्श शिक्षक पुरस्कार — २०१३",
+      "title_en": "Maharashtra State Ideal Teacher Award — 2013",
+      "people_mr": [
+        [
+          "मा. पृथ्वीराज चव्हाण साहेब",
+          "तत्कालीन मुख्यमंत्री, महाराष्ट्र राज्य"
+        ]
+      ],
+      "people_en": [
+        [
+          "Hon. Prithviraj Chavan Saheb",
+          "Then Chief Minister of Maharashtra"
+        ]
+      ],
+      "rows_mr": [
+        [
+          1
+        ]
+      ],
+      "rows_en": [
+        [
+          1
+        ]
+      ],
+      "desc_mr": "मा. पृथ्वीराज चव्हाण साहेब यांच्या हस्ते लेखिका सौ. मीना सुनिल गिरमे यांनी महाराष्ट्र राज्य आदर्श शिक्षक पुरस्कार स्वीकारला; यावेळी इतर मान्यवर मंत्र्यांची उपस्थिती होती.",
+      "desc_en": "Author Mrs. Meena Sunil Girme receiving the Maharashtra State Ideal Teacher Award from Hon. Prithviraj Chavan Saheb, in the presence of other distinguished ministers.",
+      "sig_mr": "सन्मानाचा अविस्मरणीय क्षण.",
+      "sig_en": "An unforgettable moment of honour.",
+      "venue_mr": "",
+      "venue_en": "",
+      "date_mr": "",
+      "date_en": ""
+    },
+    {
+      "n": 2,
+      "img": "rp-n-002",
+      "w": 800,
+      "h": 421,
+      "seconds": 6,
+      "g1": "#3E1A22",
+      "g2": "#69383D",
+      "title_mr": "‘गणितमित्र – भाग १’ व ‘भाग २’ — प्रकाशन सोहळा",
+      "title_en": "‘Ganitmitra – Part 1 & Part 2’ — Book Publication Ceremony",
+      "people_mr": [
+        [
+          "मा. साईलता सामलेटी-रायपल्ली मॅडम",
+          "प्राथमिक शिक्षणाधिकारी, जि.प. नाशिक"
+        ],
+        [
+          "मा. संजय कळमकर सर",
+          "शिक्षक नेते, लेखक व वक्ते"
+        ],
+        [
+          "मा. राजेंद्र शिंदे सर",
+          "शिक्षक नेते"
+        ]
+      ],
+      "people_en": [
+        [
+          "Hon. Sailata Samaleti-Rayapalli Madam",
+          "Primary Education Officer, Zilla Parishad Nashik"
+        ],
+        [
+          "Hon. Sanjay Kalamkar Sir",
+          "Teacher Leader, Author & Speaker"
+        ],
+        [
+          "Hon. Rajendra Shinde Sir",
+          "Teacher Leader"
+        ]
+      ],
+      "rows_mr": [
+        [
+          1
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "rows_en": [
+        [
+          1
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "desc_mr": "यांच्या हस्ते व इतर मान्यवरांच्या उपस्थितीत ‘गणितमित्र – भाग १’ व ‘भाग २’ या पुस्तकांचे प्रकाशन करण्यात आले.",
+      "desc_en": "The two books were released at the hands of these dignitaries, in the presence of other distinguished guests.",
+      "sig_mr": "दोन पुस्तकांच्या प्रकाशनाची नवी वाटचाल.",
+      "sig_en": "A new chapter marked by two publications.",
+      "venue_mr": "",
+      "venue_en": "",
+      "date_mr": "",
+      "date_en": ""
+    },
+    {
+      "n": 3,
+      "img": "rp-n-003",
+      "w": 800,
+      "h": 421,
+      "seconds": 6,
+      "g1": "#2E2427",
+      "g2": "#3A3F46",
+      "title_mr": "‘चला वाचूया झटपट’ — प्रकाशन सोहळा",
+      "title_en": "‘Chala Vachuya Zatpat’ — Book Publication Ceremony",
+      "people_mr": [
+        [
+          "मा. रमजान पठाण साहेब",
+          "तत्कालीन गटशिक्षणाधिकारी, श्रीरामपूर तालुका, जि. अहिल्यानगर"
+        ]
+      ],
+      "people_en": [
+        [
+          "Hon. Ramzan Pathan Saheb",
+          "Then Block Education Officer, Shrirampur Taluka, District Ahilyanagar"
+        ]
+      ],
+      "rows_mr": [
+        [
+          1
+        ]
+      ],
+      "rows_en": [
+        [
+          1
+        ]
+      ],
+      "desc_mr": "यांच्या हस्ते व इतर मान्यवरांच्या उपस्थितीत ‘चला वाचूया झटपट’ या पुस्तकाचे प्रकाशन करण्यात आले.",
+      "desc_en": "The book was formally launched in his presence and in the presence of other distinguished dignitaries.",
+      "sig_mr": "वाचनप्रवासाची नवी सुरुवात.",
+      "sig_en": "A new beginning in the reading journey.",
+      "venue_mr": "आर.बी.एन.बी. महाविद्यालय, श्रीरामपूर",
+      "venue_en": "R.B.N.B. College, Shrirampur",
+      "date_mr": "२५ जून २०१६",
+      "date_en": "25 June 2016"
+    },
+    {
+      "n": 4,
+      "img": "rp-n-004",
+      "w": 800,
+      "h": 375,
+      "seconds": 6,
+      "g1": "#1E3432",
+      "g2": "#2A4950",
+      "title_mr": "‘English Primer with Phonics’ — प्रकाशन सोहळा",
+      "title_en": "‘English Primer with Phonics’ — Book Publication Ceremony",
+      "people_mr": [
+        [
+          "मा. साईलता सामलेटी-रायपल्ली मॅडम",
+          "तत्कालीन गटशिक्षणाधिकारी, श्रीरामपूर"
+        ],
+        [
+          "मा. ज्ञानेश्वर कलगुंडे साहेब",
+          "तत्कालीन शिक्षण विस्तार अधिकारी"
+        ]
+      ],
+      "people_en": [
+        [
+          "Hon. Sailata Samaleti-Rayapalli Madam",
+          "Then Block Education Officer, Shrirampur"
+        ],
+        [
+          "Hon. Dnyaneshwar Kalgunde Saheb",
+          "Then Education Extension Officer"
+        ]
+      ],
+      "rows_mr": [
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "rows_en": [
+        [
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "desc_mr": "यांच्या हस्ते व इतर मान्यवरांच्या उपस्थितीत ‘English Primer with Phonics’ या पुस्तकाचे प्रकाशन करण्यात आले.",
+      "desc_en": "The book was released at the hands of these dignitaries, in the presence of other distinguished guests.",
+      "sig_mr": "इंग्रजी वाचनाच्या नव्या पर्वाची सुरुवात.",
+      "sig_en": "The beginning of a new era in English reading.",
+      "venue_mr": "",
+      "venue_en": "",
+      "date_mr": "",
+      "date_en": ""
+    },
+    {
+      "n": 5,
+      "img": "rp-n-005",
+      "w": 800,
+      "h": 338,
+      "seconds": 6,
+      "g1": "#17301F",
+      "g2": "#6A2626",
+      "title_mr": "जिल्हा परिषद, अहिल्यानगर यांच्या वतीने सत्कार",
+      "title_en": "Felicitation by Zilla Parishad, Ahilyanagar",
+      "people_mr": [
+        [
+          "ना. विठ्ठलराव लंघे साहेब",
+          "तत्कालीन अध्यक्ष"
+        ],
+        [
+          "मा. मोनिकाताई राजळे",
+          "तत्कालीन उपाध्यक्षा"
+        ],
+        [
+          "मा. रुबल अग्रवाल मॅडम",
+          "तत्कालीन मुख्य कार्यकारी अधिकारी"
+        ],
+        [
+          "मा. हर्षदाताई काकडे",
+          "तत्कालीन सभापती"
+        ]
+      ],
+      "people_en": [
+        [
+          "Hon. Vitthalrao Langhe Saheb",
+          "Then President"
+        ],
+        [
+          "Hon. Monikatai Rajale",
+          "Then Vice-President"
+        ],
+        [
+          "Hon. Rubal Agrawal Madam",
+          "Then Chief Executive Officer"
+        ],
+        [
+          "Hon. Harshadatai Kakade",
+          "Then Chairperson"
+        ]
+      ],
+      "rows_mr": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "rows_en": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "desc_mr": "यांच्या हस्ते, महाराष्ट्र राज्य आदर्श शिक्षक पुरस्कार मिळाल्याबद्दल पढेगाव, ता. श्रीरामपूर येथील शिक्षिका सौ. मीना सुनिल गिरमे–जाधव यांचा जिल्हा परिषद, अहिल्यानगरच्या वतीने सत्कार करण्यात आला.",
+      "desc_en": "At the hands of these dignitaries, Zilla Parishad, Ahilyanagar felicitated Mrs. Meena Sunil Girme-Jadhav, a teacher from Padhegaon, Tal. Shrirampur, on receiving the Maharashtra State Ideal Teacher Award.",
+      "sig_mr": "",
+      "sig_en": "",
+      "venue_mr": "",
+      "venue_en": "",
+      "date_mr": "",
+      "date_en": ""
+    }
+  ],
+  "keep": [
+    "सौ. मीना सुनिल गिरमे–जाधव",
+    "सौ. मीना सुनिल गिरमे",
+    "Mrs. Meena Sunil Girme-Jadhav",
+    "Mrs. Meena Sunil Girme",
+    "मा. पृथ्वीराज चव्हाण साहेब",
+    "Hon. Prithviraj Chavan Saheb",
+    "Zilla Parishad, Ahilyanagar",
+    "जिल्हा परिषद, अहिल्यानगरच्या"
+  ]
+}

@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19m',
+  VERSION: 'v19q',
   lang: 'mr',
   text: {},
   locations: null,
@@ -20,16 +20,19 @@ const RUTUJA = {
     this.bindLangToggle();
 
     try {
-      const [t, c, s, v] = await Promise.all([
+      const [t, c, s, v, m] = await Promise.all([
         fetch('data/sitetext.json?v=' + this.VERSION).then(r => r.json()),
         fetch('data/content.json?v=' + this.VERSION).then(r => r.json()),
         fetch('data/story.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] })),
-        fetch('data/vision.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] }))
+        fetch('data/vision.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] })),
+        fetch('data/moments.json?v=' + this.VERSION).then(r => r.json()).catch(() => ({ slides: [] }))
       ]);
       this.text = t;
       this.content = c;
       this.story = (s && s.slides) || [];
       this.vision = (v && v.slides) || [];
+      this.moments = (m && m.slides) || [];
+      this.momentsKeep = (m && m.keep) || [];
     } catch (e) {
       console.error('Data load failed', e);
     }
@@ -71,6 +74,7 @@ const RUTUJA = {
      ['media', () => MEDIA.init(this)],
      ['story', () => STORY.init(this)],
      ['vision', () => VISION.init(this)],
+     ['moments', () => MOMENTS.init(this)],
      ['cart', () => CART.init(this)],
      ['orderform', () => ORDERFORM.init(this)],
      ['order', () => ORDER.init(this)]
@@ -567,7 +571,7 @@ const RUTUJA = {
       es.forEach(e => e.target.classList.toggle('is-still', !e.isIntersecting));
     }, { rootMargin: '700px 0px' });
     const watch = () => document
-      .querySelectorAll('.story, .std-frame, .offer-frame, .ex-grid, .vis, '
+      .querySelectorAll('.story, .std-frame, .offer-frame, .ex-grid, .vis, .mom, '
         + '#page-books .book-grid, .bd, #page-cart, #orderSum, .qa-list, .site-foot')
       .forEach(el => { if (!el.dataset.still) { el.dataset.still = '1'; io.observe(el); } });
     /* the entrances get 1.6s of clear air before anything is paused */
@@ -623,6 +627,7 @@ const RUTUJA = {
        otherwise; leaving the home page must silence both */
     try { page === 'home' ? STORY.start() : STORY.stop(); } catch (e) {}
     try { page === 'home' ? VISION.start() : VISION.stop(); } catch (e) {}
+    try { page === 'home' ? MOMENTS.start() : MOMENTS.stop(); } catch (e) {}
     this.waFloat();
     /* A page swap used to smooth-scroll to the top — and html has
        scroll-behavior:smooth as well, so the browser animated the old
@@ -3334,6 +3339,317 @@ const VISION = {
   },
 
   relang() { if (this.slides.length) { this.build(); this.start(); } }
+};
+
+/* ===================================================================
+   MOMENTS — Section 6: writing, honours and publications
+   Five photographs from the author's journey, each with a compact caption:
+   title, the people with their positions, a sentence of context, and a
+   line of significance — Marathi first, English second, always. Content
+   lives in data/moments.json.
+
+   The slides are the same height with no measuring at all: they sit in a
+   flex row and each stretches to the tallest. What is measured, in the
+   visitor's browser, is only what must stay on one line and the names,
+   which follow the lines declared in moments.json, split further only
+   where a screen is too narrow, and always at full size.
+   =================================================================== */
+const MOMENTS = {
+  i: 0, timer: null, paused: false, reduced: false, slides: [],
+
+  init(app) {
+    this.app = app;
+    this.track = document.getElementById('momTrack');
+    this.dots = document.getElementById('momDots');
+    this.stage = document.getElementById('momStage');
+    if (!this.track) return;
+    this.slides = app.moments || [];
+    if (!this.slides.length) { this.track.closest('.mom').classList.add('hidden'); return; }
+    this.build();
+    this.bind();
+  },
+
+  esc(x) { return String(x || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); },
+
+  /* One person = one name plate: the name on top, the designation in
+     brackets directly beneath. People sit in the lines declared in
+     moments.json (rows_mr / rows_en); a declared pair becomes two aligned
+     columns with a thin gold bar standing between them. Inside a
+     designation, a line may break only after a comma. */
+  people(list, rows, cls) {
+    if (!list || !list.length) return '';
+    const desig = d => d.split(', ').map(x => this.esc(x).replace(/ /g, '\u00A0')).join(', ');
+    const unit = ([n, d], i) => `<span class="mom-u" data-i="${i}"><b>${this.esc(n)}</b>${
+      d ? `<i><span class="mom-br">(</span>${desig(d)}<span class="mom-br">)</span></i>` : ''}</span>`;
+    const groups = (rows && rows.length) ? rows.map(r => r.map(x => x - 1)) : list.map((_, i) => [i]);
+    return `<div class="mom-names ${cls}" lang="${cls}" data-rows='${JSON.stringify(groups)}'>` + groups.map(g =>
+      `<div class="mom-row${g.length > 1 ? ' mom-pair' : ''}">` + g.map(i => list[i] ? unit(list[i], i) : '')
+        .join('<span class="mom-bar" aria-hidden="true"></span>') + `</div>`).join('') + `</div>`;
+  },
+
+  /* Line-break logic for the descriptions and the venue. Phrases that must
+     never be split across two lines become one unit: people's full names
+     (from this slide and the keep list), book titles in quotes, an
+     abbreviation with its place, a run of initials with the word after it,
+     a date, a part number. The one-letter word "व" is glued to the word
+     after it. Names are set bold and book titles gold, so the eye finds
+     who and what first. */
+  mark(text, s) {
+    let t = String(text || '');
+    if (!t) return '';
+    t = t.replace(/(^|\s)व\s/g, '$1व\u00A0');
+    const iv = [];
+    const add = (a, b, kind) => { if (a < b && !iv.some(x => a < x[1] && b > x[0])) iv.push([a, b, kind]); };
+    const people = [].concat(s.people_mr || [], s.people_en || []).map(p => p[0]);
+    [...(this.app.momentsKeep || []), ...people].sort((a, b) => b.length - a.length).forEach(ph => {
+      if (!ph) return;
+      for (let i = t.indexOf(ph); i >= 0; i = t.indexOf(ph, i + 1))
+        add(i, i + ph.length, /^(सौ\.|मा\.|ना\.|Mrs\.|Hon\.)/.test(ph) ? 'who' : 'keep');
+    });
+    const rx = (re, kind) => { let m; re.lastIndex = 0; while ((m = re.exec(t))) add(m.index, m.index + m[0].length, kind); };
+    rx(/‘[^’]+’/g, 'book');
+    rx(/(?:ता\.|जि\.प\.|जि\.|Tal\.)\s+[^\s,;.]+/g, 'keep');
+    rx(/(?:[\u0900-\u097F]{1,2}\.){2,}\s+[^\s,;.]+/g, 'keep');
+    rx(/(?:[A-Z]\.){2,}\s+[^\s,;.]+/g, 'keep');
+    rx(/(?:[०-९]+|\d+)\s+\S+\s+(?:[०-९]{4}|\d{4})/g, 'keep');
+    rx(/(?:भाग|Part)\s+(?:[०-९]|\d)/g, 'keep');
+    iv.sort((a, b) => a[0] - b[0]);
+    let out = '', at = 0;
+    for (const [a, b, kind] of iv) {
+      out += this.esc(t.slice(at, a)) + `<span class="mom-k${kind === 'who' ? ' mom-kw' : kind === 'book' ? ' mom-kb' : ''}">${
+        this.esc(t.slice(a, b))}</span>`;
+      at = b;
+    }
+    return out + this.esc(t.slice(at));
+  },
+
+  /* Every Marathi and English element declares its own language. Chrome
+     breaks lines by language, and the page switches its own lang with the
+     toggle — without this the same Marathi sentence broke onto one more line
+     in English mode, and screen readers would read Marathi as English. */
+  slide(s, k) {
+    const e = x => this.esc(x);
+    const one = `assets/img/news/${s.img}.webp`, two = `assets/img/news/${s.img}@2x.webp`;
+    const end = (s.sig_mr || s.venue_mr) ? `
+        <div class="mom-end">
+          ${s.sig_mr ? `<p class="mr" lang="mr">${e(s.sig_mr)}</p>` : ''}
+          ${s.sig_en ? `<p class="en" lang="en">${e(s.sig_en)}</p>` : ''}
+          ${s.venue_mr ? `<div class="mom-venue">
+            <p class="mr" lang="mr"><b>स्थळ :</b> ${this.mark(s.venue_mr, s)} · <b>दिनांक :</b> ${this.mark(s.date_mr, s)}</p>
+            <p class="en" lang="en"><b>Venue :</b> ${this.mark(s.venue_en, s)} · <b>Date :</b> ${this.mark(s.date_en, s)}</p>
+          </div>` : ''}
+        </div>` : '';
+    return `
+      <article class="mom-slide${k === 0 ? ' on' : ''}" data-k="${k}" style="--g1:${s.g1};--g2:${s.g2}">
+        <div class="mom-head">
+          <span class="mom-tbox"><em lang="mr">${e(s.title_mr)}</em></span>
+          <p class="mom-ten" lang="en">${e(s.title_en)}</p>
+          <span class="mom-line" aria-hidden="true"></span>
+        </div>
+        <div class="mom-ph">
+          <img src="${one}" srcset="${one} 1x, ${two} 2x" onerror="this.removeAttribute('srcset')"
+               width="${s.w}" height="${s.h}" alt="${e(s.title_mr)}" decoding="async" loading="lazy">
+        </div>
+        <div class="mom-who">${this.people(s.people_mr, s.rows_mr, 'mr')}${this.people(s.people_en, s.rows_en, 'en')}</div>
+        <div class="mom-say"><p class="mr" lang="mr">${this.mark(s.desc_mr, s)}</p><p class="en" lang="en">${this.mark(s.desc_en, s)}</p></div>
+        ${end}
+      </article>`;
+  },
+
+  build() {
+    this.track.innerHTML = this.slides.map((s, k) => this.slide(s, k)).join('');
+    this.cards = [...this.track.children];
+    this.dots.innerHTML = this.slides.map((s, k) =>
+      `<button class="mom-dot${k === 0 ? ' on' : ''}" data-k="${k}" aria-label="${k + 1}"></button>`).join('');
+    requestAnimationFrame(() => this.fit());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.fit()).catch(() => {});
+  },
+
+  go(n) {
+    const total = this.slides.length;
+    this.i = (n + total) % total;
+    this.track.style.transform = `translateX(-${this.i * 100}%)`;
+    this.cards.forEach((c, k) => c.classList.toggle('on', k === this.i));
+    [...this.dots.children].forEach((d, k) => d.classList.toggle('on', k === this.i));
+    /* the next photograph starts loading while this one is on screen */
+    const next = this.cards[(this.i + 1) % total], im = next && next.querySelector('img');
+    if (im && im.loading === 'lazy') im.loading = 'eager';
+  },
+
+  /* The first time the section comes into view, the slides nudge once —
+     a quiet sign that they can be swiped. Never again after that, and not
+     for visitors who ask for reduced motion. */
+  hint() {
+    if (this.hinted || this.reduced || this.i !== 0) return;
+    this.hinted = true;
+    this.track.classList.add('mom-hint');
+    this.track.addEventListener('animationend', () => this.track.classList.remove('mom-hint'), { once: true });
+  },
+
+  secs() { const s = this.slides[this.i]; return (Number(s && s.seconds) || 6) * 1000; },
+  start() {
+    this.stop();
+    if (this.paused || this.reduced || !this.cards) return;
+    this.timer = setTimeout(() => { this.go(this.i + 1); this.start(); }, this.secs());
+    this.dotFill();
+  },
+  stop() { clearTimeout(this.timer); if (this.dots) this.dots.classList.add('held'); },
+
+  bind() {
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.dots.addEventListener('click', e => {
+      const b = e.target.closest('.mom-dot'); if (!b) return;
+      this.go(+b.dataset.k); this.start();
+    });
+    /* swipe left and right; a tap pauses and resumes */
+    let x0 = null, y0 = 0, moved = false;
+    this.stage.addEventListener('touchstart', e => {
+      const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; moved = false;
+    }, { passive: true });
+    this.stage.addEventListener('touchmove', e => {
+      if (x0 !== null && Math.abs(e.touches[0].clientX - x0) > 10) moved = true;
+    }, { passive: true });
+    this.stage.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { this.go(this.i + (dx < 0 ? 1 : -1)); this.start(); }
+    }, { passive: true });
+    this.stage.addEventListener('click', () => {
+      if (moved) { moved = false; return; }
+      this.paused = !this.paused; this.paused ? this.stop() : this.start();
+    });
+    /* Watch the section itself, not an element inside it: .mom carries
+       content-visibility:auto, and a skipped subtree has no box to report —
+       the mistake that kept Section 5's fitter from ever running. */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(es => es.forEach(en => {
+        if (en.isIntersecting) { this.fit(); this.start(); } else this.stop();
+      }), { threshold: 0.01, rootMargin: '300px 0px' }).observe(this.track.closest('.mom'));
+      /* the swipe hint waits until the slides are properly in view */
+      new IntersectionObserver((es, ob) => es.forEach(en => {
+        if (en.isIntersecting) { this.hint(); ob.disconnect(); }
+      }), { threshold: 0.6 }).observe(this.stage);
+    }
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => this.fit(), 200); });
+    /* the language toggle swaps the heading's words in place; refit them */
+    const hs = this.track.closest('.mom').querySelector('.hd-t > span');
+    if (hs && 'MutationObserver' in window) {
+      new MutationObserver(() => requestAnimationFrame(() => this.fitHead()))
+        .observe(hs, { childList: true, characterData: true, subtree: true });
+    }
+  },
+
+  /* A line that must stay on one line shrinks only as far as it has to.
+     Measured, never estimated; re-measured up to four times because
+     letter-spacing and padding do not shrink with the type. */
+  shrink(t, room, need) {
+    t.style.fontSize = '';
+    for (let p = 0; p < 4; p++) {
+      const w = need(t);
+      if (!w || !room || w <= room + 0.5) return;
+      t.style.fontSize = (parseFloat(getComputedStyle(t).fontSize) * room / w * 0.985).toFixed(2) + 'px';
+    }
+  },
+
+  /* The section heading uses the site's shared heading style, which cuts a
+     title that does not fit with an ellipsis — "Writing, honours and
+     public…" in English. The shared rule stays as it is for Sections 3 to
+     5; this heading alone shrinks just enough to show every word. */
+  fitHead() {
+    const hs = this.track && this.track.closest('.mom').querySelector('.hd-t > span');
+    if (!hs) return;
+    hs.style.fontSize = '';
+    const room = hs.clientWidth;
+    if (room) this.shrink(hs, room, t => t.scrollWidth);
+  },
+
+  fit() {
+    if (!this.cards) return;
+    this.fitHead();
+    const text = t => { const r = document.createRange(); r.selectNodeContents(t); return r.getBoundingClientRect().width; };
+    this.cards.forEach(el => {
+      const head = el.querySelector('.mom-head');
+      if (!head || !head.clientWidth) return;
+      /* The title box breathes to 1.035x, so the title fits inside 96% of the
+         width. Its width is read from scrollWidth: untouched by the breathing
+         scale, and — unlike offsetWidth, which is capped at the slide's width
+         — it still reports the full title when the title is too long. */
+      const em = el.querySelector('.mom-tbox em');
+      if (em) this.shrink(em, head.clientWidth * 0.96 - 4, t => t.scrollWidth);
+      const ten = el.querySelector('.mom-ten');
+      if (ten) this.shrink(ten, head.clientWidth, text);
+      const end = el.querySelector('.mom-end');
+      if (end) {
+        const mr = end.querySelector(':scope > .mr'), en = end.querySelector(':scope > .en');
+        if (mr) this.shrink(mr, end.clientWidth - 10, text);
+        if (en) this.shrink(en, end.clientWidth, text);
+      }
+      this.arrange(el);
+      this.timing(el);
+    });
+  },
+
+  /* The names engine. Every person is a name plate, and nothing in a plate
+     ever wraps: each name and each designation stays on one line. Pairs are
+     two aligned columns — each as wide as its widest plate, so the gold
+     bars line up — centred with a comfortable gap, never more than 1.2em
+     either side of the bar. If any line in a language's block is too wide
+     for the screen, that whole block scales down together until every line
+     fits, never below 88% (measured: 98% at most on a 360px phone). Only if
+     even that is not enough may a designation break, and then only after a
+     comma — a plate or a pair is never broken apart. */
+  arrange(el) {
+    el.querySelectorAll('.mom-names').forEach(box => {
+      box.style.removeProperty('--gz'); box.classList.remove('mom-tight');
+      const W = box.clientWidth; if (!W) return;
+      const rows = [...box.querySelectorAll('.mom-row')];
+      const pairs = rows.filter(r => r.classList.contains('mom-pair'));
+      const em = () => parseFloat(getComputedStyle(box).fontSize), bar = 2;
+      const plate = u => Math.max(u.querySelector('b').scrollWidth, u.querySelector('i') ? u.querySelector('i').scrollWidth : 0);
+      const measure = () => {
+        rows.forEach(r => r.querySelectorAll('.mom-u').forEach(u => { u.style.width = ''; }));
+        const col = [0, 0]; let single = 0;
+        pairs.forEach(r => [...r.querySelectorAll('.mom-u')].forEach((u, k) => { col[k] = Math.max(col[k], plate(u)); }));
+        rows.filter(r => !r.classList.contains('mom-pair'))
+          .forEach(r => r.querySelectorAll('.mom-u').forEach(u => { single = Math.max(single, plate(u)); }));
+        return { col, need: Math.max(pairs.length ? col[0] + col[1] + bar + 1.4 * em() : 0, single) };
+      };
+      let m = measure();
+      if (m.need > W) { box.style.setProperty('--gz', Math.max(0.88, W / m.need * 0.99).toFixed(3)); m = measure(); }
+      if (m.need > W) box.classList.add('mom-tight');
+      if (!pairs.length) return;
+      const side = Math.max(0, Math.min(1.2 * em(), (W - m.col[0] - m.col[1] - bar) / 2));
+      pairs.forEach(r => {
+        [...r.querySelectorAll('.mom-u')].forEach((u, k) => { u.style.width = m.col[k].toFixed(1) + 'px'; });
+        r.style.columnGap = side.toFixed(1) + 'px';
+      });
+    });
+  },
+
+  /* The order things arrive in once a slide comes in: each name plate in
+     turn — Marathi, then English — and then the description, the book
+     titles, the divider and the significance line, timed from how many
+     plates this slide has. */
+  timing(el) {
+    let n = 0;
+    el.querySelectorAll('.mom-names .mom-row').forEach(r => {
+      r.querySelectorAll('.mom-u, .mom-bar').forEach(x => x.style.setProperty('--pd', (0.38 + 0.1 * n).toFixed(2) + 's'));
+      n += r.querySelectorAll('.mom-u').length;
+    });
+    el.style.setProperty('--sd', (0.42 + 0.1 * n).toFixed(2) + 's');
+  },
+
+  /* The active dot fills over the slide's seconds, so the viewer can see
+     when the next photograph is coming. Restarted with the timer; held
+     while the slideshow is paused. */
+  dotFill() {
+    const d = this.dots && this.dots.children[this.i];
+    if (!d) return;
+    this.dots.classList.remove('held');
+    d.style.setProperty('--secs', (this.secs() / 1000) + 's');
+    [...this.dots.children].forEach(x => x.classList.remove('run'));
+    void d.offsetWidth; d.classList.add('run');
+  }
 };
 
 const STORY = {

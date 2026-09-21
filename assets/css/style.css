@@ -6516,3 +6516,255 @@ body.booting .offer-grid:empty{
 @media(prefers-reduced-motion:reduce){
   .vis-frame > .hd-std .hd-rule{animation:none}
 }
+
+/* ===================================================================
+   SECTION 6 — WRITING, HONOURS AND PUBLICATIONS
+   Five photographs from the author's journey. The photograph is the hero;
+   the caption identifies it compactly, Marathi first and English second.
+
+   Section 1's language is reused, not its measurements: Section 1 is nine
+   typographic slides 244px tall and holds no photographs. Carried over —
+   the horizontal track and its easing, the dots, the deep jewel-tone
+   backgrounds, the gold Baloo 2 title in the rotating conic-rim box
+   (shSpin + shBreathe), the sweeping underline (shSweep) and the sheen
+   (btFlash). Section 1's own rules are untouched; only its keyframes are
+   used by name.
+
+   Every slide is the same height without any measuring: the slides sit in
+   a flex row, so each stretches to the tallest. The spare height on the
+   lighter slides is spread between the caption groups by space-between,
+   and the bottom padding is the same fixed clearance on every slide.
+   =================================================================== */
+
+.mom{
+  position:relative;width:100%;margin:calc(var(--u) * .6) 0 calc(var(--u) * .9);
+  content-visibility:auto;contain-intrinsic-size:auto 660px;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
+/* aligned exactly with Sections 3 to 5: same padding, radius and weight */
+.mom-frame{
+  position:relative;border:1.5px solid #E4DED2;border-radius:22px;
+  background:linear-gradient(150deg,#FBF9F4,#FFFDF8);padding:8px;
+  box-shadow:0 6px 22px rgba(90,66,20,.07);
+}
+/* the heading underline breathes to 1.3x, so it stays inside the frame */
+.mom-frame > .hd-std .hd-rule{margin:8px auto 10px;width:min(72%,240px);animation-name:visRule}
+
+.mom-stage{position:relative;overflow:hidden;border-radius:16px;touch-action:pan-y}
+/* Section 1's own track: the same easing, transform only */
+.mom-track{display:flex;align-items:stretch;width:100%;
+  transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
+
+.mom-slide{
+  position:relative;flex:0 0 100%;min-width:0;max-width:100%;
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:calc(var(--u) * .42);
+  padding:calc(var(--u) * .66) calc(var(--u) * .6) calc(var(--u) * .62);
+  background:
+    radial-gradient(90% 55% at 15% 0%, rgba(255,255,255,.08) 0%, transparent 60%),
+    linear-gradient(165deg, var(--g1) 0%, var(--g2) 100%);
+  color:#F3EEE6;text-align:center;line-height:1.45;
+}
+/* only the slide in view animates */
+.mom-slide:not(.on) *,.mom-slide:not(.on) *::before,.mom-slide:not(.on) *::after{animation-play-state:paused}
+
+/* --- title: the gold conic-rim box from Section 1 --- */
+.mom-head{display:flex;flex-direction:column;align-items:center}
+.mom-tbox{
+  position:relative;z-index:2;display:inline-block;max-width:100%;
+  border-radius:12px;padding:2px;overflow:hidden;isolation:isolate;
+  animation:shBreathe 3.6s ease-in-out infinite;
+}
+.mom-tbox::before{
+  content:"";position:absolute;inset:-60%;z-index:0;
+  background:conic-gradient(from 0deg, #F7C86B 0deg, #F7C86B 40deg, #FFFFFF 62deg,
+    #E6EBEF 74deg, #F7C86B 96deg, #B98B2E 200deg, #F7C86B 360deg);
+  animation:shSpin 3.4s linear infinite;
+}
+.mom-tbox::after{
+  content:"";position:absolute;inset:2px;z-index:1;border-radius:10px;
+  background:linear-gradient(160deg, var(--g1), rgba(0,0,0,.5));
+}
+.mom-tbox em{
+  position:relative;z-index:2;display:block;padding:5px 14px;font-style:normal;
+  font-family:'Baloo 2',system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * 1.1);color:#F7C86B;line-height:1.25;white-space:nowrap;
+}
+.mom-ten{
+  margin:calc(var(--u) * .28) 0 0;max-width:100%;
+  font-family:Lora,Georgia,serif;font-weight:600;
+  font-size:calc(var(--u) * .78);line-height:1.3;color:rgba(247,200,107,.86);
+  white-space:nowrap;
+}
+.mom-line{
+  position:relative;display:block;width:62px;height:2px;border-radius:1px;
+  margin:calc(var(--u) * .3) auto 0;background:rgba(247,200,107,.32);overflow:hidden;
+}
+.mom-line::after{
+  content:"";position:absolute;inset:0;border-radius:1px;
+  background:linear-gradient(90deg,transparent,#FFFFFF 45%,#F7C86B 55%,transparent);
+  background-size:220% 100%;animation:shSweep 3.4s ease-in-out infinite;
+}
+
+/* --- the photograph: the whole picture, never cropped in the browser --- */
+.mom-ph{
+  position:relative;margin:0 calc(var(--u) * -.3);
+  aspect-ratio:1.9 / 1;border-radius:12px;overflow:hidden;
+  background:rgba(0,0,0,.22);
+  box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(247,200,107,.55);
+}
+.mom-ph img{display:block;width:100%;height:100%;object-fit:contain}
+.mom-ph::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.28) 50%,transparent);transform:translateX(-120%)}
+
+/* --- names: every person a name plate; pairs in aligned columns --- */
+.mom-who{display:flex;flex-direction:column}
+.mom-names{display:flex;flex-direction:column;gap:calc(var(--u) * .3)}
+.mom-names.mr{font-family:Mukta,system-ui,sans-serif;font-size:calc(var(--u) * .84 * var(--gz, 1))}
+.mom-names.en{margin-top:calc(var(--u) * .34);font-family:Lora,Georgia,serif;font-size:calc(var(--u) * .74 * var(--gz, 1))}
+.mom-row{display:flex;justify-content:center;align-items:stretch;line-height:1.35}
+.mom-u{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:100%}
+.mom-u b{position:relative;white-space:nowrap;font-weight:700;color:#FFE3A8}
+.mom-names.en .mom-u b{font-weight:600;color:rgba(255,227,168,.92)}
+/* name first, position second: the designation muted, its brackets soft gold */
+.mom-u i{white-space:nowrap;font-style:normal;font-weight:500;font-size:.9em;color:rgba(243,238,230,.74)}
+.mom-names.en .mom-u i{font-style:italic;font-weight:400;font-size:.92em;color:rgba(243,238,230,.68)}
+/* pair columns keep the widths the engine measured */
+.mom-pair .mom-u{flex:0 0 auto}
+.mom-tight .mom-u i{white-space:normal}
+.mom-br{display:inline-block;color:rgba(247,200,107,.8);font-style:normal}
+/* the thin gold bar standing between the two plates of a pair */
+.mom-bar{flex:0 0 auto;align-self:stretch;width:1.5px;border-radius:1px;
+  background:linear-gradient(180deg,rgba(247,200,107,.15),#F7C86B,rgba(247,200,107,.15));
+  box-shadow:0 0 5px rgba(247,200,107,.5)}
+/* a gold line that sweeps under a name once, on arrival */
+.mom-u b::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1.5px;border-radius:1px;
+  background:linear-gradient(90deg,transparent,#F7C86B 30%,#FFF1CC 50%,#F7C86B 70%,transparent);
+  transform:scaleX(0);transform-origin:left;opacity:0;pointer-events:none}
+/* a shine that crosses each name once, just after its underline */
+.mom-u b::before{content:"";position:absolute;inset:-1px -4px;pointer-events:none;
+  background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,255,255,.7) 50%,transparent 60%,transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;background-position:130% 0;mix-blend-mode:overlay}
+
+/* --- the two descriptions --- */
+.mom-say{position:relative;padding:0 calc(var(--u) * .5)}
+.mom-say::before,.mom-say::after{content:"";position:absolute;top:0;bottom:0;width:1.5px;
+  background:linear-gradient(180deg,rgba(247,200,107,.15),rgba(247,200,107,.5) 20%,rgba(247,200,107,.5) 80%,rgba(247,200,107,.15));
+  pointer-events:none}
+.mom-say::before{left:0}
+.mom-say::after{right:0}
+.mom-say p{margin:0;hyphens:none}
+/* units that must never break across two lines; names bold, book titles gold */
+.mom-k{white-space:nowrap}
+.mom-kw{position:relative;font-weight:700}
+.mom-say .en .mom-kw{font-weight:600}
+.mom-kw::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:rgba(247,200,107,.6);transform:scaleX(0);transform-origin:left;pointer-events:none}
+.mom-kb{position:relative;color:#FFD98A}
+.mom-kb::after{content:"";position:absolute;inset:-1px -3px;pointer-events:none;
+  background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%,transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;background-position:130% 0;mix-blend-mode:overlay}
+.mom-say .mr{font-family:Mukta,system-ui,sans-serif;font-weight:500;
+  font-size:calc(var(--u) * .9);line-height:1.5;color:#F6F1E8;text-wrap:pretty}
+.mom-say .en{margin-top:calc(var(--u) * .18);font-family:Lora,Georgia,serif;font-weight:400;
+  font-size:calc(var(--u) * .78);line-height:1.5;color:rgba(243,238,230,.84);text-wrap:pretty}
+
+/* --- significance and venue: small, gold, secondary --- */
+.mom-end{position:relative;padding-top:calc(var(--u) * .42)}
+.mom-end::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(247,200,107,.55) 20%,rgba(247,200,107,.55) 80%,transparent)}
+.mom-end p{margin:0}
+.mom-end > .mr{position:relative;display:inline-block;max-width:100%;white-space:nowrap;
+  font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .86);line-height:1.35;color:#FFD98A}
+/* Marathi has no italic, so its line is set apart by weight, gold and the sheen */
+.mom-end > .mr::after{
+  content:"";position:absolute;inset:-1px -5px;pointer-events:none;
+  background:linear-gradient(105deg, transparent 0%, transparent 40%, rgba(255,255,255,.72) 50%, transparent 60%, transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;mix-blend-mode:overlay;
+  animation:btFlash 2.4s linear infinite;
+}
+.mom-end > .en{margin-top:calc(var(--u) * .06);font-family:Lora,Georgia,serif;font-style:italic;
+  font-size:calc(var(--u) * .74);line-height:1.35;color:rgba(247,200,107,.82);white-space:nowrap}
+.mom-venue{margin-top:calc(var(--u) * .34);font-family:Mukta,system-ui,sans-serif;
+  font-size:calc(var(--u) * .74);line-height:1.5;color:rgba(243,238,230,.82)}
+.mom-venue p{margin:0}
+.mom-venue p::before{content:"";display:inline-block;width:.42em;height:.42em;margin-right:.45em;
+  border-radius:1px;background:#F7C86B;transform:rotate(45deg);vertical-align:.12em}
+.mom-venue b{font-weight:700;color:#F7C86B}
+.mom-venue .mr{font-family:Mukta,system-ui,sans-serif}
+.mom-venue .en{font-family:Lora,Georgia,serif;font-size:.94em;color:rgba(243,238,230,.7)}
+
+/* --- dots, as Section 1's --- */
+.mom-dots{display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0 2px}
+.mom-dot{position:relative;overflow:hidden;width:5px;height:5px;border-radius:50%;border:0;padding:0;cursor:pointer;
+  background:rgba(26,77,46,.28);transition:.22s}
+.mom-dot.on{background:var(--gold-dark);width:16px;border-radius:2.5px}
+
+/* --- the arrival sequence, once each time a slide comes in. Punchy on
+   arrival, then still for reading: only book titles, the gold bars, the
+   venue diamonds and the progress dot keep a gentle glow. Fade, scale and
+   slide only — nothing moves the layout. --- */
+.mom-slide.on .mom-head{animation:visArrive .5s ease-out .05s both}
+.mom-slide.on .mom-ph{animation:momLand .6s ease-out .12s both, momRim 1.3s ease-out .3s both}
+.mom-slide.on .mom-ph::after{animation:momGleam 1.1s ease-in-out .55s both}
+.mom-slide.on .mom-ten{animation:momRise .55s ease-out .22s both}
+.mom-slide.on .mom-u b::before{animation:btFlash 1.2s linear calc(var(--pd, .38s) + .55s) 1 both}
+.mom-slide.on .mom-u i > .mom-br:first-child{animation:momBrL .45s ease-out calc(var(--pd, .38s) + .2s) both}
+.mom-slide.on .mom-u i > .mom-br:last-child{animation:momBrR .45s ease-out calc(var(--pd, .38s) + .2s) both}
+.mom-slide.on .mom-say::before,.mom-slide.on .mom-say::after{animation:momRule .6s ease-out var(--sd, .9s) both}
+.mom-slide.on .mom-venue b{animation:momGlow 1.2s ease-in-out calc(var(--sd, .9s) + .9s) 1 both}
+.mom-track.mom-hint{animation:momHint 1.3s ease-in-out .6s 1}
+.mom-slide.on .mom-u{animation:momSettle .5s cubic-bezier(.2,.8,.2,1) var(--pd, .38s) both}
+.mom-slide.on .mom-u i{animation:visArrive .45s ease-out calc(var(--pd, .38s) + .12s) both}
+.mom-slide.on .mom-u b::after{animation:momSweep .8s ease-out calc(var(--pd, .38s) + .15s) both}
+.mom-slide.on .mom-bar{animation:momGrow .5s ease-out var(--pd, .38s) both, momGlint 3.6s ease-in-out 2s infinite}
+.mom-slide.on .mom-say{animation:visArrive .5s ease-out var(--sd, .9s) both}
+.mom-slide.on .mom-kw::after{animation:momDraw .6s ease-out calc(var(--sd, .9s) + .25s) both}
+.mom-slide.on .mom-kb::after{animation:btFlash 1.4s linear calc(var(--sd, .9s) + .3s) 1 both}
+.mom-slide.on .mom-kb{animation:momGlow 3.6s ease-in-out calc(var(--sd, .9s) + 1.6s) infinite}
+.mom-slide.on .mom-end::before{animation:momDraw .6s ease-out calc(var(--sd, .9s) + .35s) both}
+.mom-slide.on .mom-end > .mr{animation:momPop .45s cubic-bezier(.2,.9,.3,1.25) calc(var(--sd, .9s) + .5s) both}
+.mom-slide.on .mom-end > .en{animation:visArrive .45s ease-out calc(var(--sd, .9s) + .62s) both}
+.mom-slide.on .mom-venue p::before{animation:momTurn .5s ease-out calc(var(--sd, .9s) + .7s) both, momGlint 3.6s ease-in-out 2.4s infinite}
+.mom-slide.on .mom-venue p{animation:visArrive .45s ease-out calc(var(--sd, .9s) + .7s) both}
+/* the active dot fills over the slide's seconds; held while paused */
+.mom-dot::after{content:"";position:absolute;inset:0;border-radius:inherit;background:#F7C86B;
+  transform:scaleX(0);transform-origin:left;pointer-events:none}
+.mom-dot.on.run::after{animation:momFill var(--secs, 6s) linear both}
+.mom-dots.held .mom-dot::after{animation-play-state:paused}
+
+@keyframes momLand{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:none}}
+@keyframes momSettle{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:none}}
+@keyframes momSweep{0%{opacity:1;transform:scaleX(0)}55%{opacity:1;transform:scaleX(1)}100%{opacity:0;transform:scaleX(1)}}
+@keyframes momGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes momDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes momPop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+@keyframes momTurn{from{opacity:0;transform:rotate(0) scale(.4)}to{opacity:1;transform:rotate(45deg)}}
+@keyframes momGlow{0%,100%{text-shadow:0 0 0 rgba(247,200,107,0)}50%{text-shadow:0 0 9px rgba(247,200,107,.6)}}
+@keyframes momGlint{0%,100%{box-shadow:0 0 3px rgba(247,200,107,.35)}50%{box-shadow:0 0 8px rgba(247,200,107,.75)}}
+@keyframes momFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes momGleam{from{transform:translateX(-120%)}to{transform:translateX(260%)}}
+@keyframes momRim{0%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(247,200,107,.55)}
+  35%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1.5px rgba(247,200,107,.95),0 0 18px rgba(247,200,107,.55)}
+  100%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(247,200,107,.55)}}
+@keyframes momRise{from{opacity:0;transform:translateY(55%);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
+@keyframes momBrL{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
+@keyframes momBrR{from{opacity:0;transform:translateX(5px)}to{opacity:1;transform:none}}
+@keyframes momRule{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes momHint{0%,100%{transform:translateX(0)}30%{transform:translateX(-7%)}55%{transform:translateX(0)}72%{transform:translateX(-2.5%)}}
+
+@media(prefers-reduced-motion:reduce){
+  .mom-track{transition:none}
+  .mom-slide.on .mom-head,.mom-slide.on .mom-ph,.mom-slide.on .mom-u,.mom-slide.on .mom-u i,
+  .mom-slide.on .mom-bar,.mom-slide.on .mom-say,.mom-slide.on .mom-kb,.mom-slide.on .mom-end > .mr,
+  .mom-slide.on .mom-end > .en,.mom-slide.on .mom-venue p,.mom-slide.on .mom-venue p::before{animation:none}
+  .mom-slide.on .mom-kw::after,.mom-slide.on .mom-end::before{animation:none;transform:none}
+  .mom-slide.on .mom-u b::after,.mom-slide.on .mom-kb::after,.mom-dot::after{animation:none;display:none}
+  .mom-slide.on .mom-ten,.mom-slide.on .mom-u i > .mom-br:first-child,.mom-slide.on .mom-u i > .mom-br:last-child,
+  .mom-slide.on .mom-venue b,.mom-track.mom-hint,.mom-slide.on .mom-ph::after,.mom-slide.on .mom-u b::before{animation:none}
+  .mom-slide.on .mom-say::before,.mom-slide.on .mom-say::after{animation:none;transform:none}
+  .mom-ph::after,.mom-u b::before{display:none}
+  .mom-tbox,.mom-tbox::before,.mom-line::after,.mom-end > .mr::after,
+  .mom-frame > .hd-std .hd-rule{animation:none}
+}
