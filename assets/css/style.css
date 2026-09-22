@@ -2300,10 +2300,7 @@ html,body{max-width:100%;overflow-x:hidden}
 html[lang="en"] .sh-box em{letter-spacing:2px}
 html[lang="en"] .st-kw{letter-spacing:1.4px}
 @keyframes shSpin{to{transform:rotate(360deg)}}
-@keyframes shBreathe{
-  0%,100%{transform:scale(1);   box-shadow:0 0 0 0 rgba(247,200,107,.0)}
-  50%    {transform:scale(1.035);box-shadow:0 0 22px 2px rgba(247,200,107,.30)}
-}
+@keyframes shBreathe{0%,100%{transform:scale(1)} 50%{transform:scale(1.035)}}
 /* the rule beneath, with a light running left to right */
 .sh-underline{
   position:relative;display:block;width:62px;height:2px;border-radius:1px;
@@ -2568,7 +2565,7 @@ html[lang="en"] .st-kw{letter-spacing:1.4px}
     transparent 60%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
-  animation:btFlash 1.9s linear infinite;
+  animation:btFlash 3.2s linear infinite;
 }
 
 @media(prefers-reduced-motion:reduce){ .st-hero .sh-quote::after{animation:none;opacity:0} }
@@ -3089,7 +3086,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 7s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 /* a group is marked by a stack of three bars that rise in turn */
 .qa-gmark{
@@ -3313,7 +3310,7 @@ html[lang="en"] .cv-txt{font-family:Lora,Georgia,serif;font-size:11.5px}
   background-size:260% 100%;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 7s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 
 /* 3 — the subheading draws its own rule from the left */
@@ -3688,7 +3685,7 @@ html[lang="mr"] .book-t{
   background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 4.6s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 /* C12 — the pointer sits before the first letter and steps forward */
 .need-mark{
@@ -3720,13 +3717,7 @@ html[lang="mr"] .book-t{
 
 /* 4 — the summary: every figure and frame given something to do */
 @keyframes sumLift{0%{transform:translateY(3px);opacity:.5}100%{transform:none;opacity:1}}
-@keyframes titleGlow{
-  0%,100%{transform:scale(1);text-shadow:none}
-  12%    {transform:scale(1.03);text-shadow:0 0 12px currentColor}
-  26%    {transform:scale(1)}
-  38%    {transform:scale(1.02);text-shadow:0 0 8px currentColor}
-  52%,100%{transform:scale(1);text-shadow:none}
-}
+@keyframes titleGlow{0%,100%{transform:scale(1)} 12%{transform:scale(1.03)} 26%{transform:scale(1)} 38%{transform:scale(1.02)} 52%,100%{transform:scale(1)}}
 @keyframes totalPulse{
   0%,100%{transform:scale(1);text-shadow:none}
   50%    {transform:scale(1.04);text-shadow:0 0 16px rgba(26,77,46,.35)}
@@ -3755,7 +3746,7 @@ html[lang="mr"] .book-t{
   background-size:260% 100%;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 7s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 #orderSum .osum-h::before,#page-cart .osum-h::before{-webkit-text-fill-color:initial}
 
@@ -4361,7 +4352,7 @@ html[lang="mr"] .vis-quote{hyphens:none;-webkit-hyphens:none}
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 6.5s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 
 /* book page only: sizes from the scale, and the button spans the card */
@@ -4429,7 +4420,7 @@ html[lang="mr"] .vis-quote{hyphens:none;-webkit-hyphens:none}
   background-size:270% 100%;background-position:100% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 6.5s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 .vcard-mark{
   flex-shrink:0;width:.62em;height:.62em;border-radius:2px;
@@ -4523,7 +4514,7 @@ html[lang="mr"] .vis-quote{hyphens:none;-webkit-hyphens:none}
   background:linear-gradient(100deg,
     transparent 0%,transparent 36%,rgba(255,255,255,.28) 50%,transparent 64%,transparent 100%);
   background-size:280% 100%;background-repeat:no-repeat;
-  animation:hdSheen 7s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 .rate-grid{
   display:grid;grid-template-columns:1fr auto auto;
@@ -4771,13 +4762,14 @@ html[lang="mr"] .vis-quote{hyphens:none;-webkit-hyphens:none}
 .bt b::after{
   content:"";position:absolute;inset:-2px -6px;pointer-events:none;
   background:linear-gradient(105deg,
-    transparent 0%, transparent 40%,
-    rgba(255,255,255,.85) 50%,
-    transparent 60%, transparent 100%);
+    transparent 0%, transparent 34%,
+    rgba(255,255,255,.95) 50%,
+    transparent 66%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
-  animation:btFlash 1.9s linear infinite;
+  animation:btFlash 3.2s linear infinite;
 }
+@keyframes titleSweep{0%{background-position:130% 0;opacity:1}55%{background-position:-30% 0;opacity:1}55.01%,100%{background-position:130% 0;opacity:1}}
 @keyframes btFlash{
   0%     {background-position:130% 0}
   55%    {background-position:-30% 0}
@@ -5121,7 +5113,7 @@ form.collapsed .cond{display:none}
   background-size:280% 100%;background-position:135% 0;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  animation:hdSheen 8s ease-in-out infinite;
+  animation:hdSheen 3.6s ease-in-out infinite;
 }
 /* two even columns, equal heights, aligned labels */
 #page-books .fgrid{
@@ -5343,10 +5335,7 @@ form.collapsed .cond{display:none}
 
 /* three things move on a card: the digit that names it, the count,
    and the card itself on press. Everything else stays still. */
-@keyframes stdNum{
-  0%,100%{transform:scale(1);text-shadow:0 2px 6px rgba(0,0,0,.18)}
-  46%    {transform:scale(1.12);text-shadow:0 0 16px rgba(255,255,255,.9),0 2px 6px rgba(0,0,0,.18)}
-}
+@keyframes stdNum{0%,100%{transform:scale(1)} 46%{transform:scale(1.12)}}
 @keyframes stdCount{
   0%,100%{transform:scale(1)}
   12%    {transform:scale(1.14)}
@@ -5476,7 +5465,7 @@ form.collapsed .cond{display:none}
   opacity:0;
 }
 .std-card.seen .std-nm::after{
-  animation:stdNameFlash .7s linear var(--fd,0s) both;
+  animation:stdNameFlash .7s linear var(--fd,0s) both, titleSweep 3.2s linear calc(var(--fd,0s) + 1.4s) infinite;
 }
 /* the zoom is a punch: sharp out, slow back, then still until its turn
    comes round again. 1.04 is the ceiling — at 320px the longest name has
@@ -5924,12 +5913,12 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
 .vis-title > span::after{
   content:"";position:absolute;inset:-1px -5px;pointer-events:none;
   background:linear-gradient(105deg,
-    transparent 0%, transparent 40%,
-    rgba(255,255,255,.72) 50%,
-    transparent 60%, transparent 100%);
+    transparent 0%, transparent 34%,
+    rgba(255,255,255,.95) 50%,
+    transparent 66%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
-  animation:btFlash 2.4s linear infinite;
+  animation:btFlash 3.2s linear infinite;
 }
 /* the bracketed tail rides the same line at 0.72 of the title */
 .vis-q{
@@ -5979,7 +5968,7 @@ html[lang="en"] .vis-out b{letter-spacing:.4px}
     transparent 60%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;
   mix-blend-mode:overlay;
-  animation:btFlash 2.9s linear infinite;
+  animation:btFlash 3.2s linear infinite;
 }
 
 /* ---------- 3 · the matter, on the book page's reading strategy ---------- */
@@ -6393,14 +6382,8 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--vu) * 1.1)}
   .vis-sign b{animation:none;-webkit-text-fill-color:#FFE3A8}
 }
 
-@keyframes visTitleGlow{
-  0%,100%{text-shadow:0 0 0 rgba(255,217,138,0)}
-  50%    {text-shadow:0 0 16px rgba(255,217,138,.7)}
-}
-@keyframes visLabGlow{
-  0%,100%{text-shadow:0 0 0 rgba(255,221,149,0)}
-  50%    {text-shadow:0 0 12px rgba(255,221,149,.6)}
-}
+@keyframes visTitleGlow{0%,100%{transform:none} 50%{transform:none}}
+@keyframes visLabGlow{0%,100%{transform:none} 50%{transform:none}}
 
 /* ===================================================================
    OFF-SCREEN STILLNESS
@@ -6672,9 +6655,9 @@ body.booting .offer-grid:empty{
 /* Marathi has no italic, so its line is set apart by weight, gold and the sheen */
 .mom-end > .mr::after{
   content:"";position:absolute;inset:-1px -5px;pointer-events:none;
-  background:linear-gradient(105deg, transparent 0%, transparent 40%, rgba(255,255,255,.72) 50%, transparent 60%, transparent 100%);
+  background:linear-gradient(105deg, transparent 0%, transparent 34%, rgba(255,255,255,.95) 50%, transparent 66%, transparent 100%);
   background-size:250% 100%;background-repeat:no-repeat;mix-blend-mode:overlay;
-  animation:btFlash 2.4s linear infinite;
+  animation:btFlash 3.2s linear infinite;
 }
 .mom-end > .en{margin-top:calc(var(--u) * .06);font-family:Lora,Georgia,serif;font-style:italic;
   font-size:calc(var(--u) * .74);line-height:1.35;color:rgba(247,200,107,.82);white-space:nowrap}
@@ -6854,13 +6837,77 @@ body.booting .offer-grid:empty{
 }
 
 /* ===================================================================
+   RESERVED SPACE — Sections 5 and 6 are built at idle time; until then
+   they hold exactly the height they will have (measured per width and
+   language), so nothing below them jumps when they appear. A plain class
+   set once at build (.is-built), not :has() — the browser re-checks :has()
+   whenever anything inside changes, and slides change constantly.
+   =================================================================== */
+.mom-track:not(.is-built){min-height:507px}
+.vis-deck:not(.is-built){min-height:366px}
+html[lang="en"] .vis-deck:not(.is-built){min-height:419px}
+@media(min-width:360px){.mom-track:not(.is-built){min-height:503px}.vis-deck:not(.is-built){min-height:354px}html[lang="en"] .vis-deck:not(.is-built){min-height:389px}}
+@media(min-width:400px){.mom-track:not(.is-built){min-height:557px}.vis-deck:not(.is-built){min-height:392px}html[lang="en"] .vis-deck:not(.is-built){min-height:433px}}
+@media(min-width:560px){.mom-track:not(.is-built){min-height:646px}.vis-deck:not(.is-built){min-height:399px}html[lang="en"] .vis-deck:not(.is-built){min-height:442px}}
+@media(min-width:800px){.mom-track:not(.is-built){min-height:732px}.vis-deck:not(.is-built){min-height:373px}html[lang="en"] .vis-deck:not(.is-built){min-height:387px}}
+@media(min-width:1200px){.mom-track:not(.is-built){min-height:932px}.vis-deck:not(.is-built){min-height:347px}html[lang="en"] .vis-deck:not(.is-built){min-height:385px}}
+
+/* ===================================================================
+   COMPOSITOR SHIMMERS (v20c) — every title shimmer and glow only moves
+   or fades, so it runs continuously on every phone without repainting.
+   The light band is a small layer sliding across its title (clipped by
+   the title, with room above and below for Marathi vowel marks); glow
+   pulses are now a steady glow, with the original gentle movement kept.
+   The original rules above are untouched; this section overrides them,
+   and only when the visitor has not asked for reduced motion.
+   =================================================================== */
+@keyframes glide{0%{transform:translateX(-120%)}55%{transform:translateX(250%)}55.01%,100%{transform:translateX(-120%)}}
+@keyframes glideOnce{from{transform:translateX(-120%)}to{transform:translateX(250%)}}
+@keyframes glideLine{0%{transform:translateX(-110%)}60%,100%{transform:translateX(200%)}}
+@keyframes glideHead{0%{transform:translateX(-120%)}60%,100%{transform:translateX(260%)}}
+@media (prefers-reduced-motion:no-preference){
+  .bt b, .vis-title > span, .vis-lab > span, .mom-end > .mr, .st-hero .sh-quote, .cond > span:last-child, .std-nm{clip-path:inset(-10px 0 -10px 0)}
+  .bt b::after, .vis-title > span::after, .vis-lab > span::after, .mom-end > .mr::after, .st-hero .sh-quote::after, .cond > span:last-child::after, .std-nm::after{left:0;right:auto;width:46%;background-size:100% 100%;background-position:0 0;background-image:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.95) 50%,transparent 100%);transform:translateX(-120%);will-change:transform}
+  .bt b::after{animation:glide 3.2s linear infinite}
+  .vis-title > span::after{animation:glide 3.2s linear infinite}
+  .vis-lab > span::after{animation:glide 3.2s linear infinite}
+  .mom-end > .mr::after{animation:glide 3.2s linear infinite}
+  .st-hero .sh-quote::after{animation:glide 3.2s linear infinite}
+  .cond > span:last-child::after{animation:glide 3.2s linear infinite}
+  .std-card.seen .std-nm::after{opacity:1;animation:glideOnce .9s ease-out var(--fd,0s) both, glide 3.2s linear calc(var(--fd,0s) + 1.4s) infinite}
+  .std-go::after, #offerGrid .offer-go::after{left:0;right:auto;width:42%;background-size:100% 100%;background-position:0 0;transform:translateX(-120%);will-change:transform}
+  .std-go::after{animation:glide 3.4s ease-in-out infinite}
+  #offerGrid .offer-go::after{animation:glide 3.4s ease-in-out infinite}
+  .sh-underline::after, .mom-line::after{right:auto;width:60%;background-size:100% 100%;background-position:0 0;transform:translateX(-110%);will-change:transform;animation:glideLine 3.4s ease-in-out infinite}
+  .hd-t > span, .need-t > span, .vcard-title > span, .qa-gt{position:relative;animation:none;background-image:none;color:var(--green-dark);-webkit-text-fill-color:var(--green-dark)}
+  .hd-t > span::after, .need-t > span::after, .vcard-title > span::after, .qa-gt::after{content:"";position:absolute;top:-4px;bottom:-4px;left:0;width:40%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(232,163,61,.9) 50%,transparent);mix-blend-mode:color-dodge;transform:translateX(-120%);will-change:transform;animation:glideHead 3.6s ease-in-out infinite}
+  .opick-name, #orderSum .oline-name,#page-cart .oline-name{text-shadow:0 0 7px color-mix(in srgb, currentColor 40%, transparent)}
+  .vis-title, .vis-card.is-front .vis-title{text-shadow:0 0 16px rgba(255,217,138,0.42)}
+  .vis-lab, .vis-card.is-front .vis-lab{text-shadow:0 0 12px rgba(255,221,149,0.36)}
+  .std-num{text-shadow:0 0 16px rgba(255,255,255,0.50),0 2px 6px rgba(0,0,0,0.12)}
+  .sh-box, .mom-tbox{box-shadow:0 0 22px 2px rgba(247,200,107,0.24)}
+}
+
+/* ===================================================================
+   TITLE GLOW — a steady soft glow on light titles over dark backgrounds,
+   so they glow all the time, not only while a sweep passes.
+   =================================================================== */
+.std-card .std-nm{text-shadow:0 0 10px rgba(255,255,255,.34),0 1px 3px rgba(0,0,0,.45)}
+.std-card .std-nm::after{background-image:linear-gradient(100deg, transparent 0%,transparent 34%,rgba(255,255,255,.95) 50%,transparent 66%,transparent 100%)}
+.mom-end > .mr{text-shadow:0 0 12px rgba(255,217,138,.42)}
+
+/* ===================================================================
    WHILE SCROLLING — generated from this stylesheet, do not edit by hand
    1 · While scrolling or while a book video plays (.scrolling / .watching
        on <html>): every looping effect is off; one that mixes an entrance
        with a loop is only held, so the entrance is never replayed.
-   (The 1.2s hold around a slide change is done in app.js, turn(), directly
-   on the effects — a stylesheet class cannot override an effect that
-   app.js has already paused and resumed.)
+   2 · On a slow phone (.lite-fx): looping effects that must be repainted
+       every frame rest. Every title shimmer and glow converted in
+       COMPOSITOR SHIMMERS above is left out of this list on purpose: they
+       only move or fade, and run continuously on every phone.
+   3 · While a window is open (.win-open): every looping effect on the
+       page behind it rests.
+   (The 1.2s hold around a slide change is done in app.js, turn().)
    Regenerate this block whenever a looping effect is added or removed.
    =================================================================== */
 html:is(.scrolling,.watching) #offerGrid .offer-go::after,
@@ -6944,6 +6991,7 @@ html:is(.scrolling,.watching) .hd-mark,
 html:is(.scrolling,.watching) .hd-s::after,
 html:is(.scrolling,.watching) .hd-std .hd-rule,
 html:is(.scrolling,.watching) .hd-t > span,
+html:is(.scrolling,.watching) .hd-t > span::after,
 html:is(.scrolling,.watching) .modal-wa-btn,
 html:is(.scrolling,.watching) .modal-wa-btn::after,
 html:is(.scrolling,.watching) .modal-wa-btn::before,
@@ -6954,6 +7002,7 @@ html:is(.scrolling,.watching) .mom-tbox::before,
 html:is(.scrolling,.watching) .need-box,
 html:is(.scrolling,.watching) .need-s::after,
 html:is(.scrolling,.watching) .need-t > span,
+html:is(.scrolling,.watching) .need-t > span::after,
 html:is(.scrolling,.watching) .offer-frame::before,
 html:is(.scrolling,.watching) .offer-mark,
 html:is(.scrolling,.watching) .offer-rim,
@@ -6975,6 +7024,7 @@ html:is(.scrolling,.watching) .qa-chip-all,
 html:is(.scrolling,.watching) .qa-gmark::after,
 html:is(.scrolling,.watching) .qa-gmark::before,
 html:is(.scrolling,.watching) .qa-gt,
+html:is(.scrolling,.watching) .qa-gt::after,
 html:is(.scrolling,.watching) .qa-sign,
 html:is(.scrolling,.watching) .rate-cap::after,
 html:is(.scrolling,.watching) .rate-p,
@@ -7000,6 +7050,7 @@ html:is(.scrolling,.watching) .vcard-cap::before,
 html:is(.scrolling,.watching) .vcard-mark,
 html:is(.scrolling,.watching) .vcard-tag,
 html:is(.scrolling,.watching) .vcard-title > span,
+html:is(.scrolling,.watching) .vcard-title > span::after,
 html:is(.scrolling,.watching) .vid-grid .car-media,
 html:is(.scrolling,.watching) .vid-grid .vcard::before,
 html:is(.scrolling,.watching) .vis-arrow,
@@ -7035,3 +7086,280 @@ html:is(.scrolling,.watching) .vis-card.is-front .vis-lab,
 html:is(.scrolling,.watching) .vis-card.is-front .vis-lab::before,
 html:is(.scrolling,.watching) .vis-card.is-front .vis-title,
 html:is(.scrolling,.watching) .vis-frame.is-turning::before{animation-play-state:paused !important}
+html.lite-fx #orderSum .cond,
+html.lite-fx #orderSum .cond-i,
+html.lite-fx #orderSum .of-pct,
+html.lite-fx #orderSum .of-save,
+html.lite-fx #orderSum .oline-amt b,
+html.lite-fx #orderSum .osf span,
+html.lite-fx #orderSum .osf-avg b,
+html.lite-fx #orderSum .osf-save b,
+html.lite-fx #orderSum .osum-foot::before,
+html.lite-fx #orderSum .osum-h,
+html.lite-fx #page-books .flab,
+html.lite-fx #page-books .fsel-pick,
+html.lite-fx #page-cart .cart-amt b,
+html.lite-fx #page-cart .cart-avg b,
+html.lite-fx #page-cart .cart-cta .btn-gold,
+html.lite-fx #page-cart .cart-cta .btn-gold::after,
+html.lite-fx #page-cart .cart-grand b,
+html.lite-fx #page-cart .cart-next,
+html.lite-fx #page-cart .cart-pct,
+html.lite-fx #page-cart .cart-qmark,
+html.lite-fx #page-cart .cart-row .cart-saved,
+html.lite-fx #page-cart .cart-row::before,
+html.lite-fx #page-cart .cart-sums .cart-saved b,
+html.lite-fx #page-cart .cond-i,
+html.lite-fx #page-cart .oline-amt b,
+html.lite-fx #page-cart .osf span,
+html.lite-fx #page-cart .osf-avg b,
+html.lite-fx #page-cart .osf-save b,
+html.lite-fx #page-cart .osum-foot::before,
+html.lite-fx #page-cart .osum-h,
+html.lite-fx #page-qa .qa-hint::before,
+html.lite-fx .act-order::after,
+html.lite-fx .bd .bd-cover::after,
+html.lite-fx .bd .bd-fact-v,
+html.lite-fx .bd .bd-title .hd-mark,
+html.lite-fx .bd .btn-gold,
+html.lite-fx .bd .btn-gold::after,
+html.lite-fx .bd .calc-line span.calc-save,
+html.lite-fx .bd .calc-save,
+html.lite-fx .bd .calc-total,
+html.lite-fx .bd .disc-head,
+html.lite-fx .bd .disc-head b,
+html.lite-fx .bd .nudge-text b,
+html.lite-fx .bd .pct,
+html.lite-fx .bd-videos .car-media,
+html.lite-fx .bd-videos .vcard-title,
+html.lite-fx .bd-videos .vcard::before,
+html.lite-fx .bsec::before,
+html.lite-fx .car-slide .car-media,
+html.lite-fx .car-slide .vcard::before,
+html.lite-fx .cta-ico,
+html.lite-fx .cta::after,
+html.lite-fx .cv-orb,
+html.lite-fx .cv-txt,
+html.lite-fx .done-wa,
+html.lite-fx .done-wa::after,
+html.lite-fx .f label,
+html.lite-fx .f label::before,
+html.lite-fx .flow-ico,
+html.lite-fx .flow-note,
+html.lite-fx .flow-note::before,
+html.lite-fx .fx-glow::after,
+html.lite-fx .fx-rings::after,
+html.lite-fx .fx-spark::after,
+html.lite-fx .gate-submit,
+html.lite-fx .gate-submit::after,
+html.lite-fx .hd-mark,
+html.lite-fx .modal-wa-btn,
+html.lite-fx .modal-wa-btn::after,
+html.lite-fx .need-box,
+html.lite-fx .need-s::after,
+html.lite-fx .offer-frame::before,
+html.lite-fx .offer-mark,
+html.lite-fx .om-now.live b,
+html.lite-fx .om-saved,
+html.lite-fx .opick-cover::after,
+html.lite-fx .opick-row.on::before,
+html.lite-fx .order-done .btn-line::after,
+html.lite-fx .osum-empty,
+html.lite-fx .osum-h::before,
+html.lite-fx .osum-save b,
+html.lite-fx .osum-total b,
+html.lite-fx .qa-ask-btn,
+html.lite-fx .qa-ask-btn::after,
+html.lite-fx .qa-bsec::before,
+html.lite-fx .qa-chip-all,
+html.lite-fx .qa-gmark::after,
+html.lite-fx .qa-gmark::before,
+html.lite-fx .qa-sign,
+html.lite-fx .rate-cap::after,
+html.lite-fx .rate-p,
+html.lite-fx .sh-step,
+html.lite-fx .sh-steps.big .sh-step,
+html.lite-fx .std-frame::before,
+html.lite-fx .sumcard-edit,
+html.lite-fx .topbar::after,
+html.lite-fx .vcard-btn::after,
+html.lite-fx .vcard-cap::before,
+html.lite-fx .vcard-mark,
+html.lite-fx .vcard-tag,
+html.lite-fx .vid-grid .car-media,
+html.lite-fx .vid-grid .vcard::before,
+html.lite-fx .vis-arrow,
+html.lite-fx .vis-card.is-front .vis-lab::before,
+html.lite-fx .vis-frame.is-turning::before,
+html.lite-fx .vis-frame::before,
+html.lite-fx .vis-lab::before,
+html.lite-fx .vis-out b,
+html.lite-fx .vis-sign b,
+html.lite-fx .win-lang,
+html.lite-fx .wpath::before,
+html.lite-fx body.booting .book-grid:empty,
+html.lite-fx body.booting .ex-grid:empty,
+html.lite-fx body.booting .offer-grid:empty,
+html.lite-fx body.booting .std-grid:empty,
+html.lite-fx body.booting [data-t]:empty{animation:none !important}
+html.win-open #site #offerGrid .offer-go::after,
+html.win-open #site #orderSum .cond,
+html.win-open #site #orderSum .cond-i,
+html.win-open #site #orderSum .oline-name,
+html.win-open #site #orderSum .osf s,
+html.win-open #site #orderSum .osf span,
+html.win-open #site #orderSum .osf-avg b,
+html.win-open #site #orderSum .osum-foot::before,
+html.win-open #site #orderSum .osum-h,
+html.win-open #site #page-books .flab,
+html.win-open #site #page-books .fsel-pick,
+html.win-open #site #page-cart .cart-amt b,
+html.win-open #site #page-cart .cart-avg b,
+html.win-open #site #page-cart .cart-cta .btn-gold,
+html.win-open #site #page-cart .cart-cta .btn-gold::after,
+html.win-open #site #page-cart .cart-foot::before,
+html.win-open #site #page-cart .cart-grand b,
+html.win-open #site #page-cart .cart-mrp,
+html.win-open #site #page-cart .cart-mrpline s,
+html.win-open #site #page-cart .cart-next,
+html.win-open #site #page-cart .cart-qmark,
+html.win-open #site #page-cart .cart-row::before,
+html.win-open #site #page-cart .cond-i,
+html.win-open #site #page-cart .oline-name,
+html.win-open #site #page-cart .osf s,
+html.win-open #site #page-cart .osf span,
+html.win-open #site #page-cart .osf-avg b,
+html.win-open #site #page-cart .osum-foot::before,
+html.win-open #site #page-cart .osum-h,
+html.win-open #site #page-qa .qa-hint::before,
+html.win-open #site .act-order::after,
+html.win-open #site .bd .bd-cover::after,
+html.win-open #site .bd .bd-fact-v,
+html.win-open #site .bd .bd-title .hd-mark,
+html.win-open #site .bd .btn-gold,
+html.win-open #site .bd .btn-gold::after,
+html.win-open #site .bd .calc-line span.calc-save,
+html.win-open #site .bd .calc-save,
+html.win-open #site .bd .calc-total,
+html.win-open #site .bd .disc-head,
+html.win-open #site .bd .disc-head b,
+html.win-open #site .bd .nudge-text b,
+html.win-open #site .bd .pct,
+html.win-open #site .bd-rule,
+html.win-open #site .bd-videos .car-media,
+html.win-open #site .bd-videos .vcard-title,
+html.win-open #site .bd-videos .vcard::before,
+html.win-open #site .bsec::before,
+html.win-open #site .bt b::after,
+html.win-open #site .car-slide .car-media,
+html.win-open #site .car-slide .vcard::before,
+html.win-open #site .cond > span:last-child,
+html.win-open #site .cond > span:last-child::after,
+html.win-open #site .cta,
+html.win-open #site .cta-ico,
+html.win-open #site .cta-rim,
+html.win-open #site .cta::after,
+html.win-open #site .cv-orb,
+html.win-open #site .cv-orb::before,
+html.win-open #site .cv-txt,
+html.win-open #site .done-wa,
+html.win-open #site .done-wa::after,
+html.win-open #site .done-wa::before,
+html.win-open #site .f label,
+html.win-open #site .f label::before,
+html.win-open #site .flow-ico,
+html.win-open #site .flow-note,
+html.win-open #site .flow-note::before,
+html.win-open #site .fx-beam::after,
+html.win-open #site .fx-door::after,
+html.win-open #site .fx-glow::after,
+html.win-open #site .fx-join::after,
+html.win-open #site .fx-rings::after,
+html.win-open #site .fx-rise::after,
+html.win-open #site .fx-spark::after,
+html.win-open #site .gate-submit,
+html.win-open #site .gate-submit::after,
+html.win-open #site .hd-mark,
+html.win-open #site .hd-s::after,
+html.win-open #site .hd-std .hd-rule,
+html.win-open #site .hd-t > span,
+html.win-open #site .hd-t > span::after,
+html.win-open #site .modal-wa-btn,
+html.win-open #site .modal-wa-btn::after,
+html.win-open #site .modal-wa-btn::before,
+html.win-open #site .mom-end > .mr::after,
+html.win-open #site .mom-line::after,
+html.win-open #site .mom-tbox,
+html.win-open #site .mom-tbox::before,
+html.win-open #site .need-box,
+html.win-open #site .need-s::after,
+html.win-open #site .need-t > span,
+html.win-open #site .need-t > span::after,
+html.win-open #site .offer-frame::before,
+html.win-open #site .offer-mark,
+html.win-open #site .offer-rim,
+html.win-open #site .om-saved,
+html.win-open #site .opick-cover::after,
+html.win-open #site .opick-name,
+html.win-open #site .opick-row.on::before,
+html.win-open #site .order-done .btn-line::after,
+html.win-open #site .osum-empty,
+html.win-open #site .osum-h::before,
+html.win-open #site .osum-save b,
+html.win-open #site .osum-total b,
+html.win-open #site .peek-tab em,
+html.win-open #site .qa-ask-btn,
+html.win-open #site .qa-ask-btn::after,
+html.win-open #site .qa-ask-btn::before,
+html.win-open #site .qa-bsec::before,
+html.win-open #site .qa-chip-all,
+html.win-open #site .qa-gmark::after,
+html.win-open #site .qa-gmark::before,
+html.win-open #site .qa-gt,
+html.win-open #site .qa-gt::after,
+html.win-open #site .qa-sign,
+html.win-open #site .rate-cap::after,
+html.win-open #site .rate-p,
+html.win-open #site .sh-box,
+html.win-open #site .sh-box::before,
+html.win-open #site .sh-logo-wrap::before,
+html.win-open #site .sh-rays,
+html.win-open #site .sh-step,
+html.win-open #site .sh-steps.big .sh-step,
+html.win-open #site .sh-underline::after,
+html.win-open #site .st-arw,
+html.win-open #site .st-hero .sh-quote::after,
+html.win-open #site .st-hero::before,
+html.win-open #site .std-count,
+html.win-open #site .std-frame::before,
+html.win-open #site .std-go::after,
+html.win-open #site .std-num,
+html.win-open #site .strip-track,
+html.win-open #site .sumcard-edit,
+html.win-open #site .topbar::after,
+html.win-open #site .vcard-btn::after,
+html.win-open #site .vcard-cap::before,
+html.win-open #site .vcard-mark,
+html.win-open #site .vcard-tag,
+html.win-open #site .vcard-title > span,
+html.win-open #site .vcard-title > span::after,
+html.win-open #site .vid-grid .car-media,
+html.win-open #site .vid-grid .vcard::before,
+html.win-open #site .vis-arrow,
+html.win-open #site .vis-arrow::after,
+html.win-open #site .vis-frame::before,
+html.win-open #site .vis-lab,
+html.win-open #site .vis-lab > span::after,
+html.win-open #site .vis-lab::before,
+html.win-open #site .vis-out b,
+html.win-open #site .vis-sign b,
+html.win-open #site .vis-title,
+html.win-open #site .vis-title > span::after,
+html.win-open #site .win-lang,
+html.win-open #site .wp-s,
+html.win-open #site .wpath::before,
+html.win-open #site body.booting .book-grid:empty,
+html.win-open #site body.booting .ex-grid:empty,
+html.win-open #site body.booting .offer-grid:empty,
+html.win-open #site body.booting .std-grid:empty,
+html.win-open #site body.booting [data-t]:empty{animation:none !important}

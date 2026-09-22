@@ -49,7 +49,12 @@ const DIWALI = {
     const C = (RUTUJA.content && RUTUJA.content.config) || {};
     this.cfg = { start: C.diwali_start || '09-01', end: C.diwali_end || '11-30' };
     this.check();
+    /* once the fonts are in, the button's lines are fitted again (once) */
+    (RUTUJA.fontsReady || Promise.resolve()).then(() => this.fitButton(document.querySelector('#stdGrid [data-dw]'))).catch(() => {});
     document.addEventListener('visibilitychange', () => { if (!document.hidden) this.check(); });
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => {
+      this.fitButton(document.querySelector('#stdGrid [data-dw]')); this.fitTag(document.querySelector('#dwTop .dw-tag'));
+    }, 200); });
     if (location.hash === '#diwali' && !this.inSeason()) this.toast();
     /* the window's language button repaints the page; the window's own
        Diwali pieces are drawn again once it has */
@@ -97,6 +102,7 @@ const DIWALI = {
 
   off() {
     this.on = false; this.ready = false;
+    if (this._fw) { this._fw.stop(); this._fw = null; }
     const b = document.querySelector('#stdGrid [data-dw]'); if (b) b.remove();
     if (this.isOpen()) ORDER.close();
   },
@@ -115,15 +121,12 @@ const DIWALI = {
     const grid = document.getElementById('stdGrid'); if (!grid) return;
     const old = grid.querySelector('[data-dw]'); if (old) old.remove();
     const t = k => RUTUJA.t(k);
-    const items = [1, 2, 3, 4].map((n, i) =>
-      `<li style="--fd:${(i * 0.09).toFixed(2)}s"><span class="std-nm">${t('dw_item')} ${this.dev(n)}</span></li>`).join('');
-    const spots = [[9, 24], [30, 80], [52, 16], [74, 74], [93, 34]];
-    /* staggered across the cycle so the bursts take turns rather than
-       all being lit at once */
-    const bursts = spots.map(([x, y], i) => `<i class="dw-b" style="left:${x}%;top:${y}%;--d:${(i * 0.64).toFixed(2)}s"></i>`).join('');
+    const stds = String(t('dw_stds')).split('|');
+    const items = stds.map((sd, i) =>
+      `<li style="--fd:${(i * 0.09).toFixed(2)}s"><span class="std-nm">${t('dw_item')} · ${sd}</span></li>`).join('');
     grid.insertAdjacentHTML('beforeend', `
       <button class="std-card dw-card" data-dw="1" type="button" aria-label="${t('dw_title')}">
-        <span class="dw-fx" aria-hidden="true">${bursts}<i class="dw-tw"></i><i class="dw-tw dw-tw2"></i></span>
+        <span class="dw-fx" aria-hidden="true"><canvas class="dw-canvas"></canvas></span>
         <span class="std-left">
           <span class="std-top">${t('dw_std')}</span>
           <span class="std-figure"><span class="std-num dw-num">${t('dw_range')}</span></span>
@@ -134,10 +137,130 @@ const DIWALI = {
           <span class="std-go">${t('std_open')}<i class="std-arrow">&rarr;</i></span>
         </span>
       </button>`);
-    grid.querySelector('[data-dw]').addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this.open(); });
+    const btn = grid.querySelector('[data-dw]');
+    btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this.open(); });
+    requestAnimationFrame(() => { this.fitButton(btn); this.fireworks(btn); });
+
     try { BOOKS.watchCards(); } catch (e) {}
     try { RUTUJA.reStill(); } catch (e) {}
   },
+
+  /* Firecrackers, drawn into one canvas — one layer, however many bursts.
+     Measured on a slow phone: twelve separately animated sparks (each its
+     own layer inside the button's rounded, clipped corners) sometimes
+     stuttered; two did not. A canvas redrawn twelve times a second from
+     the same 8-frame burst strips costs about a millisecond per step, and
+     stops entirely off screen, while scrolling, while a video plays, and
+     while a window covers the page. Sixteen bursts (38-52px) and glitter on
+     a capable phone; eight on a slow one. */
+  fireworks(btn) {
+    if (this._fw) { this._fw.stop(); this._fw = null; }
+    const cv = btn && btn.querySelector('.dw-canvas'); if (!cv) return;
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const v = RUTUJA.VERSION, names = ['gold', 'rose', 'teal'];
+    /* loaded once and reused by every redraw of the button */
+    const imgs = this._imgs || (this._imgs = names.map(n => { const i = new Image(); i.src = 'assets/img/diwali/fw-' + n + '.webp?v=' + v; return i; }));
+    /* bursts over the titles sit on the top and bottom edges of the middle
+       column, so every line stays easy to read */
+    const spots = [[5, 22], [12, 76], [20, 40], [27, 90], [33, 8], [40, 94], [46, 6], [52, 95],
+                   [58, 7], [64, 93], [70, 8], [76, 86], [82, 30], [88, 64], [94, 18], [97, 84]];
+    const glit = [[12, 55], [33, 12], [50, 90], [68, 52], [84, 90], [95, 12]];
+    let raf = 0, last = -1, seen = false, ctx = null, W = 0, H = 0, dpr = 1;
+    const size = () => {
+      const r = btn.getBoundingClientRect(); dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    const covered = () => [...document.querySelectorAll('.modal')].some(m => !m.classList.contains('hidden'));
+    const busy = () => RUTUJA._scrolling || RUTUJA._watching || document.hidden || covered();
+    const draw = now => {
+      raf = requestAnimationFrame(draw);
+      if (!seen || busy()) return;
+      const step = Math.floor(now / 83);                 /* 12 steps a second */
+      if (step === last) return; last = step;
+      if (!ctx) size();
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';           /* overlapping bursts add light, like real fireworks */
+      const lite = document.documentElement.classList.contains('lite-fx');
+      spots.forEach(([x, y], i) => {
+        if (lite && i % 2) return;
+        const period = 14 + (i % 4) * 3;                  /* steps per cycle: 8 lit, the rest dark */
+        const f = (step + i * 5) % period; if (f > 7) return;
+        const im = imgs[i % 3]; if (!im.complete || !im.naturalWidth) return;
+        const z = 38 + (i % 3) * 7;                       /* 38, 45 or 52 px */
+        ctx.drawImage(im, 0, f * 64, 64, 64, x / 100 * W - z / 2, y / 100 * H - z / 2, z, z);
+      });
+      ctx.globalCompositeOperation = 'source-over';
+      if (!lite) glit.forEach(([x, y], i) => {
+        const a = 0.25 + 0.75 * Math.abs(Math.sin((step + i * 3) / 4));
+        ctx.fillStyle = `rgba(255,246,208,${a.toFixed(2)})`;
+        ctx.beginPath(); ctx.arc(x / 100 * W, y / 100 * H, 1.8, 0, 6.2832); ctx.fill();
+      });
+    };
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+      seen = e.isIntersecting; if (seen && !raf && !reduced) raf = requestAnimationFrame(draw);
+      if (!seen && raf) { cancelAnimationFrame(raf); raf = 0; }
+    })) : null;
+    if (io) io.observe(btn); else { seen = true; if (!reduced) raf = requestAnimationFrame(draw); }
+    let rt; const onResize = () => { clearTimeout(rt); rt = setTimeout(() => { ctx = null; last = -1; }, 150); };
+    window.addEventListener('resize', onResize);
+    this._fw = { stop: () => { if (raf) cancelAnimationFrame(raf); raf = 0; if (io) io.disconnect(); window.removeEventListener('resize', onResize); } };
+  },
+
+  /* The four lines of the button stay on one line each: if the longest is
+     too wide, all four shrink together — never below 88%. */
+  fitButton(btn) {
+    const mid = btn && btn.querySelector('.dw-mid'); if (!mid || !mid.clientWidth) return;
+    mid.classList.remove('dw-wrap');
+    const lis = [...mid.querySelectorAll('li')];
+    lis.forEach(li => { li.style.fontSize = ''; });
+    /* the lines carry their own size in pixels, so each line is shrunk
+       itself — together, and measured again after each step, because the
+       bullet's space does not shrink with the text */
+    const base = parseFloat(getComputedStyle(lis[0]).fontSize);
+    const over = () => Math.max(...lis.map(li => li.scrollWidth / Math.max(1, li.clientWidth)));
+    let f = 1;
+    for (let k = 0; k < 4 && over() > 1.005; k++) {
+      f = Math.max(0.88, f / over() * 0.995);
+      lis.forEach(li => { li.style.fontSize = (base * f).toFixed(2) + 'px'; });
+      if (f === 0.88) break;
+    }
+    if (over() > 1.005) mid.classList.add('dw-wrap');   /* never cut: wrap instead */
+  },
+
+  /* The tagline: one line wherever it fits at 88% or more; otherwise two
+     even lines broken at its own pause (the "…" or the dash) — the way the
+     cover prints it — so a single word is never left alone on a line. */
+  tagline(p, text) {
+    const at = (() => {
+      const cands = [];
+      for (const m of text.matchAll(/… |— /g)) cands.push(m.index + m[0].length);
+      if (!cands.length) return -1;
+      return cands.reduce((b, c) => Math.abs(c - text.length / 2) < Math.abs(b - text.length / 2) ? c : b);
+    })();
+    const a = at > 0 ? text.slice(0, at).trim() : text, b = at > 0 ? text.slice(at).trim() : '';
+    p.innerHTML = b ? `<span class="dw-t1">“${this.esc(a)}</span> <span class="dw-t2">${this.esc(b)}”</span>` : `<span class="dw-t1">“${this.esc(a)}”</span>`;
+    this.fitTag(p);
+  },
+  fitTag(p) {
+    if (!p) return;
+    p.classList.remove('dw-two', 'dw-free'); p.style.fontSize = '';
+    const room = p.clientWidth; if (!room) return;
+    const base = parseFloat(getComputedStyle(p).fontSize);
+    const fit = need => {
+      let f = room / need(); if (f >= 1) return true;
+      for (let k = 0; k < 3 && f >= 0.88; k++) {
+        p.style.fontSize = (base * f * 0.99).toFixed(2) + 'px';
+        const w = need(); if (w <= room) return true; f *= room / w;
+      }
+      p.style.fontSize = ''; return false;
+    };
+    if (fit(() => p.scrollWidth)) return;
+    p.classList.add('dw-two');
+    if (fit(() => Math.max(...[...p.querySelectorAll('.dw-t1, .dw-t2')].map(x => x.offsetWidth)))) return;
+    p.classList.add('dw-free');   /* a half still too wide: its words wrap evenly — never cut */
+  },
+  esc(v) { return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;'); },
 
   /* ---- the window: Section 2's order window, with these four books ---- */
   open() {
@@ -190,7 +313,7 @@ const DIWALI = {
     if (top.dataset.lang !== RUTUJA.lang) {
       top.dataset.lang = RUTUJA.lang;
       const rows = [10, 25, 50].map(q => `<tr><td>${n(q)}</td><td><s>₹${n(q * 30)}</s></td><td><b>₹${n(q * 20)}</b></td><td class="dw-sv">₹${n(q * 10)}</td></tr>`).join('');
-      top.querySelector('.dw-tag').textContent = '“' + t('dw_tagline') + '”';
+      this.tagline(top.querySelector('.dw-tag'), t('dw_tagline'));
       top.querySelector('.dw-offer').innerHTML = `<span class="dw-o1">${t('dw_offer_a')}</span><span class="dw-o2">${t('dw_offer_b')}</span><span class="dw-o3">${t('dw_offer_c')}</span>`;
       top.querySelector('.dw-table').innerHTML = `<p class="dw-th">${t('dw_table_h')}</p>
         <table><thead><tr><th>${t('dw_t_copies')}</th><th>${t('dw_t_mrp')}</th><th>${t('dw_t_offer')}</th><th>${t('dw_t_saved')}</th></tr></thead>

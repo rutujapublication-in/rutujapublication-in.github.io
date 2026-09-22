@@ -149,7 +149,8 @@
       "dw_order_new": "दिवाळी अभ्यास — नवी मागणी",
       "dw_slab_lo": "१–९",
       "dw_slab_hi": "१०+",
-      "med_Semi": "सेमी इंग्रजी"
+      "med_Semi": "सेमी इंग्रजी",
+      "dw_stds": "इयत्ता १ ली|इयत्ता २ री|इयत्ता ३ री|इयत्ता ४ थी"
     },
     "en": {
       "dw_std": "Std",
@@ -175,7 +176,8 @@
       "dw_order_new": "Diwali Abhyas — New Order",
       "dw_slab_lo": "1–9",
       "dw_slab_hi": "10+",
-      "med_Semi": "Semi-English"
+      "med_Semi": "Semi-English",
+      "dw_stds": "Std 1|Std 2|Std 3|Std 4"
     }
   }
 }

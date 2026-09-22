@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v20a',
+  VERSION: 'v20c',
   lang: 'mr',
   text: {},
   locations: null,
@@ -14,6 +14,9 @@ const RUTUJA = {
 
   /* ---- 1. BOOT ---- */
   async init() {
+    /* read once: asking the browser whether fonts are ready can force it to
+       restyle the whole page, and rebuilds used to ask every time */
+    this.fontsReady = (document.fonts && document.fonts.ready) || Promise.resolve();
     this.bindGate();
     this.bindNav();
     this.bindMenu();
@@ -579,7 +582,30 @@ const RUTUJA = {
      And the margin has to be generous. At 120px a section unpaused just
      as it appeared, so its motion began after the eye had arrived. 700px
      is roughly two screens of warning. */
+  /* Is any window open? Read from the page itself (any .modal showing),
+     so it can never drift out of step with back-button closes. While one
+     is, everything behind it rests (html.win-open, generated rule) and the
+     slideshows do not change slides behind it. */
+  watchWins() {
+    const mods = [...document.querySelectorAll('.modal')];
+    const set = () => {
+      const open = mods.some(m => !m.classList.contains('hidden'));
+      if (open === this._winOpen) return;
+      this._winOpen = open;
+      document.documentElement.classList.toggle('win-open', open);
+    };
+    const mo = new MutationObserver(set);
+    mods.forEach(m => mo.observe(m, { attributes: true, attributeFilter: ['class'] }));
+    set();
+  },
+  onScreen(el) {
+    if (!el || !el.getBoundingClientRect) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < (window.innerHeight || 800);
+  },
+
   stillWhenOffscreen() {
+    try { this.watchWins(); } catch (e) {}
     if (!('IntersectionObserver' in window) || !document.getAnimations) return;
     /* Only looping effects are ever paused. One-shot entrances run to their
        end untouched, so nothing can be frozen invisible at its first frame —
@@ -701,9 +727,18 @@ const RUTUJA = {
     requestAnimationFrame(f);
   },
   calm() {
+    /* The stylesheet rests most of these at once (html.lite-fx rule,
+       generated); this catches the rest at runtime — ones it cannot see.
+       Measured: dropping this made scrolling on a slow phone 53-67% janky;
+       with it and the stylesheet rule together, 4%. */
     if (!this._lite || !document.getAnimations) return;
+    /* title shimmers and glows are small and keep running on every phone
+       (the same list as rule 2 of the generated block in style.css) */
+    const TITLE_FX = this._titleFx || (this._titleFx = new Set(['btFlash', 'titleSweep', 'hdSheen', 'visTitleGlow',
+      'visLabGlow', 'titleGlow', 'stdNum', 'shBreathe', 'sheen', 'shSweep', 'stdNameFlash']));
     document.getAnimations().forEach(a => {
       try {
+        if (TITLE_FX.has(a.animationName)) return;
         const t = a.effect && a.effect.getTiming && a.effect.getTiming();
         if (t && t.iterations === Infinity && this.repainted(a)) a.cancel();
       } catch (e) {}
@@ -711,6 +746,10 @@ const RUTUJA = {
   },
 
   turn() {
+    /* on a slow phone the stylesheet already keeps repainted loops at rest
+       (html.lite-fx), so there is nothing to hold — and reading every
+       effect's timing cost 231ms per change there */
+    if (this._lite) return;
     /* Done directly on the effects, not with a stylesheet class: once an
        effect has been paused and resumed from here (the off-screen pausing
        does that), the browser ignores stylesheet play-state for it — which
@@ -3453,14 +3492,18 @@ const VISION = {
     this._fitSig = '';
     this.place(true);
     this.deck.style.height = this.deckHeight() + 'px';
+    this.deck.classList.add('is-built');
     try { this.app.reStill(); } catch (e) {}
-    requestAnimationFrame(() => this.fitCards());
+    /* on screen: fitted at once; elsewhere (a language switch from another
+       page) at idle, so the switch itself answers straight away */
+    if (this.app.onScreen(this.host)) requestAnimationFrame(() => this.fitCards());
+    else this.app.idle(() => this.fitCards(), 2500);
     /* Devanagari measured in a fallback font has different metrics, so a
        scale computed before Mukta arrives is computed for the wrong
        content — and the real font then overflows. Fit again once the
        fonts are in. */
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => this.fitCards()).catch(() => {});
+    if (this.app.fontsReady) {
+      this.app.fontsReady.then(() => this.fitCards()).catch(() => {});
     }
   },
 
@@ -3535,7 +3578,7 @@ const VISION = {
     const secs = Number(this.slides[this.i] && this.slides[this.i].seconds) || 7;
     /* advances, then sets the next timer — it used to advance only once and
        then sit on the second slide until the section was scrolled away */
-    const tick = () => (this.app && (this.app._scrolling || this.app._watching)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    const tick = () => (this.app && (this.app._scrolling || this.app._watching || this.app._winOpen)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
     this.timer = setTimeout(tick, secs * 1000);
   },
 
@@ -3725,8 +3768,10 @@ const MOMENTS = {
     this.dots.innerHTML = this.slides.map((s, k) =>
       `<button class="mom-dot${k === 0 ? ' on' : ''}" data-k="${k}" aria-label="${k + 1}"></button>`).join('');
     try { this.app.reStill(); } catch (e) {}
-    requestAnimationFrame(() => this.fit());
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.fit()).catch(() => {});
+    if (this.track) this.track.classList.add('is-built');
+    if (this.app.onScreen(this.stage || this.track)) requestAnimationFrame(() => this.fit());
+    else this.app.idle(() => this.fit(), 2500);
+    if (this.app.fontsReady) this.app.fontsReady.then(() => this.fit()).catch(() => {});
   },
 
   go(n) {
@@ -3755,7 +3800,7 @@ const MOMENTS = {
   start() {
     this.stop();
     if (this.paused || this.reduced || !this.cards) return;
-    const tick = () => (this.app._scrolling || this.app._watching) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    const tick = () => (this.app._scrolling || this.app._watching || this.app._winOpen) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
     this.timer = setTimeout(tick, this.secs());
     this.dotFill();
   },
@@ -3935,7 +3980,10 @@ const MOMENTS = {
     this.dots.classList.remove('held');
     d.style.setProperty('--secs', (this.secs() / 1000) + 's');
     [...this.dots.children].forEach(x => x.classList.remove('run'));
-    void d.offsetWidth; d.classList.add('run');
+    /* restarted across two frames instead of forcing a layout: reading
+       offsetWidth here made the whole book window lay out at once (213ms
+       on a slow phone) */
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (this.dots.children[this.i] === d) d.classList.add('run'); }));
   }
 };
 
@@ -4505,7 +4553,7 @@ const STORY = {
   start() {
     this.stop();
     /* never advances in the middle of a scroll; it waits for the page to settle */
-    const tick = () => (this.app && (this.app._scrolling || this.app._watching)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    const tick = () => (this.app && (this.app._scrolling || this.app._watching || this.app._winOpen)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
     this.timer = setTimeout(tick, this.secs());
   },
   stop() { clearTimeout(this.timer); }
