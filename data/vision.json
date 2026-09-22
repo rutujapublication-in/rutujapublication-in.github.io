@@ -1,11 +1,11 @@
 {
-  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds. path_split_mr / path_split_en set how that language's chain breaks across rows, e.g. [3,2]; leave empty for one row. The two languages wrap at different points, so they are set separately. inline:true lays each focus group out as one line — heading, then its items — instead of a heading over a row of boxes.",
+  "_HOW_TO_EDIT": "Seven slides. Edit the words here and commit — no other file changes. q_* is a bracketed tail on the title line. span_* is the range that book covers, shown under its title. list:true renders focus as blocks: two parts split by ' — ' is a name and a role, three parts is a book, its class band and a span. focus2_* / focus3_* / focus4_* add further labelled box groups. hero:'word' shows hero_* large. path_h_* names the chain heading. out_mid_* sits between the two closing lines. seconds is how long the slide holds. path_split_mr / path_split_en set how that language's chain breaks across rows, e.g. [3,2]; leave empty for one row. The two languages wrap at different points, so they are set separately. inline:true lays each focus group out as one line — heading, then its items — instead of a heading over a row of boxes. book_id ties a slide to its book: the book window's 'The Author Behind the Pen' section shows that slide as its fourth. au_g1 / au_g2 are that slide's colours there (the first slide's are ink-indigo; each book's come from its own cover). manogat_mr is the author's own line for that book, shown only in Marathi in the book window's author section (Section 5 on the home page does not show it).",
   "slides": [
     {
       "n": 1,
       "tone": "ink",
       "base": "#1E2A38",
-      "seconds": 7,
+      "seconds": 6,
       "title_mr": "पुस्तकांच्या पलीकडे",
       "title_en": "Beyond the Books",
       "sub_mr": "अक्षरापासून विचारापर्यंत — एकच पाया.",
@@ -71,13 +71,15 @@
         3,
         2
       ],
-      "inline": false
+      "inline": false,
+      "au_g1": "#18193A",
+      "au_g2": "#3E3465"
     },
     {
       "n": 2,
       "tone": "leaf",
       "base": "#14503A",
-      "seconds": 7,
+      "seconds": 6,
       "title_mr": "चला वाचूया झटपट",
       "title_en": "Chala Vachuya Zatpat",
       "sub_mr": "",
@@ -144,13 +146,17 @@
         2,
         2
       ],
-      "inline": false
+      "inline": false,
+      "book_id": "RP-B-001",
+      "au_g1": "#33141C",
+      "au_g2": "#622D34",
+      "manogat_mr": "अक्षर ओळखणारं मूल स्वतः वाचू लागतं, तेव्हाच खरी उजळणी पूर्ण होते."
     },
     {
       "n": 3,
       "tone": "sky",
       "base": "#153C56",
-      "seconds": 7,
+      "seconds": 6,
       "title_mr": "English Primer with Phonics",
       "title_en": "English Primer with Phonics",
       "sub_mr": "ध्वनीतून इंग्रजी",
@@ -225,13 +231,17 @@
         3,
         2
       ],
-      "inline": false
+      "inline": false,
+      "book_id": "RP-B-002",
+      "au_g1": "#371010",
+      "au_g2": "#692E26",
+      "manogat_mr": "इंग्रजीची भीती नको — आधी ध्वनी, मग शब्द, मग वाक्य."
     },
     {
       "n": 4,
       "tone": "ember",
       "base": "#6B3113",
-      "seconds": 7,
+      "seconds": 6,
       "title_mr": "गणितमित्र – भाग १",
       "title_en": "Ganitmitra Bhag 1",
       "sub_mr": "गणिताशी मैत्री",
@@ -302,13 +312,17 @@
         3,
         2
       ],
-      "inline": false
+      "inline": false,
+      "book_id": "RP-B-003",
+      "au_g1": "#102537",
+      "au_g2": "#264169",
+      "manogat_mr": "गणित पाठ करण्याचा नाही, समजून घेण्याचा विषय आहे."
     },
     {
       "n": 5,
       "tone": "ember-deep",
       "base": "#5A2A18",
-      "seconds": 7,
+      "seconds": 6,
       "title_mr": "गणितमित्र – भाग २",
       "title_en": "Ganitmitra Bhag 2",
       "sub_mr": "पाया अधिक मजबूत",
@@ -393,13 +407,17 @@
         2,
         2
       ],
-      "inline": true
+      "inline": true,
+      "book_id": "RP-B-004",
+      "au_g1": "#371029",
+      "au_g2": "#692648",
+      "manogat_mr": "संख्येची समज पक्की, तर पुढचं गणित सोपं."
     },
     {
       "n": 6,
       "tone": "amber",
       "base": "#5C3D0C",
-      "seconds": 7,
+      "seconds": 6,
       "title_mr": "अक्षरमित्र – सुलेखन",
       "title_en": "Aksharmitra Sulekhan Pustika",
       "sub_mr": "अक्षराला आकार",
@@ -470,7 +488,11 @@
         3,
         2
       ],
-      "inline": false
+      "inline": false,
+      "book_id": "RP-B-005",
+      "au_g1": "#103037",
+      "au_g2": "#21485A",
+      "manogat_mr": "सुंदर अक्षर ही सवय आहे — आणि सवय रोजच्या सरावातून लागते."
     }
   ]
 }

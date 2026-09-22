@@ -6410,21 +6410,16 @@ html[lang="mr"] .vis-hero-path .vis-step{font-size:calc(var(--vu) * 1.1)}
    cart's pills, the order window's chips. A phone paints all of it every
    frame.
 
-   One observer adds .is-still to a region that has left the viewport,
-   and this pauses everything inside it. Paused, not cancelled: each
-   animation holds its current frame and resumes from there, so nothing
-   restarts or jumps when the region comes back.
+   One observer in app.js (stillWhenOffscreen) pauses the looping effects
+   of any region that has left the viewport, and every looping effect
+   holds still while the page is being scrolled. Paused, not cancelled:
+   each holds its frame and resumes from there. One-shot entrances are
+   never paused, so none can be frozen invisible.
 
    Section 5's own rule already does this per card; this is the same
    pattern applied to the rest of the site.
    =================================================================== */
 
-.is-still,
-.is-still *,
-.is-still::before,
-.is-still::after,
-.is-still *::before,
-.is-still *::after{animation-play-state:paused !important}
 
 /* ===================================================================
    BOOT SKELETON
@@ -6768,3 +6763,279 @@ body.booting .offer-grid:empty{
   .mom-tbox,.mom-tbox::before,.mom-line::after,.mom-end > .mr::after,
   .mom-frame > .hd-std .hd-rule{animation:none}
 }
+
+/* ===================================================================
+   THE AUTHOR BEHIND THE PEN — book window, second from last
+   Section 6's slides (every .mom-* rule applies), in one language at a
+   time, plus Section 5's chips, learning path and one-line groups in
+   Section 6's form. No effect here loops: arrivals only, once per slide.
+   =================================================================== */
+.au-stage{margin-top:calc(var(--u) * .35)}
+.au .mom-names.en{margin-top:0;font-size:calc(var(--u) * .8 * var(--gz, 1))}
+.au-en .mom-say .mr{font-family:Lora,Georgia,serif;font-size:calc(var(--u) * .84)}
+.au-en .mom-end > .mr{font-family:Lora,Georgia,serif;font-weight:600}
+.au-mr .au-sub{font-family:Mukta,system-ui,sans-serif;font-weight:600}
+.au-mid{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u) * .3);width:100%}
+.au-focus{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u) * .2);width:100%}
+.au-lab{margin:0;font-family:Mukta,system-ui,sans-serif;font-weight:700;font-size:calc(var(--u) * .74);
+  color:#F7C86B;line-height:1.3;white-space:nowrap}
+.au-en .au-lab{font-family:Lora,Georgia,serif;font-weight:600}
+.au-lab::before{content:"";display:inline-block;width:.42em;height:.42em;margin-right:.45em;
+  border-radius:1px;background:#F7C86B;transform:rotate(45deg);vertical-align:.12em}
+.au-chips{display:flex;flex-wrap:wrap;justify-content:center;column-gap:6px;row-gap:6px;width:100%}
+.au-chip{flex:0 0 auto;white-space:nowrap;padding:3px 10px;border-radius:999px;
+  border:1px solid rgba(247,200,107,.55);background:rgba(0,0,0,.2);color:#FFE3A8;
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;font-size:calc(var(--u) * .78);line-height:1.35}
+.au-en .au-chip{font-family:Lora,Georgia,serif;font-weight:600}
+.au-brk{flex-basis:100%;height:0}
+.au-path{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u) * .2);width:100%}
+.au-chain{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;column-gap:6px;row-gap:5px;width:100%}
+.au-step{flex:0 0 auto;white-space:nowrap;font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .8);color:#FFF3D6;line-height:1.35}
+.au-en .au-step{font-family:Lora,Georgia,serif;font-weight:600}
+.au-arw{flex:0 0 auto;width:12px;height:10px;background:#F7C86B;
+  clip-path:polygon(0 35%,55% 35%,55% 0,100% 50%,55% 100%,55% 65%,0 65%)}
+.au-arw.au-cut{display:none}
+.au-lines{display:flex;flex-direction:column;gap:4px;width:100%}
+.au-line{margin:0;white-space:nowrap;text-align:center;font-family:Mukta,system-ui,sans-serif;
+  font-size:calc(var(--u) * .8);line-height:1.4;color:rgba(243,238,230,.88)}
+.au-line b{font-weight:700;color:#F7C86B}
+.au-span{margin:0;white-space:nowrap;font-family:Mukta,system-ui,sans-serif;font-weight:600;
+  font-size:calc(var(--u) * .78);color:#FFD98A}
+.au-en .au-span,.au-en .au-line{font-family:Lora,Georgia,serif}
+/* Marathi only: the book at a glance */
+.au-glance{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:calc(var(--u) * .1)}
+.au-g{position:relative;overflow:hidden;white-space:nowrap;padding:2px 10px;border-radius:6px;
+  background:linear-gradient(180deg,rgba(247,200,107,.22),rgba(247,200,107,.08));
+  border:1px solid rgba(247,200,107,.5);color:#FFE9B8;font-family:Mukta,system-ui,sans-serif;font-weight:700;
+  font-size:calc(var(--u) * .74 * var(--fz, 1));line-height:1.45}
+.au-g::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,255,255,.6) 50%,transparent 60%,transparent 100%);
+  background-size:250% 100%;background-repeat:no-repeat;background-position:130% 0;mix-blend-mode:overlay}
+/* Marathi only: the author's own line, opening with a large gold quote mark */
+.au-quote{position:relative;margin:calc(var(--u) * .1) 0 0;padding:0 calc(var(--u) * .3);text-align:center;
+  font-family:Mukta,system-ui,sans-serif;font-weight:600;font-size:calc(var(--u) * .86 * var(--fz, 1));
+  line-height:1.45;color:#FFF3D6}
+.au-quote::after{content:"";display:block;width:56px;height:1.5px;margin:calc(var(--u) * .22) auto 0;
+  background:linear-gradient(90deg,transparent,#F7C86B,transparent);transform:scaleX(0)}
+.au-qm{display:inline-block;margin-right:.2em;font-family:Georgia,serif;font-size:1.6em;line-height:0;
+  color:#F7C86B;vertical-align:-.28em}
+/* option D: Marathi vision slides grow into their empty space (--fz set by app.js, 1 to 1.12) */
+.au-mr.au-view .mom-say .mr{font-size:calc(var(--u) * .9 * var(--fz, 1))}
+.au-mr.au-view .au-chip{font-size:calc(var(--u) * .78 * var(--fz, 1))}
+.au-mr.au-view .au-step,.au-mr.au-view .au-line{font-size:calc(var(--u) * .8 * var(--fz, 1))}
+.au-mr.au-view .au-lab,.au-mr.au-view .au-span{font-size:calc(var(--u) * .76 * var(--fz, 1))}
+.au-mr.au-view .mom-names.mr{font-size:calc(var(--u) * .84 * var(--gz, 1) * var(--fz, 1))}
+.au-mr.au-view .mom-end > .mr{font-size:calc(var(--u) * .86 * var(--fz, 1))}
+.au-mr.au-view .mom-end > .en{font-size:calc(var(--u) * .74 * var(--fz, 1))}
+.au-en .mom-venue .mr{font-family:Lora,Georgia,serif}
+/* arrivals, in the order timing() sets: each label, chip, step and line in turn */
+.au-view.mom-slide.on .mom-say{animation-delay:.3s}
+.mom-slide.on .au-lab{animation:visArrive .45s ease-out var(--pd, .5s) both}
+.mom-slide.on .au-chip{animation:momSettle .5s cubic-bezier(.2,.8,.2,1) var(--pd, .5s) both}
+.mom-slide.on .au-step,.mom-slide.on .au-arw,.mom-slide.on .au-line,.mom-slide.on .au-span{
+  animation:visArrive .45s ease-out var(--pd, .5s) both}
+/* the new pieces arrive with more character — once, never looping:
+   the glance tags pop in one by one and a gold light runs across them,
+   the quote mark springs open, the line rises, a gold rule draws beneath,
+   and each arrow of the learning path nudges once toward the next step */
+.mom-slide.on .au-g{animation:momPop .45s cubic-bezier(.2,.9,.3,1.3) var(--pd, .5s) both}
+.mom-slide.on .au-g::after{animation:btFlash 1.3s linear calc(var(--pd, .5s) + .35s) 1 both}
+.mom-slide.on .au-quote{animation:visArrive .5s ease-out var(--pd, 1s) both}
+.mom-slide.on .au-qm{animation:momSpring .6s cubic-bezier(.2,.9,.3,1.4) var(--pd, 1s) both}
+.mom-slide.on .au-quote::after{animation:momDraw .6s ease-out calc(var(--pd, 1s) + .35s) both}
+.mom-slide.on .au-arw{animation:visArrive .45s ease-out var(--pd, .5s) both, momNudge .5s ease-in-out calc(var(--pd, .5s) + .5s) 1}
+@keyframes momSpring{0%{opacity:0;transform:scale(.3) rotate(-12deg)}60%{opacity:1;transform:scale(1.25) rotate(4deg)}100%{opacity:1;transform:none}}
+@keyframes momNudge{0%,100%{transform:translateX(0)}45%{transform:translateX(4px)}}
+@media(prefers-reduced-motion:reduce){
+  .mom-slide.on .au-lab,.mom-slide.on .au-chip,.mom-slide.on .au-step,.mom-slide.on .au-arw,
+  .mom-slide.on .au-line,.mom-slide.on .au-span,.mom-slide.on .au-g,.mom-slide.on .au-quote,
+  .mom-slide.on .au-qm{animation:none}
+  .mom-slide.on .au-g::after{animation:none;display:none}
+  .mom-slide.on .au-quote::after{animation:none;transform:none}
+}
+
+/* ===================================================================
+   WHILE SCROLLING — generated from this stylesheet, do not edit by hand
+   Every rule above whose effects all loop forever is listed here under
+   html:is(.scrolling,.watching); app.js adds that class for the length of a scroll.
+   Their effects are off until 450ms after the scroll settles, and the
+   scroll gets the whole frame. Rules that mix a one-shot entrance with a
+   loop are only held, so the entrance is never replayed. One-shot
+   entrances are never touched. Regenerate this block whenever a looping
+   effect is added or removed above.
+   =================================================================== */
+html:is(.scrolling,.watching) #offerGrid .offer-go::after,
+html:is(.scrolling,.watching) #orderSum .cond,
+html:is(.scrolling,.watching) #orderSum .cond-i,
+html:is(.scrolling,.watching) #orderSum .oline-name,
+html:is(.scrolling,.watching) #orderSum .osf s,
+html:is(.scrolling,.watching) #orderSum .osf span,
+html:is(.scrolling,.watching) #orderSum .osf-avg b,
+html:is(.scrolling,.watching) #orderSum .osum-foot::before,
+html:is(.scrolling,.watching) #orderSum .osum-h,
+html:is(.scrolling,.watching) #page-books .flab,
+html:is(.scrolling,.watching) #page-books .fsel-pick,
+html:is(.scrolling,.watching) #page-cart .cart-amt b,
+html:is(.scrolling,.watching) #page-cart .cart-avg b,
+html:is(.scrolling,.watching) #page-cart .cart-cta .btn-gold,
+html:is(.scrolling,.watching) #page-cart .cart-cta .btn-gold::after,
+html:is(.scrolling,.watching) #page-cart .cart-foot::before,
+html:is(.scrolling,.watching) #page-cart .cart-grand b,
+html:is(.scrolling,.watching) #page-cart .cart-mrp,
+html:is(.scrolling,.watching) #page-cart .cart-mrpline s,
+html:is(.scrolling,.watching) #page-cart .cart-next,
+html:is(.scrolling,.watching) #page-cart .cart-qmark,
+html:is(.scrolling,.watching) #page-cart .cart-row::before,
+html:is(.scrolling,.watching) #page-cart .cond-i,
+html:is(.scrolling,.watching) #page-cart .oline-name,
+html:is(.scrolling,.watching) #page-cart .osf s,
+html:is(.scrolling,.watching) #page-cart .osf span,
+html:is(.scrolling,.watching) #page-cart .osf-avg b,
+html:is(.scrolling,.watching) #page-cart .osum-foot::before,
+html:is(.scrolling,.watching) #page-cart .osum-h,
+html:is(.scrolling,.watching) #page-qa .qa-hint::before,
+html:is(.scrolling,.watching) .act-order::after,
+html:is(.scrolling,.watching) .bd .bd-cover::after,
+html:is(.scrolling,.watching) .bd .bd-fact-v,
+html:is(.scrolling,.watching) .bd .bd-title .hd-mark,
+html:is(.scrolling,.watching) .bd .btn-gold,
+html:is(.scrolling,.watching) .bd .btn-gold::after,
+html:is(.scrolling,.watching) .bd .calc-line span.calc-save,
+html:is(.scrolling,.watching) .bd .calc-save,
+html:is(.scrolling,.watching) .bd .calc-total,
+html:is(.scrolling,.watching) .bd .disc-head,
+html:is(.scrolling,.watching) .bd .disc-head b,
+html:is(.scrolling,.watching) .bd .nudge-text b,
+html:is(.scrolling,.watching) .bd .pct,
+html:is(.scrolling,.watching) .bd-rule,
+html:is(.scrolling,.watching) .bd-videos .car-media,
+html:is(.scrolling,.watching) .bd-videos .vcard-title,
+html:is(.scrolling,.watching) .bd-videos .vcard::before,
+html:is(.scrolling,.watching) .bsec::before,
+html:is(.scrolling,.watching) .bt b::after,
+html:is(.scrolling,.watching) .car-slide .car-media,
+html:is(.scrolling,.watching) .car-slide .vcard::before,
+html:is(.scrolling,.watching) .cond > span:last-child,
+html:is(.scrolling,.watching) .cond > span:last-child::after,
+html:is(.scrolling,.watching) .cta,
+html:is(.scrolling,.watching) .cta-ico,
+html:is(.scrolling,.watching) .cta-rim,
+html:is(.scrolling,.watching) .cta::after,
+html:is(.scrolling,.watching) .cv-orb,
+html:is(.scrolling,.watching) .cv-orb::before,
+html:is(.scrolling,.watching) .cv-txt,
+html:is(.scrolling,.watching) .done-wa,
+html:is(.scrolling,.watching) .done-wa::after,
+html:is(.scrolling,.watching) .done-wa::before,
+html:is(.scrolling,.watching) .f label,
+html:is(.scrolling,.watching) .f label::before,
+html:is(.scrolling,.watching) .flow-ico,
+html:is(.scrolling,.watching) .flow-note,
+html:is(.scrolling,.watching) .flow-note::before,
+html:is(.scrolling,.watching) .fx-beam::after,
+html:is(.scrolling,.watching) .fx-door::after,
+html:is(.scrolling,.watching) .fx-glow::after,
+html:is(.scrolling,.watching) .fx-join::after,
+html:is(.scrolling,.watching) .fx-rings::after,
+html:is(.scrolling,.watching) .fx-rise::after,
+html:is(.scrolling,.watching) .fx-spark::after,
+html:is(.scrolling,.watching) .gate-submit,
+html:is(.scrolling,.watching) .gate-submit::after,
+html:is(.scrolling,.watching) .hd-mark,
+html:is(.scrolling,.watching) .hd-s::after,
+html:is(.scrolling,.watching) .hd-std .hd-rule,
+html:is(.scrolling,.watching) .hd-t > span,
+html:is(.scrolling,.watching) .modal-wa-btn,
+html:is(.scrolling,.watching) .modal-wa-btn::after,
+html:is(.scrolling,.watching) .modal-wa-btn::before,
+html:is(.scrolling,.watching) .mom-end > .mr::after,
+html:is(.scrolling,.watching) .mom-line::after,
+html:is(.scrolling,.watching) .mom-tbox,
+html:is(.scrolling,.watching) .mom-tbox::before,
+html:is(.scrolling,.watching) .need-box,
+html:is(.scrolling,.watching) .need-s::after,
+html:is(.scrolling,.watching) .need-t > span,
+html:is(.scrolling,.watching) .offer-frame::before,
+html:is(.scrolling,.watching) .offer-mark,
+html:is(.scrolling,.watching) .offer-rim,
+html:is(.scrolling,.watching) .om-saved,
+html:is(.scrolling,.watching) .opick-cover::after,
+html:is(.scrolling,.watching) .opick-name,
+html:is(.scrolling,.watching) .opick-row.on::before,
+html:is(.scrolling,.watching) .order-done .btn-line::after,
+html:is(.scrolling,.watching) .osum-empty,
+html:is(.scrolling,.watching) .osum-h::before,
+html:is(.scrolling,.watching) .osum-save b,
+html:is(.scrolling,.watching) .osum-total b,
+html:is(.scrolling,.watching) .peek-tab em,
+html:is(.scrolling,.watching) .qa-ask-btn,
+html:is(.scrolling,.watching) .qa-ask-btn::after,
+html:is(.scrolling,.watching) .qa-ask-btn::before,
+html:is(.scrolling,.watching) .qa-bsec::before,
+html:is(.scrolling,.watching) .qa-chip-all,
+html:is(.scrolling,.watching) .qa-gmark::after,
+html:is(.scrolling,.watching) .qa-gmark::before,
+html:is(.scrolling,.watching) .qa-gt,
+html:is(.scrolling,.watching) .qa-sign,
+html:is(.scrolling,.watching) .rate-cap::after,
+html:is(.scrolling,.watching) .rate-p,
+html:is(.scrolling,.watching) .sh-box,
+html:is(.scrolling,.watching) .sh-box::before,
+html:is(.scrolling,.watching) .sh-logo-wrap::before,
+html:is(.scrolling,.watching) .sh-rays,
+html:is(.scrolling,.watching) .sh-step,
+html:is(.scrolling,.watching) .sh-steps.big .sh-step,
+html:is(.scrolling,.watching) .sh-underline::after,
+html:is(.scrolling,.watching) .st-arw,
+html:is(.scrolling,.watching) .st-hero .sh-quote::after,
+html:is(.scrolling,.watching) .st-hero::before,
+html:is(.scrolling,.watching) .std-count,
+html:is(.scrolling,.watching) .std-frame::before,
+html:is(.scrolling,.watching) .std-go::after,
+html:is(.scrolling,.watching) .std-num,
+html:is(.scrolling,.watching) .strip-track,
+html:is(.scrolling,.watching) .sumcard-edit,
+html:is(.scrolling,.watching) .topbar::after,
+html:is(.scrolling,.watching) .vcard-btn::after,
+html:is(.scrolling,.watching) .vcard-cap::before,
+html:is(.scrolling,.watching) .vcard-mark,
+html:is(.scrolling,.watching) .vcard-tag,
+html:is(.scrolling,.watching) .vcard-title > span,
+html:is(.scrolling,.watching) .vid-grid .car-media,
+html:is(.scrolling,.watching) .vid-grid .vcard::before,
+html:is(.scrolling,.watching) .vis-arrow,
+html:is(.scrolling,.watching) .vis-arrow::after,
+html:is(.scrolling,.watching) .vis-frame::before,
+html:is(.scrolling,.watching) .vis-lab,
+html:is(.scrolling,.watching) .vis-lab > span::after,
+html:is(.scrolling,.watching) .vis-lab::before,
+html:is(.scrolling,.watching) .vis-out b,
+html:is(.scrolling,.watching) .vis-sign b,
+html:is(.scrolling,.watching) .vis-title,
+html:is(.scrolling,.watching) .vis-title > span::after,
+html:is(.scrolling,.watching) .win-lang,
+html:is(.scrolling,.watching) .wp-s,
+html:is(.scrolling,.watching) .wpath::before,
+html:is(.scrolling,.watching) body.booting .book-grid:empty,
+html:is(.scrolling,.watching) body.booting .ex-grid:empty,
+html:is(.scrolling,.watching) body.booting .offer-grid:empty,
+html:is(.scrolling,.watching) body.booting .std-grid:empty,
+html:is(.scrolling,.watching) body.booting [data-t]:empty{animation:none !important}
+html:is(.scrolling,.watching) #offerGrid .offer-card,
+html:is(.scrolling,.watching) #orderSum .of-pct,
+html:is(.scrolling,.watching) #orderSum .of-save,
+html:is(.scrolling,.watching) #orderSum .oline-amt b,
+html:is(.scrolling,.watching) #orderSum .osf-save b,
+html:is(.scrolling,.watching) #page-cart .cart-pct,
+html:is(.scrolling,.watching) #page-cart .cart-row .cart-saved,
+html:is(.scrolling,.watching) #page-cart .cart-sums .cart-saved b,
+html:is(.scrolling,.watching) #page-cart .oline-amt b,
+html:is(.scrolling,.watching) #page-cart .osf-save b,
+html:is(.scrolling,.watching) .mom-slide.on .mom-bar,
+html:is(.scrolling,.watching) .mom-slide.on .mom-venue p::before,
+html:is(.scrolling,.watching) .om-now.live b,
+html:is(.scrolling,.watching) .vis-card.is-front .vis-lab,
+html:is(.scrolling,.watching) .vis-card.is-front .vis-lab::before,
+html:is(.scrolling,.watching) .vis-card.is-front .vis-title,
+html:is(.scrolling,.watching) .vis-frame.is-turning::before{animation-play-state:paused !important}

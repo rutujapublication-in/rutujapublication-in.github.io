@@ -1,5 +1,5 @@
 {
-  "_HOW_TO_EDIT": "Section 6 — Writing, honours and publications. One entry per photograph, shown in this order. img is the file name in assets/img/news without .webp (an @2x file is used automatically where it exists); w and h are the 1x file's pixel size. seconds is how long the slide holds. g1 and g2 are the slide's background gradient, taken from the photograph's own colours. people_* are [name, designation] pairs: the name shows bold and the designation in brackets. Leave sig_*, venue_* or date_* empty to leave them out. Marathi always shows first, English second. rows_mr / rows_en set how the people are grouped on lines, by their number in people_*: [[1],[2,3]] puts person 1 alone and persons 2 and 3 together. A line too wide for a small screen splits by itself. keep lists phrases that must never break across two lines.",
+  "_HOW_TO_EDIT": "Section 6 — Writing, honours and publications. One entry per photograph, shown in this order. img is the file name in assets/img/news without .webp (an @2x file is used automatically where it exists); w and h are the 1x file's pixel size. seconds is how long the slide holds. g1 and g2 are the slide's background gradient, taken from the photograph's own colours. people_* are [name, designation] pairs: the name shows bold and the designation in brackets. Leave sig_*, venue_* or date_* empty to leave them out. Marathi always shows first, English second. rows_mr / rows_en set how the people are grouped on lines, by their number in people_*: [[1],[2,3]] puts person 1 alone and persons 2 and 3 together. A line too wide for a small screen splits by itself. keep lists phrases that must never break across two lines. book_ids names the books a ceremony belongs to: that slide appears fourth in those books' 'The Author Behind the Pen' section.",
   "slides": [
     {
       "n": 1,
@@ -105,7 +105,11 @@
       "venue_mr": "",
       "venue_en": "",
       "date_mr": "",
-      "date_en": ""
+      "date_en": "",
+      "book_ids": [
+        "RP-B-003",
+        "RP-B-004"
+      ]
     },
     {
       "n": 3,
@@ -146,7 +150,10 @@
       "venue_mr": "आर.बी.एन.बी. महाविद्यालय, श्रीरामपूर",
       "venue_en": "R.B.N.B. College, Shrirampur",
       "date_mr": "२५ जून २०१६",
-      "date_en": "25 June 2016"
+      "date_en": "25 June 2016",
+      "book_ids": [
+        "RP-B-001"
+      ]
     },
     {
       "n": 4,
@@ -201,7 +208,10 @@
       "venue_mr": "",
       "venue_en": "",
       "date_mr": "",
-      "date_en": ""
+      "date_en": "",
+      "book_ids": [
+        "RP-B-002"
+      ]
     },
     {
       "n": 5,

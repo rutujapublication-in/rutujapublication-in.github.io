@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19q',
+  VERSION: 'v19v',
   lang: 'mr',
   text: {},
   locations: null,
@@ -73,8 +73,9 @@ const RUTUJA = {
     [['books', () => BOOKS.init(this)],
      ['media', () => MEDIA.init(this)],
      ['story', () => STORY.init(this)],
-     ['vision', () => VISION.init(this)],
-     ['moments', () => MOMENTS.init(this)],
+     ['vision', () => this.idle(() => VISION.init(this), 4000)],
+     ['moments', () => this.idle(() => MOMENTS.init(this), 5000)],
+     ['author', () => AUTHOR.init(this)],
      ['cart', () => CART.init(this)],
      ['orderform', () => ORDERFORM.init(this)],
      ['order', () => ORDER.init(this)]
@@ -82,6 +83,14 @@ const RUTUJA = {
       try { run(); } catch (e) { console.error('init failed: ' + name, e); }
     });
     PEEK.init(this);
+    /* The site's files kept on the phone: a repeat visit opens from the
+       phone's own copy while a fresh copy is fetched in the background. */
+    try {
+      if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+        const reg = () => setTimeout(() => navigator.serviceWorker.register('sw.js').catch(() => {}), 3000);
+        document.readyState === 'complete' ? reg() : window.addEventListener('load', reg, { once: true });
+      }
+    } catch (e) {}
     QA.init(this);
     PATH.init(this);
     NEEDHD.init(this);
@@ -243,7 +252,10 @@ const RUTUJA = {
      these first keeps a language tap feeling immediate; everything else
      can catch up a frame later without anyone noticing. */
   /* newly built regions need observing too */
-  reStill() { try { if (this._stillWatch) this._stillWatch(); } catch (e) {} },
+  reStill() {
+    try { if (this._stillWatch) this._stillWatch(); } catch (e) {}
+    try { if (this._settleAll) setTimeout(this._settleAll, 1200); } catch (e) {}
+  },
 
   visibleSections() {
     const open = id => {
@@ -566,17 +578,86 @@ const RUTUJA = {
      as it appeared, so its motion began after the eye had arrived. 700px
      is roughly two screens of warning. */
   stillWhenOffscreen() {
-    if (!('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver(es => {
-      es.forEach(e => e.target.classList.toggle('is-still', !e.isIntersecting));
-    }, { rootMargin: '700px 0px' });
+    if (!('IntersectionObserver' in window) || !document.getAnimations) return;
+    /* Only looping effects are ever paused. One-shot entrances run to their
+       end untouched, so nothing can be frozen invisible at its first frame —
+       which is what once forced a 1.6s wait before any pausing began. With
+       that gone, pausing starts at once and the margin can be tight. */
+    const loops = el => el.getAnimations({ subtree: true }).filter(a => {
+      const t = a.effect && a.effect.getTiming && a.effect.getTiming();
+      return t && t.iterations === Infinity;
+    });
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      const el = e.target;
+      el.dataset.held = e.isIntersecting ? '' : '1';
+      if (e.isIntersecting && this._scrolling) return;   /* resumes when the scroll settles */
+      loops(el).forEach(a => { try { e.isIntersecting ? a.play() : a.pause(); } catch (x) {} });
+    }), { rootMargin: '250px 0px' });
+    /* Each slide of a slideshow is watched on its own, so the slides waiting
+       off to the side of a track are paused too, not only whole sections. */
     const watch = () => document
-      .querySelectorAll('.story, .std-frame, .offer-frame, .ex-grid, .vis, .mom, '
+      .querySelectorAll('.story .st, .std-frame, .offer-frame, .ex-grid, .vis, .mom-slide, '
         + '#page-books .book-grid, .bd, #page-cart, #orderSum, .qa-list, .site-foot')
       .forEach(el => { if (!el.dataset.still) { el.dataset.still = '1'; io.observe(el); } });
-    /* the entrances get 1.6s of clear air before anything is paused */
-    setTimeout(watch, 1600);
+    watch();
     this._stillWatch = () => setTimeout(watch, 0);
+
+    /* While the page is being scrolled, looping effects are switched off
+       and the scroll gets the whole frame; 450ms after it settles they are
+       switched back on. Measured on a slow phone: holding them still left
+       16-18% of frames janky, because a held effect keeps its element on its
+       own drawing layer; switching them off brought it to 2.5-3.6%.
+       Which effects loop is read from the stylesheet itself: a generated
+       rule at its end lists every looping selector under html.scrolling, so
+       effects that begin mid-scroll are covered too, and one-shot entrances
+       are never touched. */
+    const isLoop = a => { const t = a.effect && a.effect.getTiming && a.effect.getTiming(); return t && t.iterations === Infinity; };
+    /* After a scroll, and whenever new sections have been built: anything
+       looping that is off screen, or in a region already marked as off
+       screen, is paused — including effects that only began after their
+       region was first checked. */
+    /* One measurement per element, not per effect, and none at all for an
+       element whose region is already known to be off screen. */
+    const settleAll = () => {
+      const vh = window.innerHeight, vw = window.innerWidth, seen = new Map();
+      document.getAnimations().forEach(a => {
+        if (!isLoop(a)) return;
+        const tg = a.effect.target; if (!tg) return;
+        let away = seen.get(tg);
+        if (away === undefined) {
+          if (tg.closest('[data-held="1"]')) away = true;
+          else { const r = tg.getBoundingClientRect(); away = r.bottom < -250 || r.top > vh + 250 || r.right < 0 || r.left > vw || !r.width; }
+          seen.set(tg, away);
+        }
+        try { away ? a.pause() : (a.playState === 'paused' && a.play()); } catch (x) {}
+      });
+    };
+    this._settleAll = () => this.idle(settleAll, 3000);
+    setTimeout(this._settleAll, 2500);
+    let settle = null;
+    window.addEventListener('scroll', () => {
+      if (!this._scrolling) {
+        this._scrolling = true;
+        document.documentElement.classList.add('scrolling');
+      }
+      clearTimeout(settle);
+      /* 450ms: longer than any momentary hitch, so a slow frame in the
+         middle of a scroll is never mistaken for the scroll ending — at 160ms
+         the effects flapped off and on, and each switch cost a frame. */
+      settle = setTimeout(() => {
+        this._scrolling = false;
+        document.documentElement.classList.remove('scrolling');
+        this.idle(settleAll, 1000);
+      }, 450);
+    }, { passive: true });
+  },
+
+  /* Work that the first screen does not need runs when the browser is idle,
+     never in the moment the site is arriving. */
+  idle(fn, timeout) {
+    const run = () => { try { fn(); } catch (e) { console.error('idle task failed', e); } };
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: timeout || 1500 });
+    else setTimeout(run, 150);
   },
 
   ensureLocations() {
@@ -1017,7 +1098,18 @@ const FORM = {
   repaint() {
     /* if a form is opening before locations.json has been asked for, ask
        now; this method runs again the moment it lands */
-    try { if (!this.app.locations) this.app.ensureLocations(); } catch (e) {}
+    /* locations.json (46 KB) is needed only once a form is open. Asked for
+       at once if this form is on screen; otherwise at an idle moment well
+       after entry, so it never competes with the page arriving. */
+    try {
+      if (!this.app.locations) {
+        if (this.node && this.node.offsetParent) this.app.ensureLocations();
+        else if (!this.app._locSoon) {
+          this.app._locSoon = 1;
+          setTimeout(() => this.app.idle(() => this.app.ensureLocations(), 3000), 6000);
+        }
+      }
+    } catch (e) {}
     const t = k => this.app.t(k);
     this.node.querySelectorAll('[data-t]').forEach(el => {
       const v = t(el.dataset.t);
@@ -1655,6 +1747,7 @@ const BOOKS = {
             ${this.bhd('bd_rate_h', 'bd_rate_s')}
             ${this.rateGrid(mySlabs, b, false)}
           </section>
+          ${AUTHOR.html(b.book_id)}
         </div>
       </div>`;
 
@@ -1701,6 +1794,7 @@ const BOOKS = {
     };
     MEDIA.bindBookVideos(this.el.detail);
     QA.forBook(this.el.detail);
+    try { AUTHOR.mount(this.el.detail); } catch (e) { console.error('author section', e); }
     try { PATH.draw('bookDetail', 'bdPath', 'cream'); } catch (e) { console.error('path', e); }
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };
@@ -1821,7 +1915,7 @@ const MEDIA = {
       box.querySelectorAll('.car-dot').forEach((d, k) => d.classList.toggle('on', k === rail.i));
     };
     const start = () => { clearInterval(rail.timer);
-      if (rail.n > 1 && !rail.paused) rail.timer = setInterval(() => go(rail.i + 1), rail.delay); };
+      if (rail.n > 1 && !rail.paused) rail.timer = setInterval(() => { if (!RUTUJA._watching && !RUTUJA._scrolling) go(rail.i + 1); }, rail.delay); };
     const stop = () => clearInterval(rail.timer);
 
     box.querySelector('.car-next')?.addEventListener('click', () => { go(rail.i + 1); start(); });
@@ -1905,7 +1999,7 @@ const MEDIA = {
         <div class="car-media ${o}" data-yt="${v.youtube_id}">
           <a class="car-full" href="https://www.youtube.com/watch?v=${v.youtube_id}"
              target="_blank" rel="noopener" title="YouTube" onclick="event.stopPropagation()">&#10530;</a>
-          ${this.thumbImg(v.youtube_id, eager)}
+          ${this.thumbImg(v.youtube_id, false)}
           <span class="car-play">&#9654;</span>
         </div>
       </div>
@@ -1950,7 +2044,30 @@ const MEDIA = {
   /* Stop every player on the page and put its still back. Navigating away
      used to leave the iframe alive, so the sound carried into the next
      window; and a second tap could start a video while the first played. */
+  /* While a video plays, the page gets out of its way: looping effects
+     are switched off and no slideshow changes slide, so the phone's
+     processor goes to the video. Resolution is left entirely to YouTube's
+     own Auto setting — nothing is forced up or down. Watching ends when the
+     video is stopped, or when it is scrolled out of view. */
+  watch(m) {
+    const on = v => { this.app._watching = v; document.documentElement.classList.toggle('watching', v); };
+    on(true);
+    if (this._watchIO) this._watchIO.disconnect();
+    if ('IntersectionObserver' in window) {
+      this._watchIO = new IntersectionObserver(es => es.forEach(e => on(e.isIntersecting && m.classList.contains('playing'))));
+      this._watchIO.observe(m);
+    }
+  },
+  warm() {
+    if (this._warm) return; this._warm = true;
+    ['https://www.youtube.com', 'https://i.ytimg.com', 'https://www.google.com'].forEach(h => {
+      const l = document.createElement('link'); l.rel = 'preconnect'; l.href = h; l.crossOrigin = ''; document.head.appendChild(l);
+    });
+  },
+
   stopAll() {
+    if (this._watchIO) { this._watchIO.disconnect(); this._watchIO = null; }
+    this.app._watching = false; document.documentElement.classList.remove('watching');
     document.querySelectorAll('[data-yt].playing').forEach(m => {
       m.classList.remove('playing');
       m.innerHTML = this.thumbImg(m.dataset.yt, false) + (m.dataset.link || '');
@@ -1966,10 +2083,13 @@ const MEDIA = {
         const a = m.querySelector('.car-full');
         if (a) m.dataset.link = a.outerHTML;
       }
+      /* the connection to YouTube opens as a finger touches the frame */
+      m.addEventListener('pointerdown', () => this.warm(), { once: true, passive: true });
       m.addEventListener('click', () => {
         if (m.classList.contains('playing')) return;
         this.stopAll();
         m.classList.add('playing');
+        this.watch(m);
         m.innerHTML = `<iframe src="https://www.youtube.com/embed/${m.dataset.yt}?autoplay=1&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3"
           title="" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowfullscreen></iframe>`;
@@ -3097,8 +3217,34 @@ const VISION = {
     });
   },
 
-  fitCards() {
+  /* Measuring needs real boxes. The section is content-visibility:auto, so
+     off screen its contents have none; the host is made visible for the
+     length of a fit. On screen the fit runs in one go, so a half-fitted
+     card can never be seen; off screen it hands the thread back between
+     cards. */
+  async fitCards() {
     if (!this.cards || !this.cards.length) return;
+    const host = this.deck.closest('.vis');
+    this._hold = (this._hold || 0) + 1; if (host) host.style.contentVisibility = 'visible';
+    try { await this.fitNow(host); }
+    finally { if (--this._hold === 0 && host) host.style.contentVisibility = ''; }
+  },
+
+  async fitNow(host) {
+    /* Measured again only when something has changed — width, language,
+       fonts, or a rebuild. Coming back into view is not a change; that
+       re-measure used to land in the middle of a scroll. */
+    const sig = window.innerWidth + '|' + document.documentElement.lang + '|' + (document.fonts ? document.fonts.status : '');
+    if (sig === this._fitSig) return;
+    /* One card at a time, handing the thread back between cards: fitting
+       all six in one go froze a slow phone for over two seconds. A newer
+       call supersedes an older one still in progress. */
+    const run = this._fit = (this._fit || 0) + 1;
+    /* between cards, and for as long as the visitor is scrolling */
+    const hr = host ? host.getBoundingClientRect() : null;
+    const seen = hr && hr.bottom > 0 && hr.top < window.innerHeight;
+    const breathe = seen ? () => Promise.resolve()
+      : () => new Promise(r => { const go = () => this.app._scrolling ? setTimeout(go, 200) : setTimeout(r, 0); go(); });
     const measuring = !!window.VIS_MEASURE;
     let worst = 0;
 
@@ -3125,14 +3271,15 @@ const VISION = {
         if (!need || !body.offsetHeight) return;
         tallest = Math.max(tallest, need);
         pad = el.offsetHeight - body.offsetHeight;
+        await breathe(); if (run !== this._fit) return;
       }
       this.deck.style.height = Math.ceil(tallest + pad + 2) + 'px';
     }
     const target = parseInt(this.deck.style.height, 10) || this.deckHeight();
 
-    this.cards.forEach(el => {
+    cards: for (const el of this.cards) {
       const body = el.querySelector('.vis-body');
-      if (!body) return;
+      if (!body) continue;
       el.style.setProperty('--xg', '0px');
       let cs = 1;
       for (let pass = 0; pass < 6; pass++) {
@@ -3142,7 +3289,7 @@ const VISION = {
         const avail = body.offsetHeight, need = extent(body);
         /* zero means the section has not been laid out yet — skipped by
            content-visibility. The observer refits it when it is real. */
-        if (!avail || !need) return;
+        if (!avail || !need) continue cards;
         if (measuring) break;
         const ratio = avail / need;
         if (ratio > 0.99 && ratio < 1.01) break;
@@ -3167,11 +3314,14 @@ const VISION = {
         console.warn('vision: card ' + el.dataset.k + ' over by ' + Math.round(over)
           + 'px at cs ' + cs.toFixed(2));
       }
-    });
+      await breathe(); if (run !== this._fit) return;
+    }
     /* Nothing may ever be cut. If a card still cannot fit, the deck grows
        to hold it rather than clipping its last line. With the heights
        below this should never fire; the console says so if it does. */
+    if (!measuring) this._fitSig = sig;
     if (!measuring && worst > 2) {
+      this._fitSig = '';
       this.deck.style.height = (target + Math.ceil(worst) + 4) + 'px';
       requestAnimationFrame(() => this.fitCards());
     }
@@ -3194,8 +3344,10 @@ const VISION = {
       this.tag(s, k, mr)
     ).join('');
     this.cards = [...this.deck.querySelectorAll('.vis-card')];
+    this._fitSig = '';
     this.place(true);
     this.deck.style.height = this.deckHeight() + 'px';
+    try { this.app.reStill(); } catch (e) {}
     requestAnimationFrame(() => this.fitCards());
     /* Devanagari measured in a fallback font has different metrics, so a
        scale computed before Mukta arrives is computed for the wrong
@@ -3244,10 +3396,11 @@ const VISION = {
         if (b) { b.style.animation = 'none'; void b.getBoundingClientRect(); b.style.animation = ''; }
       }
     });
-    this.fit();
-    /* the card coming to the front is the one whose box is real, so it
-       is refitted as it arrives */
-    requestAnimationFrame(() => this.fitCards());
+    /* Cards are fitted once, all of them, for one deck height; changing
+       slides re-measures nothing. It used to reset the deck to a fallback
+       height and re-fit all six cards on every change — the stutter in the
+       cross-fade. Only if no complete fit exists yet is one made now. */
+    if (!this._fitSig) { this.fit(); requestAnimationFrame(() => this.fitCards()); }
   },
 
   /* The deck is one fixed height and never resizes. It used to follow
@@ -3271,9 +3424,12 @@ const VISION = {
 
   start() {
     this.stop();
-    if (this.paused) return;
+    if (this.paused || !this.cards) return;
     const secs = Number(this.slides[this.i] && this.slides[this.i].seconds) || 7;
-    this.timer = setTimeout(() => this.go(this.i + 1), secs * 1000);
+    /* advances, then sets the next timer — it used to advance only once and
+       then sit on the second slide until the section was scrolled away */
+    const tick = () => (this.app && (this.app._scrolling || this.app._watching)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    this.timer = setTimeout(tick, secs * 1000);
   },
 
   stop() { if (this.timer) { clearTimeout(this.timer); this.timer = null; } },
@@ -3376,13 +3532,13 @@ const MOMENTS = {
      moments.json (rows_mr / rows_en); a declared pair becomes two aligned
      columns with a thin gold bar standing between them. Inside a
      designation, a line may break only after a comma. */
-  people(list, rows, cls) {
+  people(list, rows, cls, lang) {
     if (!list || !list.length) return '';
     const desig = d => d.split(', ').map(x => this.esc(x).replace(/ /g, '\u00A0')).join(', ');
     const unit = ([n, d], i) => `<span class="mom-u" data-i="${i}"><b>${this.esc(n)}</b>${
       d ? `<i><span class="mom-br">(</span>${desig(d)}<span class="mom-br">)</span></i>` : ''}</span>`;
     const groups = (rows && rows.length) ? rows.map(r => r.map(x => x - 1)) : list.map((_, i) => [i]);
-    return `<div class="mom-names ${cls}" lang="${cls}" data-rows='${JSON.stringify(groups)}'>` + groups.map(g =>
+    return `<div class="mom-names ${cls}" lang="${lang || cls}" data-rows='${JSON.stringify(groups)}'>` + groups.map(g =>
       `<div class="mom-row${g.length > 1 ? ' mom-pair' : ''}">` + g.map(i => list[i] ? unit(list[i], i) : '')
         .join('<span class="mom-bar" aria-hidden="true"></span>') + `</div>`).join('') + `</div>`;
   },
@@ -3461,6 +3617,7 @@ const MOMENTS = {
     this.cards = [...this.track.children];
     this.dots.innerHTML = this.slides.map((s, k) =>
       `<button class="mom-dot${k === 0 ? ' on' : ''}" data-k="${k}" aria-label="${k + 1}"></button>`).join('');
+    try { this.app.reStill(); } catch (e) {}
     requestAnimationFrame(() => this.fit());
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.fit()).catch(() => {});
   },
@@ -3490,7 +3647,8 @@ const MOMENTS = {
   start() {
     this.stop();
     if (this.paused || this.reduced || !this.cards) return;
-    this.timer = setTimeout(() => { this.go(this.i + 1); this.start(); }, this.secs());
+    const tick = () => (this.app._scrolling || this.app._watching) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    this.timer = setTimeout(tick, this.secs());
     this.dotFill();
   },
   stop() { clearTimeout(this.timer); if (this.dots) this.dots.classList.add('held'); },
@@ -3556,20 +3714,35 @@ const MOMENTS = {
      public…" in English. The shared rule stays as it is for Sections 3 to
      5; this heading alone shrinks just enough to show every word. */
   fitHead() {
-    const hs = this.track && this.track.closest('.mom').querySelector('.hd-t > span');
+    const hs = this.track && this.track.closest('.mom, .au').querySelector('.hd-t > span');
     if (!hs) return;
     hs.style.fontSize = '';
     const room = hs.clientWidth;
     if (room) this.shrink(hs, room, t => t.scrollWidth);
   },
 
-  fit() {
+  async fit() {
     if (!this.cards) return;
+    const host = this.track.closest('.mom, .au');
+    this._hold = (this._hold || 0) + 1; if (host) host.style.contentVisibility = 'visible';
+    try { await this.fitNow(host); }
+    finally { if (--this._hold === 0 && host) host.style.contentVisibility = ''; }
+  },
+
+  async fitNow(host) {
+    if (!this.cards) return;
+    /* measured again only when width, language or fonts have changed */
+    const sig = window.innerWidth + '|' + document.documentElement.lang + '|' + (document.fonts ? document.fonts.status : '');
+    if (sig === this._fitSig) return;
+    let whole = true;
+    const hr = host ? host.getBoundingClientRect() : null;
+    const seen = hr && hr.bottom > 0 && hr.top < window.innerHeight;
+    const run = this._fit = (this._fit || 0) + 1;
     this.fitHead();
     const text = t => { const r = document.createRange(); r.selectNodeContents(t); return r.getBoundingClientRect().width; };
-    this.cards.forEach(el => {
+    for (const el of this.cards) {
       const head = el.querySelector('.mom-head');
-      if (!head || !head.clientWidth) return;
+      if (!head || !head.clientWidth) { whole = false; continue; }
       /* The title box breathes to 1.035x, so the title fits inside 96% of the
          width. Its width is read from scrollWidth: untouched by the breathing
          scale, and — unlike offsetWidth, which is capped at the slide's width
@@ -3586,7 +3759,11 @@ const MOMENTS = {
       }
       this.arrange(el);
       this.timing(el);
-    });
+      /* between slides, and for as long as the visitor is scrolling */
+      if (!seen) await new Promise(r => { const go = () => this.app._scrolling ? setTimeout(go, 200) : setTimeout(r, 0); go(); });
+      if (run !== this._fit) return;
+    }
+    if (whole) this._fitSig = sig;
   },
 
   /* The names engine. Every person is a name plate, and nothing in a plate
@@ -3651,6 +3828,263 @@ const MOMENTS = {
     void d.offsetWidth; d.classList.add('run');
   }
 };
+
+/* ===================================================================
+   AUTHOR — "लेखणीमागची लेखिका · The Author Behind the Pen"
+   Second from last in every book window, directly before Q&A. Four
+   slides: the State award and the Zilla Parishad felicitation (Section 6,
+   slides 1 and 5), "Beyond the Books" (Section 5, slide 1), and this
+   book's own vision (the Section 5 slide whose book_id is this book).
+
+   Nothing is copied: the slides are read from moments.json and
+   vision.json, so a correction there appears here too. It is Section 6's
+   engine — name plates, fitting, timing, arrival effects, pausing — shared
+   through the prototype, not duplicated. What is its own: one language at
+   a time (the one the site is set to), and Section 5's chips and learning
+   path laid out in Section 6's form.
+   =================================================================== */
+const AUTHOR = Object.assign(Object.create(MOMENTS), {
+  app: null, i: 0, timer: null, paused: false, reduced: false, cards: null,
+  slides: [], hinted: false, _fitSig: '', _fit: 0, _hold: 0, _io: null,
+
+  init(app) { this.app = app; },
+
+  pick(bookId) {
+    const m = (this.app && this.app.moments) || [], v = (this.app && this.app.vision) || [];
+    const out = [];
+    [1, 5].forEach(n => { const s = m.find(x => x.n === n); if (s) out.push({ kind: 'photo', src: s }); });
+    const view = v.find(x => x.n === 1); if (view) out.push({ kind: 'view', src: view });
+    /* this book's publication ceremony, fourth, where one exists */
+    const cer = m.find(x => (x.book_ids || []).indexOf(bookId) >= 0); if (cer) out.push({ kind: 'photo', src: cer });
+    const mine = v.find(x => x.book_id === bookId); if (mine) out.push({ kind: 'view', src: mine });
+    return out;
+  },
+
+  /* the section's frame, placed by the book window before Q&A; it takes
+     the next background in the window's alternation like every section */
+  html(bookId) {
+    if (!this.app || !this.pick(bookId).length) return '';
+    const t = k => this.app.t(k);
+    return `<section class="bsec ${SEC.tone()} au" data-step="st_b_author">
+            <div class="hd hd-sm bsec-hd">
+              <h3 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span>${t('au_head')}</span></h3>
+              <p class="hd-s">${t('au_sub')}</p>
+            </div>
+            <div class="mom-stage au-stage"><div class="mom-track au-track"></div></div>
+            <div class="mom-dots au-dots"></div>
+          </section>`;
+  },
+
+  /* every time a book window is drawn — a new book, or a language switch */
+  mount(root) {
+    this.stop();
+    if (this._io) { this._io.forEach(o => o.disconnect()); this._io = null; }
+    this.cards = null;
+    const sec = root && root.querySelector('.au');
+    if (!sec || typeof BOOKS === 'undefined') return;
+    this.track = sec.querySelector('.au-track');
+    this.dots = sec.querySelector('.au-dots');
+    this.stage = sec.querySelector('.au-stage');
+    this.lang = this.app.lang === 'en' ? 'en' : 'mr';
+    this.slides = this.pick(BOOKS.current).map(x => Object.assign({ seconds: 6 }, x));
+    this.i = 0; this.paused = false; this._fitSig = ''; this._grown = '';
+    this.build();
+    this.bind();
+  },
+
+  /* one slide, in one language */
+  slide(x, k) {
+    const L = this.lang, s = x.src, e = v => this.esc(v), g = f => s[f + '_' + L] || '';
+    const photo = x.kind === 'photo';
+    const g1 = photo ? s.g1 : (s.au_g1 || '#18193A'), g2 = photo ? s.g2 : (s.au_g2 || '#3E3465');
+    const head = (title, sub) => `
+        <div class="mom-head">
+          <span class="mom-tbox"><em lang="${L}">${e(title)}</em></span>
+          ${sub ? `<p class="mom-ten au-sub" lang="${L}">${e(sub)}</p>` : ''}
+          <span class="mom-line" aria-hidden="true"></span>
+        </div>`;
+    const close = (a, b, extra) => (a || b || extra) ? `
+        <div class="mom-end">
+          ${a ? `<p class="mr" lang="${L}">${e(a)}</p>` : ''}
+          ${b ? `<p class="en" lang="${L}">${e(b)}</p>` : ''}
+          ${extra || ''}
+        </div>` : '';
+    const venue = g('venue') ? `<div class="mom-venue"><p class="mr" lang="${L}"><b>${L === 'mr' ? 'स्थळ :' : 'Venue :'}</b> ${
+      this.mark(g('venue'), s)} · <b>${L === 'mr' ? 'दिनांक :' : 'Date :'}</b> ${this.mark(g('date'), s)}</p></div>` : '';
+    let body;
+    if (photo) {
+      const one = `assets/img/news/${s.img}.webp`, two = `assets/img/news/${s.img}@2x.webp`;
+      body = head(g('title'), '') + `
+        <div class="mom-ph">
+          <img src="${one}" srcset="${one} 1x, ${two} 2x" onerror="this.removeAttribute('srcset')"
+               width="${s.w}" height="${s.h}" alt="${e(g('title'))}" decoding="async" loading="lazy">
+        </div>
+        <div class="mom-who">${this.people(s['people_' + L], s['rows_' + L], L, L)}</div>
+        <div class="mom-say"><p class="mr" lang="${L}">${this.mark(g('desc'), s)}</p></div>` + close(g('sig'), '', venue);
+    } else {
+      const groups = [['focus_h', 'focus'], ['focus2_h', 'focus2'], ['focus3_h', 'focus3'], ['focus4_h', 'focus4']]
+        .map(([h, l]) => [g(h), s[l + '_' + L] || []]).filter(([h, l]) => h || l.length);
+      let mid;
+      if (s.sign && groups.length) {
+        /* "who is behind this" is the author herself: a name plate, as in Section 6 */
+        const [h, l] = groups[0];
+        /* Section 5's English slide keeps the author's signature in Marathi
+           script; here English shows English only, so it takes Section 6's
+           English form of her name (from the keep-together list) */
+        const enName = L === 'en' && (this.app.momentsKeep || []).find(k => k === 'Mrs. Meena Sunil Girme');
+        const plates = l.map(it => { const [n, d] = it.split(' — ');
+          return [(enName && /[\u0900-\u097F]/.test(n)) ? enName : n.trim(), (d || '').trim()]; });
+        mid = `${h ? `<p class="au-lab" lang="${L}">${e(h)}</p>` : ''}<div class="mom-who">${this.people(plates, null, L, L)}</div>`;
+      } else if (s.inline) {
+        mid = `<div class="au-lines" lang="${L}">` + groups.map(([h, l]) =>
+          `<p class="au-line"><b>${e(h)}</b>${l.length ? ` : <span>${l.map(e).join(' · ')}</span>` : ''}</p>`).join('') + `</div>`;
+      } else {
+        mid = `<div class="au-focus">` + groups.map(([h, l]) => `${h ? `<p class="au-lab" lang="${L}">${e(h)}</p>` : ''}${
+          l.length ? `<div class="au-chips" lang="${L}">${l.map(c => `<span class="au-chip">${e(c)}</span>`).join('')}</div>` : ''}`).join('') + `</div>`;
+      }
+      const path = s['path_' + L] || [], pathH = g('path_h'), span = g('span');
+      const chain = path.length ? `<div class="au-path" lang="${L}" data-split='${JSON.stringify(s['path_split_' + L] || [])}'>${
+        pathH ? `<p class="au-lab">${e(pathH)}</p>` : ''}<div class="au-chain">${path.map((st, j) =>
+        `${j ? '<i class="au-arw" aria-hidden="true"></i>' : ''}<span class="au-step">${e(st)}</span>`).join('')}</div></div>` : '';
+      /* Marathi only: the book at a glance, and the author's own line */
+      const glance = L === 'mr' && s.book_id ? this.glance(s.book_id) : '';
+      const quote = L === 'mr' && s.manogat_mr ? `<p class="au-quote" lang="mr"><span class="au-qm" aria-hidden="true">“</span>${e(s.manogat_mr)}</p>` : '';
+      body = head(g('title'), g('sub')) + glance
+        + (g('view') ? `<div class="mom-say"><p class="mr" lang="${L}">${this.mark(g('view'), s)}</p></div>` : '')
+        + `<div class="au-mid">${mid}${span ? `<p class="au-span" lang="${L}">${e(span)}</p>` : ''}${chain}${quote}</div>`
+        + close(g('out'), g('out2'));
+    }
+    return `<article class="mom-slide au-slide au-${L} au-${x.kind}${k === 0 ? ' on' : ''}" data-k="${k}" style="--g1:${g1};--g2:${g2}">${body}</article>`;
+  },
+
+  /* इयत्ता · माध्यम · पाने — straight from the book data, nothing typed twice */
+  glance(id) {
+    const b = ((this.app.content && this.app.content.books) || []).find(x => x.book_id === id);
+    if (!b || typeof BOOKS === 'undefined') return '';
+    const dev = n => String(n).replace(/[0-9]/g, d => '०१२३४५६७८९'[d]);
+    let med = BOOKS.medLabel(b); if (med && !/माध्यम/.test(med)) med += ' माध्यम';
+    const parts = [BOOKS.stdLabel(b) ? 'इयत्ता ' + BOOKS.stdLabel(b) : '', med, b.pages ? dev(b.pages) + ' पाने' : ''].filter(Boolean);
+    return parts.length ? `<div class="au-glance" lang="mr">${parts.map(x => `<span class="au-g">${this.esc(x)}</span>`).join('')}</div>` : '';
+  },
+
+  /* Section 6's name plates, then this section's own: chips and the path in
+     the fewest, most even rows (3 + 2, never 4 + 1), the path in the lines
+     Section 5 declares where they fit, and one-line groups kept on one line */
+  arrange(el) {
+    MOMENTS.arrange.call(this, el);
+    const head = el.querySelector('.mom-head'); const W = head ? head.clientWidth : 0; if (!W) return;
+    el.querySelectorAll('.au-chips').forEach(b => this.rows(b, [...b.querySelectorAll('.au-chip')].map(c => [c]), W, null));
+    el.querySelectorAll('.au-path').forEach(p => {
+      const ch = p.querySelector('.au-chain'); const kids = [...ch.children].filter(x => !x.classList.contains('au-brk'));
+      const units = []; kids.forEach(x => { if (x.classList.contains('au-step')) { const a = x.previousElementSibling;
+        units.push(a && a.classList.contains('au-arw') ? [a, x] : [x]); } });
+      let split = []; try { split = JSON.parse(p.dataset.split || '[]'); } catch (e) {}
+      this.rows(ch, units, W, split);
+    });
+    const text = t => { const r = document.createRange(); r.selectNodeContents(t); return r.getBoundingClientRect().width; };
+    el.querySelectorAll('.au-line').forEach(l => this.shrink(l, W, text));
+  },
+
+  rows(box, units, W, declared) {
+    box.querySelectorAll('.au-brk').forEach(b => b.remove());
+    box.querySelectorAll('.au-cut').forEach(a => a.classList.remove('au-cut'));
+    const n = units.length; if (n < 2) return;
+    const gap = parseFloat(getComputedStyle(box).columnGap) || 6;
+    const w = units.map(u => u.reduce((t, x) => t + x.offsetWidth, 0) + gap * (u.length - 1));
+    const width = (a, b) => w.slice(a, b).reduce((t, x) => t + x, 0) + gap * (b - a - 1);
+    const worst = cs => { let a = 0, m = 0; for (const c of [...cs, n]) { m = Math.max(m, width(a, c)); a = c; } return m; };
+    let cuts = null;
+    if (declared && declared.length > 1 && declared.reduce((a, b) => a + b, 0) === n) {
+      const d = []; let a = 0; declared.slice(0, -1).forEach(k => { a += k; d.push(a); });
+      if (worst(d) <= W) cuts = d;
+    }
+    for (let R = 1; !cuts && R <= n; R++) {
+      let best = null, bestW = Infinity;
+      const walk = (from, left, acc) => {
+        if (!left) { const m = worst(acc); if (m <= W && m < bestW) { bestW = m; best = acc.slice(); } return; }
+        for (let c = from + 1; c <= n - left; c++) walk(c, left - 1, [...acc, c]);
+      };
+      walk(0, R - 1, []);
+      cuts = best;
+    }
+    (cuts || []).forEach(c => {
+      const first = units[c][0];
+      if (first.classList.contains('au-arw')) first.classList.add('au-cut');
+      const brk = document.createElement('i'); brk.className = 'au-brk'; brk.setAttribute('aria-hidden', 'true');
+      box.insertBefore(brk, first);
+    });
+  },
+
+  /* arrival order: the view first, then each plate, label, chip, step or
+     line in turn, then the closing line under the divider */
+  timing(el) {
+    const items = [...el.querySelectorAll('.au-g, .mom-u, .mom-bar, .au-lab, .au-chip, .au-line, .au-span, .au-step, .au-arw, .au-quote')];
+    /* a busy slide steps faster, so every slide has settled by about 1.9s */
+    const step = Math.min(0.07, 1.2 / Math.max(1, items.length));
+    items.forEach((x, n) => x.style.setProperty('--pd', (0.5 + step * n).toFixed(2) + 's'));
+    el.style.setProperty('--sd', (0.55 + step * items.length).toFixed(2) + 's');
+  },
+
+  /* Marathi text is shorter than English, so a Marathi slide had up to a
+     third of its height empty. After fitting, each Marathi vision slide's
+     text grows — at most 12% — until it fills the slide, never beyond the
+     height the tallest slide set. English slides are never touched. */
+  async fit() {
+    await MOMENTS.fit.call(this);
+    if (this.lang === 'mr' && this.cards && this._fitSig && this._grown !== this._fitSig) {
+      this._grown = this._fitSig; this.grow();
+    }
+  },
+  grow() {
+    const views = this.cards.filter(c => c.classList.contains('au-view'));
+    views.forEach(c => c.style.setProperty('--fz', '1'));
+    const nat = c => { c.style.alignSelf = 'flex-start'; const h = c.offsetHeight; c.style.alignSelf = ''; return h; };
+    const deck = Math.max(...this.cards.map(nat));
+    views.forEach(c => {
+      let lo = 1, hi = 1.12;
+      for (let k = 0; k < 6; k++) {
+        const mid = (lo + hi) / 2;
+        c.style.setProperty('--fz', mid.toFixed(3)); this.arrange(c);
+        if (nat(c) <= deck - 2) lo = mid; else hi = mid;
+      }
+      c.style.setProperty('--fz', lo.toFixed(3)); this.arrange(c); this.timing(c);
+    });
+  },
+
+  bind() {
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.dots.addEventListener('click', e => {
+      const b = e.target.closest('.mom-dot'); if (!b) return;
+      this.go(+b.dataset.k); this.start();
+    });
+    let x0 = null, y0 = 0, moved = false;
+    this.stage.addEventListener('touchstart', e => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; moved = false; }, { passive: true });
+    this.stage.addEventListener('touchmove', e => { if (x0 !== null && Math.abs(e.touches[0].clientX - x0) > 10) moved = true; }, { passive: true });
+    this.stage.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { this.go(this.i + (dx < 0 ? 1 : -1)); this.start(); }
+    }, { passive: true });
+    this.stage.addEventListener('click', () => {
+      if (moved) { moved = false; return; }
+      this.paused = !this.paused; this.paused ? this.stop() : this.start();
+    });
+    if ('IntersectionObserver' in window) {
+      const sec = this.track.closest('.au');
+      const a = new IntersectionObserver(es => es.forEach(en => {
+        if (en.isIntersecting) { this.fit(); this.start(); } else this.stop();
+      }), { threshold: 0.01, rootMargin: '300px 0px' });
+      a.observe(sec);
+      const h = new IntersectionObserver((es, ob) => es.forEach(en => { if (en.isIntersecting) { this.hint(); ob.disconnect(); } }), { threshold: 0.6 });
+      h.observe(this.stage);
+      this._io = [a, h];
+    }
+    if (!this._rs) {
+      this._rs = true; let rt;
+      window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (this.cards) this.fit(); }, 200); });
+    }
+  }
+});
 
 const STORY = {
   app: null, i: 0, timer: null, held: false,
@@ -3820,7 +4254,7 @@ const STORY = {
 
           <div class="sh-logo-wrap">
             <span class="sh-rays" aria-hidden="true"></span>
-            <img src="assets/img/rutuja-logo.png" alt="${t('pub_name')}" class="sh-logo"
+            <img src="assets/img/rutuja-logo-sh.webp" alt="${t('pub_name')}" class="sh-logo"
                  width="1200" height="1043" decoding="async" fetchpriority="high">
           </div>
 
@@ -3904,7 +4338,9 @@ const STORY = {
 
   start() {
     this.stop();
-    this.timer = setTimeout(() => { this.go(this.i + 1); this.start(); }, this.secs());
+    /* never advances in the middle of a scroll; it waits for the page to settle */
+    const tick = () => (this.app && (this.app._scrolling || this.app._watching)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    this.timer = setTimeout(tick, this.secs());
   },
   stop() { clearTimeout(this.timer); }
 };

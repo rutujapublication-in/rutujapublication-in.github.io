@@ -411,7 +411,10 @@
     "vis_focus": "पुस्तकाचा केंद्रबिंदू",
     "vis_path": "शिकण्याची वाटचाल",
     "vis_out": "मुख्य परिणाम",
-    "mom_head": "लेखन, सन्मान आणि प्रकाशन"
+    "mom_head": "लेखन, सन्मान आणि प्रकाशन",
+    "au_head": "लेखणीमागची लेखिका",
+    "au_sub": "सन्मान, दृष्टिकोन आणि या पुस्तकामागचा विचार",
+    "st_b_author": "लेखिका"
   },
   "en": {
     "nav_home": "Home",
@@ -825,6 +828,9 @@
     "vis_focus": "What it centres on",
     "vis_path": "How a child moves forward",
     "vis_out": "What it builds",
-    "mom_head": "Writing, honours and publications"
+    "mom_head": "Writing, honours and publications",
+    "au_head": "The Author Behind the Pen",
+    "au_sub": "Honours, vision, and the thinking behind this book",
+    "st_b_author": "The author"
   }
 }
