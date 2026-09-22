@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v20j',
+  VERSION: 'v21b',
   lang: 'mr',
   text: {},
   locations: null,
@@ -1978,6 +1978,7 @@ const BOOKS = {
             ${this.rateGrid(mySlabs, b, false)}
           </section>
           ${AUTHOR.html(b.book_id)}
+          ${typeof RIGHTS !== 'undefined' ? RIGHTS.html(b.book_id) : ''}
         </div>
       </div>`;
 
@@ -2025,6 +2026,8 @@ const BOOKS = {
     MEDIA.bindBookVideos(this.el.detail);
     QA.forBook(this.el.detail);
     try { AUTHOR.mount(this.el.detail); } catch (e) { console.error('author section', e); }
+    /* a separate package (assets/js/rights.js) fills its own section */
+    try { if (typeof RIGHTS !== 'undefined') RIGHTS.mount(this.el.detail); } catch (e) { console.error('rights section', e); }
     try { PATH.draw('bookDetail', 'bdPath', 'cream'); } catch (e) { console.error('path', e); }
     qv.addEventListener('input', () => { qv.value = qv.value.replace(/\D/g, ''); draw(); });
     document.getElementById('qMinus').onclick = () => { qv.value = Math.max(1, (+qv.value || 1) - 1); draw(); };

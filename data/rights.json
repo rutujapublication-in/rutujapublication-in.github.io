@@ -1,0 +1,446 @@
+{
+  "_HOW_TO_EDIT": "Section 7 — हक्क, मौलिकता आणि जागरूकता / Rights, Originality & Awareness. A separate package: this file, assets/js/rights.js, assets/css/rights.css and the images in assets/img/rights. Shown on the homepage after Section 6, and in book windows after 'लेखणीमागची लेखिका', before Q&A. One language at a time (mr / en), never both. Each card: key (permanent name), on (true/false — false removes it everywhere), home (shown on the homepage), books (book windows it appears in — all five for every card), seconds (how long it holds), tone (two background colours), type, and its words in mr and en. No accused person is named anywhere: the newspaper images show only masthead, headline, the opening lines and the date line. The case is sub judice; have the words reviewed before changing them.",
+  "head": {
+    "mr": {
+      "t": "हक्क, मौलिकता आणि जागरूकता",
+      "s": "मूळ साहित्यकृतीचा सन्मान"
+    },
+    "en": {
+      "t": "Rights, Originality & Awareness",
+      "s": "Respecting original work"
+    }
+  },
+  "ui": {
+    "mr": {
+      "read": "🔍 बातमी वाचा",
+      "close": "बंद करा",
+      "zoom": "मोठे करून पाहण्यासाठी टॅप करा",
+      "legend_add": "बदललेला / जोडलेला शब्द",
+      "legend_cut": "काढलेला शब्द",
+      "step": "हक्क व जागरूकता"
+    },
+    "en": {
+      "read": "🔍 Read the report",
+      "close": "Close",
+      "zoom": "Tap to zoom in",
+      "legend_add": "Changed / added word",
+      "legend_cut": "Removed word",
+      "step": "Rights & Awareness"
+    }
+  },
+  "cards": [
+    {
+      "key": "rights",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 7,
+      "tone": [
+        "#172338",
+        "#2E4468"
+      ],
+      "type": "rights",
+      "covers": [
+        {
+          "img": "rp-b-001.webp",
+          "book": "RP-B-001"
+        },
+        {
+          "img": "rp-b-002.webp",
+          "book": "RP-B-002"
+        }
+      ],
+      "mr": {
+        "t": "हक्कांची अधिकृत नोंद",
+        "s": "मूळ साहित्यकृती · नोंदणीकृत हक्क",
+        "regs": [
+          [
+            "कॉपीराइट",
+            "L-95705"
+          ],
+          [
+            "कॉपीराइट",
+            "L-132178"
+          ]
+        ],
+        "chips": [
+          "ट्रेडमार्क 4379367 · वर्ग ४१",
+          "उद्योग आधार MH01D0036726"
+        ],
+        "who": [
+          [
+            "लेखिका",
+            "सौ. मीना सुनिल गिरमे"
+          ],
+          [
+            "प्रकाशक",
+            "ऋतुजा पब्लिकेशन"
+          ]
+        ],
+        "close": "पुस्तक म्हणजे केवळ नाव नव्हे",
+        "close2": "त्यामागे लेखन, संशोधन व सर्जनशील श्रम असतात"
+      },
+      "en": {
+        "t": "Rights on Record",
+        "s": "Original works · registered rights",
+        "regs": [
+          [
+            "Copyright",
+            "L-95705"
+          ],
+          [
+            "Copyright",
+            "L-132178"
+          ]
+        ],
+        "chips": [
+          "Trademark 4379367 · Class 41",
+          "Udyog Aadhaar MH01D0036726"
+        ],
+        "who": [
+          [
+            "Author",
+            "Mrs. Meena Sunil Girme"
+          ],
+          [
+            "Publisher",
+            "Rutuja Publication"
+          ]
+        ],
+        "close": "A book is more than a title",
+        "close2": "behind it: writing, research and creative effort"
+      }
+    },
+    {
+      "key": "changes",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 9,
+      "tone": [
+        "#0F3238",
+        "#1E5560"
+      ],
+      "type": "changes",
+      "mr": {
+        "t": "शीर्षकातील बदल व फिर्यादीतील मुद्दे",
+        "s": "फिर्याद व वृत्तांनुसार",
+        "rows": [
+          [
+            "बदल ०१",
+            "‘झटपट’ऐवजी {‘पटपट’}"
+          ],
+          [
+            "बदल ०२",
+            "~‘चला’~ काढला · ‘वाचूया’नंतर {‘शिकूया’} · ‘झटपट’ तसेच"
+          ],
+          [
+            "बदल ०३",
+            "‘चला’नंतर {‘उठा’} · ‘वाचूया झटपट’ तसेच"
+          ]
+        ],
+        "points": [
+          "पानक्रम बदलला",
+          "मूळ लेखिकेचे नाव नाही",
+          "नावाशी साधर्म्य"
+        ],
+        "q": [
+          "म्हणजे फक्त शब्द व पुस्तकाचे नाव",
+          "बदलल्याने ओळख बदलते का?"
+        ],
+        "fa": "शब्द बदलता येतात; मौलिकता नाही.",
+        "ft": "लेखिकेची भूमिका · अंतिम निर्णय सक्षम यंत्रणेचा"
+      },
+      "en": {
+        "t": "Title Changes & Points in the Complaint",
+        "s": "As per the complaint and reports",
+        "rows": [
+          [
+            "Change 01",
+            "{‘Patpat’} instead of ‘Zatpat’"
+          ],
+          [
+            "Change 02",
+            "~‘Chala’~ removed · {‘Shikuya’} after ‘Vachuya’ · ‘Zatpat’ kept"
+          ],
+          [
+            "Change 03",
+            "{‘Utha’} after ‘Chala’ · ‘Vachuya Zatpat’ kept"
+          ]
+        ],
+        "points": [
+          "Page order changed",
+          "Author's name absent",
+          "A similar name"
+        ],
+        "q": [
+          "So does changing just a word and the book's name",
+          "change its identity?"
+        ],
+        "fa": "Words can be changed; originality cannot.",
+        "ft": "The author's stand · the competent authority decides"
+      }
+    },
+    {
+      "key": "story",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 9,
+      "tone": [
+        "#2A1733",
+        "#4A2A58"
+      ],
+      "type": "story",
+      "mr": {
+        "t": "एक पुस्तक, ८ दिवसांत एकाचे दोन लेखक",
+        "acc": "तेही शिक्षक!",
+        "s": "आमचा अनुभव",
+        "steps": [
+          "नोटीस पाठवली",
+          "८ दिवसांत",
+          "एकाचे दोन लेखक — दोघेही शिक्षक",
+          "नव्याने ‘बाग’",
+          "‘शब्दांची’ दाखवली"
+        ],
+        "line": "शिक्षक समुदायाशी संबंधित प्रकाशनांबाबतही प्रश्न उभे राहिले.",
+        "q": [
+          "शैक्षणिक साहित्यातच मौलिकतेचा हा विरोधाभास का?"
+        ],
+        "note": "लेखिकेसोबतच प्रकाशकाचा अनुभव; अंतिम निर्णय सक्षम यंत्रणेकडे."
+      },
+      "en": {
+        "t": "One Book, 8 Days: One Author Became Two",
+        "acc": "Both of them teachers!",
+        "s": "Our experience",
+        "steps": [
+          "Notice sent",
+          "Within 8 days",
+          "One author became two — both teachers",
+          "A new ‘Baag’",
+          "‘Shabdanchi’ added"
+        ],
+        "line": "Questions arose about publications linked to the teaching community too.",
+        "q": [
+          "Why this contradiction in the very field",
+          "meant to uphold originality?"
+        ],
+        "note": "The author's and the publisher's own account; the final decision rests with the competent authority."
+      }
+    },
+    {
+      "key": "news-jaybaba",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 9,
+      "tone": [
+        "#1E1E24",
+        "#3B3B46"
+      ],
+      "type": "clip",
+      "img": "jaybaba",
+      "mr": {
+        "t": "वृत्तपत्रीय नोंद · १५ जून २०२५",
+        "s": "दै. जयबाबा · श्रीरामपूर–अहिल्यानगर",
+        "know": [
+          "कॉपीराइट कायदा, १९५७",
+          "साहित्यकृती निर्माण होताच तिच्यावरील हक्क लेखकाचा"
+        ],
+        "fa": "आम्ही प्रश्न उठवला; वृत्तपत्रांनी तो नोंदवला.",
+        "ft": "तक्रार दाखल · प्रकरण कायदेशीर प्रक्रियेत"
+      },
+      "en": {
+        "t": "Newspaper Record · 15 June 2025",
+        "s": "Dainik Jay Baba · Shrirampur–Ahilyanagar",
+        "know": [
+          "Copyright Act, 1957",
+          "a literary work belongs to its author from the moment it is created"
+        ],
+        "fa": "We raised the question; the press recorded it.",
+        "ft": "Complaint registered · the matter is in legal process"
+      },
+      "imgw": 450,
+      "imgh": 230
+    },
+    {
+      "key": "news-pudhari",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 9,
+      "tone": [
+        "#1E1E24",
+        "#3B3B46"
+      ],
+      "type": "clip",
+      "img": "pudhari",
+      "mr": {
+        "t": "वृत्तपत्रीय नोंद · २१ जून २०२५",
+        "s": "पुढारी · अहिल्यानगर आवृत्ती, पान ५",
+        "know": [
+          "संरक्षणाचा कालावधी",
+          "लेखकाचे आयुष्य + ६० वर्षे"
+        ],
+        "fa": "आम्ही प्रश्न उठवला; वृत्तपत्रांनी तो नोंदवला.",
+        "ft": "तक्रार दाखल · प्रकरण कायदेशीर प्रक्रियेत"
+      },
+      "en": {
+        "t": "Newspaper Record · 21 June 2025",
+        "s": "Pudhari · Ahilyanagar Edition, Page 5",
+        "know": [
+          "How long it lasts",
+          "the author's lifetime + 60 years"
+        ],
+        "fa": "We raised the question; the press recorded it.",
+        "ft": "Complaint registered · the matter is in legal process"
+      },
+      "imgw": 450,
+      "imgh": 306,
+      "cardimg": "pudhari-full"
+    },
+    {
+      "key": "news-sakal",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 9,
+      "tone": [
+        "#1E1E24",
+        "#3B3B46"
+      ],
+      "type": "clip",
+      "img": "sakal",
+      "mr": {
+        "t": "वृत्तपत्रीय नोंद · २१ जून २०२५",
+        "s": "सकाळ · नगर, पान ५",
+        "know": [
+          "नोंदणीचे महत्त्व",
+          "कॉपीराइट नोंद हा हक्काचा प्रथमदर्शनी पुरावा"
+        ],
+        "fa": "आम्ही प्रश्न उठवला; वृत्तपत्रांनी तो नोंदवला.",
+        "ft": "तक्रार दाखल · प्रकरण कायदेशीर प्रक्रियेत"
+      },
+      "en": {
+        "t": "Newspaper Record · 21 June 2025",
+        "s": "Sakal · Nagar, Page 5",
+        "know": [
+          "Why registration matters",
+          "a copyright entry is prima facie evidence of rights"
+        ],
+        "fa": "We raised the question; the press recorded it.",
+        "ft": "Complaint registered · the matter is in legal process"
+      },
+      "imgw": 450,
+      "imgh": 246
+    },
+    {
+      "key": "reader",
+      "on": true,
+      "home": true,
+      "books": [
+        "RP-B-001",
+        "RP-B-002",
+        "RP-B-003",
+        "RP-B-004",
+        "RP-B-005"
+      ],
+      "seconds": 7,
+      "tone": [
+        "#0E3A26",
+        "#1D5E3E"
+      ],
+      "type": "reader",
+      "mr": {
+        "t": "वाचकांसाठी जागरूक निवड",
+        "s": "खरेदीपूर्वी तीन गोष्टी तपासा",
+        "chain": [
+          [
+            "✍️",
+            "लेखक"
+          ],
+          [
+            "🏛️",
+            "प्रकाशक"
+          ],
+          [
+            "📘",
+            "आवृत्ती"
+          ]
+        ],
+        "close": "मूळ साहित्यकृतीचा सन्मान करा",
+        "close2": "माहितीपूर्ण खरेदी करा",
+        "note": "हक्कांची नोंद उपलब्ध; तक्रारी व वृत्ते दस्तऐवजीकृत; अंतिम निर्धारण न्यायालयीन प्रक्रियेत.",
+        "checks": [
+          "मुखपृष्ठावर लेखकाचे नाव",
+          "प्रकाशकाचे नाव व ISBN",
+          "आवृत्ती व छपाई वर्ष"
+        ],
+        "isbn": "📘 ISBN — प्रत्येक पुस्तकाची स्वतःची १३ अंकी ओळख"
+      },
+      "en": {
+        "t": "A Note for Every Reader",
+        "s": "Before you buy, check three things",
+        "chain": [
+          [
+            "✍️",
+            "Author"
+          ],
+          [
+            "🏛️",
+            "Publisher"
+          ],
+          [
+            "📘",
+            "Edition"
+          ]
+        ],
+        "close": "Respect original works",
+        "close2": "Make an informed purchase",
+        "note": "Rights on record; complaints and reports documented; the final decision rests with the courts.",
+        "checks": [
+          "Author's name on the cover",
+          "Publisher's name and ISBN",
+          "Edition and year of printing"
+        ],
+        "isbn": "📘 ISBN — every book's own 13-digit identity"
+      }
+    }
+  ]
+}
