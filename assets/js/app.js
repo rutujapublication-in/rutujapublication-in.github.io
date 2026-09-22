@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v19v',
+  VERSION: 'v20a',
   lang: 'mr',
   text: {},
   locations: null,
@@ -351,9 +351,11 @@ const RUTUJA = {
       </button>`;
     }).join('');
 
+    /* a seasonal package (assets/js/diwali.js) adds its own button here */
+    try { if (typeof DIWALI !== 'undefined') DIWALI.button(); } catch (e) { console.error('diwali button', e); }
     try { BOOKS.watchCards(); } catch (e) {}
 
-    document.querySelectorAll('.std-card').forEach(c => {
+    document.querySelectorAll('.std-card:not([data-dw])').forEach(c => {
       c.addEventListener('click', () => {
         /* the filter itself is set by the .std-card listener in BOOKS */
         this.go('books');
@@ -591,6 +593,9 @@ const RUTUJA = {
       const el = e.target;
       el.dataset.held = e.isIntersecting ? '' : '1';
       if (e.isIntersecting && this._scrolling) return;   /* resumes when the scroll settles */
+      /* arriving during a slide change: handed to that hold, which resumes it
+         when the change is over — playing it now would undo the hold */
+      if (e.isIntersecting && this._turning) { this._turnHeld = (this._turnHeld || []).concat(loops(el)); return; }
       loops(el).forEach(a => { try { e.isIntersecting ? a.play() : a.pause(); } catch (x) {} });
     }), { rootMargin: '250px 0px' });
     /* Each slide of a slideshow is watched on its own, so the slides waiting
@@ -632,8 +637,9 @@ const RUTUJA = {
         try { away ? a.pause() : (a.playState === 'paused' && a.play()); } catch (x) {}
       });
     };
-    this._settleAll = () => this.idle(settleAll, 3000);
+    this._settleAll = () => this.idle(() => { settleAll(); this.calm(); }, 3000);
     setTimeout(this._settleAll, 2500);
+    setTimeout(() => this.idle(() => this.measureFps(), 2000), 3500);
     let settle = null;
     window.addEventListener('scroll', () => {
       if (!this._scrolling) {
@@ -647,10 +653,94 @@ const RUTUJA = {
       settle = setTimeout(() => {
         this._scrolling = false;
         document.documentElement.classList.remove('scrolling');
-        this.idle(settleAll, 1000);
+        this.idle(() => { settleAll(); this.calm(); }, 1000);
       }, 450);
     }, { passive: true });
   },
+
+  /* For the 1.2s around any slide change, effects that must be repainted
+     every frame (glows, shadows, light sweeps) hold still; effects that only
+     move or fade keep running. Measured on a slow phone, those repainted
+     effects were the whole difference between a stuttering slide change
+     (34 of 37 frames janky) and a smooth one (4 of 133). Held, not removed:
+     each resumes from exactly where it stopped, so nothing jumps. */
+  /* An effect that changes anything but position, size, rotation or
+     opacity must be repainted every frame; one that only moves or fades is
+     handled by the phone's graphics chip almost for free. */
+  repainted(a) {
+    const kinds = this._paintOf || (this._paintOf = new Map());
+    const n = a.animationName || ''; if (kinds.has(n)) return kinds.get(n);
+    let v = false;
+    try { v = a.effect.getKeyframes().some(k => Object.keys(k).some(p =>
+      ['offset', 'computedOffset', 'easing', 'composite', 'transform', 'opacity', 'clipPath'].indexOf(p) < 0)); } catch (e) {}
+    kinds.set(n, v); return v;
+  },
+
+  /* Adaptive effects. A few seconds after opening, the page measures the
+     phone's own frame rate while nothing is happening. A phone that keeps up
+     keeps every effect looping. On a phone that cannot, the looping effects
+     that must be repainted every frame — shimmers, glows, breathing shadows
+     — rest: the gold stays gold, it stops shimmering. Everything that moves
+     or fades (spinning rims, arrivals, gleams, pops, nudges) stays on every
+     phone. Measured on a slow phone, repainted loops were the whole of the
+     home page's stutter; letting them play even twice per slide still left
+     15-20 janky frames in 80. */
+  measureFps() {
+    if (this._fpsDone || this._scrolling || document.hidden) return;
+    /* a phone that reports 4 GB of memory or less — typical of budget
+       Android — is treated as slow straight away; any other phone is
+       judged on 90 measured frames */
+    const mem = navigator.deviceMemory;
+    if (mem && mem <= 4) { this._fpsDone = true; this._lite = true; document.documentElement.classList.add('lite-fx'); this.calm(); return; }
+    const d = []; let last = 0;
+    const f = t => { if (last) d.push(t - last); last = t;
+      if (d.length < 90) requestAnimationFrame(f);
+      else { this._fpsDone = true; d.sort((a, b) => a - b);
+        this._lite = d[Math.floor(d.length / 2)] > 18 || d[Math.floor(d.length * 0.9)] > 34;
+        if (this._lite) { document.documentElement.classList.add('lite-fx'); this.calm(); } } };
+    requestAnimationFrame(f);
+  },
+  calm() {
+    if (!this._lite || !document.getAnimations) return;
+    document.getAnimations().forEach(a => {
+      try {
+        const t = a.effect && a.effect.getTiming && a.effect.getTiming();
+        if (t && t.iterations === Infinity && this.repainted(a)) a.cancel();
+      } catch (e) {}
+    });
+  },
+
+  turn() {
+    /* Done directly on the effects, not with a stylesheet class: once an
+       effect has been paused and resumed from here (the off-screen pausing
+       does that), the browser ignores stylesheet play-state for it — which
+       is why a class-based hold measured no better at all. */
+    if (!document.getAnimations) return;
+    const repainted = a => this.repainted(a);
+    /* taken three times: at the change, a frame later and a quarter-second
+       later — the incoming slide's own effects only start once it is the
+       front slide, after this call, and would otherwise escape the hold */
+    const sweep = () => {
+      const held = document.getAnimations().filter(a => {
+        const t = a.playState === 'running' && a.effect && a.effect.getTiming && a.effect.getTiming();
+        return t && t.iterations === Infinity && repainted(a);
+      });
+      held.forEach(a => { try { a.pause(); } catch (e) {} });
+      this._turnHeld = (this._turnHeld || []).concat(held);
+      this.calm();
+    };
+    this._turning = true;
+    sweep(); requestAnimationFrame(sweep); setTimeout(sweep, 250);
+    clearTimeout(this._turnT);
+    this._turnT = setTimeout(() => {
+      this._turning = false;
+      const list = this._turnHeld || []; this._turnHeld = [];
+      if (this._scrolling) return;          /* the scroll's own settle resumes them */
+      list.forEach(a => { try { const tg = a.effect && a.effect.target;
+        if (!tg || !tg.closest('[data-held="1"]')) a.play(); } catch (e) {} });
+    }, 1200);
+  },
+
 
   /* Work that the first screen does not need runs when the browser is idle,
      never in the moment the site is arriving. */
@@ -1568,7 +1658,9 @@ const BOOKS = {
   /* ---- PRICING ---- */
   slabs(offerId) {
     return (this.app.content.offers || [])
-      .filter(o => o.status === 'LIVE' && (!offerId || o.offer_id === offerId))
+      /* SEASON rows (seasonal packages) answer only when asked for by id,
+         so no general rate table ever lists them */
+      .filter(o => (o.status === 'LIVE' || (offerId && o.status === 'SEASON')) && (!offerId || o.offer_id === offerId))
       .sort((a, b) => a.qty_min - b.qty_min);
   },
 
@@ -2441,7 +2533,7 @@ const CART = {
     }).join('\n');
 
     return [
-      `${t('pub_name')} — ${t('order_new')}`,
+      `${t('pub_name')} — ${ORDER.series && t('dw_order_new') ? t('dw_order_new') : t('order_new')}`,
       `${t('order_no')}: ${orderNo}`,
       '',
       `${t('gate_name')}: ${buyer.name}`,
@@ -2608,6 +2700,7 @@ const ORDERFORM = {
 
     const payload = {
       kind: 'order', order_no: orderNo, ...buyer,
+      ...(ORDER.series ? { series: ORDER.series } : {}),
       items: lines.map(l => ({
         book_id: l.book.book_id,
         name_mr: l.book.name_mr,
@@ -2763,6 +2856,16 @@ const PEEK = {
 const ORDER = {
   app: null,
   picked: [],          // [{id, qty}] chosen inside this window
+  /* Set only by a seasonal package (assets/js/diwali.js) while its own
+     window is open, and cleared when the window closes: source gives the
+     books to show, series tags the order, and afterDraw / onAgain /
+     onClose let the package add its own pieces around the same window,
+     form and done screen. Unset, the window is exactly as it always was. */
+  source: null, series: '', afterDraw: null, onAgain: null, onClose: null,
+
+  pool() {
+    return (this.source && this.source()) || (this.app.content.books || []).filter(b => b.status === 'LIVE');
+  },
 
   init(app) {
     this.app = app;
@@ -2772,6 +2875,7 @@ const ORDER = {
     if (hero) hero.addEventListener('click', () => this.open(null));
     const again = document.getElementById('orderBooksAgain');
     if (again) again.addEventListener('click', () => {
+      if (this.onAgain) { const f = this.onAgain; this.close(true); f(); return; }
       /* the three other buttons that promise books all clear the filters.
          This one did not, so someone finishing an order could land on a
          list still narrowed to an earlier filter — possibly to the single
@@ -2786,7 +2890,7 @@ const ORDER = {
      or from nothing if the list is empty. */
   open(preset) {
     this.app.pushWin(() => this.close(true));
-    const fromCart = CART.items.map(x => ({ id: x.id, qty: x.qty }));
+    const fromCart = this.source ? [] : CART.items.map(x => ({ id: x.id, qty: x.qty }));
     this.picked = preset && preset.length ? preset
                 : (fromCart.length ? fromCart : []);
     document.getElementById('orderBody').classList.remove('hidden');
@@ -2812,7 +2916,7 @@ const ORDER = {
      typed. The same rule as the cart; this builder is a separate one
      and was missed when the cart was fixed. */
   lines() {
-    const all = (this.app.content.books || []).filter(b => b.status === 'LIVE');
+    const all = this.pool();
     const rank = id => {
       const i = all.findIndex(x => x.book_id === id);
       return i < 0 ? 9999 : i;
@@ -2839,7 +2943,7 @@ const ORDER = {
   draw() {
     const t = k => this.app.t(k);
     const mr = this.app.lang === 'mr';
-    const books = (this.app.content.books || []).filter(b => b.status === 'LIVE');
+    const books = this.pool();
 
     document.getElementById('orderPick').innerHTML = `
       
@@ -2934,9 +3038,11 @@ const ORDER = {
     });
     box.querySelectorAll('[data-jump]').forEach(b =>
       b.onclick = () => this.setQty(b.dataset.jump, +b.dataset.q));
+    if (this.afterDraw) { try { this.afterDraw(); } catch (e) { console.error('afterDraw', e); } }
   },
 
   close(fromBack) {
+    if (this.onClose) { const f = this.onClose; this.onClose = null; try { f(); } catch (e) { console.error('onClose', e); } }
     try { MEDIA.stopAll(); } catch (e) {}
     if (!fromBack) this.app.popWin();
     document.getElementById('orderWin').classList.add('hidden');
@@ -3417,6 +3523,7 @@ const VISION = {
     const n = this.slides.length;
     const next = ((k % n) + n) % n;
     if (next === this.i) return;
+    try { this.app.turn(); } catch (e) {}
     this.dir = (next === (this.i + 1) % n) ? 1 : (next === (this.i - 1 + n) % n) ? -1 : 1;
     this.i = next;
     this.place(false);
@@ -3623,6 +3730,7 @@ const MOMENTS = {
   },
 
   go(n) {
+    try { this.app.turn(); } catch (e) {}
     const total = this.slides.length;
     this.i = (n + total) % total;
     this.track.style.transform = `translateX(-${this.i * 100}%)`;
@@ -3810,10 +3918,12 @@ const MOMENTS = {
   timing(el) {
     let n = 0;
     el.querySelectorAll('.mom-names .mom-row').forEach(r => {
-      r.querySelectorAll('.mom-u, .mom-bar').forEach(x => x.style.setProperty('--pd', (0.38 + 0.1 * n).toFixed(2) + 's'));
+      r.querySelectorAll('.mom-u, .mom-bar').forEach(x => x.style.setProperty('--pd', Math.min(0.12 + 0.05 * n, 0.4).toFixed(2) + 's'));
       n += r.querySelectorAll('.mom-u').length;
     });
-    el.style.setProperty('--sd', (0.42 + 0.1 * n).toFixed(2) + 's');
+    /* the text below the photo is fully shown within about 0.7s — while the
+       slide is still gliding in — rather than trickling in over two seconds */
+    el.style.setProperty('--sd', Math.min(0.2 + 0.05 * n, 0.45).toFixed(2) + 's');
   },
 
   /* The active dot fills over the slide's seconds, so the viewer can see
@@ -3948,13 +4058,67 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
         `${j ? '<i class="au-arw" aria-hidden="true"></i>' : ''}<span class="au-step">${e(st)}</span>`).join('')}</div></div>` : '';
       /* Marathi only: the book at a glance, and the author's own line */
       const glance = L === 'mr' && s.book_id ? this.glance(s.book_id) : '';
-      const quote = L === 'mr' && s.manogat_mr ? `<p class="au-quote" lang="mr"><span class="au-qm" aria-hidden="true">“</span>${e(s.manogat_mr)}</p>` : '';
+      const quote = L === 'mr' && s.manogat_mr ? `<div class="au-mano" lang="mr"><p class="au-lab">लेखिकेचे मनोगत</p>${this.quote(s.manogat_mr)}</div>` : '';
       body = head(g('title'), g('sub')) + glance
         + (g('view') ? `<div class="mom-say"><p class="mr" lang="${L}">${this.mark(g('view'), s)}</p></div>` : '')
         + `<div class="au-mid">${mid}${span ? `<p class="au-span" lang="${L}">${e(span)}</p>` : ''}${chain}${quote}</div>`
         + close(g('out'), g('out2'));
     }
     return `<article class="mom-slide au-slide au-${L} au-${x.kind}${k === 0 ? ' on' : ''}" data-k="${k}" style="--g1:${g1};--g2:${g2}">${body}</article>`;
+  },
+
+  /* The मनोगत as a complete quotation: the opening mark glued to the first
+     word and the closing mark to the last, so neither can ever stand alone
+     on a line. The sentence is also split, in advance, at its natural pause
+     — a comma or a dash, whichever leaves the two halves most even — so
+     that if it ever has to take two lines, it breaks there and nowhere
+     else. fitQuote() decides whether it does. */
+  quote(text) {
+    const e = v => this.esc(v), words = String(text).trim().split(/\s+/);
+    let cut = -1, best = Infinity;
+    const len = (a, b) => words.slice(a, b).join(' ').length, total = len(0, words.length);
+    words.forEach((w, i) => {
+      if (i === words.length - 1) return;
+      const pause = /[,;]$/.test(w) || w === '—' || /—$/.test(w);
+      if (!pause) return;
+      const d = Math.abs(len(0, i + 1) - (total - len(0, i + 1)));
+      if (d < best) { best = d; cut = i + 1; }
+    });
+    if (cut < 0) {   /* no pause in the sentence: the word boundary nearest the middle */
+      words.forEach((w, i) => { if (i < words.length - 1) { const d = Math.abs(len(0, i + 1) - (total - len(0, i + 1))); if (d < best) { best = d; cut = i + 1; } } });
+    }
+    const part = (ws, first, last) => ws.map((w, k) => {
+      const o = first && k === 0 ? '<span class="au-qm" aria-hidden="true">“</span>' : '';
+      const c = last && k === ws.length - 1 ? '<span class="au-qm au-qe" aria-hidden="true">”</span>' : '';
+      return (o || c) ? `<span class="au-nb">${o}${e(w)}${c}</span>` : e(w);
+    }).join(' ');
+    return `<p class="au-quote"><span class="au-qp">${part(words.slice(0, cut), true, false)}</span> <span class="au-qp">${part(words.slice(cut), false, true)}</span></p>`;
+  },
+
+  /* One line first, shrinking only this line and never below 88%. If even
+     that is not enough, two even lines at full size, broken at the pause
+     chosen above. And if a half still would not fit — nothing is ever cut
+     off: the words are simply allowed to wrap. */
+  fitQuote(q) {
+    q.classList.remove('au-two', 'au-free'); q.style.fontSize = '';
+    const room = q.parentElement.clientWidth; if (!room) return;
+    const base = parseFloat(getComputedStyle(q).fontSize);
+    /* shrink, then measure again: the side padding does not shrink with the
+       text, so one calculation lands a pixel or two short — corrected up to
+       three times, and never below 88% */
+    const fit = need => {
+      let f = room / need(); if (f >= 1) return true;
+      for (let k = 0; k < 3 && f >= 0.88; k++) {
+        q.style.fontSize = (base * f * 0.99).toFixed(2) + 'px';
+        const w = need(); if (w <= room) return true;
+        f *= room / w;
+      }
+      q.style.fontSize = ''; return false;
+    };
+    if (fit(() => q.scrollWidth)) return;
+    q.classList.add('au-two');
+    if (fit(() => Math.max(...[...q.querySelectorAll('.au-qp')].map(x => x.offsetWidth)))) return;
+    q.classList.add('au-free');
   },
 
   /* इयत्ता · माध्यम · पाने — straight from the book data, nothing typed twice */
@@ -3983,6 +4147,7 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
     });
     const text = t => { const r = document.createRange(); r.selectNodeContents(t); return r.getBoundingClientRect().width; };
     el.querySelectorAll('.au-line').forEach(l => this.shrink(l, W, text));
+    el.querySelectorAll('.au-quote').forEach(q => this.fitQuote(q));
   },
 
   rows(box, units, W, declared) {
@@ -4019,10 +4184,10 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
      line in turn, then the closing line under the divider */
   timing(el) {
     const items = [...el.querySelectorAll('.au-g, .mom-u, .mom-bar, .au-lab, .au-chip, .au-line, .au-span, .au-step, .au-arw, .au-quote')];
-    /* a busy slide steps faster, so every slide has settled by about 1.9s */
-    const step = Math.min(0.07, 1.2 / Math.max(1, items.length));
-    items.forEach((x, n) => x.style.setProperty('--pd', (0.5 + step * n).toFixed(2) + 's'));
-    el.style.setProperty('--sd', (0.55 + step * items.length).toFixed(2) + 's');
+    /* a busy slide steps faster: every piece is shown within about 0.7s */
+    const step = Math.min(0.04, 0.45 / Math.max(1, items.length));
+    items.forEach((x, n) => x.style.setProperty('--pd', (0.12 + step * n).toFixed(2) + 's'));
+    el.style.setProperty('--sd', (0.2 + step * items.length).toFixed(2) + 's');
   },
 
   /* Marathi text is shorter than English, so a Marathi slide had up to a
@@ -4328,6 +4493,7 @@ const STORY = {
   },
 
   go(n) {
+    try { this.app.turn(); } catch (e) {}
     const total = (this.app.story || []).length || 1;
     this.i = (n + total) % total;
     const tr = document.getElementById('storyTrack');

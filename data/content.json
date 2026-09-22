@@ -376,6 +376,8 @@
   "config": {
     "video_rotate_seconds": 4,
     "ad_rotate_seconds": 3,
-    "story_seconds": 3
+    "story_seconds": 3,
+    "diwali_start": "09-01",
+    "diwali_end": "11-30"
   }
 }

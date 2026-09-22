@@ -6609,6 +6609,8 @@ body.booting .offer-grid:empty{
   box-shadow:0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(247,200,107,.55);
 }
 .mom-ph img{display:block;width:100%;height:100%;object-fit:contain}
+.mom-ph::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;pointer-events:none;opacity:0;
+  box-shadow:inset 0 0 0 1.5px rgba(247,200,107,.95),inset 0 0 18px rgba(247,200,107,.45)}
 .mom-ph::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;pointer-events:none;
   background:linear-gradient(105deg,transparent,rgba(255,255,255,.28) 50%,transparent);transform:translateX(-120%)}
 
@@ -6637,9 +6639,6 @@ body.booting .offer-grid:empty{
   background:linear-gradient(90deg,transparent,#F7C86B 30%,#FFF1CC 50%,#F7C86B 70%,transparent);
   transform:scaleX(0);transform-origin:left;opacity:0;pointer-events:none}
 /* a shine that crosses each name once, just after its underline */
-.mom-u b::before{content:"";position:absolute;inset:-1px -4px;pointer-events:none;
-  background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,255,255,.7) 50%,transparent 60%,transparent 100%);
-  background-size:250% 100%;background-repeat:no-repeat;background-position:130% 0;mix-blend-mode:overlay}
 
 /* --- the two descriptions --- */
 .mom-say{position:relative;padding:0 calc(var(--u) * .5)}
@@ -6656,9 +6655,7 @@ body.booting .offer-grid:empty{
 .mom-kw::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
   background:rgba(247,200,107,.6);transform:scaleX(0);transform-origin:left;pointer-events:none}
 .mom-kb{position:relative;color:#FFD98A}
-.mom-kb::after{content:"";position:absolute;inset:-1px -3px;pointer-events:none;
-  background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%,transparent 100%);
-  background-size:250% 100%;background-repeat:no-repeat;background-position:130% 0;mix-blend-mode:overlay}
+
 .mom-say .mr{font-family:Mukta,system-ui,sans-serif;font-weight:500;
   font-size:calc(var(--u) * .9);line-height:1.5;color:#F6F1E8;text-wrap:pretty}
 .mom-say .en{margin-top:calc(var(--u) * .18);font-family:Lora,Georgia,serif;font-weight:400;
@@ -6700,29 +6697,26 @@ body.booting .offer-grid:empty{
    arrival, then still for reading: only book titles, the gold bars, the
    venue diamonds and the progress dot keep a gentle glow. Fade, scale and
    slide only — nothing moves the layout. --- */
-.mom-slide.on .mom-head{animation:visArrive .5s ease-out .05s both}
-.mom-slide.on .mom-ph{animation:momLand .6s ease-out .12s both, momRim 1.3s ease-out .3s both}
-.mom-slide.on .mom-ph::after{animation:momGleam 1.1s ease-in-out .55s both}
-.mom-slide.on .mom-ten{animation:momRise .55s ease-out .22s both}
-.mom-slide.on .mom-u b::before{animation:btFlash 1.2s linear calc(var(--pd, .38s) + .55s) 1 both}
-.mom-slide.on .mom-u i > .mom-br:first-child{animation:momBrL .45s ease-out calc(var(--pd, .38s) + .2s) both}
-.mom-slide.on .mom-u i > .mom-br:last-child{animation:momBrR .45s ease-out calc(var(--pd, .38s) + .2s) both}
+.mom-slide.on .mom-head{animation:visArrive .4s ease-out 0s both}
+.mom-slide.on .mom-ph{animation:momLand .5s ease-out .05s both}
+.mom-slide.on .mom-ph::before{animation:momRimIn 1.2s ease-out .25s both}
+.mom-slide.on .mom-ph::after{animation:momGleam 1s ease-in-out .3s both}
+.mom-slide.on .mom-ten{animation:momRise .45s ease-out .1s both}
+.mom-slide.on .mom-u i > .mom-br:first-child{animation:momBrL .38s ease-out calc(var(--pd, .12s) + .08s) both}
+.mom-slide.on .mom-u i > .mom-br:last-child{animation:momBrR .38s ease-out calc(var(--pd, .12s) + .08s) both}
 .mom-slide.on .mom-say::before,.mom-slide.on .mom-say::after{animation:momRule .6s ease-out var(--sd, .9s) both}
-.mom-slide.on .mom-venue b{animation:momGlow 1.2s ease-in-out calc(var(--sd, .9s) + .9s) 1 both}
 .mom-track.mom-hint{animation:momHint 1.3s ease-in-out .6s 1}
-.mom-slide.on .mom-u{animation:momSettle .5s cubic-bezier(.2,.8,.2,1) var(--pd, .38s) both}
-.mom-slide.on .mom-u i{animation:visArrive .45s ease-out calc(var(--pd, .38s) + .12s) both}
-.mom-slide.on .mom-u b::after{animation:momSweep .8s ease-out calc(var(--pd, .38s) + .15s) both}
-.mom-slide.on .mom-bar{animation:momGrow .5s ease-out var(--pd, .38s) both, momGlint 3.6s ease-in-out 2s infinite}
-.mom-slide.on .mom-say{animation:visArrive .5s ease-out var(--sd, .9s) both}
-.mom-slide.on .mom-kw::after{animation:momDraw .6s ease-out calc(var(--sd, .9s) + .25s) both}
-.mom-slide.on .mom-kb::after{animation:btFlash 1.4s linear calc(var(--sd, .9s) + .3s) 1 both}
-.mom-slide.on .mom-kb{animation:momGlow 3.6s ease-in-out calc(var(--sd, .9s) + 1.6s) infinite}
-.mom-slide.on .mom-end::before{animation:momDraw .6s ease-out calc(var(--sd, .9s) + .35s) both}
-.mom-slide.on .mom-end > .mr{animation:momPop .45s cubic-bezier(.2,.9,.3,1.25) calc(var(--sd, .9s) + .5s) both}
-.mom-slide.on .mom-end > .en{animation:visArrive .45s ease-out calc(var(--sd, .9s) + .62s) both}
-.mom-slide.on .mom-venue p::before{animation:momTurn .5s ease-out calc(var(--sd, .9s) + .7s) both, momGlint 3.6s ease-in-out 2.4s infinite}
-.mom-slide.on .mom-venue p{animation:visArrive .45s ease-out calc(var(--sd, .9s) + .7s) both}
+.mom-slide.on .mom-u{animation:momSettle .42s cubic-bezier(.2,.8,.2,1) var(--pd, .12s) both}
+.mom-slide.on .mom-u i{animation:visArrive .38s ease-out calc(var(--pd, .12s) + .06s) both}
+.mom-slide.on .mom-u b::after{animation:momSweep .7s ease-out calc(var(--pd, .12s) + .1s) both}
+.mom-slide.on .mom-bar{animation:momGrow .42s ease-out var(--pd, .12s) both}
+.mom-slide.on .mom-say{animation:visArrive .4s ease-out var(--sd, .3s) both}
+.mom-slide.on .mom-kw::after{animation:momDraw .5s ease-out calc(var(--sd, .3s) + .1s) both}
+.mom-slide.on .mom-end::before{animation:momDraw .5s ease-out calc(var(--sd, .3s) + .1s) both}
+.mom-slide.on .mom-end > .mr{animation:momPop .4s cubic-bezier(.2,.9,.3,1.25) calc(var(--sd, .3s) + .18s) both}
+.mom-slide.on .mom-end > .en{animation:visArrive .38s ease-out calc(var(--sd, .3s) + .26s) both}
+.mom-slide.on .mom-venue p::before{animation:momTurn .45s ease-out calc(var(--sd, .3s) + .3s) both}
+.mom-slide.on .mom-venue p{animation:visArrive .38s ease-out calc(var(--sd, .3s) + .3s) both}
 /* the active dot fills over the slide's seconds; held while paused */
 .mom-dot::after{content:"";position:absolute;inset:0;border-radius:inherit;background:#F7C86B;
   transform:scaleX(0);transform-origin:left;pointer-events:none}
@@ -6736,13 +6730,9 @@ body.booting .offer-grid:empty{
 @keyframes momDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @keyframes momPop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
 @keyframes momTurn{from{opacity:0;transform:rotate(0) scale(.4)}to{opacity:1;transform:rotate(45deg)}}
-@keyframes momGlow{0%,100%{text-shadow:0 0 0 rgba(247,200,107,0)}50%{text-shadow:0 0 9px rgba(247,200,107,.6)}}
-@keyframes momGlint{0%,100%{box-shadow:0 0 3px rgba(247,200,107,.35)}50%{box-shadow:0 0 8px rgba(247,200,107,.75)}}
 @keyframes momFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes momRimIn{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
 @keyframes momGleam{from{transform:translateX(-120%)}to{transform:translateX(260%)}}
-@keyframes momRim{0%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(247,200,107,.55)}
-  35%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1.5px rgba(247,200,107,.95),0 0 18px rgba(247,200,107,.55)}
-  100%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(247,200,107,.55)}}
 @keyframes momRise{from{opacity:0;transform:translateY(55%);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
 @keyframes momBrL{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
 @keyframes momBrR{from{opacity:0;transform:translateX(5px)}to{opacity:1;transform:none}}
@@ -6759,7 +6749,7 @@ body.booting .offer-grid:empty{
   .mom-slide.on .mom-ten,.mom-slide.on .mom-u i > .mom-br:first-child,.mom-slide.on .mom-u i > .mom-br:last-child,
   .mom-slide.on .mom-venue b,.mom-track.mom-hint,.mom-slide.on .mom-ph::after,.mom-slide.on .mom-u b::before{animation:none}
   .mom-slide.on .mom-say::before,.mom-slide.on .mom-say::after{animation:none;transform:none}
-  .mom-ph::after,.mom-u b::before{display:none}
+  .mom-ph::after,.mom-ph::before{display:none}
   .mom-tbox,.mom-tbox::before,.mom-line::after,.mom-end > .mr::after,
   .mom-frame > .hd-std .hd-rule{animation:none}
 }
@@ -6809,17 +6799,24 @@ body.booting .offer-grid:empty{
   background:linear-gradient(180deg,rgba(247,200,107,.22),rgba(247,200,107,.08));
   border:1px solid rgba(247,200,107,.5);color:#FFE9B8;font-family:Mukta,system-ui,sans-serif;font-weight:700;
   font-size:calc(var(--u) * .74 * var(--fz, 1));line-height:1.45}
-.au-g::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(105deg,transparent 0%,transparent 40%,rgba(255,255,255,.6) 50%,transparent 60%,transparent 100%);
-  background-size:250% 100%;background-repeat:no-repeat;background-position:130% 0;mix-blend-mode:overlay}
+.au-g::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.32) 50%,transparent);transform:translateX(-120%)}
 /* Marathi only: the author's own line, opening with a large gold quote mark */
-.au-quote{position:relative;margin:calc(var(--u) * .1) 0 0;padding:0 calc(var(--u) * .3);text-align:center;
+.au-mano{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u) * .12);width:100%;
+  margin-top:calc(var(--u) * .08)}
+.au-quote{position:relative;margin:0;padding:0 calc(var(--u) * .3);text-align:center;white-space:nowrap;
   font-family:Mukta,system-ui,sans-serif;font-weight:600;font-size:calc(var(--u) * .86 * var(--fz, 1));
   line-height:1.45;color:#FFF3D6}
 .au-quote::after{content:"";display:block;width:56px;height:1.5px;margin:calc(var(--u) * .22) auto 0;
   background:linear-gradient(90deg,transparent,#F7C86B,transparent);transform:scaleX(0)}
 .au-qm{display:inline-block;margin-right:.2em;font-family:Georgia,serif;font-size:1.6em;line-height:0;
   color:#F7C86B;vertical-align:-.28em}
+.au-qe{margin:0 0 0 .2em}
+.au-nb{white-space:nowrap}
+/* two lines only when one is impossible: each half on its own centred line */
+.au-quote.au-two .au-qp{display:table;margin:0 auto}
+/* last resort, never reached in the measured cases: wrap rather than cut */
+.au-quote.au-free{white-space:normal;text-wrap:balance}
 /* option D: Marathi vision slides grow into their empty space (--fz set by app.js, 1 to 1.12) */
 .au-mr.au-view .mom-say .mr{font-size:calc(var(--u) * .9 * var(--fz, 1))}
 .au-mr.au-view .au-chip{font-size:calc(var(--u) * .78 * var(--fz, 1))}
@@ -6830,7 +6827,7 @@ body.booting .offer-grid:empty{
 .au-mr.au-view .mom-end > .en{font-size:calc(var(--u) * .74 * var(--fz, 1))}
 .au-en .mom-venue .mr{font-family:Lora,Georgia,serif}
 /* arrivals, in the order timing() sets: each label, chip, step and line in turn */
-.au-view.mom-slide.on .mom-say{animation-delay:.3s}
+.au-view.mom-slide.on .mom-say{animation-delay:.08s}
 .mom-slide.on .au-lab{animation:visArrive .45s ease-out var(--pd, .5s) both}
 .mom-slide.on .au-chip{animation:momSettle .5s cubic-bezier(.2,.8,.2,1) var(--pd, .5s) both}
 .mom-slide.on .au-step,.mom-slide.on .au-arw,.mom-slide.on .au-line,.mom-slide.on .au-span{
@@ -6840,11 +6837,12 @@ body.booting .offer-grid:empty{
    the quote mark springs open, the line rises, a gold rule draws beneath,
    and each arrow of the learning path nudges once toward the next step */
 .mom-slide.on .au-g{animation:momPop .45s cubic-bezier(.2,.9,.3,1.3) var(--pd, .5s) both}
-.mom-slide.on .au-g::after{animation:btFlash 1.3s linear calc(var(--pd, .5s) + .35s) 1 both}
+.mom-slide.on .au-g::after{animation:momGleam .9s ease-in-out calc(var(--pd, .12s) + .2s) both}
 .mom-slide.on .au-quote{animation:visArrive .5s ease-out var(--pd, 1s) both}
 .mom-slide.on .au-qm{animation:momSpring .6s cubic-bezier(.2,.9,.3,1.4) var(--pd, 1s) both}
-.mom-slide.on .au-quote::after{animation:momDraw .6s ease-out calc(var(--pd, 1s) + .35s) both}
-.mom-slide.on .au-arw{animation:visArrive .45s ease-out var(--pd, .5s) both, momNudge .5s ease-in-out calc(var(--pd, .5s) + .5s) 1}
+.mom-slide.on .au-qe{animation-delay:calc(var(--pd, .4s) + .25s)}
+.mom-slide.on .au-quote::after{animation:momDraw .5s ease-out calc(var(--pd, .4s) + .2s) both}
+.mom-slide.on .au-arw{animation:visArrive .38s ease-out var(--pd, .12s) both, momNudge .45s ease-in-out calc(var(--pd, .12s) + .3s) 1}
 @keyframes momSpring{0%{opacity:0;transform:scale(.3) rotate(-12deg)}60%{opacity:1;transform:scale(1.25) rotate(4deg)}100%{opacity:1;transform:none}}
 @keyframes momNudge{0%,100%{transform:translateX(0)}45%{transform:translateX(4px)}}
 @media(prefers-reduced-motion:reduce){
@@ -6857,13 +6855,13 @@ body.booting .offer-grid:empty{
 
 /* ===================================================================
    WHILE SCROLLING — generated from this stylesheet, do not edit by hand
-   Every rule above whose effects all loop forever is listed here under
-   html:is(.scrolling,.watching); app.js adds that class for the length of a scroll.
-   Their effects are off until 450ms after the scroll settles, and the
-   scroll gets the whole frame. Rules that mix a one-shot entrance with a
-   loop are only held, so the entrance is never replayed. One-shot
-   entrances are never touched. Regenerate this block whenever a looping
-   effect is added or removed above.
+   1 · While scrolling or while a book video plays (.scrolling / .watching
+       on <html>): every looping effect is off; one that mixes an entrance
+       with a loop is only held, so the entrance is never replayed.
+   (The 1.2s hold around a slide change is done in app.js, turn(), directly
+   on the effects — a stylesheet class cannot override an effect that
+   app.js has already paused and resumed.)
+   Regenerate this block whenever a looping effect is added or removed.
    =================================================================== */
 html:is(.scrolling,.watching) #offerGrid .offer-go::after,
 html:is(.scrolling,.watching) #orderSum .cond,
@@ -7032,8 +7030,6 @@ html:is(.scrolling,.watching) #page-cart .cart-row .cart-saved,
 html:is(.scrolling,.watching) #page-cart .cart-sums .cart-saved b,
 html:is(.scrolling,.watching) #page-cart .oline-amt b,
 html:is(.scrolling,.watching) #page-cart .osf-save b,
-html:is(.scrolling,.watching) .mom-slide.on .mom-bar,
-html:is(.scrolling,.watching) .mom-slide.on .mom-venue p::before,
 html:is(.scrolling,.watching) .om-now.live b,
 html:is(.scrolling,.watching) .vis-card.is-front .vis-lab,
 html:is(.scrolling,.watching) .vis-card.is-front .vis-lab::before,
