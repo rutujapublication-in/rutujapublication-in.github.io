@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v20c',
+  VERSION: 'v20h',
   lang: 'mr',
   text: {},
   locations: null,
@@ -582,6 +582,40 @@ const RUTUJA = {
      And the margin has to be generous. At 120px a section unpaused just
      as it appeared, so its motion began after the eye had arrived. 700px
      is roughly two screens of warning. */
+  /* One line, never wrapped: shrinks the text of el until it fits its
+     box (measured again after each step), but never below floor. */
+  fitOne(el, floor) {
+    if (!el || !el.clientWidth) return;
+    floor = floor || 0.8;
+    el.style.fontSize = '';
+    /* the text itself is measured, not scrollWidth: a gliding light band
+       inside a title counts as overflow and would shrink it for nothing */
+    const cs = getComputedStyle(el);
+    const room = el.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+    const need = () => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
+    const base = parseFloat(cs.fontSize);
+    let f = 1;
+    for (let k = 0; k < 4 && need() > room + 0.5; k++) {
+      f = Math.max(floor, f * room / need() * 0.99);
+      el.style.fontSize = (base * f).toFixed(2) + 'px';
+      if (f === floor) break;
+    }
+  },
+
+
+  /* A row of chips kept on one line: the row's text size (the chips are
+     sized in em) shrinks together until the row fits, never below floor. */
+  fitRow(box, floor) {
+    if (!box || !box.clientWidth) return;
+    floor = floor || 0.72; box.style.fontSize = '';
+    const base = parseFloat(getComputedStyle(box).fontSize); let f = 1;
+    for (let k = 0; k < 4 && box.scrollWidth > box.clientWidth + 1; k++) {
+      f = Math.max(floor, f * box.clientWidth / box.scrollWidth * 0.99);
+      box.style.fontSize = (base * f).toFixed(2) + 'px';
+      if (f === floor) break;
+    }
+  },
+
   /* Is any window open? Read from the page itself (any .modal showing),
      so it can never drift out of step with back-button closes. While one
      is, everything behind it rests (html.win-open, generated rule) and the
@@ -598,14 +632,35 @@ const RUTUJA = {
     mods.forEach(m => mo.observe(m, { attributes: true, attributeFilter: ['class'] }));
     set();
   },
+  /* Asked of a watcher that already knows, instead of measuring: reading
+     a position while a section is being built forced the whole new page
+     to lay out there and then (274-357ms on a slow phone). */
   onScreen(el) {
-    if (!el || !el.getBoundingClientRect) return false;
-    const r = el.getBoundingClientRect();
-    return r.width > 0 && r.bottom > 0 && r.top < (window.innerHeight || 800);
+    if (!el) return false;
+    if (!this._seenMap) {
+      this._seenMap = new WeakMap();
+      this._seenObs = 'IntersectionObserver' in window
+        ? new IntersectionObserver(es => es.forEach(e => this._seenMap.set(e.target, e.isIntersecting))) : null;
+    }
+    /* not seen by the watcher yet (a section just built in a window):
+       treat as on screen, so its fit happens on the next frame */
+    if (!this._seenMap.has(el)) { if (this._seenObs) this._seenObs.observe(el); return true; }
+    return this._seenMap.get(el);
   },
 
   stillWhenOffscreen() {
     try { this.watchWins(); } catch (e) {}
+    /* the books page's grid re-centres its last row whenever its size
+       changes — including the moment the page is first shown, since it is
+       drawn while hidden, when there are no columns to measure */
+    try { const bg = document.getElementById('bookGrid');
+      if (bg && 'ResizeObserver' in window) new ResizeObserver(() => { try { BOOKS.centreLastRow(); BOOKS.paintInfo(); } catch (e) {} }).observe(bg); } catch (e) {}
+    /* the books page's centred last row and one-line info follow the width */
+    let bkT; window.addEventListener('resize', () => { clearTimeout(bkT); bkT = setTimeout(() => {
+      try { BOOKS.centreLastRow(); BOOKS.paintInfo(); } catch (e) {} }, 200); });
+    /* the sections that ask onScreen() are watched from the start */
+    ['momStage', 'momTrack', 'visDeck'].forEach(id => { try { this.onScreen(document.getElementById(id)); } catch (e) {} });
+    try { this.onScreen(document.querySelector('.vis')); } catch (e) {}
     if (!('IntersectionObserver' in window) || !document.getAnimations) return;
     /* Only looping effects are ever paused. One-shot entrances run to their
        end untouched, so nothing can be frozen invisible at its first frame —
@@ -1587,6 +1642,46 @@ const BOOKS = {
   /* The filter survives navigation, so someone who filtered earlier and
      came back through another route would land on a partial list. This
      puts the page back to every book. */
+  /* The facts row in the books page's info frame, worked out from the
+     books themselves: how many, which standards, the best quantity rate. */
+  paintInfo() {
+    const box = document.getElementById('bkFacts'); if (!box) return;
+    const t = k => this.app.t(k), mr = this.app.lang === 'mr';
+    const dev = v => mr ? String(v).replace(/[0-9]/g, d => '०१२३४५६७८९'[d]) : String(v);
+    const live = (this.app.content.books || []).filter(b => b.status === 'LIVE');
+    if (!live.length) { box.innerHTML = ''; return; }
+    const stds = live.flatMap(b => String(b.standard || '').split(',').map(x => parseInt(x, 10)).filter(Boolean));
+    let best = 0;
+    live.forEach(b => this.slabs(b.offer_id).forEach(o => {
+      const r = Number(o.selling_rate); if (b.mrp && r) best = Math.max(best, Math.round((b.mrp - r) / b.mrp * 100));
+    }));
+    const chips = [t('bk_f_books').replace('{n}', dev(live.length)),
+      t('bk_f_std').replace('{a}', dev(Math.min(...stds))).replace('{b}', dev(Math.max(...stds))),
+      best ? t('bk_f_off').replace('{p}', dev(best)) : ''].filter(Boolean);
+    box.innerHTML = chips.map(c => `<span class="bk-chip">${c}</span>`).join('');
+    requestAnimationFrame(() => {
+      const info = box.closest('.bk-info'); if (!info) return;
+      info.querySelectorAll('.hd-t > span, .hd-s, .books-hint').forEach(el => this.app.fitOne(el, 0.78));
+      this.app.fitRow(box, 0.72);
+    });
+  },
+
+  /* A last row with fewer books than columns is centred — on a phone the
+     fifth book sits in the middle, not alone on the left. Moved with a
+     plain offset, so the cards' own effects and layout are untouched. */
+  centreLastRow() {
+    const g = this.el.grid; if (!g) return;
+    const cards = [...g.children];
+    cards.forEach(c => { c.style.left = ''; });
+    const cols = getComputedStyle(g).gridTemplateColumns.split(' ').filter(Boolean).length;
+    const r = cards.length % cols;
+    if (!cards.length || cols < 2 || !r) return;
+    const colW = cards[0].getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(g).columnGap) || 0;
+    const shift = (cols - r) * (colW + gap) / 2;
+    cards.slice(-r).forEach(c => { c.style.position = 'relative'; c.style.left = shift.toFixed(1) + 'px'; });
+  },
+
   clearFilters() {
     this.filters = { q: '', std: '', med: '', sub: '', sort: 'std' };
     if (!this.el || !this.el.pick) return;
@@ -1683,6 +1778,10 @@ const BOOKS = {
       if (cl) cl.classList.toggle('live', on.length > 0);
     }
     this.el.none.classList.toggle('hidden', list.length > 0);
+    try { this.paintInfo(); } catch (e) { console.error('books info', e); }
+    requestAnimationFrame(() => { try { this.centreLastRow(); } catch (e) {} });
+    /* a seasonal package (assets/js/diwali.js) adds its own card below the grid */
+    try { if (typeof DIWALI !== 'undefined') DIWALI.booksCard(); } catch (e) { console.error('diwali books card', e); }
     this.bind(this.el.grid);
   },
 
@@ -3496,7 +3595,7 @@ const VISION = {
     try { this.app.reStill(); } catch (e) {}
     /* on screen: fitted at once; elsewhere (a language switch from another
        page) at idle, so the switch itself answers straight away */
-    if (this.app.onScreen(this.host)) requestAnimationFrame(() => this.fitCards());
+    if (this.app.onScreen(this.deck && this.deck.closest('.vis'))) requestAnimationFrame(() => this.fitCards());
     else this.app.idle(() => this.fitCards(), 2500);
     /* Devanagari measured in a fallback font has different metrics, so a
        scale computed before Mukta arrives is computed for the wrong

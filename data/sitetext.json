@@ -414,7 +414,10 @@
     "mom_head": "लेखन, सन्मान आणि प्रकाशन",
     "au_head": "लेखणीमागची लेखिका",
     "au_sub": "सन्मान, दृष्टिकोन आणि या पुस्तकामागचा विचार",
-    "st_b_author": "लेखिका"
+    "st_b_author": "लेखिका",
+    "bk_f_books": "{n} पुस्तके",
+    "bk_f_std": "इयत्ता {a} ली – {b} वी",
+    "bk_f_off": "नगांनुसार {p}% पर्यंत सवलत"
   },
   "en": {
     "nav_home": "Home",
@@ -831,6 +834,9 @@
     "mom_head": "Writing, honours and publications",
     "au_head": "The Author Behind the Pen",
     "au_sub": "Honours, vision, and the thinking behind this book",
-    "st_b_author": "The author"
+    "st_b_author": "The author",
+    "bk_f_books": "{n} books",
+    "bk_f_std": "Std {a} – {b}",
+    "bk_f_off": "Up to {p}% off by quantity"
   }
 }

@@ -33,14 +33,14 @@
      64 KB over the wire, not 270. The whole blocking payload is 136 KB —
      about 1.1s on rural 4G. That is worth waiting for in exchange for a
      page that is correct the moment it appears. -->
-<link rel="stylesheet" href="assets/css/style.css?v=20c">
+<link rel="stylesheet" href="assets/css/style.css?v=20h">
 <!-- the five data files start downloading alongside the stylesheet and code,
      not after them; the URLs match app.js fetch() exactly, so nothing loads twice -->
-<link rel="preload" as="fetch" crossorigin href="data/sitetext.json?v=v20c">
-<link rel="preload" as="fetch" crossorigin href="data/content.json?v=v20c">
-<link rel="preload" as="fetch" crossorigin href="data/story.json?v=v20c">
-<link rel="preload" as="fetch" crossorigin href="data/vision.json?v=v20c">
-<link rel="preload" as="fetch" crossorigin href="data/moments.json?v=v20c">
+<link rel="preload" as="fetch" crossorigin href="data/sitetext.json?v=v20h">
+<link rel="preload" as="fetch" crossorigin href="data/content.json?v=v20h">
+<link rel="preload" as="fetch" crossorigin href="data/story.json?v=v20h">
+<link rel="preload" as="fetch" crossorigin href="data/vision.json?v=v20h">
+<link rel="preload" as="fetch" crossorigin href="data/moments.json?v=v20h">
 </head>
 <body class="booting">
 
@@ -353,10 +353,13 @@
     </section>
 
     <section class="page" id="page-books"><div class="wrap">
+      <div class="bk-info">
       <div class="hd hd-page"><h1 class="hd-t"><i class="hd-mark" aria-hidden="true"></i><span data-t="books_title"></span></h1><p class="hd-s" data-t="books_sub"></p></div>
-      <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
+        <div class="sample-note hidden" id="sampleNote" data-t="books_sample"></div>
 
-      <p class="books-hint" data-t="books_hint"></p>
+        <p class="books-hint" data-t="books_hint"></p>
+        <div class="bk-facts" id="bkFacts"></div>
+      </div>
       <div class="filters" data-step="st_k_filter">
         <label class="fpick">
           <span class="flab" data-t="books_pick"></span>
@@ -436,8 +439,8 @@
   </a>
 </div>
 
-<script src="assets/js/app.js?v=20c"></script>
+<script src="assets/js/app.js?v=20h"></script>
 <!-- seasonal package: fetches nothing outside 1 Sep – 30 Nov (IST) -->
-<script src="assets/js/diwali.js?v=20c"></script>
+<script src="assets/js/diwali.js?v=20h"></script>
 </body>
 </html>

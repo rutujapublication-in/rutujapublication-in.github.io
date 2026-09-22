@@ -54,6 +54,7 @@ const DIWALI = {
     document.addEventListener('visibilitychange', () => { if (!document.hidden) this.check(); });
     let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => {
       this.fitButton(document.querySelector('#stdGrid [data-dw]')); this.fitTag(document.querySelector('#dwTop .dw-tag'));
+      if (this.ready) this.fitInline(document.querySelector('.cta-books [data-dw-t="btn_books_sub"]'));
     }, 200); });
     if (location.hash === '#diwali' && !this.inSeason()) this.toast();
     /* the window's language button repaints the page; the window's own
@@ -61,7 +62,7 @@ const DIWALI = {
     const setLang = RUTUJA.setLang.bind(RUTUJA);
     RUTUJA.setLang = (...a) => {
       const r = setLang(...a);
-      setTimeout(() => { if (this.isOpen()) ORDER.draw(); }, 60);
+      setTimeout(() => { if (this.isOpen()) ORDER.draw(); if (this.ready) { this.entries(); this.greenButton(); } }, 60);
       return r;
     };
   },
@@ -80,6 +81,9 @@ const DIWALI = {
       this.merge(d);
       this.ready = true;
       this.button();
+      this.booksCard();
+      this.entries();
+      this.greenButton();
       if (location.hash === '#diwali') this.open();
     } catch (e) { console.error('diwali package', e); this.on = false; }
   },
@@ -104,6 +108,10 @@ const DIWALI = {
     this.on = false; this.ready = false;
     if (this._fw) { this._fw.stop(); this._fw = null; }
     const b = document.querySelector('#stdGrid [data-dw]'); if (b) b.remove();
+    const c = document.getElementById('dwBooks'); if (c) c.remove();
+    this.restoreHint();
+    document.querySelectorAll('#page-books option[data-dw]').forEach(o => o.remove());
+    this.restoreGreen();
     if (this.isOpen()) ORDER.close();
   },
 
@@ -218,7 +226,13 @@ const DIWALI = {
        itself — together, and measured again after each step, because the
        bullet's space does not shrink with the text */
     const base = parseFloat(getComputedStyle(lis[0]).fontSize);
-    const over = () => Math.max(...lis.map(li => li.scrollWidth / Math.max(1, li.clientWidth)));
+    /* the text itself is measured: a gliding light band inside a title
+       counts as overflow in scrollWidth and would shrink it for nothing */
+    const over = () => Math.max(...lis.map(li => {
+      const cs = getComputedStyle(li), room = li.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      const r = document.createRange(); r.selectNodeContents(li);
+      return r.getBoundingClientRect().width / Math.max(1, room);
+    }));
     let f = 1;
     for (let k = 0; k < 4 && over() > 1.005; k++) {
       f = Math.max(0.88, f / over() * 0.995);
@@ -262,9 +276,196 @@ const DIWALI = {
   },
   esc(v) { return String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;'); },
 
-  /* ---- the window: Section 2's order window, with these four books ---- */
-  open() {
+  /* ---- the card at the end of the books page (Section 2's first button) ----
+     A festive "rangoli lamp card" below the book grid: ribbon, heading,
+     four cover tiles, the button, facts, and a row of diyas that light one
+     by one. It answers to the page's standard filter: 1-4 name that
+     standard and enlarge its tile; 5 (no booklet) keeps the card with a
+     "for Std 1-4" line. The button and the tiles open the same Diwali
+     window; a tile lands on its own booklet's row. Added below the grid,
+     so nothing above it ever moves. */
+  booksCard() {
     if (!this.ready) return;
+    const page = document.getElementById('page-books'); if (!page) return;
+    const wrap = page.querySelector('.wrap'); if (!wrap) return;
+    const t = k => RUTUJA.t(k), mr = RUTUJA.lang === 'mr';
+    const books = this.books(), stds = String(t('dw_stds')).split('|');
+    const f = (typeof BOOKS !== 'undefined' && BOOKS.filters && String(BOOKS.filters.std || '')) || '';
+    const pick = ['1', '2', '3', '4'].indexOf(f);
+    this.seasonHint();
+    const sig = [RUTUJA.lang, f].join('|');
+    let card = document.getElementById('dwBooks');
+    if (card && card.dataset.sig === sig) return;           /* nothing changed: leave it, effects and all */
+    const head = pick >= 0 ? t('dw_bk_head_std').replace('{s}', stds[pick]) : t('dw_bk_head');
+    const kandil = `<svg viewBox="0 0 40 72" aria-hidden="true"><path d="M20 0v10" stroke="#B8860B" stroke-width="1.6"/>
+      <path d="M20 10 34 24 20 40 6 24z" fill="#E8A33D" stroke="#8E1450" stroke-width="1.6"/>
+      <path d="M20 14 29 24 20 34 11 24z" fill="#FFE08A"/><path d="M11 40h18l-3 6H14z" fill="#C2185B"/>
+      <path d="M13 46v20M17 46v24M20 46v18M23 46v24M27 46v20" stroke="#E8A33D" stroke-width="1.4"/></svg>`;
+    const diya = i => `<i class="dw-diya" style="--i:${i}"><b class="dw-flame"></b></i>`;
+    const tiles = books.map((b, i) => `<button type="button" class="dw-tile${i === pick ? ' on' : ''}" style="--i:${i}" data-dwbook="${b.book_id}"
+        aria-label="${mr ? b.name_mr : b.name_en}">${RUTUJA.img('books', b.cover_image, '', mr ? b.name_mr : b.name_en)}<span>${stds[i]}</span></button>`).join('');
+    const html = `
+      <div class="dw-bk-in">
+        <i class="dw-kandil dw-k1">${kandil}</i><i class="dw-kandil dw-k2">${kandil}</i>
+        <p class="dw-bk-rib">✦ ${t('dw_bk_ribbon')} ✦</p>
+        <h2 class="dw-bk-h"><span>${head}</span></h2>
+        ${f === '5' ? `<p class="dw-bk-for">${t('dw_bk_for14')}</p>` : ''}
+        <p class="dw-bk-sub">${t('dw_bk_sub')}</p>
+        <div class="dw-tiles${pick >= 0 ? ' has-pick' : ''}">${tiles}</div>
+        <div class="dw-bk-bwrap"><i class="dw-bk-halo" aria-hidden="true"></i>
+        <button type="button" class="dw-bk-btn"><span class="dw-bk-ring" aria-hidden="true"></span>
+          <span class="dw-bk-body"><i class="dw-bk-diya" aria-hidden="true"><b class="dw-flame"></b></i>
+            <span class="dw-bk-txt"><b>${t('dw_bk_btn')}</b><em>${t('dw_bk_btn2')}</em></span>
+            <i class="dw-bk-go" aria-hidden="true"><span>${t('dw_bk_go')}</span><b>›</b><b>›</b><em class="dw-bk-rip"></em></i></span></button></div>
+        <div class="dw-bk-chips">${String(t('dw_bk_chips')).split('|').map(c => `<span>${c}</span>`).join('')}</div>
+        <p class="dw-bk-val">${t('dw_bk_value')}</p>
+        <p class="dw-bk-auth">${t('dw_bk_author')}</p>
+        <div class="dw-diyas" aria-hidden="true">${[0, 1, 2, 3, 4, 5, 6, 7].map(diya).join('')}</div>
+      </div>`;
+    if (!card) {
+      card = document.createElement('section');
+      card.id = 'dwBooks'; card.className = 'dw-bk';
+      const none = document.getElementById('bookNone');
+      (none && none.parentNode === wrap ? none : wrap.lastElementChild).insertAdjacentElement('afterend', card);
+      card.addEventListener('click', e => {
+        const tile = e.target.closest('[data-dwbook]');
+        const btn = e.target.closest('.dw-bk-btn');
+        if (!tile && !btn) return;
+        e.preventDefault();
+        const el = tile || btn;
+        el.classList.remove('dw-tap'); void 0; requestAnimationFrame(() => el.classList.add('dw-tap'));
+        setTimeout(() => this.open(tile ? tile.dataset.dwbook : null), 160);
+      });
+      /* the diyas light one by one the first time the card is seen */
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { card.classList.add('dw-lit'); io.disconnect(); } }), { threshold: 0.2 });
+        io.observe(card);
+      } else card.classList.add('dw-lit');
+    }
+    card.dataset.sig = sig;
+    card.innerHTML = html;
+    /* every line of the card, and the season hint, stays on one line —
+       fitted whenever the card's size changes, including the moment the
+       books page is first shown (it is drawn while hidden) */
+    this._bkFit = () => {
+      const c = document.getElementById('dwBooks'); if (!c || !c.clientWidth) return;
+      c.querySelectorAll('.dw-bk-rib, .dw-bk-h span, .dw-bk-for, .dw-bk-sub, .dw-bk-txt b, .dw-bk-txt em, .dw-bk-val, .dw-bk-auth')
+        .forEach(el => RUTUJA.fitOne(el, 0.72));
+      RUTUJA.fitOne(document.querySelector('#page-books .dw-hint-t'), 0.72);
+      RUTUJA.fitRow(c.querySelector('.dw-bk-chips'), 0.7);
+    };
+    requestAnimationFrame(() => this._bkFit());
+    (RUTUJA.fontsReady || Promise.resolve()).then(() => requestAnimationFrame(() => this._bkFit())).catch(() => {});
+    if (!card._ro && 'ResizeObserver' in window) { card._ro = new ResizeObserver(() => this._bkFit && this._bkFit()); card._ro.observe(card); }
+    if (!this._bkResize) {
+      this._bkResize = true; let rt;
+      window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { const c = document.getElementById('dwBooks'); if (c) c.dataset.sig = ''; this.booksCard(); }, 220); });
+    }
+  },
+
+  /* The Diwali entries at the end of three lists on the books page — the
+     book list (पुस्तक निवडा), इयत्ता and विषय — each after a thin separator.
+     Choosing one scrolls to the Diwali card, which glows once; the list
+     then shows what it showed before, so the grid is never filtered and a
+     chosen standard stays chosen. The page rebuilds these lists (on a
+     language switch, for example), so each list is watched and its entry
+     put back whenever that happens. Its own reaction never runs for a
+     Diwali choice: this listener runs first and stops it. */
+  entries() {
+    if (!this.ready) return;
+    const t = k => RUTUJA.t(k);
+    const lists = [['bPick', 'dw_opt_pick', () => ''], ['fStd', 'dw_opt_std', () => (BOOKS.filters && BOOKS.filters.std) || ''],
+                   ['fSub', 'dw_opt_sub', () => (BOOKS.filters && BOOKS.filters.sub) || '']];
+    lists.forEach(([id, key, prev]) => {
+      const sel = document.getElementById(id); if (!sel) return;
+      const put = () => {
+        const want = t(key);
+        const have = sel.querySelector('option[value="dw:diwali"]');
+        if (have && have.textContent === want && sel.lastElementChild === have) return;
+        sel.querySelectorAll('option[data-dw]').forEach(o => o.remove());
+        const keep = sel.value;
+        sel.insertAdjacentHTML('beforeend', `<option data-dw="1" disabled>──────────</option><option data-dw="1" value="dw:diwali">${want}</option>`);
+        sel.value = keep;
+      };
+      put();
+      if (!sel._dwWatch) {
+        sel._dwWatch = new MutationObserver(() => { if (this.ready) put(); });
+        sel._dwWatch.observe(sel, { childList: true });
+        sel.addEventListener('change', e => {
+          if (sel.value !== 'dw:diwali') return;
+          e.stopImmediatePropagation();
+          sel.value = prev();
+          this.callCard();
+        }, true);
+      }
+    });
+  },
+  /* bring the card into view and let it glow once */
+  callCard() {
+    const c = document.getElementById('dwBooks'); if (!c) return;
+    c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    /* each choice clears the timers of the one before, so a quick second
+       choice still glows */
+    clearTimeout(this._callOn); clearTimeout(this._callOff);
+    c.classList.remove('dw-call');
+    this._callOn = setTimeout(() => requestAnimationFrame(() => c.classList.add('dw-call')), 450);
+    this._callOff = setTimeout(() => c.classList.remove('dw-call'), 2200);
+  },
+
+  /* Section 2's green button (पुस्तके पाहा): during the season its second
+     line mentions the Diwali booklets; afterwards its own line returns.
+     Only the words change — same place, same size, and the locked button
+     stylesheet is untouched. The line is kept on one line. */
+  greenButton() {
+    if (!this.ready) return;
+    const i = document.querySelector('.cta-books [data-t="btn_books_sub"], .cta-books [data-dw-t="btn_books_sub"]'); if (!i) return;
+    if (i.dataset.t) { i.dataset.dwT = i.dataset.t; i.removeAttribute('data-t'); }
+    i.textContent = RUTUJA.t('dw_btn_books_sub');
+    requestAnimationFrame(() => this.fitInline(i));
+  },
+  restoreGreen() {
+    const i = document.querySelector('.cta-books [data-dw-t="btn_books_sub"]'); if (!i) return;
+    i.dataset.t = i.dataset.dwT; delete i.dataset.dwT; i.style.fontSize = '';
+    i.textContent = RUTUJA.t(i.dataset.t);
+  },
+  /* one line for a short line of text inside a box it cannot widen */
+  fitInline(el) {
+    if (!el) return;
+    el.style.fontSize = '';
+    const box = el.parentElement; if (!box || !box.clientWidth) return;
+    const room = box.clientWidth;
+    const need = () => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
+    const base = parseFloat(getComputedStyle(el).fontSize); let f = 1;
+    for (let k = 0; k < 4 && need() > room - 1; k++) {
+      f = Math.max(0.75, f * (room - 2) / need()); el.style.fontSize = (base * f).toFixed(2) + 'px'; if (f === 0.75) break;
+    }
+  },
+
+  /* During the season the books page's hint points to the card below it;
+     outside the season (or when the season ends while open) the page's own
+     hint returns. Its data-t is set aside while in season, so a language
+     switch cannot overwrite the Diwali hint with the ordinary one. */
+  seasonHint() {
+    const h = document.querySelector('#page-books .books-hint'); if (!h) return;
+    const t = k => RUTUJA.t(k);
+    if (h.dataset.t) { h.dataset.dwT = h.dataset.t; h.removeAttribute('data-t'); }
+    h.classList.add('dw-hint');
+    h.innerHTML = `<span class="dw-hint-t">🪔 ${t('dw_bk_hint')}</span> <button type="button" class="dw-hint-go">${t('dw_bk_hint_go')}</button>`;
+    h.querySelector('.dw-hint-go').addEventListener('click', () => {
+      const c = document.getElementById('dwBooks'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    requestAnimationFrame(() => { if (this._bkFit) this._bkFit(); else RUTUJA.fitOne(h.querySelector('.dw-hint-t'), 0.72); });
+  },
+  restoreHint() {
+    const h = document.querySelector('#page-books .books-hint'); if (!h || !h.dataset.dwT) return;
+    h.dataset.t = h.dataset.dwT; delete h.dataset.dwT; h.classList.remove('dw-hint');
+    h.textContent = RUTUJA.t(h.dataset.t);
+  },
+
+  /* ---- the window: Section 2's order window, with these four books ---- */
+  open(focusId) {
+    if (!this.ready) return;
+    this._focus = focusId || null;
     ORDER.source = () => this.books();
     ORDER.series = 'DIWALI';
     ORDER.afterDraw = () => this.decorate();
@@ -295,6 +496,9 @@ const DIWALI = {
   decorate() {
     const t = k => RUTUJA.t(k), mr = RUTUJA.lang === 'mr', n = v => this.dev(v);
     const books = this.books();
+    /* until a quantity is chosen, the first + gently invites a tap */
+    const pick = document.getElementById('orderPick');
+    if (pick) pick.classList.toggle('dw-empty', !ORDER.picked.some(p => p.qty > 0));
     let top = document.getElementById('dwTop');
     if (!top) {
       top = document.createElement('div'); top.id = 'dwTop'; top.className = 'dw-top';
@@ -304,34 +508,74 @@ const DIWALI = {
        away and are never rebuilt; a language switch only rewrites the words */
     if (!top.querySelector('.dw-fan')) {
       top.innerHTML = `<p class="dw-tag"></p>
-        <div class="dw-fan">${books.map((b, i) => `<span class="dw-cv" style="--i:${i}">${
+        <div class="dw-fan">${books.map((b, i) => `<span class="dw-cv" style="--i:${i}" data-dwjump="${b.book_id}" role="button" tabindex="0">${
           RUTUJA.img('books', b.cover_image, '', mr ? b.name_mr : b.name_en).replace('loading="lazy"', 'loading="eager"')}</span>`).join('')}</div>
         <div class="dw-offer"></div><div class="dw-table"></div>
         <button class="dw-all10" type="button"></button>`;
       top.querySelector('.dw-all10').addEventListener('click', () => { books.forEach(b => ORDER.setQty(b.book_id, 10)); });
+      /* tapping a cover brings that booklet's row into view */
+      top.querySelector('.dw-fan').addEventListener('click', e => {
+        const cv = e.target.closest('[data-dwjump]'); if (!cv) return;
+        const inp = document.querySelector(`#orderPick [data-oi="${cv.dataset.dwjump}"]`);
+        const row = inp && inp.closest('.opick-row'); if (!row) return;
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.classList.remove('dw-focus'); requestAnimationFrame(() => row.classList.add('dw-focus'));
+      });
     }
     if (top.dataset.lang !== RUTUJA.lang) {
       top.dataset.lang = RUTUJA.lang;
-      const rows = [10, 25, 50].map(q => `<tr><td>${n(q)}</td><td><s>₹${n(q * 30)}</s></td><td><b>₹${n(q * 20)}</b></td><td class="dw-sv">₹${n(q * 10)}</td></tr>`).join('');
+      const rows = [10, 25, 50].map((q, ri) => `<tr style="--r:${ri}"><td>${n(q)}</td><td><s>₹${n(q * 30)}</s></td><td><b>₹${n(q * 20)}</b></td><td class="dw-sv">₹${n(q * 10)}</td></tr>`).join('');
       this.tagline(top.querySelector('.dw-tag'), t('dw_tagline'));
-      top.querySelector('.dw-offer').innerHTML = `<span class="dw-o1">${t('dw_offer_a')}</span><span class="dw-o2">${t('dw_offer_b')}</span><span class="dw-o3">${t('dw_offer_c')}</span>`;
+      top.querySelector('.dw-offer').innerHTML = `<i class="dw-odiya dw-od1"><b class="dw-flame"></b></i><i class="dw-odiya dw-od2"><b class="dw-flame"></b></i><span class="dw-o1">${t('dw_offer_a')}</span><span class="dw-o2">${t('dw_offer_b')}</span><span class="dw-o3">${t('dw_offer_c')}</span>`;
       top.querySelector('.dw-table').innerHTML = `<p class="dw-th">${t('dw_table_h')}</p>
         <table><thead><tr><th>${t('dw_t_copies')}</th><th>${t('dw_t_mrp')}</th><th>${t('dw_t_offer')}</th><th>${t('dw_t_saved')}</th></tr></thead>
         <tbody>${rows}</tbody></table>`;
       top.querySelector('.dw-all10').textContent = t('dw_all10');
       top.querySelectorAll('.dw-cv img').forEach((im, i) => { const b = books[i]; if (b) im.alt = mr ? b.name_mr : b.name_en; });
     }
+    /* every book name in the window — rows and the summary — complete on
+       one line: fitted to its own box */
+    requestAnimationFrame(() => document.querySelectorAll('#orderWin .opick-name.bt, #orderSum .oline-name.bt').forEach(nm => {
+      /* measured against the name's own box, whose width is stable — the
+         span inside shrinks with its text and cannot be measured against */
+      const sp = nm.querySelector(':scope > span'); if (sp) sp.style.fontSize = '';
+      nm.style.fontSize = '';
+      const room = nm.clientWidth; if (!room) return;
+      const need = () => { const r = document.createRange(); r.selectNodeContents(nm); return r.getBoundingClientRect().width; };
+      const base = parseFloat(getComputedStyle(nm).fontSize); let f = 1;
+      for (let k = 0; k < 4 && need() > room - 1; k++) {
+        f = Math.max(0.66, f * (room - 2) / need());
+        nm.style.fontSize = (base * f).toFixed(2) + 'px';
+        if (f === 0.66) break;
+      }
+    }));
     document.querySelectorAll('#orderPick .opick-row').forEach(row => {
       const inp = row.querySelector('[data-oi]'); if (!inp) return;
       const id = inp.dataset.oi; if (!books.some(b => b.book_id === id)) return;
       const q = ORDER.qtyOf(id);
       const name = row.querySelector('.opick-name');
-      if (name && !row.querySelector('.dw-facts')) name.insertAdjacentHTML('afterend', `<p class="dw-facts">${t('dw_facts')}</p>`);
+      if (name && !row.querySelector('.dw-facts')) {
+        name.insertAdjacentHTML('afterend', `<p class="dw-facts">${t('dw_facts')}</p>`);
+        const fx = row.querySelector('.dw-facts'); requestAnimationFrame(() => RUTUJA.fitOne(fx, 0.72));
+      }
       row.querySelectorAll('.oslab-c b').forEach((b, k) => { b.textContent = t(k ? 'dw_slab_hi' : 'dw_slab_lo'); });
-      const qty = row.querySelector('.opick-qty');
-      if (qty && q > 0) qty.insertAdjacentHTML('afterend', q < 10
-        ? `<p class="dw-nudge">${t('dw_nudge').replace('{n}', n(10 - q))}</p>`
-        : `<p class="dw-nudge dw-ok">${t('dw_hit')}</p>`);
+      /* the price shows as just ₹30 until 10+ copies bring it down; then
+         the struck-through ₹30 → ₹20 appears */
+      const money = row.querySelector('.opick-money'); if (money) money.classList.toggle('dw-flat', q < 10);
+      const main = row.querySelector('.opick-main');
+      if (main && q > 0) {
+        /* a bar that fills towards ten copies — the offer made visible */
+        const from = Math.min(1, (this._prevQ[id] || 0) / 10), to = Math.min(1, q / 10);
+        const each = q >= 10 ? 20 : 30;
+        main.insertAdjacentHTML('beforeend', `<div class="dw-prog${q >= 10 ? ' dw-ok' : ''}">
+          <p class="dw-prog-t"><b>${n(q)} × ₹${n(each)} = ₹${n(q * each)}</b><span>${q < 10 ? t('dw_prog_more').replace('{n}', n(10 - q)) : t('dw_prog_ok')}</span></p>
+          <i class="dw-bar"><i style="--from:${from.toFixed(2)};--to:${to.toFixed(2)}"></i></i></div>`);
+      }
+      if (this._focus === id) {
+        this._focus = null;
+        row.classList.add('dw-focus');
+        requestAnimationFrame(() => row.scrollIntoView({ block: 'center', behavior: 'smooth' }));
+      }
       if (q >= 10 && (this._prevQ[id] || 0) < 10) {
         row.classList.add('dw-hit');
         row.insertAdjacentHTML('beforeend', '<i class="dw-pop" aria-hidden="true"></i><i class="dw-pop dw-pop2" aria-hidden="true"></i>');
