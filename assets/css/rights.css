@@ -36,7 +36,8 @@
 .rt-end{text-align:center;border-top:1px solid rgba(247,200,107,.35);padding-top:.45em}
 .rt-close{margin:0;font-family:'Baloo 2',system-ui,sans-serif;font-weight:800;font-size:1.16em;line-height:1.25;color:#FFC857;white-space:nowrap}
 .rt-close2{margin:.1em 0 0;font-size:.9em;font-weight:600;color:#fff;white-space:nowrap}
-.rt-note{margin:.3em 0 0;font-size:.7em;font-style:italic;line-height:1.35;color:rgba(255,255,255,.72);text-wrap:balance}
+.rt-note{margin:.3em 0 0;font-size:.7em;font-style:italic;line-height:1.35;color:rgba(255,255,255,.72)}
+.rt-note .c1,.rt-note .c2,.rt-line .c1,.rt-line .c2,.rt-kt .c1,.rt-kt .c2{display:block}
 .rt-one{display:block;max-width:100%;white-space:nowrap}
 
 /* ---- rights on record ---- */
@@ -86,12 +87,12 @@
 
 /* ---- for every reader: author → publisher → edition ---- */
 .rt-chain{display:flex;justify-content:center;align-items:center;gap:.45em}
-.rt-ch{display:flex;flex-direction:column;align-items:center;gap:.25em;padding:.6em .45em;min-width:4.8em;border-radius:.8em;
+.rt-ch{display:flex;flex-direction:column;align-items:center;gap:.25em;padding:.6em .4em;min-width:0;flex:0 1 auto;border-radius:.8em;
   background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1.2px rgba(247,200,107,.6)}
 .rt-ch b{font-size:1.65em;line-height:1}
 .rt-ch em{font-style:normal;font-weight:800;color:#FFE08A}
 .rt-arw{font-style:normal;font-weight:800;color:#F7C86B;font-size:1.2em}
-.rt-checks{list-style:none;margin:.2em auto 0;padding:0;display:flex;flex-direction:column;gap:.3em;align-items:stretch;max-width:100%}
+.rt-checks{list-style:none;margin:.2em auto 0;padding:0;display:flex;flex-direction:column;gap:calc(.3em + var(--xg, 0px) / 3);align-items:stretch;max-width:100%}
 .rt-ck{position:relative;padding:.3em .8em .3em 1.8em;border-radius:.6em;background:rgba(255,255,255,.07);font-size:.86em;font-weight:600;color:#F3EBDD}
 .rt-ck::before{content:"✓";position:absolute;left:.65em;top:50%;transform:translateY(-50%);color:#7EE0A0;font-weight:800}
 .rt-card.on .rt-ck{animation:rtSlide .45s ease-out var(--d, .9s) both}
@@ -109,7 +110,7 @@
 .rt-dot.on{width:26px;background:#EADFC8}
 .rt-dot.on::after{content:"";position:absolute;inset:0;background:#E8A33D;transform-origin:left center;transform:scaleX(0)}
 .rt-dot.run::after{animation:rtFill var(--secs, 6s) linear both}
-.held .rt-dot.run::after,html:is(.scrolling,.watching,.win-open) .rt-dot.run::after{animation-play-state:paused}
+.held .rt-dot.run::after,html:is(.scrolling,.watching,.win-open,.holding) .rt-dot.run::after{animation-play-state:paused}
 
 /* ---- arrival: each card's parts come in turn (move and fade only) ---- */
 .rt-card.on .rt-t{animation:rtRise .45s ease-out .05s both}
@@ -204,7 +205,7 @@
 .rt-cal i::after{content:"";position:absolute;inset:0;border-radius:50%;background:#F7C86B;transform:scale(0)}
 .rt-two{flex:0 0 auto;position:relative;display:inline-flex;margin-left:auto;padding-left:.4em;width:2.1em;height:1.1em}
 .rt-two i{position:absolute;right:.35em;font-style:normal;font-size:.95em;line-height:1.1}
-.rt-line{margin:.2em 0 0;text-align:center;font-size:.8em;font-weight:600;color:#FFE9B8;text-wrap:balance}
+.rt-line{margin:.2em 0 0;text-align:center;font-size:.8em;font-weight:600;color:#FFE9B8;white-space:nowrap}
 .rt-card.on .rt-time::before{animation:rtDrawY 1.1s ease-out .35s both}
 .rt-card.on .rt-st{animation:rtSlide .45s ease-out var(--d, .4s) both}
 .rt-card.on .rt-cal i::after{animation:rtDot .25s ease-out both}
@@ -222,7 +223,7 @@
 /* cards 4–6: the "did you know" box */
 .rt-know{margin:0;padding:.45em .7em;border-radius:.6em;background:rgba(255,246,226,.08);box-shadow:inset 3px 0 0 #F7C86B}
 .rt-kh{margin:0;font-weight:800;color:#FFD98A;font-size:.86em}
-.rt-kt{margin:.12em 0 0;font-size:.78em;color:#F3EBDD;line-height:1.35;text-wrap:balance}
+.rt-kt{margin:.12em 0 0;font-size:.78em;color:#F3EBDD;line-height:1.35;white-space:nowrap}
 .rt-card.on .rt-know{animation:rtSlide .5s ease-out .7s both}
 
 /* card 7: the ISBN line */
@@ -262,3 +263,62 @@
 /* card 2: part of the shared spacing also goes between its rows and its points */
 .rt-rows{gap:calc(.5em + var(--xg, 0px) / 3)}
 .rt-pts3{gap:calc(.35em + var(--xg, 0px) / 3)}
+
+/* ===================================================================
+   v21c — card 1 rebuilt, card 3's bracketed notes, and more arrival life
+   =================================================================== */
+/* card 1: larger covers, each with its book name and registration */
+.rt-c-rights .rt-covers{gap:1em;align-items:stretch}
+.rt-c-rights .rt-cv{width:46%;gap:.3em;justify-content:flex-start}
+.rt-c-rights .rt-cv img{height:7.8em;max-width:100%;border-radius:5px;box-shadow:0 8px 18px rgba(0,0,0,.45)}
+.rt-bn{font-size:.72em;font-weight:700;color:#FFE9B8;text-align:center;margin:0;line-height:1.25;white-space:nowrap}
+.rt-c-rights .rt-reg{display:flex;flex-direction:column;align-items:center;width:100%;font-size:.68em;line-height:1.25;
+  color:#FFE08A;background:rgba(0,0,0,.28);padding:.22em .3em;border-radius:.5em;box-shadow:inset 0 0 0 1px rgba(247,200,107,.6)}
+/* stacked fact rows: label on the left, value on the right */
+.rt-facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:calc(.3em + var(--xg, 0px) / 3)}
+.rt-fr{display:flex;align-items:center;gap:.5em;padding:.24em .6em;border-radius:.55em;background:rgba(255,255,255,.07);
+  box-shadow:inset 2px 0 0 rgba(247,200,107,.8)}
+.rt-fk{flex:0 0 auto;font-size:.74em;font-weight:800;color:#F7C86B;text-transform:none}
+.rt-fv{flex:1 1 auto;min-width:0;text-align:right;font-size:.8em;font-weight:600;color:#fff}
+.rt-c-rights .rt-who{gap:.25em;width:100%}
+.rt-c-rights .rt-wl{display:flex;align-items:center;justify-content:center;gap:.5em;font-size:.9em}
+.rt-c-rights .rt-wl i{font-size:.8em;font-weight:700;color:#F7C86B}
+.rt-c-rights .rt-wl b{font-weight:800;color:#fff}
+.rt-card.on .rt-fr{animation:rtSlide .45s ease-out var(--d, .6s) both}
+
+/* card 3: the bracketed note under each step */
+.rt-sb{flex:0 0 calc(100% - 2.2em);max-width:calc(100% - 2.2em);margin-left:2.2em;font-size:.72em;font-style:italic;color:rgba(255,233,184,.78)}
+.rt-card.on .rt-sb{animation:rtFade .4s ease-out calc(var(--d, .5s) + .18s) both}
+
+/* more life on arrival, everywhere in the section */
+.rt-card::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.16) 46%,transparent 62%);transform:translateX(-120%);opacity:0}
+.rt-card.on::after{animation:rtSheen 1.5s ease-out .25s both}
+@keyframes rtSheen{0%{opacity:0;transform:translateX(-120%)}18%{opacity:1}100%{opacity:0;transform:translateX(120%)}}
+.rt-card.on .rt-cv{animation:rtLift .55s cubic-bezier(.2,.9,.3,1.2) var(--d, .3s) both}
+@keyframes rtLift{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.rt-card.on .rt-n{animation:rtRing .5s cubic-bezier(.2,.9,.3,1.3) var(--d, .4s) both}
+@keyframes rtRing{0%{opacity:0;transform:scale(.4)}60%{transform:scale(1.14)}100%{opacity:1;transform:none}}
+.rt-know{position:relative;overflow:hidden}
+.rt-know::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);transform:translateX(-140%)}
+.rt-card.on .rt-know::after{animation:rtGleam 1.2s ease-in-out 1.1s both}
+.rt-card.on .rt-ck::before{animation:rtTick .35s ease-out calc(var(--d, .9s) + .2s) both}
+@keyframes rtTick{from{opacity:0;transform:translateY(-50%) scale(.3)}to{opacity:1;transform:translateY(-50%) scale(1)}}
+.rt-card.on .rt-ch b{animation:rtBob .6s ease-out calc(var(--d, .3s) + .25s) both}
+@keyframes rtBob{0%{transform:translateY(0)}40%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.rt-card.on::after,.rt-card.on .rt-cv,.rt-card.on .rt-n,.rt-card.on .rt-know::after,
+  .rt-card.on .rt-ck::before,.rt-card.on .rt-ch b{animation:none!important}}
+
+/* a line that must break does so at its one natural point, never mid-phrase */
+.can-split .cs{display:inline}
+.can-split.split .c1,.can-split.split .c2{display:block}
+.can-split.split .cs{display:none}
+.rt-note.split .c1,.rt-note.split .c2,.rt-line.split .c1,.rt-line.split .c2{line-height:1.3}
+
+.can-split.wrapok,.can-split.wrapok .c1,.can-split.wrapok .c2{white-space:normal;text-wrap:balance}
+
+/* the three boxes shrink to their words on the narrowest phones */
+.rt-chain{max-width:100%;gap:.35em}
+.rt-chain .rt-ch em{max-width:100%}
+.rt-q .rt-close.wrapok{white-space:normal;text-wrap:balance}

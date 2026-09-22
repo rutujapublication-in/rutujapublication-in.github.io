@@ -6943,6 +6943,13 @@ html[lang="en"] .vis-deck:not(.is-built){min-height:419px}
 @media(prefers-reduced-motion:reduce){.mom-slide.on .au-jc,.mom-slide.on .au-jarw{animation:none}}
 
 /* ===================================================================
+   PRESS AND HOLD TO READ (v21c) — while a finger rests on a slide that
+   moves on its own, its progress bar waits too.
+   =================================================================== */
+html.holding .mom-dot.on::after,html.holding .vis-dot.on::after,html.holding .story-dot.on::after,html.holding .sd.on::after,
+html.holding .mom-bar > i,html.holding .vis-bar > i{animation-play-state:paused!important}
+
+/* ===================================================================
    WHILE SCROLLING — generated from this stylesheet, do not edit by hand
    1 · While scrolling or while a book video plays (.scrolling / .watching
        on <html>): every looping effect is off; one that mixes an entrance
@@ -7409,3 +7416,10 @@ html.win-open #site body.booting .ex-grid:empty,
 html.win-open #site body.booting .offer-grid:empty,
 html.win-open #site body.booting .std-grid:empty,
 html.win-open #site body.booting [data-t]:empty{animation:none !important}
+
+/* ===================================================================
+   HOMEPAGE FRAME SPACING (v21d) — the gaps between the framed sections
+   were uneven (28px above Section 4 but only 8px below it). One measure,
+   16px, between all of them.
+   =================================================================== */
+.offer-frame{margin-top:16px;margin-bottom:8px}

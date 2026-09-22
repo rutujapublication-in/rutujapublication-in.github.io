@@ -61,17 +61,13 @@
         "s": "मूळ साहित्यकृती · नोंदणीकृत हक्क",
         "regs": [
           [
-            "कॉपीराइट",
+            "कॉपीराइट नोंदणी क्र.",
             "L-95705"
           ],
           [
-            "कॉपीराइट",
+            "कॉपीराइट नोंदणी क्र.",
             "L-132178"
           ]
-        ],
-        "chips": [
-          "ट्रेडमार्क 4379367 · वर्ग ४१",
-          "उद्योग आधार MH01D0036726"
         ],
         "who": [
           [
@@ -80,28 +76,42 @@
           ],
           [
             "प्रकाशक",
-            "ऋतुजा पब्लिकेशन"
+            "ऋतुजा पब्लिकेशन, पढेगाव"
           ]
         ],
         "close": "पुस्तक म्हणजे केवळ नाव नव्हे",
-        "close2": "त्यामागे लेखन, संशोधन व सर्जनशील श्रम असतात"
+        "close2": "त्यामागे लेखन, संशोधन व सर्जनशील श्रम असतात",
+        "names": [
+          "‘चला वाचूया झटपट’",
+          "‘English Primer with Phonics’"
+        ],
+        "rows": [
+          [
+            "ट्रेडमार्क",
+            "4379367 · वर्ग ४१ — शिक्षण व प्रकाशन सेवा"
+          ],
+          [
+            "उद्योग आधार",
+            "MH01D0036726"
+          ],
+          [
+            "ISBN",
+            "प्रत्येक पुस्तकाला स्वतंत्र क्रमांक"
+          ]
+        ]
       },
       "en": {
         "t": "Rights on Record",
         "s": "Original works · registered rights",
         "regs": [
           [
-            "Copyright",
+            "Copyright Reg. No.",
             "L-95705"
           ],
           [
-            "Copyright",
+            "Copyright Reg. No.",
             "L-132178"
           ]
-        ],
-        "chips": [
-          "Trademark 4379367 · Class 41",
-          "Udyog Aadhaar MH01D0036726"
         ],
         "who": [
           [
@@ -110,11 +120,29 @@
           ],
           [
             "Publisher",
-            "Rutuja Publication"
+            "Rutuja Publication, Padhegaon"
           ]
         ],
         "close": "A book is more than a title",
-        "close2": "behind it: writing, research and creative effort"
+        "close2": "behind it: writing, research and creative effort",
+        "names": [
+          "‘Chala Vachuya Zatpat’",
+          "‘English Primer with Phonics’"
+        ],
+        "rows": [
+          [
+            "Trademark",
+            "4379367 · Class 41 — education & publishing"
+          ],
+          [
+            "Udyog Aadhaar",
+            "MH01D0036726"
+          ],
+          [
+            "ISBN",
+            "a separate number for each book"
+          ]
+        ]
       }
     },
     {
@@ -215,13 +243,28 @@
         "acc": "तेही शिक्षक!",
         "s": "आमचा अनुभव",
         "steps": [
-          "नोटीस पाठवली",
-          "८ दिवसांत",
-          "एकाचे दोन लेखक — दोघेही शिक्षक",
-          "नव्याने ‘बाग’",
-          "‘शब्दांची’ दाखवली"
+          [
+            "नोटीस पाठवली",
+            "कायदेशीर नोटीस"
+          ],
+          [
+            "८ दिवसांत",
+            "नोटिशीनंतर"
+          ],
+          [
+            "एकाचे दोन लेखक",
+            "दोघेही शिक्षक"
+          ],
+          [
+            "नव्याने ‘बाग’",
+            "नवे नाव"
+          ],
+          [
+            "‘शब्दांची’ दाखवली",
+            "जोडशब्द"
+          ]
         ],
-        "line": "शिक्षक समुदायाशी संबंधित प्रकाशनांबाबतही प्रश्न उभे राहिले.",
+        "line": "एका शिक्षिकेचं लेखन दुसऱ्या नावाने बाजारात — हीच खरी वेदना.",
         "q": [
           "शैक्षणिक साहित्यातच मौलिकतेचा हा विरोधाभास का?"
         ],
@@ -232,13 +275,28 @@
         "acc": "Both of them teachers!",
         "s": "Our experience",
         "steps": [
-          "Notice sent",
-          "Within 8 days",
-          "One author became two — both teachers",
-          "A new ‘Baag’",
-          "‘Shabdanchi’ added"
+          [
+            "Notice sent",
+            "a legal notice"
+          ],
+          [
+            "Within 8 days",
+            "after the notice"
+          ],
+          [
+            "One author became two",
+            "both of them teachers"
+          ],
+          [
+            "A new ‘Baag’",
+            "a new name"
+          ],
+          [
+            "‘Shabdanchi’ added",
+            "a joined word"
+          ]
         ],
-        "line": "Questions arose about publications linked to the teaching community too.",
+        "line": "A teacher's writing, sold under another name — that is the real hurt.",
         "q": [
           "Why this contradiction in the very field",
           "meant to uphold originality?"

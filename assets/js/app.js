@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v21b',
+  VERSION: 'v21d',
   lang: 'mr',
   text: {},
   locations: null,
@@ -53,6 +53,7 @@ const RUTUJA = {
        nothing restarts from the beginning; each animation holds its frame
        and resumes where it stopped. */
     this.stillWhenOffscreen();
+    try { this.holdWatch(); } catch (e) {}
 
     /* A registration that could not be confirmed is kept in
        rutuja_pending. Retry it once per visit, quietly and in the
@@ -646,6 +647,40 @@ const RUTUJA = {
        treat as on screen, so its fit happens on the next frame */
     if (!this._seenMap.has(el)) { if (this._seenObs) this._seenObs.observe(el); return true; }
     return this._seenMap.get(el);
+  },
+
+  /* ---------------------------------------------------------------
+     PRESS AND HOLD TO READ (v21c)
+     A finger resting on any slide that moves on its own — Section 1,
+     Section 5, Section 6, the book windows' author and rights sections,
+     Section 7 and the carousels — holds it there, with its progress bar,
+     until the finger lifts. A quick tap is not a hold: only a press of
+     more than 250ms counts, so tapping still works as it did.
+     --------------------------------------------------------------- */
+  HOLD_IN: '.mom-stage, .mom-track, .vis-stage, .vis-deck, .au-stage, .rt-deck, .story, .story-track, .carousel',
+  _pressing: false,
+  holdWatch() {
+    const on = e => {
+      if (e.button > 0 || !(e.target.closest && e.target.closest(this.HOLD_IN))) return;
+      /* only the controls that act on a tap are skipped — the slide itself,
+         even when it is a link or a button, can be held for reading */
+      if (e.target.closest('input, select, .rt-clip, .rt-read, .rt-arrow, .rt-dot, .mom-dot, .vis-dot, .vis-arrow, .story-dot, .car-dot')) return;
+      this._pressAt = Date.now();
+      this._pressHold = setTimeout(() => { this._pressing = true; document.documentElement.classList.add('holding'); }, 250);
+    };
+    const off = () => {
+      clearTimeout(this._pressHold);
+      if (!this._pressing) return;
+      this._pressing = false; document.documentElement.classList.remove('holding');
+    };
+    /* in the capture phase: a section's own swipe handling may stop the
+       event before it bubbles (Section 1 does), and the hold would be missed */
+    document.addEventListener('pointerdown', on, { passive: true, capture: true });
+    /* not pointerleave: in the capture phase it also arrives from every
+       element the finger passes over, which would end the hold at once */
+    ['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, off, { passive: true, capture: true }));
+    window.addEventListener('blur', off);
+    document.addEventListener('visibilitychange', off);
   },
 
   stillWhenOffscreen() {
@@ -2148,7 +2183,7 @@ const MEDIA = {
       box.querySelectorAll('.car-dot').forEach((d, k) => d.classList.toggle('on', k === rail.i));
     };
     const start = () => { clearInterval(rail.timer);
-      if (rail.n > 1 && !rail.paused) rail.timer = setInterval(() => { if (!RUTUJA._watching && !RUTUJA._scrolling) go(rail.i + 1); }, rail.delay); };
+      if (rail.n > 1 && !rail.paused) rail.timer = setInterval(() => { if (!RUTUJA._watching && !RUTUJA._scrolling && !RUTUJA._pressing) go(rail.i + 1); }, rail.delay); };
     const stop = () => clearInterval(rail.timer);
 
     box.querySelector('.car-next')?.addEventListener('click', () => { go(rail.i + 1); start(); });
@@ -2290,6 +2325,12 @@ const MEDIA = {
       this._watchIO = new IntersectionObserver(es => es.forEach(e => on(e.isIntersecting && m.classList.contains('playing'))));
       this._watchIO.observe(m);
     }
+    /* YouTube never tells the page that a video ended, so the page's own
+       effects would stay switched off while the player is still on screen.
+       Touching anything outside the player brings them back. */
+    if (this._awayOff) document.removeEventListener('pointerdown', this._awayOff, true);
+    this._awayOff = ev => { if (m.contains(ev.target)) return; on(false); document.removeEventListener('pointerdown', this._awayOff, true); this._awayOff = null; };
+    document.addEventListener('pointerdown', this._awayOff, true);
   },
   warm() {
     if (this._warm) return; this._warm = true;
@@ -3680,7 +3721,7 @@ const VISION = {
     const secs = Number(this.slides[this.i] && this.slides[this.i].seconds) || 7;
     /* advances, then sets the next timer — it used to advance only once and
        then sit on the second slide until the section was scrolled away */
-    const tick = () => (this.app && (this.app._scrolling || this.app._watching || this.app._winOpen)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    const tick = () => (this.app && (this.app._scrolling || this.app._watching || this.app._winOpen || this.app._pressing)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
     this.timer = setTimeout(tick, secs * 1000);
   },
 
@@ -3695,6 +3736,7 @@ const VISION = {
     /* a tap on the card holds it, so a slow reader is not chased by the timer */
     this.deck.addEventListener('click', e => {
       if (e.target.closest('button, a')) return;
+      if (Date.now() - (this.app._pressAt || 0) > 250) return;   /* a reading hold, not a tap */
       this.paused = !this.paused;
       this.deck.classList.toggle('is-held', this.paused);
       if (this.paused) this.stop(); else this.start();
@@ -3902,7 +3944,7 @@ const MOMENTS = {
   start() {
     this.stop();
     if (this.paused || this.reduced || !this.cards) return;
-    const tick = () => (this.app._scrolling || this.app._watching || this.app._winOpen) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    const tick = () => (this.app._scrolling || this.app._watching || this.app._winOpen || this.app._pressing) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
     this.timer = setTimeout(tick, this.secs());
     this.dotFill();
   },
@@ -3929,6 +3971,8 @@ const MOMENTS = {
     }, { passive: true });
     this.stage.addEventListener('click', () => {
       if (moved) { moved = false; return; }
+      /* a press held for reading is not a tap: it has paused and resumed by itself */
+      if (Date.now() - (this.app._pressAt || 0) > 250) return;
       this.paused = !this.paused; this.paused ? this.stop() : this.start();
     });
     /* Watch the section itself, not an element inside it: .mom carries
@@ -4395,6 +4439,8 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
     }, { passive: true });
     this.stage.addEventListener('click', () => {
       if (moved) { moved = false; return; }
+      /* a press held for reading is not a tap: it has paused and resumed by itself */
+      if (Date.now() - (this.app._pressAt || 0) > 250) return;
       this.paused = !this.paused; this.paused ? this.stop() : this.start();
     });
     if ('IntersectionObserver' in window) {
@@ -4668,7 +4714,7 @@ const STORY = {
   start() {
     this.stop();
     /* never advances in the middle of a scroll; it waits for the page to settle */
-    const tick = () => (this.app && (this.app._scrolling || this.app._watching || this.app._winOpen)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
+    const tick = () => (this.app && (this.app._scrolling || this.app._watching || this.app._winOpen || this.app._pressing)) ? (this.timer = setTimeout(tick, 500)) : (this.go(this.i + 1), this.start());
     this.timer = setTimeout(tick, this.secs());
   },
   stop() { clearTimeout(this.timer); }
