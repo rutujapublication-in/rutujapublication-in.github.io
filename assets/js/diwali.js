@@ -42,6 +42,7 @@ const DIWALI = {
     const want = this.inSeason();
     if (want && !this.on) this.load();
     else if (!want && this.on) this.off();
+    if (!want) this.offStrip(); else { const o = document.getElementById('dwOff'); if (o) o.remove(); }
     this.schedule();
   },
 
@@ -56,13 +57,18 @@ const DIWALI = {
       this.fitButton(document.querySelector('#stdGrid [data-dw]')); this.fitTag(document.querySelector('#dwTop .dw-tag'));
       if (this.ready) this.fitInline(document.querySelector('.cta-books [data-dw-t="btn_books_sub"]'));
     }, 200); });
-    if (location.hash === '#diwali' && !this.inSeason()) this.toast();
+    /* a shared Diwali link outside the season opens the books page at the strip */
+    if (location.hash === '#diwali' && !this.inSeason()) setTimeout(() => {
+      try { RUTUJA.go('books'); } catch (e) {}
+      setTimeout(() => { this.offStrip(); const o = document.getElementById('dwOff');
+        if (o) { o.scrollIntoView({ behavior: 'smooth', block: 'center' }); o.classList.add('dw-call'); setTimeout(() => o.classList.remove('dw-call'), 1600); } }, 700);
+    }, 300);
     /* the window's language button repaints the page; the window's own
        Diwali pieces are drawn again once it has */
     const setLang = RUTUJA.setLang.bind(RUTUJA);
     RUTUJA.setLang = (...a) => {
       const r = setLang(...a);
-      setTimeout(() => { if (this.isOpen()) ORDER.draw(); if (this.ready) { this.entries(); this.greenButton(); } }, 60);
+      setTimeout(() => { if (this.isOpen()) ORDER.draw(); if (this.ready) { this.entries(); this.greenButton(); } else if (!this.inSeason()) this.offStrip(); }, 60);
       return r;
     };
   },
@@ -584,18 +590,92 @@ const DIWALI = {
     });
   },
 
-  /* a shared #diwali link opened outside the season */
-  toast() {
-    const mr = RUTUJA.lang === 'mr';
-    const m = document.createElement('div');
-    m.textContent = mr ? 'दिवाळी अभ्यास — हा उपक्रम दरवर्षी सप्टेंबर ते नोव्हेंबर उपलब्ध असतो'
-                       : 'Diwali Abhyas — available every year from September to November';
-    m.setAttribute('role', 'status');
-    m.style.cssText = 'position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:9999;max-width:88vw;'
-      + 'background:#7A0E46;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;text-align:center;'
-      + 'box-shadow:0 6px 18px rgba(0,0,0,.25)';
-    document.body.appendChild(m);
-    setTimeout(() => m.remove(), 5000);
+  /* ---- outside the season: a slim strip below the books ----
+     From 1 December to 31 August the books page ends with a calm strip:
+     the booklets' name, the exact date they return (a countdown in the
+     last month), and a "Remind me" button that opens WhatsApp with a ready
+     message. Its words and style live here, since the package's data and
+     stylesheet are not downloaded outside the season. */
+  OFF: {
+    mr: { h: 'दिवाळी अभ्यास (इयत्ता १–४)', s1: 'पुन्हा उपलब्ध: {d}', cd: ' ({n} दिवसांत)', cd1: ' (उद्या)', s2: 'दरवर्षी सप्टेंबर ते नोव्हेंबर',
+          btn: '🔔 आठवण करून द्या', again: '🔔 पुन्हा पाठवा', ok: '✓ आठवण पाठवली — सप्टेंबरमध्ये कळवू',
+          months: ['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'] },
+    en: { h: 'Diwali Abhyas (Std 1–4)', s1: 'Back on {d}', cd: ' (in {n} days)', cd1: ' (tomorrow)', s2: 'Every year, September to November',
+          btn: '🔔 Remind me', again: '🔔 Send again', ok: '✓ Reminder sent',
+          months: ['January','February','March','April','May','June','July','August','September','October','November','December'] }
+  },
+  nextStart() {
+    const n = this.istNow(), [m, d] = String(this.cfg.start).split('-').map(Number);
+    const md = (n.getUTCMonth() + 1) * 100 + n.getUTCDate();
+    const y = n.getUTCFullYear() + (md < m * 100 + d ? 0 : 1);
+    const today = Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate());
+    return { y, m, d, days: Math.round((Date.UTC(y, m - 1, d) - today) / 86400000) };
+  },
+  offStrip() {
+    if (this.inSeason()) return;
+    const page = document.getElementById('page-books'), wrap = page && page.querySelector('.wrap'); if (!wrap) return;
+    const mr = RUTUJA.lang === 'mr', T = this.OFF[mr ? 'mr' : 'en'];
+    const dev = v => mr ? String(v).replace(/[0-9]/g, x => '०१२३४५६७८९'[x]) : String(v);
+    const ns = this.nextStart();
+    const date = `${dev(ns.d)} ${T.months[ns.m - 1]} ${dev(ns.y)}`;
+    const cd = ns.days === 1 ? T.cd1 : (ns.days > 1 && ns.days <= 31 ? T.cd.replace('{n}', dev(ns.days)) : '');
+    let sent = false; try { sent = localStorage.getItem('rutuja_dw_remind') === String(ns.y); } catch (e) {}
+    /* the WhatsApp message is always in Marathi, like the site's orders;
+       the visitor's saved name and village are added when known */
+    const mrDate = `${String(ns.d).replace(/[0-9]/g, x => '०१२३४५६७८९'[x])} ${this.OFF.mr.months[ns.m - 1]} ${String(ns.y).replace(/[0-9]/g, x => '०१२३४५६७८९'[x])}`;
+    let who = ''; try { const bu = (typeof BUYER !== 'undefined' && BUYER.get()) || null;
+      if (bu && bu.name) who = '\n— ' + bu.name + (bu.village_city ? ', ' + bu.village_city : ''); } catch (e) {}
+    const msg = `नमस्कार! दिवाळी अभ्यास (इयत्ता १–४) ${mrDate} ला उपलब्ध झाल्यावर मला व्हॉट्सॲपवर कळवा.${who}`;
+    const num = (RUTUJA.config && RUTUJA.config.whatsapp_number) || '';
+    const link = num ? 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg) : '';
+    this.offStyle();
+    let el = document.getElementById('dwOff');
+    if (!el) {
+      el = document.createElement('section'); el.id = 'dwOff'; el.className = 'dw-off';
+      const none = document.getElementById('bookNone');
+      (none && none.parentNode === wrap ? none : wrap.lastElementChild).insertAdjacentElement('afterend', el);
+      el.addEventListener('click', e => {
+        if (!e.target.closest('.dw-off-go')) return;
+        try { localStorage.setItem('rutuja_dw_remind', String(this.nextStart().y)); } catch (x) {}
+        setTimeout(() => this.offStrip(), 400);
+      });
+    }
+    el.classList.toggle('sent', sent);
+    el.innerHTML = `<i class="dw-off-diya" aria-hidden="true"><b></b></i>
+      <div class="dw-off-t"><p class="dw-off-h">${T.h}</p>
+        <p class="dw-off-s">${T.s1.replace('{d}', `<b>${date}</b>`)}${cd}</p><p class="dw-off-s dw-off-s2">${T.s2}</p></div>
+      <div class="dw-off-act">${sent ? `<span class="dw-off-ok">${T.ok}</span>` : ''}
+        ${link ? `<a class="dw-off-go" href="${link}" target="_blank" rel="noopener">${sent ? T.again : T.btn}</a>` : ''}</div>`;
+    requestAnimationFrame(() => el.querySelectorAll('.dw-off-h, .dw-off-s, .dw-off-ok').forEach(x => RUTUJA.fitOne(x, 0.78)));
+    if (!el._ro && 'ResizeObserver' in window) { el._ro = new ResizeObserver(() => el.querySelectorAll('.dw-off-h, .dw-off-s, .dw-off-ok').forEach(x => RUTUJA.fitOne(x, 0.78))); el._ro.observe(el); }
+  },
+  offStyle() {
+    if (document.getElementById('dwOffCss')) return;
+    const st = document.createElement('style'); st.id = 'dwOffCss';
+    st.textContent = `
+.dw-off{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:10px;align-items:center;margin:18px 0 6px;padding:12px 14px;
+  border-radius:16px;background:linear-gradient(180deg,#FFFBF1,#FFF3DC);border:1.5px solid rgba(232,163,61,.8);box-shadow:0 4px 12px rgba(232,163,61,.14)}
+.dw-off-diya{position:relative;width:26px;height:13px;margin-top:12px;border-radius:0 0 13px 13px;background:linear-gradient(180deg,#C8621F,#7A2E0C)}
+.dw-off-diya b{position:absolute;left:50%;bottom:92%;width:10px;height:15px;margin-left:-5px;border-radius:50% 50% 42% 42%/64% 64% 36% 36%;
+  background:radial-gradient(55% 50% at 50% 72%,#FFF4B8 0%,#FFC107 38%,#FF7A00 72%,#E53B0E 100%);box-shadow:0 0 7px 2px rgba(255,150,0,.5);
+  transform-origin:50% 100%;animation:dwOffFl 1.6s ease-in-out infinite}
+.dw-off-t{min-width:0}
+.dw-off-h{margin:0;font-weight:800;font-size:15px;line-height:1.3;color:#8E1450;white-space:nowrap}
+.dw-off-s{margin:2px 0 0;font-size:12.5px;font-weight:600;line-height:1.35;color:#5B4350;white-space:nowrap}
+.dw-off-s b{color:#A5114F}
+.dw-off-s2{color:#7A6570;font-weight:500}
+.dw-off-act{grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0}
+.dw-off-ok{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:700;color:#1B7A3A;white-space:nowrap}
+.dw-off-go{flex:0 0 auto;display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;font-weight:800;font-size:13px;
+  color:#fff;background:#1FA855;text-decoration:none;white-space:nowrap;box-shadow:0 3px 8px rgba(31,168,85,.3)}
+.dw-off.sent .dw-off-go{background:#fff;color:#1B7A3A;box-shadow:inset 0 0 0 1.5px #1FA855}
+.dw-off-go:active{transform:scale(.96)}
+.dw-off.dw-call{animation:dwOffCall 1.4s ease-out}
+@keyframes dwOffFl{0%,100%{transform:scale(1,1)}30%{transform:scale(.92,1.08)}60%{transform:scale(1.06,.95)}}
+@keyframes dwOffCall{0%{box-shadow:0 0 0 0 rgba(232,163,61,.95)}100%{box-shadow:0 0 0 16px rgba(232,163,61,0)}}
+html:is(.scrolling,.watching,.win-open) .dw-off-diya b{animation:none}
+@media(prefers-reduced-motion:reduce){.dw-off-diya b,.dw-off.dw-call{animation:none}}`;
+    document.head.appendChild(st);
   }
 };
 

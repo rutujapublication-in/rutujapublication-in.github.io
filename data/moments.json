@@ -1,5 +1,5 @@
 {
-  "_HOW_TO_EDIT": "Section 6 — Writing, honours and publications. One entry per photograph, shown in this order. img is the file name in assets/img/news without .webp (an @2x file is used automatically where it exists); w and h are the 1x file's pixel size. seconds is how long the slide holds. g1 and g2 are the slide's background gradient, taken from the photograph's own colours. people_* are [name, designation] pairs: the name shows bold and the designation in brackets. Leave sig_*, venue_* or date_* empty to leave them out. Marathi always shows first, English second. rows_mr / rows_en set how the people are grouped on lines, by their number in people_*: [[1],[2,3]] puts person 1 alone and persons 2 and 3 together. A line too wide for a small screen splits by itself. keep lists phrases that must never break across two lines. book_ids names the books a ceremony belongs to: that slide appears fourth in those books' 'The Author Behind the Pen' section.",
+  "_HOW_TO_EDIT": "Section 6 — Writing, honours and publications. One entry per photograph, shown in this order. img is the file name in assets/img/news without .webp (an @2x file is used automatically where it exists); w and h are the 1x file's pixel size. seconds is how long the slide holds. g1 and g2 are the slide's background gradient, taken from the photograph's own colours. people_* are [name, designation] pairs: the name shows bold and the designation in brackets. Leave sig_*, venue_* or date_* empty to leave them out. Marathi always shows first, English second. rows_mr / rows_en set how the people are grouped on lines, by their number in people_*: [[1],[2,3]] puts person 1 alone and persons 2 and 3 together. A line too wide for a small screen splits by itself. keep lists phrases that must never break across two lines. book_ids names the books a ceremony belongs to: that slide appears fourth in those books' 'The Author Behind the Pen' section. key is each slide's permanent name: the book windows' section 'लेखणीमागची लेखिका' finds its slides by key (state-award-2013, zp-felicitation, zp-award-2009), never by position, so slides can be added or moved freely. journey_mr / journey_en (optional) are two [year, label] steps shown as a small strip in the book windows only.",
   "slides": [
     {
       "n": 1,
@@ -40,10 +40,83 @@
       "venue_mr": "",
       "venue_en": "",
       "date_mr": "",
-      "date_en": ""
+      "date_en": "",
+      "key": "state-award-2013"
     },
     {
       "n": 2,
+      "key": "zp-award-2009",
+      "img": "rp-n-006",
+      "w": 800,
+      "h": 421,
+      "seconds": 6,
+      "g1": "#322918",
+      "g2": "#5D4B2D",
+      "title_mr": "अहिल्यानगर जिल्हा परिषद आदर्श शिक्षक पुरस्कार — २००९",
+      "title_en": "Zilla Parishad Ahilyanagar Ideal Teacher Award — 2009",
+      "people_mr": [
+        [
+          "मा. शालिनीताई विखे पाटील",
+          "तत्कालीन अध्यक्षा"
+        ],
+        [
+          "मा. राजाराम माने साहेब",
+          "तत्कालीन मुख्य कार्यकारी अधिकारी"
+        ]
+      ],
+      "people_en": [
+        [
+          "Hon. Shalinitai Vikhe Patil",
+          "Then President"
+        ],
+        [
+          "Hon. Rajaram Mane Saheb",
+          "Then Chief Executive Officer"
+        ]
+      ],
+      "rows_mr": [
+        [
+          1,
+          2
+        ]
+      ],
+      "rows_en": [
+        [
+          1,
+          2
+        ]
+      ],
+      "desc_mr": "यांच्या व इतर मान्यवरांच्या हस्ते, विद्यार्थ्यांच्या शिक्षणातील उल्लेखनीय कार्याबद्दल पढेगाव, ता. श्रीरामपूर येथील शिक्षिका सौ. मीना सुनिल गिरमे–जाधव यांना ‘जिल्हा परिषद आदर्श शिक्षक पुरस्कार’ देऊन गौरविण्यात आले.",
+      "desc_en": "At the hands of these and other dignitaries, Mrs. Meena Sunil Girme-Jadhav, a teacher from Padhegaon, Tal. Shrirampur, was honoured with the Zilla Parishad Ideal Teacher Award for her outstanding work in children's education.",
+      "sig_mr": "जिल्ह्याचा गौरव — राज्य पुरस्काराच्या (२०१३) वाटेवरील महत्त्वाचा टप्पा",
+      "sig_en": "The district's honour — a milestone on the road to the State award (2013)",
+      "venue_mr": "प्रवरानगर, ता. राहाता",
+      "venue_en": "Pravaranagar, Tal. Rahata",
+      "date_mr": "५ सप्टेंबर २००९",
+      "date_en": "5 September 2009",
+      "journey_mr": [
+        [
+          "२००९",
+          "जिल्हा आदर्श शिक्षक"
+        ],
+        [
+          "२०१३",
+          "महाराष्ट्र राज्य आदर्श शिक्षक"
+        ]
+      ],
+      "journey_en": [
+        [
+          "2009",
+          "District Ideal Teacher"
+        ],
+        [
+          "2013",
+          "Maharashtra State Ideal Teacher"
+        ]
+      ]
+    },
+    {
+      "n": 3,
       "img": "rp-n-002",
       "w": 800,
       "h": 421,
@@ -109,10 +182,11 @@
       "book_ids": [
         "RP-B-003",
         "RP-B-004"
-      ]
+      ],
+      "key": "launch-ganitmitra"
     },
     {
-      "n": 3,
+      "n": 4,
       "img": "rp-n-003",
       "w": 800,
       "h": 421,
@@ -153,10 +227,11 @@
       "date_en": "25 June 2016",
       "book_ids": [
         "RP-B-001"
-      ]
+      ],
+      "key": "launch-chala-vachuya"
     },
     {
-      "n": 4,
+      "n": 5,
       "img": "rp-n-004",
       "w": 800,
       "h": 375,
@@ -211,10 +286,11 @@
       "date_en": "",
       "book_ids": [
         "RP-B-002"
-      ]
+      ],
+      "key": "launch-english-primer"
     },
     {
-      "n": 5,
+      "n": 6,
       "img": "rp-n-005",
       "w": 800,
       "h": 338,
@@ -286,7 +362,8 @@
       "venue_mr": "",
       "venue_en": "",
       "date_mr": "",
-      "date_en": ""
+      "date_en": "",
+      "key": "zp-felicitation"
     }
   ],
   "keep": [
@@ -297,6 +374,13 @@
     "मा. पृथ्वीराज चव्हाण साहेब",
     "Hon. Prithviraj Chavan Saheb",
     "Zilla Parishad, Ahilyanagar",
-    "जिल्हा परिषद, अहिल्यानगरच्या"
+    "जिल्हा परिषद, अहिल्यानगरच्या",
+    "प्रवरानगर, ता. राहाता",
+    "Pravaranagar, Tal. Rahata",
+    "५ सप्टेंबर २००९",
+    "5 September 2009",
+    "Zilla Parishad Ideal Teacher Award",
+    "पढेगाव, ता. श्रीरामपूर",
+    "Padhegaon, Tal. Shrirampur"
   ]
 }

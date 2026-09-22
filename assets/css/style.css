@@ -6926,6 +6926,23 @@ html[lang="en"] .vis-deck:not(.is-built){min-height:419px}
 #page-books .filters .frow-end{margin-top:2px}
 
 /* ===================================================================
+   JOURNEY STRIP (v20j) — book windows, "लेखणीमागची लेखिका": two steps
+   joined by an arrow ("2009 District → 2013 State"), between the
+   description and the gold closing line. Chips pop in after the
+   description; the arrow nudges once. One line (fitted by arrange()).
+   =================================================================== */
+.au-journey{display:flex;flex-wrap:nowrap;justify-content:center;align-items:center;gap:6px;margin:calc(var(--u) * .35) auto 0;
+  font-size:calc(var(--u) * .62);white-space:nowrap;max-width:100%}
+.au-jc{display:inline-flex;align-items:baseline;gap:.35em;padding:.28em .75em;border-radius:999px;color:#FFE9B8;font-weight:600;
+  background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1.2px rgba(247,200,107,.75)}
+.au-jc b{color:#FFD27A;font-weight:800}
+.au-jarw{font-style:normal;font-weight:800;color:#F7C86B}
+.mom-slide.on .au-jc{animation:momPop .42s cubic-bezier(.2,.9,.3,1.25) calc(var(--sd, .3s) + .12s) both}
+.mom-slide.on .au-jc:last-of-type{animation-delay:calc(var(--sd, .3s) + .3s)}
+.mom-slide.on .au-jarw{animation:visArrive .35s ease-out calc(var(--sd, .3s) + .2s) both, momNudge .45s ease-in-out calc(var(--sd, .3s) + .6s) 1}
+@media(prefers-reduced-motion:reduce){.mom-slide.on .au-jc,.mom-slide.on .au-jarw{animation:none}}
+
+/* ===================================================================
    WHILE SCROLLING — generated from this stylesheet, do not edit by hand
    1 · While scrolling or while a book video plays (.scrolling / .watching
        on <html>): every looping effect is off; one that mixes an entrance

@@ -5,7 +5,7 @@
    =================================================================== */
 
 const RUTUJA = {
-  VERSION: 'v20h',
+  VERSION: 'v20j',
   lang: 'mr',
   text: {},
   locations: null,
@@ -4109,7 +4109,9 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
   pick(bookId) {
     const m = (this.app && this.app.moments) || [], v = (this.app && this.app.vision) || [];
     const out = [];
-    [1, 5].forEach(n => { const s = m.find(x => x.n === n); if (s) out.push({ kind: 'photo', src: s }); });
+    /* found by permanent name, never by position: the State award, the
+       Zilla Parishad felicitation, then the Zilla Parishad award of 2009 */
+    ['state-award-2013', 'zp-felicitation', 'zp-award-2009'].forEach(k => { const s = m.find(x => x.key === k); if (s) out.push({ kind: 'photo', src: s }); });
     const view = v.find(x => x.n === 1); if (view) out.push({ kind: 'view', src: view });
     /* this book's publication ceremony, fourth, where one exists */
     const cer = m.find(x => (x.book_ids || []).indexOf(bookId) >= 0); if (cer) out.push({ kind: 'photo', src: cer });
@@ -4150,6 +4152,16 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
   },
 
   /* one slide, in one language */
+  /* two steps joined by an arrow — "2009 District → 2013 State" — shown in
+     the book windows only (the home slide has no room for it in two
+     languages); kept on one line by arrange() */
+  journey(j, L) {
+    if (!Array.isArray(j) || j.length !== 2) return '';
+    const e = v => this.esc(v);
+    const step = ([y, t]) => `<span class="au-jc"><b>${e(y)}</b> ${e(t)}</span>`;
+    return `<div class="au-journey" lang="${L}">${step(j[0])}<i class="au-jarw" aria-hidden="true">&rarr;</i>${step(j[1])}</div>`;
+  },
+
   slide(x, k) {
     const L = this.lang, s = x.src, e = v => this.esc(v), g = f => s[f + '_' + L] || '';
     const photo = x.kind === 'photo';
@@ -4177,7 +4189,7 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
                width="${s.w}" height="${s.h}" alt="${e(g('title'))}" decoding="async" loading="lazy">
         </div>
         <div class="mom-who">${this.people(s['people_' + L], s['rows_' + L], L, L)}</div>
-        <div class="mom-say"><p class="mr" lang="${L}">${this.mark(g('desc'), s)}</p></div>` + close(g('sig'), '', venue);
+        <div class="mom-say"><p class="mr" lang="${L}">${this.mark(g('desc'), s)}</p></div>` + this.journey(s['journey_' + L], L) + close(g('sig'), '', venue);
     } else {
       const groups = [['focus_h', 'focus'], ['focus2_h', 'focus2'], ['focus3_h', 'focus3'], ['focus4_h', 'focus4']]
         .map(([h, l]) => [g(h), s[l + '_' + L] || []]).filter(([h, l]) => h || l.length);
@@ -4295,6 +4307,7 @@ const AUTHOR = Object.assign(Object.create(MOMENTS), {
     const text = t => { const r = document.createRange(); r.selectNodeContents(t); return r.getBoundingClientRect().width; };
     el.querySelectorAll('.au-line').forEach(l => this.shrink(l, W, text));
     el.querySelectorAll('.au-quote').forEach(q => this.fitQuote(q));
+    el.querySelectorAll('.au-journey').forEach(j => this.app.fitRow(j, 0.7));
   },
 
   rows(box, units, W, declared) {
