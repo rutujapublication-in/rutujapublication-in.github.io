@@ -417,7 +417,19 @@
     "st_b_author": "लेखिका",
     "bk_f_books": "{n} पुस्तके",
     "bk_f_std": "इयत्ता {a} ली – {b} वी",
-    "bk_f_off": "नगांनुसार {p}% पर्यंत सवलत"
+    "bk_f_off": "नगांनुसार {p}% पर्यंत सवलत",
+    "foot_tag": "इयत्ता १ ली ते ५ वी साठी पुस्तके",
+    "foot_call": "थेट बोला — लगेच उत्तर",
+    "foot_wa": "व्हॉट्सॲपवर लिहा",
+    "foot_wa_sub": "मागणी व चौकशीसाठी",
+    "foot_fb": "Facebook",
+    "foot_yt": "Youtube",
+    "foot_ig": "Instagram",
+    "foot_follow": "आमच्याशी जोडलेले राहा",
+    "foot_b_call": "कॉल",
+    "foot_b_wa": "व्हॉट्सॲप",
+    "order_key": "मागणी",
+    "cart_key": "यादी"
   },
   "en": {
     "nav_home": "Home",
@@ -837,6 +849,18 @@
     "st_b_author": "The author",
     "bk_f_books": "{n} books",
     "bk_f_std": "Std {a} – {b}",
-    "bk_f_off": "Up to {p}% off by quantity"
+    "bk_f_off": "Up to {p}% off by quantity",
+    "foot_tag": "Books for Classes 1 to 5",
+    "foot_call": "Talk direct — get an answer",
+    "foot_wa": "Write on WhatsApp",
+    "foot_wa_sub": "for orders and questions",
+    "foot_fb": "Facebook",
+    "foot_yt": "Youtube",
+    "foot_ig": "Instagram",
+    "foot_follow": "Stay connected with us",
+    "foot_b_call": "Call",
+    "foot_b_wa": "WhatsApp",
+    "order_key": "Order",
+    "cart_key": "List"
   }
 }

@@ -375,9 +375,43 @@
   "ads": [],
   "config": {
     "video_rotate_seconds": 4,
-    "ad_rotate_seconds": 3,
     "story_seconds": 3,
     "diwali_start": "09-01",
-    "diwali_end": "11-30"
+    "diwali_end": "11-30",
+    "address_mr": "पढेगाव, ता. श्रीरामपूर\nजि. अहिल्यानगर · पिन ४१३७२१",
+    "address_en": "Padhegaon, Tal. Shrirampur\nDist. Ahilyanagar · PIN 413721",
+    "phone_dial": "919373141263",
+    "phone_mr": "+९१ ९३७३१ ४१२६३",
+    "phone_en": "+91 93731 41263",
+    "facebook_url": "https://www.facebook.com/profile.php?id=61594898121769",
+    "instagram_url": "https://www.instagram.com/rutujapublications/",
+    "youtube_url": "https://www.youtube.com/channel/UCRJgsSkrVLZppBxtVVGgDKw",
+    "strip_mr": [
+      "इयत्ता १ ली ते ५ वी · मराठी, सेमी-इंग्रजी, इंग्रजी",
+      "वाचन · लेखन · गणित · सुलेखन — पाच पुस्तके",
+      "लेखिका स्वतः प्राथमिक शिक्षिका — राज्य पुरस्कार २०१३",
+      "नोंदणीकृत कॉपीराइट · ट्रेडमार्क · ISBN",
+      "‘चला वाचूया झटपट’ ₹६० · ‘इंग्लिश प्रायमर’ ₹७५",
+      "‘गणितमित्र’ १ व २ ₹५० पासून · ‘अक्षरमित्र’ ₹५०",
+      "जास्त नग, कमी दर — ३३% पर्यंत सवलत",
+      "घाऊक दर २६ नगांपासून · १०१+ वर सर्वाधिक सवलत",
+      "शाळांसाठी नमुना प्रत · प्रत्येक पुस्तकाची वेगळी सवलत",
+      "थेट घरपोच किंवा शाळेमध्ये पोहोच",
+      "आत्ताच संपर्क करा — ९३७३१ ४१२६३"
+    ],
+    "strip_en": [
+      "Classes 1 to 5 · Marathi, Semi-English, English",
+      "Reading · Writing · Maths · Handwriting — five books",
+      "Written by a primary teacher — State Award 2013",
+      "Registered copyright · trademark · ISBN",
+      "‘Chala Vachuya Zatpat’ ₹60 · ‘English Primer’ ₹75",
+      "‘Ganitmitra’ 1 & 2 from ₹50 · ‘Aksharmitra’ ₹50",
+      "More copies, lower rate — up to 33% off",
+      "Bulk from 26 copies · best rate at 101+",
+      "Sample copy for schools · each title its own scale",
+      "Delivered to your home or school",
+      "Call now — 93731 41263"
+    ],
+    "strip_seconds": "4.5"
   }
 }
