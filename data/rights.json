@@ -61,20 +61,22 @@
         "s": "मूळ साहित्यकृती · नोंदणीकृत हक्क",
         "regs": [
           [
-            "कॉपीराइट नोंदणी क्र.",
+            "कॉपीराइट नोंदणी",
             "L-95705"
           ],
           [
-            "कॉपीराइट नोंदणी क्र.",
+            "कॉपीराइट नोंदणी",
             "L-132178"
           ]
         ],
         "who": [
           [
+            "✍️",
             "लेखिका",
             "सौ. मीना सुनिल गिरमे"
           ],
           [
+            "🏛️",
             "प्रकाशक",
             "ऋतुजा पब्लिकेशन, पढेगाव"
           ]
@@ -88,7 +90,7 @@
         "rows": [
           [
             "ट्रेडमार्क",
-            "4379367 · वर्ग ४१ — शिक्षण व प्रकाशन सेवा"
+            "4379367 · वर्ग ४१"
           ],
           [
             "उद्योग आधार",
@@ -96,29 +98,33 @@
           ],
           [
             "ISBN",
-            "प्रत्येक पुस्तकाला स्वतंत्र क्रमांक"
+            "स्वतंत्र क्रमांक"
           ]
-        ]
+        ],
+        "g_author": "◆ लेखिकेचे हक्क",
+        "g_pub": "◆ प्रकाशकाचे हक्क"
       },
       "en": {
         "t": "Rights on Record",
         "s": "Original works · registered rights",
         "regs": [
           [
-            "Copyright Reg. No.",
+            "Copyright",
             "L-95705"
           ],
           [
-            "Copyright Reg. No.",
+            "Copyright",
             "L-132178"
           ]
         ],
         "who": [
           [
+            "✍️",
             "Author",
             "Mrs. Meena Sunil Girme"
           ],
           [
+            "🏛️",
             "Publisher",
             "Rutuja Publication, Padhegaon"
           ]
@@ -132,7 +138,7 @@
         "rows": [
           [
             "Trademark",
-            "4379367 · Class 41 — education & publishing"
+            "4379367 · Class 41"
           ],
           [
             "Udyog Aadhaar",
@@ -140,9 +146,11 @@
           ],
           [
             "ISBN",
-            "a separate number for each book"
+            "a separate number"
           ]
-        ]
+        ],
+        "g_author": "◆ Author's rights",
+        "g_pub": "◆ Publisher's rights"
       }
     },
     {
@@ -180,16 +188,25 @@
           ]
         ],
         "points": [
-          "पानक्रम बदलला",
-          "मूळ लेखिकेचे नाव नाही",
-          "नावाशी साधर्म्य"
+          [
+            "पानक्रम बदलला",
+            "पान १ ते ८० मधील मजकूर तसाच"
+          ],
+          [
+            "मूळ लेखिकेचे नाव नाही",
+            "मुखपृष्ठावर व आतील पानावरही"
+          ],
+          [
+            "नावाशी साधर्म्य",
+            "लेखिकेच्या नावासारखे दुसरे नाव"
+          ]
         ],
         "q": [
           "म्हणजे फक्त शब्द व पुस्तकाचे नाव",
           "बदलल्याने ओळख बदलते का?"
         ],
         "fa": "शब्द बदलता येतात; मौलिकता नाही.",
-        "ft": "लेखिकेची भूमिका · अंतिम निर्णय सक्षम यंत्रणेचा"
+        "ft": "नोंदणीकृत हक्क · लेखिकेची स्पष्ट भूमिका"
       },
       "en": {
         "t": "Title Changes & Points in the Complaint",
@@ -209,9 +226,18 @@
           ]
         ],
         "points": [
-          "Page order changed",
-          "Author's name absent",
-          "A similar name"
+          [
+            "Page order changed",
+            "pages 1–80 reproduced as they are"
+          ],
+          [
+            "Author's name absent",
+            "on the cover and inside"
+          ],
+          [
+            "A similar name",
+            "a name resembling the author's"
+          ]
         ],
         "q": [
           "So does changing just a word",
@@ -219,7 +245,7 @@
           "change its identity?"
         ],
         "fa": "Words can be changed; originality cannot.",
-        "ft": "The author's stand · the competent authority decides"
+        "ft": "Rights on record · the author's clear stand"
       }
     },
     {
@@ -246,26 +272,31 @@
         "steps": [
           [
             "नोटीस पाठवली",
-            "कायदेशीर नोटीस"
+            "कायदेशीर नोटीस",
+            "कॉपीराइट नोंदणीच्या आधारे — लेखी नोटीस"
           ],
           [
             "८ दिवसांत",
-            "नोटिशीनंतर"
+            "नोटिशीनंतर",
+            "एवढ्याच अवधीत पुढील हालचाल"
           ],
           [
             "एकाचे दोन लेखक",
-            "दोघेही शिक्षक"
+            "दोघेही शिक्षक",
+            "एकाच पुस्तकावर दोन नावे"
           ],
           [
             "नव्याने ‘बाग’",
-            "नवे नाव"
+            "नवे नाव",
+            "नाव बदलले की मेहनतही बदलते का?"
           ],
           [
             "‘शब्दांची’ दाखवली",
-            "जोडशब्द"
+            "जोडशब्द",
+            "शब्द जोडता येतात; श्रम नाही"
           ]
         ],
-        "line": "एका शिक्षिकेचं लेखन दुसऱ्या नावाने बाजारात — हीच खरी वेदना.",
+        "line": "शिक्षिकेचं लेखन दुसऱ्या नावाने — हीच खरी वेदना.",
         "q": [
           "शैक्षणिक साहित्यातच मौलिकतेचा हा विरोधाभास का?"
         ],
@@ -278,23 +309,28 @@
         "steps": [
           [
             "Notice sent",
-            "a legal notice"
+            "a legal notice",
+            "The rights were on record — a written notice"
           ],
           [
             "Within 8 days",
-            "after the notice"
+            "after the notice",
+            "Further movement in that same span"
           ],
           [
             "One author became two",
-            "both of them teachers"
+            "both of them teachers",
+            "Two names on one book"
           ],
           [
             "A new ‘Baag’",
-            "a new name"
+            "a new name",
+            "Does a new name mean new labour?"
           ],
           [
             "‘Shabdanchi’ added",
-            "a joined word"
+            "a joined word",
+            "Words can be joined; effort cannot"
           ]
         ],
         "line": "A teacher's writing, sold under another name — that is the real hurt.",
@@ -328,7 +364,9 @@
         "s": "दै. जयबाबा · श्रीरामपूर–अहिल्यानगर",
         "know": [
           "कॉपीराइट कायदा, १९५७",
-          "साहित्यकृती निर्माण होताच तिच्यावरील हक्क लेखकाचा"
+          "साहित्यकृती निर्माण होताच तिच्यावरील हक्क लेखकाचा — नोंदणी हा त्याचा पुरावा.",
+          "परवानगीशिवाय प्रत काढणे, विकणे किंवा रूपांतर करणे — कायद्याने गुन्हा.",
+          "गुन्हा सिद्ध झाल्यास कारावास व दंड — दोन्ही शक्य."
         ],
         "fa": "आम्ही प्रश्न उठवला; वृत्तपत्रांनी तो नोंदवला.",
         "ft": "तक्रार दाखल · प्रकरण कायदेशीर प्रक्रियेत"
@@ -338,7 +376,9 @@
         "s": "Dainik Jay Baba · Shrirampur–Ahilyanagar",
         "know": [
           "Copyright Act, 1957",
-          "a literary work belongs to its author from the moment it is created"
+          "A work belongs to its author the moment it is created — registration is the proof.",
+          "Copying, selling or adapting it without permission is an offence.",
+          "On conviction, imprisonment and fine are both possible."
         ],
         "fa": "We raised the question; the press recorded it.",
         "ft": "Complaint registered · the matter is in legal process"
@@ -369,7 +409,9 @@
         "s": "पुढारी · अहिल्यानगर आवृत्ती, पान ५",
         "know": [
           "संरक्षणाचा कालावधी",
-          "लेखकाचे आयुष्य + ६० वर्षे"
+          "लेखकाचे आयुष्य + ६० वर्षे — तोपर्यंत हक्क लेखक व वारसांकडेच.",
+          "प्रकाशक बदलला तरी मूळ लेखिकेचे हक्क संपत नाहीत.",
+          "या काळात परवानगीशिवाय कोणीही ती कृती वापरू शकत नाही."
         ],
         "fa": "आम्ही प्रश्न उठवला; वृत्तपत्रांनी तो नोंदवला.",
         "ft": "तक्रार दाखल · प्रकरण कायदेशीर प्रक्रियेत"
@@ -379,7 +421,9 @@
         "s": "Pudhari · Ahilyanagar Edition, Page 5",
         "know": [
           "How long it lasts",
-          "the author's lifetime + 60 years"
+          "The author's lifetime + 60 years — the rights stay with the author and heirs.",
+          "A change of publisher does not end the original author’s rights.",
+          "During that time no one may use the work without permission."
         ],
         "fa": "We raised the question; the press recorded it.",
         "ft": "Complaint registered · the matter is in legal process"
@@ -411,7 +455,9 @@
         "s": "सकाळ · नगर, पान ५",
         "know": [
           "नोंदणीचे महत्त्व",
-          "कॉपीराइट नोंद हा हक्काचा प्रथमदर्शनी पुरावा"
+          "कॉपीराइट नोंद हा हक्काचा प्रथमदर्शनी पुरावा — वादात तीच प्रथम ग्राह्य.",
+          "ट्रेडमार्क व ISBN हे प्रकाशकाची स्वतंत्र ओळख सिद्ध करतात.",
+          "नोंद नसल्यास हक्क सिद्ध करणे अधिक कठीण होते."
         ],
         "fa": "आम्ही प्रश्न उठवला; वृत्तपत्रांनी तो नोंदवला.",
         "ft": "तक्रार दाखल · प्रकरण कायदेशीर प्रक्रियेत"
@@ -421,7 +467,9 @@
         "s": "Sakal · Nagar, Page 5",
         "know": [
           "Why registration matters",
-          "a copyright entry is prima facie evidence of rights"
+          "A copyright entry is prima facie evidence — the first thing weighed in a dispute.",
+          "Trademark and ISBN establish the publisher’s own identity.",
+          "Without an entry, proving the right becomes far harder."
         ],
         "fa": "We raised the question; the press recorded it.",
         "ft": "Complaint registered · the matter is in legal process"
