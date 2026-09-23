@@ -1,5 +1,5 @@
 /* ===================================================================
-   RUTUJA — service worker (v21h)
+   RUTUJA — service worker (v21k)
    Keeps the site's own files on the phone so a repeat visit opens from
    the phone's copy, while a fresh copy is fetched quietly behind it.
 
@@ -12,7 +12,7 @@
    straight through untouched. Old copies are cleared when a new version
    of this file takes over.
    =================================================================== */
-const CACHE = 'rutuja-v21h';
+const CACHE = 'rutuja-v21k';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(
@@ -38,7 +38,15 @@ self.addEventListener('fetch', e => {
   if (!own && !font) return;
 
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(r => put(req, r)).catch(() => caches.match(req).then(r => r || caches.match('./'))));
+    /* The phone's copy of the page is shown at once — a repeat visit opens
+       in a few hundred milliseconds instead of waiting for the network —
+       and a fresh copy is fetched behind it and kept for the next visit.
+       Every file the page then asks for carries ?v=, so a new version can
+       never be served from an old copy. */
+    e.respondWith(caches.match(req).then(hit => {
+      const fresh = fetch(req).then(r => put(req, r)).catch(() => hit || caches.match('./'));
+      return hit || fresh;
+    }));
     return;
   }
   if (own && url.searchParams.has('v')) {
