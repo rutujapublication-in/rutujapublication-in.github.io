@@ -412,6 +412,7 @@
       "Delivered to your home or school",
       "Call now — 93731 41263"
     ],
-    "strip_seconds": "4.5"
+    "strip_seconds": "4.5",
+    "strip_speed": "34"
   }
 }
