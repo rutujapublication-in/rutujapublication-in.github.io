@@ -1,5 +1,5 @@
 /* ===================================================================
-   RUTUJA — service worker (v24j)
+   RUTUJA — service worker (v24k)
    Keeps the site's own files on the phone so a repeat visit opens from
    the phone's copy, while a fresh copy is fetched quietly behind it.
 
@@ -12,7 +12,7 @@
    straight through untouched. Old copies are cleared when a new version
    of this file takes over.
    =================================================================== */
-const CACHE = 'rutuja-v24j';
+const CACHE = 'rutuja-v24k';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(
