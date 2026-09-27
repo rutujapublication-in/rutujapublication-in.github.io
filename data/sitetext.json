@@ -493,14 +493,16 @@
     "wam_ask_school": "शाळेसाठी नमुना प्रत मिळेल का?\nपटसंख्येनुसार दरही कळवावेत.\n\nसवडीने उत्तर दिलेत तरी चालेल. धन्यवाद.",
     "wam_dwoff_head": "नमस्कार 🙏 दिवाळी अभ्यासाविषयी.",
     "wam_dwoff_foot": "दिवाळी अभ्यास (इयत्ता 1 ते 4) {date}पुन्हा\nउपलब्ध झाल्यावर मला कळवाल का?\n\nवाट पाहतो. धन्यवाद.",
-    "op_more": "सवलतीसाठी आणखी {n} प्रती",
+    "op_more": "आणखी {n} प्रती → ₹{s} वाचतील",
     "op_start": "{n} प्रतींवर ₹{r}",
     "op_best": "सर्वाधिक सवलत मिळाली ✓",
     "op_from": "पासून",
     "op_copies": "प्रती",
     "op_hint_less": "कमी",
     "op_hint_more": "जास्त",
-    "wal_rate": "दर"
+    "wal_rate": "दर",
+    "op_more_s": "आणखी {n} → ₹{s} वाचतील",
+    "op_more_xs": "+{n} → ₹{s}"
   },
   "en": {
     "nav_home": "Home",
@@ -996,13 +998,15 @@
     "wam_ask_school": "शाळेसाठी नमुना प्रत मिळेल का?\nपटसंख्येनुसार दरही कळवावेत.\n\nसवडीने उत्तर दिलेत तरी चालेल. धन्यवाद.",
     "wam_dwoff_head": "नमस्कार 🙏 दिवाळी अभ्यासाविषयी.",
     "wam_dwoff_foot": "दिवाळी अभ्यास (इयत्ता 1 ते 4) {date}पुन्हा\nउपलब्ध झाल्यावर मला कळवाल का?\n\nवाट पाहतो. धन्यवाद.",
-    "op_more": "{n} more copies for the next rate",
+    "op_more": "{n} more copies → ₹{s} saved",
     "op_start": "₹{r} at {n} copies",
     "op_best": "Best rate reached ✓",
     "op_from": "from",
     "op_copies": "copies",
     "op_hint_less": "less",
     "op_hint_more": "more",
-    "wal_rate": "Rate"
+    "wal_rate": "Rate",
+    "op_more_s": "{n} more → ₹{s} saved",
+    "op_more_xs": "+{n} → ₹{s}"
   }
 }
